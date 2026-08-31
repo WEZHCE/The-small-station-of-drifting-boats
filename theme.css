@@ -1,0 +1,33 @@
+/* 船只悠悠的小站 · giscus 自定义主题: 羊皮纸复古配色 */
+@import url('https://giscus.app/themes/light.css');
+main {
+  --color-canvas-default:#efe8d4;
+  --color-canvas-overlay:#fbf7ec;
+  --color-canvas-inset:#e8e0cc;
+  --color-canvas-subtle:#f5efdf;
+  --color-fg-default:#2e2a22;
+  --color-fg-muted:#6b5f45;
+  --color-fg-subtle:#8a7d5f;
+  --color-border-default:#c9bfa3;
+  --color-border-muted:#d5c9a8;
+  --color-neutral-muted:#d8cba6;
+  --color-neutral-subtle:#ddd3ba;
+  --color-accent-fg:#2038a8;
+  --color-accent-emphasis:#3d6fd0;
+  --color-accent-muted:#b9c8e8;
+  --color-accent-subtle:#dde5f5;
+  --color-btn-bg:#f0e9d6;
+  --color-btn-border:#c9bfa3;
+  --color-btn-hover-bg:#e8e0cc;
+  --color-btn-selected-bg:#e8e0cc;
+  --color-btn-text:#2e2a22;
+  --color-btn-primary-bg:#3d6fd0;
+  --color-btn-primary-hover-bg:#355fa8;
+  --color-btn-primary-text:#fff;
+  --color-social-reaction-bg-hover:#e8e0cc;
+  --color-segmented-control-bg:#e8e0cc;
+  --color-segmented-control-button-bg:#f0e9d6;
+  --color-segmented-control-button-selected-border:#c9bfa3;
+  --color-attention-fg:#8a6d3b;
+  --color-danger-fg:#a83232;
+}
