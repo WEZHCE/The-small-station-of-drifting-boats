@@ -126,7 +126,7 @@
   /* 留言板(giscus) */
   .gb-panel{background:#efe8d4; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     padding:10px 12px; box-shadow:3px 3px 0 rgba(43,38,28,.08)}
-  #giscusBox{max-height:900px; overflow-y:auto; overflow-x:hidden; padding-right:4px}
+  #giscusBox{height:900px; max-height:900px; overflow-y:auto; overflow-x:hidden; padding-right:4px}
   #giscusBox iframe{width:100%; border:none; background:transparent}
 
   /* 留言搜索 */
@@ -199,6 +199,7 @@
   @keyframes confFall{to{transform:translateY(108vh) rotate(740deg)}}
 
   @media (max-width:760px){
+    #giscusBox{height:72vh; max-height:72vh}
     .masthead{padding:22px 16px 12px}
     .site-name{font-size:32px; letter-spacing:3px}
     .menu{margin:0 16px}
@@ -710,7 +711,7 @@ function mountGiscus(){
     /* 自定义主题: 羊皮纸复古配色(仓库里的 theme.css) */
     s.setAttribute('data-theme', 'https://cdn.jsdelivr.net/gh/WEZHCE/The-small-station-of-drifting-boats@main/theme.css');
     s.setAttribute('data-lang', 'zh-CN');
-    s.setAttribute('data-loading', 'lazy');
+    s.setAttribute('data-loading', 'eager');
     box.appendChild(s);
     /* 评论框架加载出来后, 去掉"加载中"占位 */
     var timer = setInterval(function(){
