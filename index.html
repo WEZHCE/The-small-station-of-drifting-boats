@@ -68,7 +68,7 @@
   .tb-btn:active{border-color:#666 #fff #fff #666}
 
   .masthead{display:flex; align-items:center; gap:16px; padding:30px 28px 18px}
-  #logo{width:64px; height:60px; cursor:pointer}
+  #logo{width:64px; height:64px; cursor:pointer}
   .site-name{font-family:"KaiTi","楷体","STKaiti",serif; font-size:42px; letter-spacing:6px;
     color:#3f5c33; text-shadow:2px 2px 0 #d8cdb2; line-height:1.2}
   .site-sub{margin-top:2px; color:#8a7f68; font-size:14px; letter-spacing:1px}
@@ -298,21 +298,22 @@ var pick = function(arr){ return arr[Math.floor(Math.random()*arr.length)]; };
 /* ================= 像素画 ================= */
 var SPRITES = {
   boat: { pal:{W:'#f7f3e4', K:'#5a4632', M:'#6b4a2a', H:'#7a4a21', B:'#6aa9d8'}, rows:[
-    '.......WWW.......',
-    '......WWWWW......',
-    '.....WWWWWWW.....',
-    '....WWWWWWWWW....',
-    '...WWWWWWWWWWW...',
-    '...KKKWWWWKKK....',
-    '......MMM........',
-    '......MMM........',
-    '......MMM........',
-    '.HHHHHHHHHHHHHH..',
-    '.HHHHHHHHHHHHHH..',
-    '..HHHHHHHHHHHH...',
-    '...HHHHHHHHHH....',
-    '..B..BB..BB..B...',
-    '..B..BB..BB..B...'
+    '......KWWK......',
+    '.....KWWWWK.....',
+    '....KWWWWWWK....',
+    '...KWWWWWWWWK...',
+    '..KWWWWWWWWWWK..',
+    '.KWWWWWWWWWWWWK.',
+    '.KKKKKKKKKKKKKK.',
+    '..............M.',
+    '..............M.',
+    '..............M.',
+    '..............M.',
+    'HHHHHHHHHHHHHHHH',
+    '.HHHHHHHHHHHHH..',
+    '..HHHHHHHHHHH...',
+    '..B..BB..BB..B..',
+    '..B..BB..BB..B..'
   ]},
   cat: { pal:{K:'#2e2e2e', B:'#4a4a4a', W:'#f5f5f5', P:'#d98a8a'}, rows:[
     '.....KK..KK.....',
