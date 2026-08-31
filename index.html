@@ -346,55 +346,72 @@ var SPRITES = {
     '..B..BB..BB..B..',
     '..B..BB..BB..B..'
   ]},
-  cat: { pal:{K:'#2e2e2e', B:'#4a4a4a', W:'#f5f5f5', P:'#d98a8a'}, rows:[
+  cat: { pal:{K:'#262626', H:'#5f5f5f', B:'#3f3f3f', D:'#2d2d2d', W:'#f5f5f5', P:'#d98a8a'}, rows:[
     '.....KK..KK.....',
-    '....KBBKKBBK....',
-    '....KBBBBBBK....',
+    '....KHHKKHHK....',
+    '....KHBBBBHK....',
     '...KBBBBBBBBK...',
     '...KBWBBBBWBK...',
-    '...KBBBBBBBBK...',
+    '...KBBBBBBDBK...',
     '...KBBKPPKBBK...',
     '....KBBBBBBK....',
-    '....KBBBBBBK....',
-    '....KBBBBBBK....',
+    '....KBBBBBDK....',
+    '....KBBBBBDK....',
     '...KKBBBBBBKK...',
     '..KKBBBBBBBBKK..',
-    '..KKBBBBBBBBKK..',
+    '..KKBBHHHBBBKK..',
     '..KKKKKKKKKKKK..'
   ]},
-  mush: { out:'#5a4632', pal:{R:'#c25b4a', D:'#a83e30', W:'#eee0bc', G:'#6ba368'}, rows:[
+  mush: { out:'#4a3b28', pal:{R:'#d96f58', C:'#c25b4a', D:'#a83e30', W:'#f4ecd4', I:'#e8dcc0', S:'#f2e7c8', Q:'#dccb9e', G:'#6ba368'}, rows:[
     '......RRRR......',
-    '....RRRRRRRR....',
-    '...RRWWRRRRRR...',
-    '..RRWRRRRWWRR...',
-    '..RRRRRRRRRRRR..',
-    '.RRRRRRRRRRRRRR.',
-    '.RRRDDDDDDDDRRR.',
-    '..DDWWWWWWWWDD..',
-    '....WWWWWWWW....',
-    '....WWWWWWWW....',
-    '...WWWWWWWWWW...',
-    '...WWWWWWWWWW...',
-    '...WWWWWWWWWW...',
-    '....WWWWWWWW....',
+    '....RRRRCCRR....',
+    '...RRWCRRRRRR...',
+    '..RRWCRRRRCRRR..',
+    '..RRRRRRCRRRRR..',
+    '.RRRRRRCRRRRRRR.',
+    '.DDDDDDDDDDDDDD.',
+    '..IIIIIIIIIIII..',
+    '...SSSSQQSSSS...',
+    '....SSSSQQQQ....',
+    '....SSSSQQQQ....',
+    '...SSSSSQQQQQ...',
+    '...SSSSSQQQQQ...',
+    '....SSSSQQQQ....',
     '..GG..GG..GG....'
   ]},
-  house: { out:'#5a4632', pal:{Y:'#b5482f', B:'#dcc68e', W:'#7fb2d9', D:'#6b3e1f', K:'#6a9a5a'}, rows:[
+  house: { out:'#4a3b28', pal:{Y:'#c05a3f', Z:'#a84a32', B:'#e8d9a8', C:'#d9c28e', W:'#7fb2d9', D:'#6b3e1f', K:'#6a9a5a'}, rows:[
     '.......YY.......',
     '......YYYY......',
     '.....YYYYYY.....',
-    '....YYYYYYYY....',
+    '....YYZYYZYY....',
     '...YYYYYYYYYY...',
+    '..YYZYYZYYZYYY..',
     '..YYYYYYYYYYYY..',
-    '..BBBBBBBBBBBB..',
     '.BBBBBBBBBBBBBB.',
     '.BWWBBBBBBBBWWB.',
-    '.BWWBBBBBBBBWWB.',
-    '.BBBWWBBBBWWBBB.',
+    '.BWWBBCCCCCBWWB.',
+    '.BWWBBCCCCCBWWB.',
     '.BBBBBBBBBBBBBB.',
     '.BBBBBBDDDDBBBB.',
     '.BBBBBBDDDDBBBB.',
     '.KKKKKKKKKKKKKK.'
+  ]},
+  lantern: { out:'#4a3b28', pal:{G:'#e8b34c', R:'#d9594a', L:'#f28973', D:'#b03a30', T:'#e8b34c'}, rows:[
+    '.......GG.......',
+    '......GGGG......',
+    '.....GGGGGG.....',
+    '....RRRRRRRR....',
+    '...GLRRRRRRRG...',
+    '..GGLRRRRRRRGG..',
+    '..GGLRRRRRRRGG..',
+    '..GGLRRRRRRRGG..',
+    '..GGLRRRRRDRGG..',
+    '..GGLRRRRRDRGG..',
+    '...GLRRRRRRRG...',
+    '....RRRRRRRR....',
+    '.....GGGGGG.....',
+    '......GGGG......',
+    '......TTTT......'
   ]}
 };
 function drawSprite(cv, name, scale){
@@ -594,9 +611,10 @@ if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').ma
 /* ================= 站标 & 相册 ================= */
 drawSprite($('#logo'), 'boat', 4);
 var PHOTOS = [
-  {s:'cat',  title:'黑猫', cap:'全身黑, 就眼睛是白的。夜里看会发光。'},
-  {s:'mush', title:'蘑菇', cap:'红伞、白点、奶油色的柄, 配色抄的菜市场。'},
-  {s:'house',title:'小屋', cap:'红屋顶蓝窗户, 门画得有点歪, 就这样吧。'}
+  {s:'cat',     title:'黑猫',   cap:'皮毛加了高光和阴影, 眼睛是白的, 夜里看会发光。'},
+  {s:'mush',    title:'蘑菇',   cap:'伞面有高光和暗边, 伞底加了菌褶, 柄是奶油色调。'},
+  {s:'house',   title:'小屋',   cap:'屋顶画了瓦片纹, 墙面有阴影, 窗门比之前周正了。'},
+  {s:'lantern', title:'灯笼',   cap:'红色渐变灯身加金色镶边, 下头挂着穗子。'}
 ];
 var gal = $('#galleryGrid');
 PHOTOS.forEach(function(p, i){
