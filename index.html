@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="船只悠悠的小站 —— 一条慢悠悠的船, 泊在互联网边上。">
+<title>船只悠悠的小站 · 欢迎光临</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛵</text></svg>">
+<style>
+  /* ---------- 基础 ---------- */
+  *{box-sizing:border-box; margin:0; padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background-color:#f2ecdd;
+    background-image:
+      linear-gradient(rgba(90,80,60,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(90,80,60,.05) 1px, transparent 1px);
+    background-size:22px 22px;
+    color:#2e2a22;
+    font-family:"SimSun","宋体",serif;
+    font-size:16px;
+    line-height:1.75;
+    overflow:hidden;
+  }
+  body.on{overflow:auto}
+  ::selection{background:#9db98a; color:#fff}
+  ::-webkit-scrollbar{width:14px; background:#d8d0bc}
+  ::-webkit-scrollbar-thumb{background:#a89d84; border:3px solid #d8d0bc}
+  .hand{font-family:"KaiTi","楷体","STKaiti",serif}
+  img,canvas{display:block}
+
+  /* ---------- 开机动画 ---------- */
+  #boot{position:fixed; inset:0; z-index:100; background:#050505; overflow:hidden; transition:opacity .3s}
+  #boot.off{opacity:0; pointer-events:none}
+  #bootFx{position:absolute; inset:0; width:100%; height:100%}
+  .boot-scan{position:absolute; inset:0; pointer-events:none;
+    background:repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 3px)}
+  .boot-vignette{position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.72) 100%)}
+  .boot-skip{position:absolute; bottom:12px; right:14px; z-index:2; background:transparent;
+    border:1px solid #555; color:#999; font-size:12px; padding:2px 9px; cursor:pointer; font-family:inherit}
+  .boot-skip:hover{color:#fff; border-color:#aaa}
+
+  #flash{position:fixed; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:101}
+  #flash.go{animation:flashA .28s linear}
+  @keyframes flashA{0%{opacity:0}30%{opacity:.92}100%{opacity:0}}
+
+  #site{opacity:0; padding:30px 16px 60px; max-width:920px; margin:0 auto}
+  body.on #site{animation:pageIn .5s ease-out both}
+  @keyframes pageIn{
+    0%{opacity:0}
+    12%{opacity:1; transform:skewX(4deg) scaleX(1.015); transform-origin:left center}
+    28%{transform:skewX(-2.5deg) scaleX(.995)}
+    42%{transform:skewX(1.2deg)}
+    55%{transform:skewX(0) scaleX(1)}
+    100%{opacity:1; transform:none}
+  }
+
+  /* ---------- 主窗口 ---------- */
+  .window{background:#fbf7ec; border:1px solid #9a927e; box-shadow:8px 8px 0 rgba(43,38,28,.14)}
+  .titlebar{display:flex; align-items:center; gap:8px; height:26px; padding:0 6px;
+    background:linear-gradient(90deg,#12277e,#3d6fd0); color:#fff;
+    font-family:"SimHei","黑体",sans-serif; font-size:13px; letter-spacing:1px}
+  .tb-title{flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .tb-btns{display:flex; gap:3px}
+  .tb-btn{width:19px; height:16px; background:#c9c9c9; border:2px solid; border-color:#fff #666 #666 #fff;
+    font-size:9px; line-height:1; color:#111; cursor:pointer; font-family:inherit}
+  .tb-btn:active{border-color:#666 #fff #fff #666}
+
+  .masthead{display:flex; align-items:center; gap:16px; padding:30px 28px 18px}
+  #logo{width:64px; height:60px; cursor:pointer}
+  .site-name{font-family:"KaiTi","楷体","STKaiti",serif; font-size:42px; letter-spacing:6px;
+    color:#3f5c33; text-shadow:2px 2px 0 #d8cdb2; line-height:1.2}
+  .site-sub{margin-top:2px; color:#8a7f68; font-size:14px; letter-spacing:1px}
+
+  .menu{display:flex; position:sticky; top:0; z-index:20; margin:0 28px;
+    background:#ece5d0; border-top:1px solid #c9bfa3; border-bottom:1px solid #c9bfa3}
+  .menu a{flex:1; text-align:center; padding:7px 0; color:#2038a8; text-decoration:underline;
+    font-family:"SimHei","黑体",sans-serif; font-size:15px; border-right:1px dotted #c9bfa3}
+  .menu a:last-child{border-right:none}
+  .menu a:hover{background:#2038a8; color:#fff}
+
+  main{padding:6px 28px 26px}
+  h2{margin:30px 0 12px; font-family:"SimHei","黑体",sans-serif; font-size:21px; color:#4a3f2c;
+    border-left:7px solid #7c9c66; padding-left:10px; letter-spacing:2px}
+
+  /* 关于我 */
+  .about-grid{display:grid; grid-template-columns:300px 1fr; gap:22px; align-items:start}
+  .info-table{width:100%; border-collapse:collapse; font-size:14px}
+  .info-table th{width:70px; text-align:right; padding:6px 10px; color:#7b6f52; font-weight:normal;
+    background:#f2ecd9; border:1px solid #ddd3b8; white-space:nowrap}
+  .info-table td{border:1px solid #ddd3b8; padding:6px 10px; background:#fdfaf1}
+  .info-table a{color:#0033cc; text-decoration:underline}
+  .info-table a:hover{color:#fff; background:#2038a8}
+  .about-text p{margin:9px 0; text-indent:2em; font-size:15px}
+  .about-text .hand{text-indent:0; color:#6f6047; margin-top:16px}
+
+  /* 近况 */
+  .log{list-style:none}
+  .log li{margin:10px 0; padding:8px 13px; background:#f8f3e4; border-left:4px solid #d8cba6; font-size:15px}
+  .log-date{color:#8c7c5c; font-weight:bold; font-size:13px; margin-right:10px; white-space:nowrap}
+
+  /* 相册 */
+  .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:30px 24px; padding:6px 0 10px}
+  .photo{background:#fff; border:1px solid #d9d2c0; padding:10px 10px 13px;
+    box-shadow:3px 4px 8px rgba(0,0,0,.13); position:relative; transform:rotate(var(--tilt,0deg));
+    transition:transform .2s; cursor:pointer}
+  .photo:hover{transform:rotate(0deg) scale(1.045); z-index:2}
+  .photo::before{content:""; position:absolute; top:-9px; left:50%; width:66px; height:19px;
+    transform:translateX(-50%) rotate(-2deg);
+    background:rgba(214,196,150,.55); border-left:1px dashed rgba(255,255,255,.65);
+    border-right:1px dashed rgba(255,255,255,.65)}
+  .photo canvas{width:100%; height:auto; image-rendering:pixelated;
+    background:#ddd3ba; border:1px solid #d5ccb4}
+  figcaption{margin-top:9px; font-size:13px; color:#5c5340; line-height:1.6}
+  figcaption b{font-family:"KaiTi","楷体",serif; font-size:15px; color:#3f5c33}
+
+  /* 留言板(giscus) */
+  #giscusBox iframe{width:100%; border:none; background:#fbf7ec}
+  .gb-empty{color:#a09375; font-size:13.5px; padding:8px 2px}
+  .gb-setup{background:#efe8d4; border:1px dashed #b3a88c; padding:16px 18px; font-size:14px; color:#6b5f45}
+  .gb-setup b{color:#4a3f2c}
+  .gb-setup a{color:#0033cc; text-decoration:underline}
+  .gb-setup a:hover{color:#fff; background:#2038a8}
+  .gb-setup code{background:#fbf7ec; border:1px solid #d5c9a8; padding:0 4px; font-size:13px}
+  .gb-setup ol{margin:10px 0 4px 24px}
+  .gb-setup li{margin:10px 0; line-height:1.7}
+  .gb-setup-hint{margin-top:12px; padding-top:10px; border-top:1px dotted #c9bfa3; color:#8a7d5f; font-size:13px}
+
+  footer{margin-top:24px; border-top:1px dashed #cfc4a5; padding:16px 28px 22px;
+    font-size:13px; color:#84775a; display:grid; gap:6px; text-align:center}
+  #nowTime{font-family:Consolas,"Courier New",monospace; font-size:13px}
+  footer a{color:#0033cc; text-decoration:underline; font-size:13.5px}
+  footer a:hover{color:#fff; background:#2038a8}
+  .footer-links{display:flex; justify-content:center; gap:28px}
+  .counter-box{display:inline-block; background:#111; color:#39d353; font-family:"Courier New",monospace;
+    font-size:15px; letter-spacing:2px; padding:4px 12px; border:2px solid #555;
+    box-shadow:inset 0 0 10px #000}
+  .hits-badge{display:inline-block; vertical-align:middle; margin:0 3px}
+
+  #toast{position:fixed; left:50%; bottom:30px; z-index:200; max-width:78vw;
+    transform:translateX(-50%) translateY(24px); opacity:0; pointer-events:none;
+    background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    box-shadow:5px 5px 0 rgba(0,0,0,.18); padding:13px 20px; font-size:14.5px;
+    transition:all .25s; color:#2e2a22}
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  /* ---------- 小彩蛋 ---------- */
+  #boatPet{position:fixed; right:16px; bottom:14px; z-index:30; cursor:pointer; opacity:.9;
+    user-select:none; animation:bob 3.2s ease-in-out infinite}
+  #boatPet:hover{opacity:1}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-7px) rotate(3deg)}}
+  #boatPet.splash{animation:bob 3.2s ease-in-out infinite, hop .55s ease-out}
+  @keyframes hop{0%{transform:translateY(0) scale(1)}30%{transform:translateY(-14px) scale(1.18)}100%{transform:translateY(0) scale(1)}}
+  #logo.rock{animation:rock .8s ease}
+  @keyframes rock{0%,100%{transform:rotate(0)}20%{transform:rotate(-8deg)}45%{transform:rotate(6deg)}70%{transform:rotate(-4deg)}}
+  .window.rocking{animation:wrock 1.1s ease}
+  @keyframes wrock{0%,100%{transform:rotate(0)}15%{transform:rotate(-.7deg)}30%{transform:rotate(.6deg)}50%{transform:rotate(-.4deg)}70%{transform:rotate(.3deg)}85%{transform:rotate(-.15deg)}}
+  .drop{position:fixed; z-index:31; pointer-events:none; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #cfe9ff, #6aa9d8);
+    animation:dropFall .9s ease-out forwards}
+  @keyframes dropFall{to{transform:translateY(48px); opacity:0}}
+  .counter-box.bump{animation:bump .4s ease}
+  @keyframes bump{30%{transform:scale(1.12)}}
+
+  .confetti{position:fixed; top:-26px; z-index:9998; pointer-events:none; animation:confFall linear forwards}
+  @keyframes confFall{to{transform:translateY(108vh) rotate(740deg)}}
+
+  @media (max-width:760px){
+    .masthead{padding:22px 16px 12px}
+    .site-name{font-size:32px; letter-spacing:3px}
+    .menu{margin:0 16px}
+    .menu a{font-size:13px}
+    main{padding:4px 16px 24px}
+    .about-grid{grid-template-columns:1fr}
+    footer{padding:16px 16px 20px}
+    .boot-title{font-size:28px; letter-spacing:3px}
+  }
+</style>
+</head>
+<body>
+
+<noscript>
+  <div style="padding:40px;text-align:center;font-size:16px">
+    这个网站的开机动画需要 JavaScript。<br>请开启浏览器脚本支持后再刷新。
+  </div>
+</noscript>
+
+<!-- ================= 开机动画 ================= -->
+<div id="boot">
+  <canvas id="bootFx"></canvas>
+  <div class="boot-scan"></div>
+  <div class="boot-vignette"></div>
+  <button class="boot-skip" id="bootSkip">跳过 »</button>
+</div>
+<div id="flash"></div>
+
+<!-- ================= 主页面 ================= -->
+<div id="site">
+  <div class="window" id="top">
+
+    <div class="titlebar">
+      <span class="tb-title">船只悠悠的小站 — 记事本(未保存)</span>
+      <span class="tb-btns">
+        <button class="tb-btn" id="tbMin" title="最小化">—</button>
+        <button class="tb-btn" id="tbMax" title="最大化">□</button>
+        <button class="tb-btn" id="tbClose" title="关闭">✕</button>
+      </span>
+    </div>
+
+    <header class="masthead">
+      <!-- 站标: 一条像素小帆船, 单击会晃, 双击有惊喜 -->
+      <canvas id="logo" title="单击会晃, 双击有惊喜"></canvas>
+      <div>
+        <h1 class="site-name">船只悠悠的小站</h1>
+        <div class="site-sub hand" id="siteSub">一条慢悠悠的船, 泊在互联网边上。</div>
+      </div>
+    </header>
+
+    <nav class="menu">
+      <a href="#about">关于我</a>
+      <a href="#now">近况</a>
+      <a href="#gallery">相册</a>
+      <a href="#guestbook">留言板</a>
+    </nav>
+
+    <main>
+      <!-- 想改成自己的信息, 主要就是这一块 -->
+      <section id="about">
+        <h2>关于我</h2>
+        <div class="about-grid">
+          <table class="info-table">
+            <tr><th>昵称</th><td>船只悠悠</td></tr>
+            <tr><th>常出没</th><td><a href="https://github.com/WEZHCE" target="_blank" rel="noopener">GitHub</a> · <a href="https://space.bilibili.com/1309420497" target="_blank" rel="noopener">B站空间</a></td></tr>
+            <tr><th>爱好</th><td>小网页 / 小游戏 / 城市宣传页</td></tr>
+            <tr><th>技能</th><td>HTML · CSS · JS, 一点 Python</td></tr>
+            <tr><th>代表作</th><td>贪吃蛇 v7.10 · 国际象棋棋盘 · 城市宣传页系列</td></tr>
+            <tr><th>现状</th><td>不定期更新</td></tr>
+          </table>
+          <div class="about-text">
+            <p>你好呀, 我是船只悠悠。这里是做小网页、写小游戏的地方, 偶尔也做城市宣传页。</p>
+            <p>站不大, 功能不多, 但每一行代码都是自己写的。不定期更新, 欢迎随便看看。</p>
+            <p class="hand">慢慢逛, 不着急。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="now">
+        <h2>近况</h2>
+        <ul class="log">
+          <li><span class="log-date">2026-08-13</span>国际象棋棋盘页又更新了一版。</li>
+          <li><span class="log-date">2026-08-05</span>贪吃蛇游戏更新; 城市宣传页系列也更新了——看看有没有你的家乡。</li>
+          <li><span class="log-date">2026-08-03</span>贪吃蛇 v7.10 上线, 顺手做了个公开宣传页。</li>
+          <li><span class="log-date">2026-07-08</span>写了个基于 deepseek 的小工具, 在仓库描述里我诚实地写了"没用"。</li>
+        </ul>
+      </section>
+
+      <section id="gallery">
+        <h2>像素相册</h2>
+        <div class="gallery" id="galleryGrid"></div>
+      </section>
+
+      <section id="guestbook">
+        <h2>留言板</h2>
+        <p class="section-note">留言会通过 giscus 真实存到 GitHub 仓库的 Discussions 里, 全世界的访客都能看到、都能回复、都能点赞。</p>
+        <div id="giscusBox"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div>
+        <span id="counterBox">本页被访问过 <img class="hits-badge" src="https://hits.sh/wezhce.github.io.svg?color=39d353" alt="访问统计" loading="lazy"></span> ·
+        本站已运行 <span id="runDays">?</span> 天
+      </div>
+      <div>现在时间: <span id="nowTime"></span></div>
+      <div class="footer-links">
+        <a href="https://github.com/WEZHCE" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://space.bilibili.com/1309420497" target="_blank" rel="noopener">B站空间</a>
+        <a href="#top">回顶部</a>
+      </div>
+      <div id="copyright">© 2026 船只悠悠的小站 · 纯 HTML + CSS + JS 手写, 没有框架</div>
+    </footer>
+  </div>
+</div>
+
+<canvas id="boatPet" title="点一下试试"></canvas>
+
+<div id="toast"></div>
+
+<!-- 访问统计: hits.sh 免费计数徽章(免注册, 每次打开页面 +1) -->
+<script>
+/* ================= 小工具 ================= */
+var $ = function(s){ return document.querySelector(s); };
+var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+var rand = function(a,b){ return a + Math.random()*(b-a); };
+var pick = function(arr){ return arr[Math.floor(Math.random()*arr.length)]; };
+
+/* ================= 像素画 ================= */
+var SPRITES = {
+  boat: { pal:{W:'#f7f3e4', K:'#5a4632', M:'#6b4a2a', H:'#7a4a21', B:'#6aa9d8'}, rows:[
+    '.......WWW.......',
+    '......WWWWW......',
+    '.....WWWWWWW.....',
+    '....WWWWWWWWW....',
+    '...WWWWWWWWWWW...',
+    '...KKKWWWWKKK....',
+    '......MMM........',
+    '......MMM........',
+    '......MMM........',
+    '.HHHHHHHHHHHHHH..',
+    '.HHHHHHHHHHHHHH..',
+    '..HHHHHHHHHHHH...',
+    '...HHHHHHHHHH....',
+    '..B..BB..BB..B...',
+    '..B..BB..BB..B...'
+  ]},
+  cat: { pal:{K:'#2e2e2e', B:'#4a4a4a', W:'#f5f5f5', P:'#d98a8a'}, rows:[
+    '.....KK..KK.....',
+    '....KBBKKBBK....',
+    '....KBBBBBBK....',
+    '...KBBBBBBBBK...',
+    '...KBWBBBBWBK...',
+    '...KBBBBBBBBK...',
+    '...KBBKPPKBBK...',
+    '....KBBBBBBK....',
+    '....KBBBBBBK....',
+    '....KBBBBBBK....',
+    '...KKBBBBBBKK...',
+    '..KKBBBBBBBBKK..',
+    '..KKBBBBBBBBKK..',
+    '..KKKKKKKKKKKK..'
+  ]},
+  mush: { out:'#5a4632', pal:{R:'#c25b4a', D:'#a83e30', W:'#eee0bc', G:'#6ba368'}, rows:[
+    '......RRRR......',
+    '....RRRRRRRR....',
+    '...RRWWRRRRRR...',
+    '..RRWRRRRWWRR...',
+    '..RRRRRRRRRRRR..',
+    '.RRRRRRRRRRRRRR.',
+    '.RRRDDDDDDDDRRR.',
+    '..DDWWWWWWWWDD..',
+    '....WWWWWWWW....',
+    '....WWWWWWWW....',
+    '...WWWWWWWWWW...',
+    '...WWWWWWWWWW...',
+    '...WWWWWWWWWW...',
+    '....WWWWWWWW....',
+    '..GG..GG..GG....'
+  ]},
+  house: { out:'#5a4632', pal:{Y:'#b5482f', B:'#dcc68e', W:'#7fb2d9', D:'#6b3e1f', K:'#6a9a5a'}, rows:[
+    '.......YY.......',
+    '......YYYY......',
+    '.....YYYYYY.....',
+    '....YYYYYYYY....',
+    '...YYYYYYYYYY...',
+    '..YYYYYYYYYYYY..',
+    '..BBBBBBBBBBBB..',
+    '.BBBBBBBBBBBBBB.',
+    '.BWWBBBBBBBBWWB.',
+    '.BWWBBBBBBBBWWB.',
+    '.BBBWWBBBBWWBBB.',
+    '.BBBBBBBBBBBBBB.',
+    '.BBBBBBDDDDBBBB.',
+    '.BBBBBBDDDDBBBB.',
+    '.KKKKKKKKKKKKKK.'
+  ]}
+};
+function drawSprite(cv, name, scale){
+  var sp = SPRITES[name], rows = sp.rows;
+  var cols = 0;
+  rows.forEach(function(r){ cols = Math.max(cols, r.length); });
+  cv.width = cols*scale; cv.height = rows.length*scale;
+  var ctx = cv.getContext('2d');
+  /* 先 1:1 画到临时画布 */
+  var tmp = document.createElement('canvas');
+  tmp.width = cols; tmp.height = rows.length;
+  var tctx = tmp.getContext('2d');
+  rows.forEach(function(row, y){
+    row.split('').forEach(function(ch, x){
+      var c = sp.pal[ch];
+      if(c){ tctx.fillStyle = c; tctx.fillRect(x, y, 1, 1); }
+    });
+  });
+  /* 给浅色像素画加一圈深色描边, 防止和画布背景糊在一起 */
+  if(sp.out){
+    var img = tctx.getImageData(0, 0, cols, rows.length);
+    var data = img.data;
+    var filled = function(x, y){
+      return x >= 0 && y >= 0 && x < cols && y < rows.length && data[(y*cols+x)*4+3] > 0;
+    };
+    ctx.fillStyle = sp.out;
+    for(var yy = 0; yy < rows.length; yy++){
+      for(var xx = 0; xx < cols; xx++){
+        if(!filled(xx, yy) &&
+           (filled(xx-1, yy) || filled(xx+1, yy) || filled(xx, yy-1) || filled(xx, yy+1))){
+          ctx.fillRect(xx*scale, yy*scale, scale, scale);
+        }
+      }
+    }
+  }
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(tmp, 0, 0, cols, rows.length, 0, 0, cv.width, cv.height);
+}
+
+/* ================= 开机动画: 雪花 → 粒子爆发 → 汇聚成站名 → 炸开进场 ================= */
+var bootCv = $('#bootFx'), bootCtx = bootCv.getContext('2d');
+var BOOT_TEXT = '船只悠悠';
+var bootW = 0, bootH = 0, bootDpr = Math.min(window.devicePixelRatio || 1, 2);
+var bootFontSize = 0, bootTextY = 0, bootParts = [], bootMaxArrive = 0;
+function sizeBoot(){
+  bootW = window.innerWidth; bootH = window.innerHeight;
+  bootCv.width = bootW * bootDpr; bootCv.height = bootH * bootDpr;
+  bootCtx.setTransform(bootDpr, 0, 0, bootDpr, 0, 0);
+}
+sizeBoot();
+window.addEventListener('resize', sizeBoot);
+
+/* 把站名"翻译"成一组粒子坐标 */
+function buildBootScene(){
+  bootFontSize = Math.min(150, bootW * .2, bootH * .24);
+  bootTextY = bootH * .42;
+  var off = document.createElement('canvas');
+  off.width = bootW; off.height = Math.round(bootFontSize * 1.7);
+  var octx = off.getContext('2d');
+  octx.font = 'bold ' + bootFontSize + 'px "KaiTi","楷体","STKaiti",serif';
+  octx.textAlign = 'center'; octx.textBaseline = 'middle';
+  octx.fillStyle = '#fff';
+  octx.fillText(BOOT_TEXT, bootW / 2, off.height / 2);
+  var img = octx.getImageData(0, 0, off.width, off.height);
+  var data = img.data, step = Math.max(2, Math.round(bootFontSize / 36)), pts = [];
+  for(var y = 0; y < off.height; y += step){
+    for(var x = 0; x < off.width; x += step){
+      if(data[(y * off.width + x) * 4 + 3] > 128) pts.push([x, y]);
+    }
+  }
+  var N = Math.min(pts.length, 3600), R = Math.min(bootW, bootH) * .4;
+  var COLORS = ['#eef7e6','#b9eeb9','#8fd88f','#f0dfa0','#a8d8f0','#eef7e6','#d9f0e0','#c8e8b0'];
+  bootParts = [];
+  bootMaxArrive = 0;
+  for(var i = 0; i < N; i++){
+    var p = pts[Math.floor(Math.random() * pts.length)];
+    var ang = rand(0, Math.PI * 2), r = rand(10, R);
+    var dur = rand(.45, .75), delay = rand(0, .05);
+    var arrive = .4 + delay + dur;
+    if(arrive > bootMaxArrive) bootMaxArrive = arrive;
+    bootParts.push({
+      tx: p[0], ty: bootTextY + p[1] - off.height / 2,
+      sdx: Math.cos(ang) * r, sdy: Math.sin(ang) * r,
+      odx: (p[0] - bootW / 2) * .55 + rand(-40, 40),
+      ody: (p[1] - off.height / 2) * .55 + rand(-40, 40),
+      dur: dur, delay: delay,
+      wx: rand(0, Math.PI * 2),
+      size: rand(1.6, 3.2), c: pick(COLORS)
+    });
+  }
+}
+buildBootScene();
+window.addEventListener('resize', buildBootScene);
+
+var bootDone = false;
+function finishBoot(){
+  if(bootDone) return;
+  bootDone = true;
+  $('#flash').classList.add('go');
+  $('#boot').classList.add('off');
+  document.body.classList.add('on');
+  setTimeout(function(){ $('#flash').classList.remove('go'); }, 300);
+}
+$('#bootSkip').addEventListener('click', finishBoot);
+
+function easeOutCubic(k){ return 1 - Math.pow(1 - k, 3); }
+function easeInOutCubic(k){ return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
+function easeInCubic(k){ return k * k * k; }
+
+if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  finishBoot(); /* 尊重系统减动效设置, 直接进场 */
+} else {
+  var startT = null;
+  (function frame(t){
+    if(bootDone) return;
+    if(startT === null) startT = t;
+    var el = (t - startT) / 1000;
+    /* 阶段节点按全部粒子实际到位时间算, 保证"锁定"时文字是完整的 */
+    var BURST = .4;
+    var FORM = bootMaxArrive;
+    var GL1 = FORM - .05, GL2 = GL1 + .22;
+    var SUB1 = GL1 + .03, SUB2 = SUB1 + .24;
+    var OUT = FORM + .1;
+    var FINISH = OUT + .35;
+    bootCtx.clearRect(0, 0, bootW, bootH);
+
+    /* 开机那一瞬的雪花 */
+    if(el < .18){
+      bootCtx.fillStyle = 'rgba(255,255,255,.28)';
+      for(var s = 0; s < 30; s++){
+        bootCtx.fillRect(rand(0, bootW), rand(0, bootH), rand(50, 340), rand(1, 3));
+      }
+    }
+
+    /* 粒子本体 */
+    var alpha = 1;
+    var diss = 0;
+    if(el >= OUT){
+      diss = easeInCubic(Math.min(1, (el - OUT) / .45));
+      alpha = 1 - diss;
+    }
+    if(alpha > 0){
+      for(var i = 0; i < bootParts.length; i++){
+        var p = bootParts[i], x, y;
+        if(el < BURST){
+          var k0 = easeOutCubic(el / BURST);
+          x = bootW / 2 + p.sdx * k0; y = bootH / 2 + p.sdy * k0;
+        } else if(el < FORM){
+          /* 从爆发结束位置(绝对坐标)平滑飞到文字目标(绝对坐标) */
+          var k1 = easeInOutCubic(Math.min(1, Math.max(0, (el - BURST - p.delay) / p.dur)));
+          var bx = bootW / 2 + p.sdx, by = bootH / 2 + p.sdy;
+          x = bx * (1 - k1) + p.tx * k1;
+          y = by * (1 - k1) + p.ty * k1;
+        } else if(el < OUT){
+          x = p.tx + Math.sin(el * 7 + p.wx) * .9;
+          y = p.ty + Math.cos(el * 6 + p.wx) * .9;
+        } else {
+          x = p.tx + p.odx * diss;
+          y = p.ty + p.ody * diss;
+        }
+        bootCtx.globalAlpha = alpha;
+        bootCtx.fillStyle = p.c;
+        bootCtx.fillRect(x, y, p.size, p.size);
+      }
+      bootCtx.globalAlpha = 1;
+    }
+
+    /* 落定瞬间的 RGB 错位, 像信号"咔"地锁住 */
+    if(el > GL1 && el < GL2){
+      var g = Math.min(1, (el - GL1) / .1) * Math.max(0, 1 - (el - GL1 - .08) / .14);
+      bootCtx.font = 'bold ' + bootFontSize + 'px "KaiTi","楷体",serif';
+      bootCtx.textAlign = 'center'; bootCtx.textBaseline = 'middle';
+      bootCtx.globalAlpha = .4 * g;
+      bootCtx.fillStyle = '#ff7a7a';
+      bootCtx.fillText(BOOT_TEXT, bootW / 2 - 5, bootTextY);
+      bootCtx.fillStyle = '#7ab0ff';
+      bootCtx.fillText(BOOT_TEXT, bootW / 2 + 5, bootTextY);
+      bootCtx.globalAlpha = 1;
+    }
+
+    /* 小字 */
+    if(el > SUB1 && el < SUB2){
+      var a2 = Math.min(1, (el - SUB1) / .1) * Math.max(0, 1 - (el - SUB1 - .12) / .12);
+      bootCtx.globalAlpha = .85 * a2;
+      bootCtx.fillStyle = '#8fd88f';
+      bootCtx.font = '15px "SimSun","宋体",serif';
+      bootCtx.textAlign = 'center';
+      bootCtx.fillText('· 手写的小站 ·', bootW / 2, bootTextY + bootFontSize * .85);
+      bootCtx.globalAlpha = 1;
+    }
+
+    if(el < FINISH) requestAnimationFrame(frame);
+    else finishBoot();
+  })(performance.now());
+}
+
+/* ================= 站标 & 相册 ================= */
+drawSprite($('#logo'), 'boat', 4);
+var PHOTOS = [
+  {s:'cat',  title:'黑猫', cap:'全身黑, 就眼睛是白的。夜里看会发光。'},
+  {s:'mush', title:'蘑菇', cap:'红伞、白点、奶油色的柄, 配色抄的菜市场。'},
+  {s:'house',title:'小屋', cap:'红屋顶蓝窗户, 门画得有点歪, 就这样吧。'}
+];
+var gal = $('#galleryGrid');
+PHOTOS.forEach(function(p, i){
+  var f = document.createElement('figure');
+  f.className = 'photo';
+  f.style.setProperty('--tilt', (i % 2 ? 1.6 : -1.8) + 'deg');
+  f.innerHTML = '<canvas data-sprite="' + p.s + '"></canvas>' +
+    '<figcaption><b>' + p.title + '</b><br>' + p.cap + '</figcaption>';
+  gal.appendChild(f);
+});
+$$('#galleryGrid canvas').forEach(function(cv){ drawSprite(cv, cv.dataset.sprite, 6); });
+
+/* ================= 天数 / 时间 ================= */
+/* 访问次数由 hits.sh 徽章统计(页脚图片), 服务未响应时只显示图片本身, 不影响页面功能 */
+var BASE = new Date('2026-08-21'); /* 小站第一次建成的日子 */
+var days = Math.max(1, Math.floor((Date.now() - BASE.getTime()) / 86400000) + 1);
+$('#runDays').textContent = days;
+
+/* 副标题每天换一句 */
+var SUBS = [
+  '一条慢悠悠的船, 泊在互联网边上。',
+  '今天的船也在慢慢开。',
+  '更新了, 又好像没更新。',
+  '风平浪静, 适合发呆。',
+  '船慢, 但没翻过。'
+];
+$('#siteSub').textContent = SUBS[Math.floor(Date.now() / 86400000) % SUBS.length];
+
+var WD = ['日','一','二','三','四','五','六'];
+function tick(){
+  var d = new Date();
+  var pad = function(n){ return ('0'+n).slice(-2); };
+  $('#nowTime').textContent = d.getFullYear()+'年'+pad(d.getMonth()+1)+'月'+pad(d.getDate())+'日 星期'+WD[d.getDay()]+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+}
+tick();
+setInterval(tick, 1000);
+
+/* ================= 留言板(giscus) ================= */
+/* ============ 配置方法 ============
+   1. 仓库开启 Discussions: 仓库 → Settings → Features → 勾选 Discussions(仓库需要公开)
+   2. 安装 giscus 应用: https://github.com/apps/giscus → Install → 授权给这个仓库
+   3. 打开 https://giscus.app/zh-CN 粘贴仓库名, 把生成的 repo-id / category-id 填进下面 */
+var GISCUS_CFG = {
+  repo: 'WEZHCE/WEZHCE.github.io',  /* 改成你的部署仓库, 比如 WEZHCE/chessboard */
+  repoId: '',                       /* 从 giscus.app 生成的代码里复制, 形如 R_kgD... */
+  category: 'Announcements',
+  categoryId: '',                   /* 从 giscus.app 生成的代码里复制, 形如 DIC_... */
+  mapping: 'pathname'
+};
+function mountGiscus(){
+  var box = $('#giscusBox');
+  box.innerHTML = '';
+  if(GISCUS_CFG.repoId && GISCUS_CFG.categoryId){
+    box.innerHTML = '<div class="gb-empty">留言加载中……</div>';
+    var s = document.createElement('script');
+    s.src = 'https://giscus.app/client.js';
+    s.async = true;
+    s.crossOrigin = 'anonymous';
+    s.setAttribute('data-repo', GISCUS_CFG.repo);
+    s.setAttribute('data-repo-id', GISCUS_CFG.repoId);
+    s.setAttribute('data-category', GISCUS_CFG.category);
+    s.setAttribute('data-category-id', GISCUS_CFG.categoryId);
+    s.setAttribute('data-mapping', GISCUS_CFG.mapping);
+    s.setAttribute('data-reactions-enabled', '1');
+    s.setAttribute('data-emit-metadata', '0');
+    s.setAttribute('data-input-position', 'top');
+    s.setAttribute('data-theme', 'light');
+    s.setAttribute('data-lang', 'zh-CN');
+    s.setAttribute('data-loading', 'lazy');
+    box.appendChild(s);
+    /* 评论框架加载出来后, 去掉"加载中"占位 */
+    var timer = setInterval(function(){
+      if(box.querySelector('iframe')){
+        var e = box.querySelector('.gb-empty');
+        if(e) e.remove();
+        clearInterval(timer);
+      }
+    }, 300);
+  } else {
+    box.innerHTML =
+      '<div class="gb-setup">' +
+        '<b>留言板还没接上, 只差三步</b>' +
+        '<ol>' +
+          '<li>在 GitHub 仓库开启 Discussions: 仓库 → Settings → Features → 勾选 <b>Discussions</b>(仓库需要是公开的)。</li>' +
+          '<li>安装 giscus 应用: <a href="https://github.com/apps/giscus" target="_blank" rel="noopener">github.com/apps/giscus</a> → Install → 授权给这个仓库。</li>' +
+          '<li>打开 <a href="https://giscus.app/zh-CN" target="_blank" rel="noopener">giscus.app</a>, 粘贴仓库名, 它会生成一段配置, 把其中的 <code>repo-id</code> 和 <code>category-id</code> 复制进本页的 <code>GISCUS_CFG</code>(搜 "giscus" 就能找到)。</li>' +
+        '</ol>' +
+        '<div class="gb-setup-hint">填好并部署后, 这里会自动变成真正的留言板——留言存在你 GitHub 仓库的 Discussions 里, 全世界都能看见。</div>' +
+      '</div>';
+  }
+}
+mountGiscus();
+
+/* ================= 窗口按钮 ================= */
+$('#tbClose').addEventListener('click', function(){ toast('点它也不会关掉的。我把它焊死了。'); });
+$('#tbMin').addEventListener('click', function(){ toast('想缩到任务栏? 这页没有任务栏。'); });
+$('#tbMax').addEventListener('click', function(){ toast('已经最大了。再大就出屏幕了。'); });
+
+/* ================= 提示框 ================= */
+var toastTimer = null;
+function toast(msg){
+  var t = $('#toast');
+  t.innerHTML = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3400);
+}
+
+/* ================= 小彩蛋们 ================= */
+
+/* 右下角的小船, 点它溅水花 */
+drawSprite($('#boatPet'), 'boat', 2);
+var boatBusy = false;
+$('#boatPet').addEventListener('click', function(){
+  if(boatBusy) return;
+  boatBusy = true;
+  var r = $('#boatPet').getBoundingClientRect();
+  for(var i = 0; i < 14; i++){
+    var d = document.createElement('div');
+    d.className = 'drop';
+    d.style.left = (r.left + r.width / 2 + rand(-16, 16)) + 'px';
+    d.style.top = (r.top + r.height / 2 + rand(-4, 6)) + 'px';
+    d.style.width = d.style.height = rand(3, 7) + 'px';
+    d.style.animationDuration = rand(.55, .9) + 's';
+    document.body.appendChild(d);
+    setTimeout(function(){ d.remove(); }, 950);
+  }
+  var pet = $('#boatPet');
+  pet.classList.remove('splash'); void pet.offsetWidth; pet.classList.add('splash');
+  toast('扑通!');
+  setTimeout(function(){ boatBusy = false; }, 600);
+});
+
+/* 单击站标, 船会晃两下; 双击才是彩带 */
+var logoClickT = null;
+$('#logo').addEventListener('click', function(){
+  if(logoClickT) return;
+  logoClickT = setTimeout(function(){
+    logoClickT = null;
+    var l = $('#logo');
+    l.classList.remove('rock'); void l.offsetWidth; l.classList.add('rock');
+  }, 260);
+});
+$('#logo').addEventListener('dblclick', function(){
+  clearTimeout(logoClickT); logoClickT = null;
+  confetti();
+  toast('彩带伺候! 节日快乐!');
+});
+
+/* 连按方向键 / WASD, 页面像船一样摇晃 */
+var keyStrokes = 0, lastKeyT = 0;
+var KEY_SET = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D'];
+document.addEventListener('keydown', function(e){
+  var tag = (e.target && e.target.tagName) || '';
+  if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+  if(KEY_SET.indexOf(e.key) < 0) return;
+  var now = Date.now();
+  if(now - lastKeyT > 1400) keyStrokes = 0;
+  lastKeyT = now;
+  keyStrokes++;
+  if(keyStrokes >= 5){
+    keyStrokes = 0;
+    var win = $('#top');
+    win.classList.remove('rocking'); void win.offsetWidth; win.classList.add('rocking');
+    toast('风浪有点大, 扶稳了。');
+  }
+});
+
+/* 页脚小互动 */
+$('#counterBox').addEventListener('click', function(){
+  var cb = $('#counterBox');
+  cb.classList.remove('bump'); void cb.offsetWidth; cb.classList.add('bump');
+  toast('数据来自 hits.sh, 点我也刷不了。');
+});
+$('#copyright').addEventListener('click', function(){
+  toast('这行字可以点, 没想到吧。');
+});
+
+/* 点时间, 看今日宜忌(编的) */
+$('#nowTime').addEventListener('click', function(){
+  var yi = pick(['宜: 摸鱼','宜: 写代码','宜: 睡觉','宜: 发呆','宜: 吃泡面','宜: 存档']);
+  var ji = pick(['忌: 加班','忌: 熬夜','忌: 改需求','忌: 删库','忌: 内卷','忌: 手滑']);
+  toast(yi + ' · ' + ji + ' (黄历由本站友情编造)');
+});
+
+function confetti(){
+  var colors = ['#e46b5a','#e8b34c','#6ba368','#5a8fd6','#b06bb5','#e08bb0'];
+  for(var i = 0; i < 70; i++){
+    var d = document.createElement('div');
+    d.className = 'confetti';
+    d.style.left = rand(0, 100) + 'vw';
+    d.style.background = pick(colors);
+    d.style.width = rand(6, 11) + 'px';
+    d.style.height = rand(10, 18) + 'px';
+    d.style.animationDuration = rand(1.8, 3.4) + 's';
+    d.style.animationDelay = rand(0, .6) + 's';
+    document.body.appendChild(d);
+    setTimeout(function(){ d.remove(); }, 4200);
+  }
+}
+</script>
+</body>
+</html>
