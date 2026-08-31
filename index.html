@@ -80,7 +80,14 @@
   .menu a:last-child{border-right:none}
   .menu a:hover{background:#2038a8; color:#fff}
 
-  main{padding:6px 28px 26px}
+  main{padding:6px 28px 26px; display:grid; grid-template-columns:minmax(0,1fr) 350px;
+    gap:26px; align-items:start}
+  .main-col{min-width:0}
+  .side-col{position:sticky; top:46px}
+  .side-col h2{margin:2px 0 10px; font-size:18px}
+  .side-col .section-note{font-size:12.5px; margin-bottom:10px}
+  .side-col .gb-setup{font-size:13px; padding:12px 14px}
+  .side-col .gb-setup ol{margin-left:18px}
   h2{margin:30px 0 12px; font-family:"SimHei","黑体",sans-serif; font-size:21px; color:#4a3f2c;
     border-left:7px solid #7c9c66; padding-left:10px; letter-spacing:2px}
 
@@ -171,7 +178,8 @@
     .site-name{font-size:32px; letter-spacing:3px}
     .menu{margin:0 16px}
     .menu a{font-size:13px}
-    main{padding:4px 16px 24px}
+    main{padding:4px 16px 24px; grid-template-columns:1fr; gap:18px}
+    .side-col{position:static}
     .about-grid{grid-template-columns:1fr}
     footer{padding:16px 16px 20px}
     .boot-title{font-size:28px; letter-spacing:3px}
@@ -225,6 +233,7 @@
     </nav>
 
     <main>
+      <div class="main-col">
       <!-- 想改成自己的信息, 主要就是这一块 -->
       <section id="about">
         <h2>关于我</h2>
@@ -259,12 +268,15 @@
         <h2>像素相册</h2>
         <div class="gallery" id="galleryGrid"></div>
       </section>
+      </div>
 
-      <section id="guestbook">
-        <h2>留言板</h2>
-        <p class="section-note">留言会通过 giscus 真实存到 GitHub 仓库的 Discussions 里, 全世界的访客都能看到、都能回复、都能点赞。</p>
-        <div id="giscusBox"></div>
-      </section>
+      <aside class="side-col">
+        <section id="guestbook">
+          <h2>留言板</h2>
+          <p class="section-note">用 GitHub 账号即可发言, 留言永久存在仓库 Discussions 里, 全世界可见。</p>
+          <div id="giscusBox"></div>
+        </section>
+      </aside>
     </main>
 
     <footer>
