@@ -126,7 +126,20 @@
   /* 留言板(giscus) */
   .gb-panel{background:#efe8d4; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     padding:10px 12px; box-shadow:3px 3px 0 rgba(43,38,28,.08)}
+  #giscusBox{max-height:430px; overflow-y:auto; overflow-x:hidden; padding-right:4px}
   #giscusBox iframe{width:100%; border:none; background:transparent}
+
+  /* 留言搜索 */
+  .gb-search{display:flex; gap:6px; margin:12px 0 2px}
+  .gb-search input{flex:1; min-width:0; font-family:inherit; font-size:13px; padding:5px 8px;
+    background:#fbf7ec; color:#2e2a22; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f}
+  .gb-search button{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    padding:4px 14px; font-family:"SimHei","黑体",sans-serif; font-size:13px; cursor:pointer; color:#222}
+  .gb-search button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .gb-searched{font-size:12.5px; color:#8a7d5f; margin:10px 0 6px}
+  .gb-item-more{margin:0 13px 10px; font-size:12.5px}
+  .gb-item-more a{color:#0033cc; text-decoration:underline}
+  .gb-item mark{background:#f2d97c; color:#4a3d1e; padding:0 1px}
 
   /* 便利贴 */
   .sticky-note{position:relative; margin:22px 6px 0; background:#f9e98f; padding:16px 16px 14px;
@@ -288,7 +301,14 @@
           <section id="guestbook">
             <h2>留言板</h2>
             <p class="section-note">用 GitHub 账号即可发言, 留言永久存在仓库 Discussions 里, 全世界可见。</p>
-            <div class="gb-panel"><div id="giscusBox"></div></div>
+            <div class="gb-panel">
+              <div id="giscusBox"></div>
+              <div class="gb-search">
+                <input id="gbSearchInput" maxlength="50" placeholder="搜留言(作者/内容)…">
+                <button id="gbSearchBtn" type="button">搜</button>
+              </div>
+              <div id="gbSearchResult"></div>
+            </div>
           </section>
           <div class="sticky-note hand">
             来都来了,<br>说两句再走。
@@ -714,6 +734,77 @@ function mountGiscus(){
   }
 }
 mountGiscus();
+
+/* ================= 留言板: 搜索(GitHub 公开 REST 接口, 无需密钥) ================= */
+var GB_API = 'https://api.github.com/repos/WEZHCE/The-small-station-of-drifting-boats/discussions?per_page=30';
+var gbCache = [];
+function escHtml(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function escRe(s){
+  return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+function gbFetchAll(){
+  return fetch(GB_API).then(function(r){ return r.json(); }).then(function(ds){
+    if(!Array.isArray(ds)) throw new Error('bad api');
+    return Promise.all(ds.map(function(d){
+      return fetch(d.repository_url + '/discussions/' + d.number + '/comments?per_page=100')
+        .then(function(r){ return r.json(); }).then(function(cs){
+        return (Array.isArray(cs) ? cs : []).map(function(c){
+          return {author: c.user.login, date: (c.created_at || '').slice(0, 10), body: c.body || '', url: c.html_url};
+        });
+      });
+    }));
+  }).then(function(arr){
+    return [].concat.apply([], arr);
+  });
+}
+function gbSearch(){
+  var q = $('#gbSearchInput').value.trim();
+  var out = $('#gbSearchResult');
+  if(!q){ out.innerHTML = ''; return; }
+  out.innerHTML = '<div class="gb-empty">搜索中……</div>';
+  var req = gbCache.length ? Promise.resolve(gbCache) : gbFetchAll();
+  req.then(function(all){
+    gbCache = all;
+    if(!all.length){
+      out.innerHTML = '<div class="gb-empty">还没有留言, 搜索暂时没有东西。';
+      return;
+    }
+    var ql = q.toLowerCase();
+    var hits = all.filter(function(c){
+      return (c.author + ' ' + c.body).toLowerCase().indexOf(ql) >= 0;
+    });
+    if(!hits.length){
+      out.innerHTML = '<div class="gb-empty">没搜到"' + escHtml(q) + '", 换个词试试。</div>';
+      return;
+    }
+    out.innerHTML = '<div class="gb-searched">搜到 ' + hits.length + ' 条:</div>';
+    hits.forEach(function(c){
+      var idx = c.body.toLowerCase().indexOf(ql);
+      var snippet = idx >= 0 ? c.body.slice(Math.max(0, idx - 12), idx + q.length + 16) : c.body.slice(0, 36);
+      snippet = escHtml(snippet).replace(new RegExp(escRe(escHtml(q)), 'gi'), function(m){
+        return '<mark>' + m + '</mark>';
+      });
+      var el = document.createElement('div');
+      el.className = 'gb-item';
+      el.innerHTML =
+        '<div class="gb-head"><span>' + escHtml(c.author) + '</span>' +
+        '<span class="gb-time">' + escHtml(c.date) + '</span></div>' +
+        '<div class="gb-body">…' + snippet + '…</div>' +
+        '<div class="gb-item-more"><a href="' + c.url + '" target="_blank" rel="noopener">查看原评论</a></div>';
+      out.appendChild(el);
+    });
+  }).catch(function(){
+    out.innerHTML = '<div class="gb-empty">搜索失败, 接口暂时不可用, 稍后再试。</div>';
+  });
+}
+$('#gbSearchBtn').addEventListener('click', gbSearch);
+$('#gbSearchInput').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') gbSearch();
+});
 
 /* ================= 窗口按钮 ================= */
 $('#tbClose').addEventListener('click', function(){ toast('点它也不会关掉的。我把它焊死了。'); });
