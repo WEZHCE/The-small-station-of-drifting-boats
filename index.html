@@ -128,9 +128,9 @@
   /* 留言板(giscus) */
   .gb-panel{background:#efe8d4; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     padding:10px 12px; box-shadow:3px 3px 0 rgba(43,38,28,.08)}
-  /* 高度按"粘顶时整条侧栏刚好塞进视口"校准(侧栏其余部分约340px+菜单46px):
-     悬浮时搜索框和便利贴都在屏内; giscus 会自动回报内容高度 */
-  #giscusBox{height:calc(100vh - 390px); min-height:300px; overflow-y:auto; overflow-x:hidden; padding-right:4px}
+  /* 留言板尽量加高, 方便浏览评论(侧栏底部的搜索/便利贴在页面滚到底时依然可见);
+     giscus 会自动回报内容高度 */
+  #giscusBox{height:calc(100vh - 260px); min-height:480px; overflow-y:auto; overflow-x:hidden; padding-right:4px}
   #giscusBox iframe{width:100%; border:none; background:transparent}
 
   /* 留言搜索 */
