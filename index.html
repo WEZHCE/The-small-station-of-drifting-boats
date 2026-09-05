@@ -195,6 +195,13 @@
   .counter-box.bump{animation:bump .4s ease}
   @keyframes bump{30%{transform:scale(1.12)}}
 
+  /* ---------- 可点的文字们 ---------- */
+  .site-name, #siteSub, .window h2, #runDays, .sticky-note{cursor:pointer; user-select:none}
+  #runDays{display:inline-block}
+  #runDays.bump, .window h2.bump{animation:bump .4s ease}
+  .sticky-note.wiggle{animation:wiggle .5s ease}
+  @keyframes wiggle{0%,100%{transform:rotate(-2deg)}30%{transform:rotate(-5.5deg) scale(1.02)}65%{transform:rotate(.5deg) scale(1.01)}}
+
   .confetti{position:fixed; top:-26px; z-index:9998; pointer-events:none; animation:confFall linear forwards}
   @keyframes confFall{to{transform:translateY(108vh) rotate(740deg)}}
 
@@ -248,7 +255,7 @@
       <canvas id="logo" title="单击会晃, 双击有惊喜"></canvas>
       <div>
         <h1 class="site-name">船只悠悠的小站</h1>
-        <div class="site-sub hand" id="siteSub">一条慢悠悠的船, 泊在互联网边上。</div>
+        <div class="site-sub hand" id="siteSub" title="点一下换一句">一条慢悠悠的船, 泊在互联网边上。</div>
       </div>
     </header>
 
@@ -979,6 +986,51 @@ $('#nowTime').addEventListener('click', function(){
   var yi = pick(['宜: 摸鱼','宜: 写代码','宜: 睡觉','宜: 发呆','宜: 吃泡面','宜: 存档']);
   var ji = pick(['忌: 加班','忌: 熬夜','忌: 改需求','忌: 删库','忌: 内卷','忌: 手滑']);
   toast(yi + ' · ' + ji + ' (黄历由本站友情编造)');
+});
+
+/* 点站名: 招牌被你点歪了, 整个窗口跟着晃 */
+var NAME_LINES = ['招牌都被你点歪了。', '就叫这个名, 改不了了。', '四个字, 一笔都没少。'];
+$('.site-name').addEventListener('click', function(){
+  var win = $('#top');
+  win.classList.remove('rocking'); void win.offsetWidth; win.classList.add('rocking');
+  toast(pick(NAME_LINES));
+});
+
+/* 点副标题: 手动换一句, 不用等明天 */
+$('#siteSub').addEventListener('click', function(){
+  var cur = $('#siteSub').textContent, next = cur, guard = 0;
+  while(next === cur && guard++ < 10) next = pick(SUBS);
+  $('#siteSub').textContent = next;
+});
+
+/* 点运行天数: 报个数 */
+$('#runDays').addEventListener('click', function(){
+  var d = $('#runDays');
+  d.classList.remove('bump'); void d.offsetWidth; d.classList.add('bump');
+  toast('开船第 ' + d.textContent + ' 天, 还没翻。');
+});
+
+/* 点板块标题: 每个板块一句吐槽 */
+var H2_LINES = {
+  about: '家底全在这了, 没藏着。',
+  now: '更没更新, 一目了然。',
+  gallery: '一格一格画出来的, 别嫌少。',
+  guestbook: '来都来了, 说两句?'
+};
+$$('.window h2').forEach(function(h){
+  var line = H2_LINES[h.parentNode.id];
+  if(!line) return;
+  h.addEventListener('click', function(){
+    h.classList.remove('bump'); void h.offsetWidth; h.classList.add('bump');
+    toast(line);
+  });
+});
+
+/* 点便利贴: 晃两下, 重掷一次宜忌 */
+$('.sticky-note').addEventListener('click', function(){
+  var n = $('.sticky-note');
+  n.classList.remove('wiggle'); void n.offsetWidth; n.classList.add('wiggle');
+  $('#snYiJi').textContent = '宜: ' + pick(YI) + ' · 忌: ' + pick(JI) + ' (黄历友情编造)';
 });
 
 function confetti(){
