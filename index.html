@@ -26,6 +26,8 @@
   ::selection{background:#9db98a; color:#fff}
   ::-webkit-scrollbar{width:14px; background:#d8d0bc}
   ::-webkit-scrollbar-thumb{background:#a89d84; border:3px solid #d8d0bc}
+  /* 标准属性兜底: 新版 Chrome/Edge 的"流畅滚动条"会忽略 webkit 写法, Firefox 也只认这个 */
+  html{scrollbar-color:#a89d84 #d8d0bc}
   .hand{font-family:"KaiTi","楷体","STKaiti",serif}
   img,canvas{display:block}
 
@@ -272,6 +274,7 @@
   body.night ::-webkit-scrollbar{background:#1a2136}
   body.night ::-webkit-scrollbar-thumb{background:#33405f; border-color:#1a2136}
   body.night{scrollbar-color:#33405f #1a2136}
+  :root:has(body.night){scrollbar-color:#33405f #1a2136}
   body.night .window{background:#161e30; border-color:#3a4763; box-shadow:8px 8px 0 rgba(0,0,0,.4)}
   body.night .menu{background:#1c2740; border-color:#2c3854}
   body.night .menu a{color:#8fb4e8; border-color:#2c3854}
