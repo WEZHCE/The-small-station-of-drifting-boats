@@ -352,6 +352,54 @@
   body.night .help-body b{color:#7fb0f0}
   body.night .help-foot{color:#7d8cab; border-color:#2c3854}
 
+  /* ---------- 计算器 ---------- */
+  #calcWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(240px,86vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #calcWin.open{display:block}
+  #calcWin .titlebar{cursor:move}
+  .calc-body{padding:8px}
+  .calc-display{background:#fbf7ec; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; padding:5px 10px;
+    text-align:right; font-family:Consolas,monospace; font-size:20px; margin-bottom:8px; min-height:28px;
+    color:#2e2a22; overflow:hidden; white-space:nowrap}
+  .calc-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:5px}
+  .calc-grid button{height:34px; font-family:"SimHei","黑体",sans-serif; font-size:14px; color:#222;
+    background:#d9d9d9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer}
+  .calc-grid button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .calc-grid button.op{background:#ece2c8}
+  .calc-grid button.eq{background:#3d6fd0; color:#fff}
+  .calc-grid button.eq:active{background:#355fa8}
+
+  /* ---------- 扫雷 ---------- */
+  #mineWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(340px,92vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #mineWin.open{display:block}
+  #mineWin .titlebar{cursor:move}
+  .mine-body{padding:8px}
+  .mine-top{display:flex; align-items:center; justify-content:space-between; border:2px solid;
+    border-color:#6f6f6f #fff #fff #6f6f6f; padding:4px 8px; margin-bottom:8px}
+  .led{background:#111; color:#ff3b30; font-family:Consolas,monospace; font-size:16px; padding:1px 5px; letter-spacing:2px}
+  .mine-face{width:34px; height:34px; font-family:Consolas,monospace; font-size:15px; font-weight:bold; color:#222;
+    background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0}
+  .mine-face:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .mine-grid{display:grid; grid-template-columns:repeat(9,1fr); gap:2px; background:#9a9a9a;
+    border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; padding:3px; touch-action:manipulation; user-select:none}
+  .cell{aspect-ratio:1; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; background:#c9c9c9;
+    font-family:Consolas,monospace; font-weight:bold; font-size:14px; display:flex; align-items:center;
+    justify-content:center; padding:0; cursor:pointer}
+  .cell.open{border:1px solid #9a9a9a; background:#bdbdbd; cursor:default}
+  .cell.boom{background:#e46b5a}
+  .cell .flag{color:#c0392b}
+  .n1{color:#2038a8}.n2{color:#2e7d32}.n3{color:#d33}.n4{color:#1a237e}.n5{color:#8b4513}
+  .n6{color:#00838f}.n7{color:#222}.n8{color:#777}
+  .mine-foot{display:flex; align-items:center; justify-content:space-between; margin-top:8px}
+  #mineFlagMode{font-family:inherit; font-size:12px; background:#c9c9c9; border:2px solid;
+    border-color:#fff #6f6f6f #6f6f6f #fff; padding:3px 8px; cursor:pointer; color:#222}
+  #mineFlagMode.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
+  .mine-best{font-size:11.5px; color:#555}
+  #tbCalc .calc-ico{width:16px; height:16px; background:#fff; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f;
+    color:#2038a8; font:bold 11px Consolas,monospace; display:flex; align-items:center; justify-content:center}
+  #tbMine canvas{display:block}
+
   /* ---------- 屏保 ---------- */
   #saver{position:fixed; inset:0; z-index:400; background:#050505; display:none}
   #saver.show{display:block}
@@ -629,6 +677,8 @@
   <button id="startBtn" type="button">⛵ 开始</button>
   <button id="tbCmd" type="button" title="cmd.exe — 命令提示符 (按 ~ 也行)"><span class="cmd-ico">C:\_</span></button>
   <button id="tbHelp" type="button" title="帮助.chm — 全站彩蛋使用手册"><span class="help-ico">?</span></button>
+  <button id="tbCalc" type="button" title="计算器"><span class="calc-ico">=</span></button>
+  <button id="tbMine" type="button" title="扫雷.EXE — 复古扫雷"><canvas id="tbMineCv"></canvas></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
@@ -672,7 +722,7 @@
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
       <li>相册图片可点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
       <li>右下角小船: 点一下 +1 海里 (10 红帆 · 30 海鸥 · 60 金帆 · 100 夜灯)</li>
-      <li>任务栏的 C:\ 和 ? 就是终端和本手册的入口</li>
+      <li>任务栏: <b>C:\</b> 终端 · <b>?</b> 本手册 · <b>=</b> 计算器 · <b>地雷图标</b> 扫雷.EXE</li>
     </ul>
     <div class="help-sec">🌙 这台电脑也会累</div>
     <ul>
@@ -681,6 +731,57 @@
       <li>开始菜单 → 关机: CRT 坍缩收场, 电源键重新开机, 还带 BIOS 自检</li>
     </ul>
     <div class="help-foot">— 本手册由船长手写, 错别字概不负责 —</div>
+  </div>
+</div>
+
+<!-- ================= 计算器 ================= -->
+<div id="calcWin">
+  <div class="titlebar"><span class="tb-title">计算器</span>
+    <button class="tb-btn" id="calcClose" title="关闭">✕</button>
+  </div>
+  <div class="calc-body">
+    <div class="calc-display" id="calcDisplay">0</div>
+    <div class="calc-grid">
+      <button data-k="C" type="button">C</button>
+      <button data-k="back" type="button">⌫</button>
+      <button data-k="%" type="button" class="op">%</button>
+      <button data-k="/" type="button" class="op">÷</button>
+      <button data-k="7" type="button">7</button>
+      <button data-k="8" type="button">8</button>
+      <button data-k="9" type="button">9</button>
+      <button data-k="*" type="button" class="op">×</button>
+      <button data-k="4" type="button">4</button>
+      <button data-k="5" type="button">5</button>
+      <button data-k="6" type="button">6</button>
+      <button data-k="-" type="button" class="op">−</button>
+      <button data-k="1" type="button">1</button>
+      <button data-k="2" type="button">2</button>
+      <button data-k="3" type="button">3</button>
+      <button data-k="+" type="button" class="op">+</button>
+      <button data-k="neg" type="button">±</button>
+      <button data-k="0" type="button">0</button>
+      <button data-k="." type="button">.</button>
+      <button data-k="=" type="button" class="eq">=</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 扫雷 ================= -->
+<div id="mineWin">
+  <div class="titlebar"><span class="tb-title">扫雷.EXE</span>
+    <button class="tb-btn" id="mineClose" title="关闭">✕</button>
+  </div>
+  <div class="mine-body">
+    <div class="mine-top">
+      <span class="led" id="mineCount">010</span>
+      <button class="mine-face" id="mineFace" type="button" title="再来一局">:)</button>
+      <span class="led" id="mineTime">000</span>
+    </div>
+    <div class="mine-grid" id="mineGrid"></div>
+    <div class="mine-foot">
+      <button id="mineFlagMode" type="button">⚑ 插旗: 关</button>
+      <span class="mine-best" id="mineBest"></span>
+    </div>
   </div>
 </div>
 
@@ -856,6 +957,21 @@ var SPRITES = {
       'OHFFFFFFFFFFFFDO',
       'ODDDDDDDDDDDDDDO',
       'OOOOOOOOOOOOOOOO'
+    ]
+  },
+  /* 扫雷的小地雷: 任务栏图标用 (8×7, scale 2) */
+  mine: {
+    out: null,
+    shadow: null,
+    pal: { X:'#141414', W:'#f5f5f5' },
+    rows: [
+      '...X....',
+      '..X.X...',
+      '.XXXXX..',
+      'XXWXXXX.',
+      '.XXXXX..',
+      '..X.X...',
+      '...X....'
     ]
   }
 };
@@ -1798,6 +1914,221 @@ function helpToggle(open){
 $('#tbCmd').addEventListener('click', function(){ termToggle(true); });
 $('#tbHelp').addEventListener('click', function(){ helpToggle(true); });
 $('#helpClose').addEventListener('click', function(){ helpToggle(false); });
+
+/* ---------- 计算器 ---------- */
+function calcToggle(open){
+  var w = $('#calcWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will) frontWindow(w);
+}
+$('#tbCalc').addEventListener('click', function(){ calcToggle(true); });
+$('#calcClose').addEventListener('click', function(){ calcToggle(false); });
+var calcState = { cur:'0', prev:null, op:null, fresh:true };
+function calcShow(){ $('#calcDisplay').textContent = calcState.cur; }
+function calcEval(a, op, b){
+  a = parseFloat(a); b = parseFloat(b);
+  var r = op === '+' ? a + b : op === '-' ? a - b : op === '*' ? a * b : (b === 0 ? NaN : a / b);
+  if(!isFinite(r)) return '不能除零';
+  r = Math.round(r * 1e10) / 1e10;
+  return String(r);
+}
+function calcInput(k){
+  if(k >= '0' && k <= '9'){
+    calcState.cur = (calcState.fresh || calcState.cur === '0') ? k : (calcState.cur + k).slice(0, 14);
+    calcState.fresh = false;
+  } else if(k === '.'){
+    if(calcState.fresh){ calcState.cur = '0.'; calcState.fresh = false; }
+    else if(calcState.cur.indexOf('.') < 0) calcState.cur += '.';
+  } else if(k === 'C'){
+    calcState = { cur:'0', prev:null, op:null, fresh:true };
+  } else if(k === 'back'){
+    if(!calcState.fresh) calcState.cur = calcState.cur.length > 1 ? calcState.cur.slice(0, -1) : '0';
+  } else if(k === 'neg'){
+    if(calcState.cur !== '0' && calcState.cur !== '不能除零')
+      calcState.cur = calcState.cur[0] === '-' ? calcState.cur.slice(1) : '-' + calcState.cur;
+  } else if(k === '%'){
+    calcState.cur = String(parseFloat(calcState.cur) / 100);
+  } else if(k === '='){
+    if(calcState.op && calcState.prev !== null){
+      calcState.cur = calcEval(calcState.prev, calcState.op, calcState.cur);
+      calcState.prev = null; calcState.op = null; calcState.fresh = true;
+    }
+  } else {  /* + - * / */
+    if(calcState.op && !calcState.fresh && calcState.prev !== null)
+      calcState.cur = calcEval(calcState.prev, calcState.op, calcState.cur);
+    calcState.prev = calcState.cur; calcState.op = k; calcState.fresh = true;
+  }
+  calcShow();
+}
+$$('#calcWin .calc-grid button').forEach(function(b){
+  b.addEventListener('click', function(){ calcInput(b.dataset.k); });
+});
+/* 打开计算器时, 键盘也能按 */
+document.addEventListener('keydown', function(e){
+  if(!$('#calcWin').classList.contains('open')) return;
+  var tag = (e.target && e.target.tagName) || '';
+  if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+  if(e.key >= '0' && e.key <= '9'){ calcInput(e.key); e.preventDefault(); return; }
+  var map = { 'Enter':'=', '=':'=', 'Backspace':'back', '+':'+', '-':'-', '*':'*', '/':'/', '.':'.', '%':'%' };
+  if(e.key === 'Escape'){ calcToggle(false); e.preventDefault(); return; }
+  if(map[e.key]){ calcInput(map[e.key]); e.preventDefault(); }
+});
+
+/* ---------- 扫雷 ---------- */
+function mineToggle(open){
+  var w = $('#mineWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will) frontWindow(w);
+}
+$('#tbMine').addEventListener('click', function(){ mineToggle(true); });
+$('#mineClose').addEventListener('click', function(){ mineToggle(false); });
+var M_SIZE = 9, M_MINES = 10;
+var mCells = [], mState = 'idle', mFlags = 0, mSec = 0, mTimer = null, mFirst = true, mFlagMode = false;
+var mLedTimer = null, mOpenCount = 0;
+function minePad3(n){ return n < 0 ? '-' + String(Math.min(99, -n)).padStart(2, '0') : String(Math.min(999, n)).padStart(3, '0'); }
+function mineBestShow(){
+  var b = null;
+  try{ b = parseInt(localStorage.getItem('mineBest'), 10) || null; }catch(e){}
+  $('#mineBest').textContent = b ? '★ 最佳 ' + b + ' 秒' : '';
+}
+function mineReset(){
+  clearInterval(mTimer); mTimer = null;
+  mCells = []; mState = 'idle'; mFlags = 0; mSec = 0; mFirst = true; mOpenCount = 0;
+  var grid = $('#mineGrid');
+  grid.innerHTML = '';
+  for(var i = 0; i < M_SIZE * M_SIZE; i++){
+    mCells.push({ mine:false, adj:0, open:false, flag:false, boom:false });
+    var c = document.createElement('button');
+    c.className = 'cell'; c.type = 'button'; c.dataset.i = i;
+    grid.appendChild(c);
+  }
+  $('#mineCount').textContent = minePad3(M_MINES);
+  $('#mineTime').textContent = '000';
+  $('#mineFace').textContent = ':)';
+  $('#mineFlagMode').textContent = '⚑ 插旗: 关';
+  $('#mineFlagMode').classList.remove('on');
+  mFlagMode = false;
+  mineBestShow();
+}
+function mineNeighbors(i){
+  var x = i % M_SIZE, y = Math.floor(i / M_SIZE), out = [];
+  for(var dy = -1; dy <= 1; dy++) for(var dx = -1; dx <= 1; dx++){
+    if(!dx && !dy) continue;
+    var nx = x + dx, ny = y + dy;
+    if(nx >= 0 && nx < M_SIZE && ny >= 0 && ny < M_SIZE) out.push(ny * M_SIZE + nx);
+  }
+  return out;
+}
+function minePlace(safe){
+  var banned = {}; banned[safe] = 1;
+  mineNeighbors(safe).forEach(function(n){ banned[n] = 1; });
+  var placed = 0;
+  while(placed < M_MINES){
+    var i = Math.floor(Math.random() * mCells.length);
+    if(mCells[i].mine || banned[i]) continue;
+    mCells[i].mine = true; placed++;
+  }
+  mCells.forEach(function(c, i){
+    c.adj = mineNeighbors(i).filter(function(n){ return mCells[n].mine; }).length;
+  });
+}
+function mineCellEl(i){ return $('#mineGrid').children[i]; }
+function minePaint(i){
+  var c = mCells[i], el = mineCellEl(i);
+  el.className = 'cell' + (c.open ? ' open' : '') + (c.boom ? ' boom' : '');
+  if(c.open && c.mine){ el.textContent = '●'; }
+  else if(c.open && c.adj > 0){ el.textContent = c.adj; el.classList.add('n' + c.adj); }
+  else if(c.open){ el.textContent = ''; }
+  else if(c.flag){ el.innerHTML = '<span class="flag">⚑</span>'; }
+  else { el.textContent = ''; }
+}
+function mineCountShow(){ $('#mineCount').textContent = minePad3(M_MINES - mFlags); }
+function mineStartTimer(){
+  mTimer = setInterval(function(){
+    mSec = Math.min(999, mSec + 1);
+    $('#mineTime').textContent = minePad3(mSec);
+  }, 1000);
+}
+function mineToggleFlag(i){
+  if(mState === 'win' || mState === 'lose') return;
+  var c = mCells[i];
+  if(c.open) return;
+  c.flag = !c.flag;
+  mFlags += c.flag ? 1 : -1;
+  mineCountShow(); minePaint(i);
+}
+function mineFlood(i){
+  var stack = [i];
+  while(stack.length){
+    var n = stack.pop(), c = mCells[n];
+    if(c.open || c.flag || c.mine) continue;
+    c.open = true; mOpenCount++; minePaint(n);
+    if(c.adj === 0) mineNeighbors(n).forEach(function(nb){ if(!mCells[nb].open) stack.push(nb); });
+  }
+}
+function mineReveal(i){
+  if(mState === 'win' || mState === 'lose') return;
+  var c = mCells[i];
+  if(c.flag || c.open) return;
+  if(mFirst){ minePlace(i); mFirst = false; mState = 'play'; mineStartTimer(); }
+  if(c.mine){
+    c.boom = true; c.open = true; mState = 'lose';
+    clearInterval(mTimer);
+    mCells.forEach(function(cc, n){ if(cc.mine){ cc.open = true; cc.flag = false; minePaint(n); } });
+    minePaint(i);
+    $('#mineFace').textContent = 'x(';
+    toast('轰! 踩到了, 点笑脸再来一局。');
+    return;
+  }
+  mineFlood(i);
+  if(mOpenCount >= M_SIZE * M_SIZE - M_MINES){
+    mState = 'win';
+    clearInterval(mTimer);
+    mCells.forEach(function(cc, n){ if(cc.mine && !cc.flag){ cc.flag = true; mFlags++; minePaint(n); } });
+    mineCountShow();
+    $('#mineFace').textContent = '8)';
+    confetti();
+    var best = null;
+    try{ best = parseInt(localStorage.getItem('mineBest'), 10) || null; }catch(e){}
+    if(!best || mSec < best){
+      try{ localStorage.setItem('mineBest', String(mSec)); }catch(e){}
+      toast('扫雷大捷! ' + mSec + ' 秒, 新纪录!');
+    } else toast('扫雷大捷! ' + mSec + ' 秒。');
+    mineBestShow();
+  }
+}
+$('#mineGrid').addEventListener('click', function(e){
+  var c = e.target.closest('.cell');
+  if(!c) return;
+  var i = +c.dataset.i;
+  if(mLpDone){ mLpDone = false; return; }
+  if(mFlagMode) mineToggleFlag(i);
+  else mineReveal(i);
+});
+$('#mineGrid').addEventListener('contextmenu', function(e){
+  e.preventDefault();
+  var c = e.target.closest('.cell');
+  if(c) mineToggleFlag(+c.dataset.i);
+});
+var mLpTimer = null, mLpDone = false;
+$('#mineGrid').addEventListener('pointerdown', function(e){
+  var c = e.target.closest('.cell');
+  if(!c) return;
+  mLpDone = false;
+  mLpTimer = setTimeout(function(){ mLpDone = true; mineToggleFlag(+c.dataset.i); }, 450);
+});
+['pointerup', 'pointercancel', 'pointerleave'].forEach(function(ev){
+  $('#mineGrid').addEventListener(ev, function(){ clearTimeout(mLpTimer); });
+});
+$('#mineFace').addEventListener('click', mineReset);
+$('#mineFlagMode').addEventListener('click', function(){
+  mFlagMode = !mFlagMode;
+  this.textContent = '⚑ 插旗: ' + (mFlagMode ? '开' : '关');
+  this.classList.toggle('on', mFlagMode);
+});
+mineReset();
 
 /* ================= Konami 彩蛋: ↑↑↓↓←→←→BA ================= */
 var KONAMI = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'];
