@@ -1459,7 +1459,10 @@ $('#startBottle').addEventListener('click', function(){
   $('#startMenu').classList.remove('open');
   $('#startBtn').classList.remove('on');
   /* 桌面端侧栏粘顶, 直接锚到留言板时下方的瓶子按钮可能在屏幕外; 滚到页底让整条侧栏露出来 */
-  document.documentElement.scrollTop = document.documentElement.scrollHeight;
+  var de = document.documentElement;
+  de.style.scrollBehavior = 'auto';   /* 跳过平滑滚动, 一次到位 */
+  de.scrollTop = de.scrollHeight;
+  de.style.scrollBehavior = '';
   setTimeout(function(){ lootBottle(); }, 450);
 });
 $('#startShutdown').addEventListener('click', function(){
