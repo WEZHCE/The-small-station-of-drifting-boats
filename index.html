@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="description" content="船只悠悠的小站 —— 一条慢悠悠的船, 泊在互联网边上。">
 <title>船只悠悠的小站 · 欢迎光临</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛵</text></svg>">
@@ -132,7 +132,7 @@
     padding:10px 12px; box-shadow:3px 3px 0 rgba(43,38,28,.08)}
   /* 留言板尽量加高, 方便浏览评论(侧栏底部的搜索/便利贴在页面滚到底时依然可见);
      giscus 会自动回报内容高度 */
-  #giscusBox{height:calc(100vh - 260px); min-height:480px; overflow-y:auto; overflow-x:hidden; padding-right:4px}
+  #giscusBox{height:calc(100vh - 260px); height:calc(100dvh - 260px); min-height:480px; overflow-y:auto; overflow-x:hidden; padding-right:4px}
   #giscusBox iframe{width:100%; border:none; background:transparent}
 
   /* 留言搜索 */
@@ -181,7 +181,7 @@
     box-shadow:inset 0 0 10px #000}
   .hits-badge{display:inline-block; vertical-align:middle; margin:0 3px}
 
-  #toast{position:fixed; left:50%; bottom:30px; z-index:200; max-width:78vw;
+  #toast{position:fixed; left:50%; bottom:calc(46px + env(safe-area-inset-bottom)); z-index:200; max-width:78vw;
     transform:translateX(-50%) translateY(24px); opacity:0; pointer-events:none;
     background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     box-shadow:5px 5px 0 rgba(0,0,0,.18); padding:13px 20px; font-size:14.5px;
@@ -235,15 +235,17 @@
   .lb-close{top:16px; right:18px}
 
   /* ---------- 任务栏 ---------- */
-  body.on{padding-bottom:44px}
-  #taskbar{position:fixed; left:0; right:0; bottom:0; z-index:90; height:36px;
+  /* 底部安全区: 全面屏手机不被手势条压住 */
+  body.on{padding-bottom:calc(44px + env(safe-area-inset-bottom))}
+  #taskbar{position:fixed; left:0; right:0; bottom:0; z-index:90;
+    height:calc(36px + env(safe-area-inset-bottom));
     background:#c9c9c9; border-top:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
-    display:flex; align-items:center; gap:6px; padding:0 6px;
+    display:flex; align-items:center; gap:6px; padding:0 6px env(safe-area-inset-bottom);
     font-family:"SimHei","黑体",sans-serif; font-size:13px}
   #startBtn{height:26px; padding:0 12px; display:flex; align-items:center; gap:6px; font-weight:bold;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222; font-family:inherit; font-size:13px}
   #startBtn.on, #startBtn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  #startMenu{position:fixed; left:4px; bottom:40px; z-index:95; min-width:190px; display:none;
+  #startMenu{position:fixed; left:4px; bottom:calc(40px + env(safe-area-inset-bottom)); z-index:95; min-width:190px; display:none;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     box-shadow:4px 4px 0 rgba(0,0,0,.25); padding:4px}
   #startMenu.open{display:block}
@@ -462,6 +464,10 @@
     .side-sticky{position:static}
     .about-grid{grid-template-columns:1fr}
     .gallery{grid-template-columns:repeat(auto-fill, minmax(150px,1fr))}
+    /* 手机上弹窗靠上放, 给输入法键盘留地方; 里程牌缩小 */
+    #term, #helpWin{top:6vh; transform:translate(-50%,0)}
+    .help-body{max-height:56vh}
+    #boatOdo{font-size:10.5px}
     footer{padding:16px 16px 20px}
     .boot-title{font-size:28px; letter-spacing:3px}
   }
