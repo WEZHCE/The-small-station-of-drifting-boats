@@ -257,13 +257,16 @@
     background:#c9c9c9; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; color:#222}
   #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
   #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
-  /* 快捷启动区: 统一银色凸起底, 徽标在按钮内部表达 */
-  #tbCmd, #tbHelp{width:36px; height:26px; display:flex; align-items:center; justify-content:center;
-    background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0}
-  #tbCmd:active, #tbHelp:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  #tbCmd .cmd-ico{font-family:Consolas,monospace; font-size:9px; line-height:1; background:#111;
-    color:#39d353; padding:3px 2px; border:1px solid #444}
-  #tbHelp .help-ico{color:#1a3a8a; font-weight:bold; font-size:15px; font-family:Georgia,serif; line-height:1}
+  /* 快捷启动区: 统一银色凸起底 + 统一"黑屏小徽标"(同尺寸/同字体, 仅字色区分应用) */
+  #tbCmd, #tbHelp, #tbCalc, #tbMine{height:26px; display:flex; align-items:center; justify-content:center;
+    background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0 4px}
+  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .tb-badge{min-width:22px; height:16px; padding:0 3px; background:#111; border:1px solid #3a3f3a;
+    font:bold 10px/14px Consolas,monospace; display:flex; align-items:center; justify-content:center}
+  .b-green{color:#39d353}
+  .b-blue{color:#7fb0f0}
+  .b-amber{color:#ffd166}
+  #tbMine .tb-badge{padding:0 2px}
 
   /* ---------- 夜航模式 ---------- */
   body.night{background-color:#0d1322;
@@ -319,6 +322,31 @@
   body.night #boatOdo{background:#161e30; border-color:#2c3854; color:#8b97b0}
   body.night #boatPet{filter:drop-shadow(0 0 5px rgba(255,202,102,.45))}
   body.night #boatPet.boatLit{filter:drop-shadow(0 0 10px rgba(255,202,102,.9))}
+
+  /* 计算器 / 扫雷的夜航配色 */
+  body.night #calcWin, body.night #mineWin{background:#1a2338; border-color:#3a4763}
+  body.night .calc-display{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828; color:#ffd166}
+  body.night .calc-grid button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .calc-grid button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .calc-grid button.op{background:#2c3a5c}
+  body.night .mine-top{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .mine-face{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .mine-face:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .mine-grid{background:#141b2c; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .cell{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763}
+  body.night .cell.open{background:#101828; border:1px solid #243050}
+  body.night .cell .flag{color:#ff6b5a}
+  body.night .n1{color:#7fb0f0}
+  body.night .n2{color:#6fbf73}
+  body.night .n3{color:#ff6b5a}
+  body.night .n4{color:#9fa8ff}
+  body.night .n5{color:#d2a26a}
+  body.night .n6{color:#4dc3c9}
+  body.night .n7{color:#e8e8e8}
+  body.night .n8{color:#9aa3b5}
+  body.night .mine-foot #mineFlagMode{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .mine-foot #mineFlagMode.on{background:#3d4f7d}
+  body.night .mine-best{color:#8b97b0}
 
   /* ---------- 终端 ---------- */
   #term{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:250; width:min(760px,94vw);
@@ -396,9 +424,7 @@
     border-color:#fff #6f6f6f #6f6f6f #fff; padding:3px 8px; cursor:pointer; color:#222}
   #mineFlagMode.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
   .mine-best{font-size:11.5px; color:#555}
-  #tbCalc .calc-ico{width:16px; height:16px; background:#fff; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f;
-    color:#2038a8; font:bold 11px Consolas,monospace; display:flex; align-items:center; justify-content:center}
-  #tbMine canvas{display:block}
+  #tbMine .tb-badge canvas{display:block; image-rendering:pixelated}
 
   /* ---------- 屏保 ---------- */
   #saver{position:fixed; inset:0; z-index:400; background:#050505; display:none}
@@ -433,12 +459,12 @@
   .sd-z:nth-of-type(3){font-size:11px; animation-delay:1.6s}
   @keyframes zUp{0%{opacity:0; transform:translate(0,0)}30%{opacity:.9}100%{opacity:0; transform:translate(16px,-28px)}}
   .sd-text{color:#e8a33d; font-family:Consolas,"Courier New",monospace; font-size:16px; line-height:2; text-align:center}
-  /* 电源键: 像素画键帽(16×16 字符画, scale 4), 呼吸光晕挂在外围 */
-  .sd-power{margin-top:8px; padding:0; background:none; border:none; cursor:pointer;
+  /* 电源键: 像素风文字按钮, 琥珀色硬边框, 色彩呼吸(不带柔光) */
+  .sd-power{margin-top:8px; padding:12px 26px; background:#000; border:3px solid #e8a33d; cursor:pointer;
+    color:#e8a33d; font-family:Consolas,"Courier New",monospace; font-size:15px; font-weight:bold; letter-spacing:3px;
     animation:sdPulse 2.2s ease-in-out infinite}
-  #sdPowerCv{display:block; image-rendering:pixelated}
-  .sd-power:hover{transform:scale(1.06)}
-  @keyframes sdPulse{0%,100%{filter:drop-shadow(0 0 5px rgba(232,163,61,.28))}50%{filter:drop-shadow(0 0 14px rgba(232,163,61,.6))}}
+  .sd-power:hover{background:#e8a33d; color:#000}
+  @keyframes sdPulse{0%,100%{border-color:#6b4f1d; color:#b8842c}50%{border-color:#e8a33d; color:#ffd166}}
   .sd-power-label{color:#7a6a3a; font-family:Consolas,monospace; font-size:11px; letter-spacing:3px}
   .sd-hint{position:absolute; left:0; right:0; bottom:26px; text-align:center; color:#5a5140;
     font-size:12.5px; font-family:"SimSun","宋体",serif}
@@ -675,10 +701,10 @@
 <!-- ================= 任务栏 ================= -->
 <div id="taskbar">
   <button id="startBtn" type="button">⛵ 开始</button>
-  <button id="tbCmd" type="button" title="cmd.exe — 命令提示符 (按 ~ 也行)"><span class="cmd-ico">C:\_</span></button>
-  <button id="tbHelp" type="button" title="帮助.chm — 全站彩蛋使用手册"><span class="help-ico">?</span></button>
-  <button id="tbCalc" type="button" title="计算器"><span class="calc-ico">=</span></button>
-  <button id="tbMine" type="button" title="扫雷.EXE — 复古扫雷"><canvas id="tbMineCv"></canvas></button>
+  <button id="tbCmd" type="button" title="cmd.exe — 命令提示符 (按 ~ 也行)"><span class="tb-badge b-green">C:\_</span></button>
+  <button id="tbHelp" type="button" title="帮助.chm — 全站彩蛋使用手册"><span class="tb-badge b-blue">?</span></button>
+  <button id="tbCalc" type="button" title="计算器"><span class="tb-badge b-amber">=</span></button>
+  <button id="tbMine" type="button" title="扫雷.EXE — 复古扫雷"><span class="tb-badge"><canvas id="tbMineCv"></canvas></span></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
@@ -801,7 +827,7 @@
       <span class="sd-z">Z</span><span class="sd-z">z</span><span class="sd-z">z</span>
     </div>
     <div class="sd-text">小站已熄灭。<br>现在可以安全地漂走了。</div>
-    <button class="sd-power" type="button" title="POWER · 点我重新开机"><canvas id="sdPowerCv"></canvas></button>
+    <button class="sd-power" type="button" title="点我重新开机">POWER · 重新开机</button>
     <div class="sd-power-label">POWER</div>
     <div class="sd-hint">点电源键重新开机 —— 点屏幕任意位置也一样 · 再点一下可跳过自检</div>
   </div>
@@ -935,31 +961,7 @@ var SPRITES = {
       '.......HH.......'
     ]
   },
-  /* 关机画面的电源键帽: 深色键面 + Win98 凹凸 + 像素 ⏻ (16×16, scale 4) */
-  powerBtn: {
-    out: null,
-    shadow: null,
-    pal: { O:'#0a0b0e', H:'#3a3f4a', F:'#14161c', D:'#05060a', S:'#e8a33d' },
-    rows: [
-      'OOOOOOOOOOOOOOOO',
-      'OHHFFFFFFFFFFFDO',
-      'OHFFFFFSSFFFFFDO',
-      'OHFFFFFSSFFFFFDO',
-      'OHFFFFFSSFFFFFDO',
-      'OHFFFSSFFSSFFFDO',
-      'OHFFSSFFFFSSFFDO',
-      'OHFSSFFFFFFSSFDO',
-      'OHFSFFFFFFFFSFDO',
-      'OHFSSFFFFFFSSFDO',
-      'OHFFSSFFFFSSFFDO',
-      'OHFFFSSFFSSFFFDO',
-      'OHFFFFSSSSFFFFDO',
-      'OHFFFFFFFFFFFFDO',
-      'ODDDDDDDDDDDDDDO',
-      'OOOOOOOOOOOOOOOO'
-    ]
-  },
-  /* 扫雷的小地雷: 任务栏图标用 (8×7, scale 2) */
+  /* 扫雷的小地雷: 任务栏徽标 + 游戏通用 (8×7) */
   mine: {
     out: null,
     shadow: null,
@@ -1689,7 +1691,6 @@ $('#startShutdown').addEventListener('click', function(){
   if($('#shutdown').classList.contains('show')) return;
   $('#shutdown').classList.add('show');
   drawSprite($('#sdBoatCv'), boatSkinName(), 2);
-  drawSprite($('#sdPowerCv'), 'powerBtn', 4);
 });
 /* BIOS 自检 + 重新开机 */
 var sdLines = [
@@ -2128,7 +2129,7 @@ $('#mineFlagMode').addEventListener('click', function(){
   this.textContent = '⚑ 插旗: ' + (mFlagMode ? '开' : '关');
   this.classList.toggle('on', mFlagMode);
 });
-drawSprite($('#tbMineCv'), 'mine', 2);
+drawSprite($('#tbMineCv'), 'mine', 1);
 mineReset();
 
 /* ================= Konami 彩蛋: ↑↑↓↓←→←→BA ================= */
