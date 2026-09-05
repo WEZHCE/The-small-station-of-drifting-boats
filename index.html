@@ -349,99 +349,149 @@ var pick = function(arr){ return arr[Math.floor(Math.random()*arr.length)]; };
 
 /* ================= 像素画 ================= */
 var SPRITES = {
-  boat: { pal:{W:'#f7f3e4', K:'#5a4632', M:'#6b4a2a', H:'#7a4a21', B:'#6aa9d8'}, rows:[
-    '......KWWK......',
-    '.....KWWWWK.....',
-    '....KWWWWWWK....',
-    '...KWWWWWWWWK...',
-    '..KWWWWWWWWWWK..',
-    '.KWWWWWWWWWWWWK.',
-    '.KKKKKKKKKKKKKK.',
-    '..............M.',
-    '..............M.',
-    '..............M.',
-    '..............M.',
-    'HHHHHHHHHHHHHHHH',
-    '.HHHHHHHHHHHHH..',
-    '..HHHHHHHHHHH...',
-    '..B..BB..BB..B..',
-    '..B..BB..BB..B..'
-  ]},
-  cat: { pal:{K:'#262626', H:'#5f5f5f', B:'#3f3f3f', D:'#2d2d2d', W:'#f5f5f5', P:'#d98a8a'}, rows:[
-    '.....KK..KK.....',
-    '....KHHKKHHK....',
-    '....KHBBBBHK....',
-    '...KBBBBBBBBK...',
-    '...KBWBBBBWBK...',
-    '...KBBBBBBDBK...',
-    '...KBBKPPKBBK...',
-    '....KBBBBBBK....',
-    '....KBBBBBDK....',
-    '....KBBBBBDK....',
-    '...KKBBBBBBKK...',
-    '..KKBBBBBBBBKK..',
-    '..KKBBHHHBBBKK..',
-    '..KKKKKKKKKKKK..'
-  ]},
-  mush: { out:'#4a3b28', pal:{R:'#d96f58', C:'#c25b4a', D:'#a83e30', W:'#f4ecd4', I:'#e8dcc0', S:'#f2e7c8', Q:'#dccb9e', G:'#6ba368'}, rows:[
-    '......RRRR......',
-    '....RRRRCCRR....',
-    '...RRWCRRRRRR...',
-    '..RRWCRRRRCRRR..',
-    '..RRRRRRCRRRRR..',
-    '.RRRRRRCRRRRRRR.',
-    '.DDDDDDDDDDDDDD.',
-    '..IIIIIIIIIIII..',
-    '...SSSSQQSSSS...',
-    '....SSSSQQQQ....',
-    '....SSSSQQQQ....',
-    '...SSSSSQQQQQ...',
-    '...SSSSSQQQQQ...',
-    '....SSSSQQQQ....',
-    '..GG..GG..GG....'
-  ]},
-  house: { out:'#4a3b28', pal:{Y:'#c05a3f', Z:'#a84a32', B:'#e8d9a8', C:'#d9c28e', W:'#7fb2d9', D:'#6b3e1f', K:'#6a9a5a'}, rows:[
-    '.......YY.......',
-    '......YYYY......',
-    '.....YYYYYY.....',
-    '....YYZYYZYY....',
-    '...YYYYYYYYYY...',
-    '..YYZYYZYYZYYY..',
-    '..YYYYYYYYYYYY..',
-    '.BBBBBBBBBBBBBB.',
-    '.BWWBBBBBBBBWWB.',
-    '.BWWBBCCCCCBWWB.',
-    '.BWWBBCCCCCBWWB.',
-    '.BBBBBBBBBBBBBB.',
-    '.BBBBBBDDDDBBBB.',
-    '.BBBBBBDDDDBBBB.',
-    '.KKKKKKKKKKKKKK.'
-  ]},
-  lantern: { out:'#4a3b28', pal:{G:'#e8b34c', R:'#d9594a', L:'#f28973', D:'#b03a30', T:'#e8b34c'}, rows:[
-    '.......GG.......',
-    '......GGGG......',
-    '.....GGGGGG.....',
-    '....RRRRRRRR....',
-    '...GLRRRRRRRG...',
-    '..GGLRRRRRRRGG..',
-    '..GGLRRRRRRRGG..',
-    '..GGLRRRRRRRGG..',
-    '..GGLRRRRRDRGG..',
-    '..GGLRRRRRDRGG..',
-    '...GLRRRRRRRG...',
-    '....RRRRRRRR....',
-    '.....GGGGGG.....',
-    '......GGGG......',
-    '......TTTT......'
-  ]}
+  /* 帆船: 小旗+桅杆, 帆面左亮右暗两色 */
+  boat: {
+    out: '#43301f',
+    shadow: '#2b1f15',
+    pal: { A:'#faf3e0', B:'#d3b98c', C:'#9a7350', D:'#6b4a30', E:'#8fd0ef', F:'#55a0d4', G:'#2f6390', P:'#5a4632', R:'#cf5c3f' },
+    rows: [
+      '.......PR.......',
+      '.......P........',
+      '......AAB.......',
+      '.....AAAAB......',
+      '....AAAABBB.....',
+      '...AAAAABBBB....',
+      '..AAAAAABBBBB...',
+      '.AAAAAAABBBBBB..',
+      '....DDDDDDDD....',
+      '...DCCCCCCCCD...',
+      '..DDCCCCCCCCDD..',
+      '.DDDDDDDDDDDDDD.',
+      '.....EEEEEE.....',
+      '....E..EE..E....',
+      '...F...FF...F...',
+      '..G....GG....G..'
+    ]
+  },
+  /* 黑猫: 绿眼睛两格高光, 粉耳内, 灰胸毛, 胡须 */
+  cat: {
+    out: '#161616',
+    shadow: '#090909',
+    pal: { A:'#2e2e2e', G:'#9ccf5f', P:'#d98a8a', C:'#6e6e6e', D:'#cfcfcf' },
+    rows: [
+      '....A.....A.....',
+      '...APA...APA....',
+      '...AAAAAAAAA....',
+      '..AAAAAAAAAAA...',
+      '..AAGGAAAGGAA...',
+      '.DAAGGAAAGGAA.D.',
+      '..AAAAPPAAAAA...',
+      '..AAAAAAAAAAA...',
+      '...AAAAAAAAA....',
+      '....AAAAAAA.....',
+      '...AACCAAAAA....',
+      '..AACCAAAAAAA...',
+      '..AACCAAAAAAA...',
+      '..AAAAAAAAAAA...',
+      '...AA..AA..AA...',
+      '................'
+    ]
+  },
+  /* 蘑菇: 伞面左上受光, 白点, 伞底菌褶, 草地 */
+  mush: {
+    out: '#4c3827',
+    shadow: '#2b2016',
+    pal: { A:'#f08a6a', B:'#d94f41', C:'#b03a2e', D:'#f9f2e0', S:'#ffe9e2', I:'#f2e3c2', J:'#c4a982', E:'#efe0bd', F:'#cdb894', G:'#6fa95a' },
+    rows: [
+      '......AAAA......',
+      '....ASBBBBAA....',
+      '...ASBDBBBDBA...',
+      '..ABDDBBBBDBBA..',
+      '.ABBDBBBBBBDBBA.',
+      '.ABBBBBBBBBBBBA.',
+      '..ACCCCCCCCCCA..',
+      '...IJIJIJIJIJ...',
+      '.....EEEEEE.....',
+      '.....EEEEEFF....',
+      '.....EEEEEFF....',
+      '.....EEEEEFF....',
+      '....EEEEFFFF....',
+      '...GG..GG..GG...',
+      '....G...G....G..',
+      '................'
+    ]
+  },
+  /* 小屋: 瓦面屋顶, 暖灯窗户, 烟囱冒烟 */
+  house: {
+    out: '#4b3724',
+    shadow: '#2a1f16',
+    pal: { R:'#d96a48', Q:'#a84a32', W:'#f0dfb4', N:'#6b4a2a', L:'#f7c85f', S:'#fff3cf', D:'#8b5a3c', G:'#88ad68', C:'#9a6a50', M:'#c9c9c9' },
+    rows: [
+      '..........MM....',
+      '.........M......',
+      '.........CCC....',
+      '.......RR.CC....',
+      '......RRRRCC....',
+      '.....RRRRRCC....',
+      '....RRRRRRRR....',
+      '...RRRRRRRRRR...',
+      '..QQQQQQQQQQQQ..',
+      '..WWWWWWWWWWWW..',
+      '..WNNWWWWWNNWW..',
+      '..WSLWWDDDSLWW..',
+      '..WNNWWDDDNNWW..',
+      '..WWWWWDDDWWWW..',
+      '..GGGGGGGGGGGG..',
+      '................'
+    ]
+  },
+  /* 灯笼: 暖黄亮核灯芯, 灯身自带光晕(glow) */
+  lantern: {
+    out: '#4a3526',
+    shadow: '#271c14',
+    glow: '#ffca66',
+    pal: { A:'#ffe09a', B:'#f2b84f', C:'#e28a39', D:'#c9532f', E:'#fff1bd', G:'#7c4a23', H:'#efcf86' },
+    rows: [
+      '......AAAA......',
+      '.....ABBBBA.....',
+      '....ABCCCCBA....',
+      '...ABCEEEDCBA...',
+      '...ABCEEEDCBA...',
+      '...ABCEEEDCBA...',
+      '...ABCEEEDCBA...',
+      '...ABCEEEDCBA...',
+      '...ABCEEEDCBA...',
+      '...ABCEEEDCBA...',
+      '....ACEEDCBA....',
+      '.....ACCCCA.....',
+      '......AAAA......',
+      '......GGGG......',
+      '.....HHHHHH.....',
+      '.......HH.......'
+    ]
+  }
 };
+/* 颜色明暗: amt 为正提亮, 为负压暗, 用来做受光面/背光面 */
+function tint(hex, amt){
+  var n = parseInt(hex.slice(1), 16);
+  var r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  if(amt >= 0){ r += (255 - r) * amt; g += (255 - g) * amt; b += (255 - b) * amt; }
+  else { r *= 1 + amt; g *= 1 + amt; b *= 1 + amt; }
+  return 'rgb(' + Math.round(r) + ',' + Math.round(g) + ',' + Math.round(b) + ')';
+}
 function drawSprite(cv, name, scale){
   var sp = SPRITES[name], rows = sp.rows;
   var cols = 0;
   rows.forEach(function(r){ cols = Math.max(cols, r.length); });
-  cv.width = cols*scale; cv.height = rows.length*scale;
+  /* 自带光源的(灯笼)多留一圈画布画光晕 */
+  var pad = sp.glow ? 7 : 2;
+  cv.width = (cols + pad * 2) * scale;
+  cv.height = (rows.length + pad * 2) * scale;
   var ctx = cv.getContext('2d');
-  /* 先 1:1 画到临时画布 */
+  ctx.imageSmoothingEnabled = false;
+  ctx.clearRect(0, 0, cv.width, cv.height);
+
+  /* 先 1:1 画到临时画布, 再按格判断明暗 */
   var tmp = document.createElement('canvas');
   tmp.width = cols; tmp.height = rows.length;
   var tctx = tmp.getContext('2d');
@@ -451,27 +501,63 @@ function drawSprite(cv, name, scale){
       if(c){ tctx.fillStyle = c; tctx.fillRect(x, y, 1, 1); }
     });
   });
-  /* 给浅色像素画加一圈深色描边, 防止和画布背景糊在一起 */
+
+  var img = tctx.getImageData(0, 0, cols, rows.length);
+  var data = img.data;
+  var filled = function(x, y){
+    return x >= 0 && y >= 0 && x < cols && y < rows.length && data[(y * cols + x) * 4 + 3] > 0;
+  };
+  var px = function(x){ return (x + pad) * scale; };
+  var py = function(y){ return (y + pad) * scale; };
+
+  /* 灯笼这类光源体: 先铺一圈暖色光晕 */
+  if(sp.glow){
+    var gc = parseInt(sp.glow.slice(1), 16);
+    var gr = ctx.createRadialGradient(cv.width / 2, cv.height / 2, scale * 2, cv.width / 2, cv.height / 2, Math.max(cv.width, cv.height) * .62);
+    gr.addColorStop(0, 'rgba(' + ((gc >> 16) & 255) + ',' + ((gc >> 8) & 255) + ',' + (gc & 255) + ',.42)');
+    gr.addColorStop(1, 'rgba(' + ((gc >> 16) & 255) + ',' + ((gc >> 8) & 255) + ',' + (gc & 255) + ',0)');
+    ctx.fillStyle = gr;
+    ctx.fillRect(0, 0, cv.width, cv.height);
+  }
+
+  /* 柔和投影, 让像素块立起来 */
+  if(sp.shadow){
+    ctx.fillStyle = sp.shadow;
+    for(var sy = 0; sy < rows.length; sy++){
+      for(var sx = 0; sx < cols; sx++){
+        if(filled(sx, sy)) ctx.fillRect(px(sx) + scale, py(sy) + scale, scale, scale);
+      }
+    }
+  }
+
+  /* 深色外轮廓：增强识别度，同时避免边缘糊掉 */
   if(sp.out){
-    var img = tctx.getImageData(0, 0, cols, rows.length);
-    var data = img.data;
-    var filled = function(x, y){
-      return x >= 0 && y >= 0 && x < cols && y < rows.length && data[(y*cols+x)*4+3] > 0;
-    };
     ctx.fillStyle = sp.out;
     for(var yy = 0; yy < rows.length; yy++){
       for(var xx = 0; xx < cols; xx++){
-        if(!filled(xx, yy) &&
-           (filled(xx-1, yy) || filled(xx+1, yy) || filled(xx, yy-1) || filled(xx, yy+1))){
-          ctx.fillRect(xx*scale, yy*scale, scale, scale);
+        if(!filled(xx, yy) && (
+          filled(xx - 1, yy) || filled(xx + 1, yy) || filled(xx, yy - 1) || filled(xx, yy + 1) ||
+          filled(xx - 1, yy - 1) || filled(xx + 1, yy - 1) || filled(xx - 1, yy + 1) || filled(xx + 1, yy + 1)
+        )){
+          ctx.fillRect(px(xx), py(yy), scale, scale);
         }
       }
     }
   }
-  ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(tmp, 0, 0, cols, rows.length, 0, 0, cv.width, cv.height);
-}
 
+  /* 本体: 顶部受光提亮、底部背光压暗, 出体积感 */
+  for(var y = 0; y < rows.length; y++){
+    for(var x = 0; x < cols; x++){
+      if(!filled(x, y)) continue;
+      var base = sp.pal[rows[y][x]];
+      var c = base;
+      if(!filled(x, y - 1)) c = tint(base, .3);
+      else if(!filled(x, y + 1)) c = tint(base, -.2);
+      ctx.fillStyle = c;
+      ctx.fillRect(px(x), py(y), scale, scale);
+    }
+  }
+}
 /* ================= 开机动画: 雪花 → 粒子爆发 → 汇聚成站名 → 炸开进场 ================= */
 var bootCv = $('#bootFx'), bootCtx = bootCv.getContext('2d');
 var BOOT_TEXT = '船只悠悠';
@@ -632,10 +718,10 @@ if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').ma
 /* ================= 站标 & 相册 ================= */
 drawSprite($('#logo'), 'boat', 4);
 var PHOTOS = [
-  {s:'cat',     title:'黑猫',   cap:'皮毛加了高光和阴影, 眼睛是白的, 夜里看会发光。'},
-  {s:'mush',    title:'蘑菇',   cap:'伞面有高光和暗边, 伞底加了菌褶, 柄是奶油色调。'},
-  {s:'house',   title:'小屋',   cap:'屋顶画了瓦片纹, 墙面有阴影, 窗门比之前周正了。'},
-  {s:'lantern', title:'灯笼',   cap:'红色渐变灯身加金色镶边, 下头挂着穗子。'}
+  {s:'cat',     title:'黑猫',   cap:'绿眼睛带两格高光, 胸口一撮灰毛, 胡须向两边翘。'},
+  {s:'mush',    title:'蘑菇',   cap:'伞面左上受光, 白点点了亮边, 伞底排着一列菌褶。'},
+  {s:'house',   title:'小屋',   cap:'瓦面屋顶, 窗户亮着暖黄的灯, 烟囱里冒着烟。'},
+  {s:'lantern', title:'灯笼',   cap:'灯芯换成暖黄亮核, 灯身自己会发光, 穗子收尾。'}
 ];
 var gal = $('#galleryGrid');
 PHOTOS.forEach(function(p, i){
