@@ -382,13 +382,12 @@
   .sd-z:nth-of-type(3){font-size:11px; animation-delay:1.6s}
   @keyframes zUp{0%{opacity:0; transform:translate(0,0)}30%{opacity:.9}100%{opacity:0; transform:translate(16px,-28px)}}
   .sd-text{color:#e8a33d; font-family:Consolas,"Courier New",monospace; font-size:16px; line-height:2; text-align:center}
-  .sd-power{width:52px; height:52px; margin-top:8px; border-radius:50%; position:relative; cursor:pointer;
-    background:radial-gradient(circle at 35% 30%, #3a3f4a, #14161c); border:2px solid #2c3038;
-    box-shadow:0 0 0 4px #0a0b0e, 0 0 14px rgba(232,163,61,.25); animation:sdPulse 2.2s ease-in-out infinite}
-  .sd-power::before{content:''; position:absolute; left:50%; top:9px; width:2px; height:11px; background:#e8a33d; transform:translateX(-50%)}
-  .sd-power::after{content:''; position:absolute; inset:0; margin:auto; width:16px; height:16px; border:2px solid #e8a33d; border-radius:50%}
-  .sd-power:hover{box-shadow:0 0 0 4px #0a0b0e, 0 0 30px rgba(232,163,61,.6)}
-  @keyframes sdPulse{0%,100%{box-shadow:0 0 0 4px #0a0b0e, 0 0 10px rgba(232,163,61,.2)}50%{box-shadow:0 0 0 4px #0a0b0e, 0 0 26px rgba(232,163,61,.55)}}
+  /* 电源键: 像素画键帽(16×16 字符画, scale 4), 呼吸光晕挂在外围 */
+  .sd-power{margin-top:8px; padding:0; background:none; border:none; cursor:pointer;
+    animation:sdPulse 2.2s ease-in-out infinite}
+  #sdPowerCv{display:block; image-rendering:pixelated}
+  .sd-power:hover{transform:scale(1.06)}
+  @keyframes sdPulse{0%,100%{filter:drop-shadow(0 0 5px rgba(232,163,61,.28))}50%{filter:drop-shadow(0 0 14px rgba(232,163,61,.6))}}
   .sd-power-label{color:#7a6a3a; font-family:Consolas,monospace; font-size:11px; letter-spacing:3px}
   .sd-hint{position:absolute; left:0; right:0; bottom:26px; text-align:center; color:#5a5140;
     font-size:12.5px; font-family:"SimSun","宋体",serif}
@@ -403,6 +402,7 @@
     #shutdown.show .crt-line{animation:none; opacity:0}
     .sd-stage{animation:none; opacity:1}
     #sdBoatCv{animation:none}
+    .sd-power{animation:none}
   }
 
   /* ---------- 漂流瓶 / 船舱日记 ---------- */
@@ -693,7 +693,7 @@
       <span class="sd-z">Z</span><span class="sd-z">z</span><span class="sd-z">z</span>
     </div>
     <div class="sd-text">小站已熄灭。<br>现在可以安全地漂走了。</div>
-    <button class="sd-power" type="button" title="POWER · 点我重新开机"></button>
+    <button class="sd-power" type="button" title="POWER · 点我重新开机"><canvas id="sdPowerCv"></canvas></button>
     <div class="sd-power-label">POWER</div>
     <div class="sd-hint">点电源键重新开机 —— 点屏幕任意位置也一样 · 再点一下可跳过自检</div>
   </div>
@@ -825,6 +825,30 @@ var SPRITES = {
       '......GGGG......',
       '.....HHHHHH.....',
       '.......HH.......'
+    ]
+  },
+  /* 关机画面的电源键帽: 深色键面 + Win98 凹凸 + 像素 ⏻ (16×16, scale 4) */
+  powerBtn: {
+    out: null,
+    shadow: null,
+    pal: { O:'#0a0b0e', H:'#3a3f4a', F:'#14161c', D:'#05060a', S:'#e8a33d' },
+    rows: [
+      'OOOOOOOOOOOOOOOO',
+      'OHHFFFFFFFFFFFDO',
+      'OHFFFFFSSFFFFFDO',
+      'OHFFFFFSSFFFFFDO',
+      'OHFFFFFSSFFFFFDO',
+      'OHFFFSSFFSSFFFDO',
+      'OHFFSSFFFFSSFFDO',
+      'OHFSSFFFFFFSSFDO',
+      'OHFSFFFFFFFFSFDO',
+      'OHFSSFFFFFFSSFDO',
+      'OHFFSSFFFFSSFFDO',
+      'OHFFFSSFFSSFFFDO',
+      'OHFFFFSSSSFFFFDO',
+      'OHFFFFFFFFFFFFDO',
+      'ODDDDDDDDDDDDDDO',
+      'OOOOOOOOOOOOOOOO'
     ]
   }
 };
@@ -1542,6 +1566,7 @@ $('#startShutdown').addEventListener('click', function(){
   if($('#shutdown').classList.contains('show')) return;
   $('#shutdown').classList.add('show');
   drawSprite($('#sdBoatCv'), boatSkinName(), 2);
+  drawSprite($('#sdPowerCv'), 'powerBtn', 4);
 });
 /* BIOS 自检 + 重新开机 */
 var sdLines = [
