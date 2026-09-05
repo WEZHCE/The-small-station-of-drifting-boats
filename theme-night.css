@@ -1,0 +1,33 @@
+/* 船只悠悠的小站 · giscus 自定义主题: 夜航模式(深夜海色) */
+@import url('https://giscus.app/themes/dark_dimmed.css');
+main {
+  --color-canvas-default:#161e30;
+  --color-canvas-overlay:#1c2740;
+  --color-canvas-inset:#101828;
+  --color-canvas-subtle:#1a2338;
+  --color-fg-default:#c8cfdd;
+  --color-fg-muted:#8b97b0;
+  --color-fg-subtle:#7d8cab;
+  --color-border-default:#2c3854;
+  --color-border-muted:#243050;
+  --color-neutral-muted:#243050;
+  --color-neutral-subtle:#1a2338;
+  --color-accent-fg:#7fb0f0;
+  --color-accent-emphasis:#3d6fd0;
+  --color-accent-muted:#2c4a77;
+  --color-accent-subtle:#1c2c4a;
+  --color-btn-bg:#1c2740;
+  --color-btn-border:#2c3854;
+  --color-btn-hover-bg:#243050;
+  --color-btn-selected-bg:#243050;
+  --color-btn-text:#c8cfdd;
+  --color-btn-primary-bg:#3d6fd0;
+  --color-btn-primary-hover-bg:#355fa8;
+  --color-btn-primary-text:#fff;
+  --color-social-reaction-bg-hover:#243050;
+  --color-segmented-control-bg:#101828;
+  --color-segmented-control-button-bg:#1c2740;
+  --color-segmented-control-button-selected-border:#2c3854;
+  --color-attention-fg:#c2a35e;
+  --color-danger-fg:#d96a5a;
+}

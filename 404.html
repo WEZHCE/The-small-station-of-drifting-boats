@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="404 —— 你漂到了没有水的地方。">
+<title>404 · 漂到了没有水的地方</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛵</text></svg>
+<style>
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:#0d1322;
+    background-image:
+      linear-gradient(rgba(140,170,230,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(140,170,230,.05) 1px, transparent 1px);
+    background-size:22px 22px;
+    font-family:"SimSun","宋体",serif; color:#c8cfdd; padding:30px 16px; text-align:center;
+  }
+  .win{background:#161e30; border:1px solid #3a4763; box-shadow:8px 8px 0 rgba(0,0,0,.4); max-width:420px; width:100%}
+  .titlebar{display:flex; align-items:center; height:26px; padding:0 6px;
+    background:linear-gradient(90deg,#12277e,#3d6fd0); color:#fff;
+    font-family:"SimHei","黑体",sans-serif; font-size:13px; letter-spacing:1px}
+  .tb-title{flex:1; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .tb-btn{width:19px; height:16px; background:#c9c9c9; border:2px solid; border-color:#fff #666 #666 #fff;
+    font-size:9px; line-height:1; color:#111; margin-left:3px}
+  .inner{padding:30px 24px 28px}
+  canvas{margin:0 auto; image-rendering:pixelated; animation:sink 3.4s ease-in-out infinite}
+  @keyframes sink{0%,100%{transform:rotate(112deg) translateY(0)}50%{transform:rotate(118deg) translateY(6px)}}
+  h1{font-family:Consolas,"Courier New",monospace; font-size:44px; letter-spacing:4px; color:#7fb0f0; margin:14px 0 6px}
+  .msg{font-size:15px; line-height:1.9; color:#aeb9d0}
+  .msg .hand{font-family:"KaiTi","楷体",serif; color:#7d8cab; font-size:13.5px; margin-top:6px}
+  a.back{display:inline-block; margin-top:22px; padding:8px 26px; text-decoration:none; color:#222;
+    background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    font-family:"SimHei","黑体",sans-serif; font-size:14px}
+  a.back:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+</style>
+</head>
+<body>
+<div class="win">
+  <div class="titlebar"><span class="tb-title">找不到该页面 — notfound.exe</span><span class="tb-btn">✕</span></div>
+  <div class="inner">
+    <canvas id="capBoat"></canvas>
+    <h1>404</h1>
+    <div class="msg">
+      你漂到了没有水的地方。<br>
+      这片海域什么都没有, 连浪都懒得打。
+      <div class="hand">船在别处等你, 点下面回甲板。</div>
+    </div>
+    <a class="back" href="/The-small-station-of-drifting-boats/">回甲板 »</a>
+  </div>
+</div>
+<script>
+/* 迷你版像素画: 只保留上色+描边, 画一条侧翻的小船 */
+var pal = { A:'#faf3e0', B:'#d3b98c', C:'#9a7350', D:'#6b4a30', P:'#5a4632', R:'#cf5c3f' };
+var rows = [
+  '.......PR.......',
+  '.......P........',
+  '......AAB.......',
+  '.....AAAAB......',
+  '....AAAABBB.....',
+  '...AAAAABBBB....',
+  '..AAAAAABBBBB...',
+  '.AAAAAAABBBBBB..',
+  '....DDDDDDDD....',
+  '...DCCCCCCCCD...',
+  '..DDCCCCCCCCDD..',
+  '.DDDDDDDDDDDDDD.'
+];
+var scale = 5, pad = 2, cols = 16, rowsN = rows.length;
+var cv = document.getElementById('capBoat');
+cv.width = (cols + pad * 2) * scale;
+cv.height = (rowsN + pad * 2) * scale;
+var ctx = cv.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+var filled = [];
+rows.forEach(function(row, y){
+  filled[y] = [];
+  for(var x = 0; x < cols; x++) filled[y][x] = row[x] !== '.' && pal[row[x]];
+});
+/* 外轮廓 */
+ctx.fillStyle = '#20180f';
+for(var y = -1; y <= rowsN; y++){
+  for(var x = -1; x <= cols; x++){
+    if(filled[y] && filled[y][x]) continue;
+    var near = false;
+    for(var dy = -1; dy <= 1; dy++) for(var dx = -1; dx <= 1; dx++)
+      if(filled[y + dy] && filled[y + dy][x + dx]) near = true;
+    if(near) ctx.fillRect((x + pad) * scale, (y + pad) * scale, scale, scale);
+  }
+}
+/* 本体 */
+for(var y2 = 0; y2 < rowsN; y2++){
+  for(var x2 = 0; x2 < cols; x2++){
+    if(!filled[y2][x2]) continue;
+    ctx.fillStyle = pal[rows[y2][x2]];
+    ctx.fillRect((x2 + pad) * scale, (y2 + pad) * scale, scale, scale);
+  }
+}
+</script>
+</body>
+</html>

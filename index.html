@@ -137,9 +137,9 @@
   .gb-search{display:flex; gap:6px; margin:12px 0 2px}
   .gb-search input{flex:1; min-width:0; font-family:inherit; font-size:13px; padding:5px 8px;
     background:#fbf7ec; color:#2e2a22; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f}
-  .gb-search button{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+  .gb-search button, .gb-bottle button{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     padding:4px 14px; font-family:"SimHei","黑体",sans-serif; font-size:13px; cursor:pointer; color:#222}
-  .gb-search button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .gb-search button:active, .gb-bottle button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .gb-searched{font-size:12.5px; color:#8a7d5f; margin:10px 0 6px}
   .gb-item{background:#f8f3e4; border-left:4px solid #d8cba6; padding:8px 13px; margin:9px 0; font-size:13.5px}
   .gb-head{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:3px}
@@ -187,7 +187,7 @@
   #toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 
   /* ---------- 小彩蛋 ---------- */
-  #boatPet{position:fixed; right:16px; bottom:14px; z-index:30; cursor:pointer; opacity:.9;
+  #boatPet{position:fixed; right:14px; bottom:46px; z-index:30; cursor:pointer; opacity:.9;
     user-select:none; animation:bob 3.2s ease-in-out infinite}
   #boatPet:hover{opacity:1}
   @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-7px) rotate(3deg)}}
@@ -231,6 +231,128 @@
   .lb-prev{left:20px; top:50%; transform:translateY(-50%)}
   .lb-next{right:20px; top:50%; transform:translateY(-50%)}
   .lb-close{top:16px; right:18px}
+
+  /* ---------- 任务栏 ---------- */
+  body.on{padding-bottom:44px}
+  #taskbar{position:fixed; left:0; right:0; bottom:0; z-index:90; height:36px;
+    background:#c9c9c9; border-top:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    display:flex; align-items:center; gap:6px; padding:0 6px;
+    font-family:"SimHei","黑体",sans-serif; font-size:13px}
+  #startBtn{height:26px; padding:0 12px; display:flex; align-items:center; gap:6px; font-weight:bold;
+    background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222; font-family:inherit; font-size:13px}
+  #startBtn.on, #startBtn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  #startMenu{position:fixed; left:4px; bottom:40px; z-index:95; min-width:190px; display:none;
+    background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    box-shadow:4px 4px 0 rgba(0,0,0,.25); padding:4px}
+  #startMenu.open{display:block}
+  #startMenu button{display:block; width:100%; text-align:left; padding:7px 12px; background:transparent;
+    border:none; font-family:inherit; font-size:13px; cursor:pointer; color:#222}
+  #startMenu button:hover{background:#12277e; color:#fff}
+  .sm-sep{height:1px; margin:4px 2px; background:#8a8a8a; border-bottom:1px solid #fff}
+  #tray{margin-left:auto; height:26px; display:flex; align-items:center; gap:9px; padding:0 10px;
+    background:#c9c9c9; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; color:#222}
+  #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
+  #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
+
+  /* ---------- 夜航模式 ---------- */
+  body.night{background-color:#0d1322;
+    background-image:linear-gradient(rgba(140,170,230,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(140,170,230,.05) 1px, transparent 1px);
+    color:#c8cfdd}
+  body.night ::selection{background:#2f5a8f; color:#fff}
+  body.night ::-webkit-scrollbar{background:#1a2136}
+  body.night ::-webkit-scrollbar-thumb{background:#33405f}
+  body.night .window{background:#161e30; border-color:#3a4763; box-shadow:8px 8px 0 rgba(0,0,0,.4)}
+  body.night .menu{background:#1c2740; border-color:#2c3854}
+  body.night .menu a{color:#8fb4e8; border-color:#2c3854}
+  body.night .menu a:hover{background:#3d6fd0; color:#fff}
+  body.night h2{color:#d8e2f5; border-left-color:#4a7ab0}
+  body.night .info-table th{color:#93a5c5; background:#1c2740; border-color:#2c3854}
+  body.night .info-table td{border-color:#2c3854; background:#1a2338; color:#c8cfdd}
+  body.night .info-table a{color:#7fb0f0}
+  body.night .about-text p{color:#c8cfdd}
+  body.night .about-text .hand{color:#7d8cab}
+  body.night .log li{background:#1a2338; border-left-color:#33405f; color:#c8cfdd}
+  body.night .log-date{color:#7d8cab}
+  body.night .photo{background:#202a44; border-color:#33405f}
+  body.night .photo::before{background:rgba(90,110,150,.45)}
+  body.night .photo canvas{background:#242f4d; border-color:#2c3854}
+  body.night figcaption{color:#9fb0cd}
+  body.night figcaption b{color:#8fbf8f}
+  body.night .site-name{color:#9fc3ef; text-shadow:2px 2px 0 #0a1020}
+  body.night .site-sub{color:#7d8cab}
+  body.night .side-col{border-left-color:#2c3854}
+  body.night .section-note{color:#7d8cab}
+  body.night .gb-panel{background:#1a2338; border-color:#3a4763 #101828 #101828 #3a4763}
+  body.night .gb-search input{background:#161e30; color:#c8cfdd; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .gb-searched{color:#7d8cab}
+  body.night .gb-item{background:#1a2338; border-left-color:#33405f; color:#c8cfdd}
+  body.night .gb-head span:first-child{color:#8fbf8f}
+  body.night .gb-time{color:#7d8cab}
+  body.night .gb-body{color:#aeb9d0}
+  body.night .gb-item-more a, body.night footer a{color:#7fb0f0}
+  body.night .gb-empty{color:#7d8cab}
+  body.night .bottle-card{background:#1a2338; border-left-color:#33405f; color:#c8cfdd}
+  body.night .diary{background:#1a2338; border-color:#2c3854; color:#c8cfdd}
+  body.night .diary-head{color:#8fb4e8}
+  body.night .diary button{background:#1c2740; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night footer{color:#7d8cab; border-color:#2c3854}
+  body.night #toast{background:#161e30; color:#c8cfdd; border-color:#3a4763 #101828 #101828 #3a4763}
+  body.night #boatOdo{background:#161e30; border-color:#2c3854; color:#8b97b0}
+  body.night #boatPet{filter:drop-shadow(0 0 5px rgba(255,202,102,.45))}
+  body.night #boatPet.boatLit{filter:drop-shadow(0 0 10px rgba(255,202,102,.9))}
+
+  /* ---------- 终端 ---------- */
+  #term{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:250; width:min(560px,92vw);
+    display:none; background:#111; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.35)}
+  #term.open{display:block}
+  #termOut{height:280px; overflow-y:auto; padding:10px 12px; font-family:Consolas,"Courier New",monospace;
+    font-size:13px; color:#39d353; line-height:1.7; white-space:pre-wrap; word-break:break-all}
+  #termRow{display:flex; align-items:center; gap:6px; padding:8px 12px; border-top:1px solid #333}
+  #termRow label{font-family:Consolas,monospace; font-size:13px; color:#39d353; white-space:nowrap}
+  #termIn{flex:1; min-width:0; border:none; outline:none; background:#111; color:#39d353;
+    font-family:Consolas,"Courier New",monospace; font-size:13px}
+
+  /* ---------- 屏保 ---------- */
+  #saver{position:fixed; inset:0; z-index:400; background:#050505; display:none}
+  #saver.show{display:block}
+  #saverFx{width:100%; height:100%}
+  .saver-hint{position:absolute; left:16px; bottom:14px; color:#39d353; font-family:Consolas,"Courier New",monospace; font-size:12px; opacity:.5}
+
+  /* ---------- 关机 ---------- */
+  #shutdown{position:fixed; inset:0; z-index:500; background:#000; display:none; cursor:pointer}
+  #shutdown.show{display:flex; align-items:center; justify-content:center}
+  .sd-text{color:#e8a33d; font-family:Consolas,"Courier New",monospace; font-size:17px; line-height:2; text-align:center}
+  .sd-hint{color:#7a6a3a; font-size:13px; margin-top:18px; text-align:center; font-family:"SimSun","宋体",serif}
+
+  /* ---------- 漂流瓶 / 船舱日记 ---------- */
+  .gb-bottle{margin:12px 0 2px}
+  .bottle-card{background:#f8f3e4; border-left:4px solid #b8c9e0; padding:9px 13px; margin:8px 0; font-size:13.5px;
+    color:#4a4335; line-height:1.7; word-break:break-word}
+  .bottle-card b{color:#3f5c33}
+  .bottle-card .b-meta{color:#8a7d5f; font-size:12px; margin-top:4px}
+  .bottle-card .b-meta a{color:#0033cc}
+  .diary{background:#f8f3e4; border:1px solid #ddd3b8; padding:12px 15px; margin-top:14px; font-size:14px}
+  .diary-head{display:flex; align-items:center; gap:8px; margin-bottom:6px; color:#4a3f2c;
+    font-family:"SimHei","黑体",sans-serif; font-size:14px}
+  .diary-head .diary-date{color:#8c7c5c; font-size:12.5px; font-family:Consolas,monospace}
+  .diary-head button{margin-left:auto; width:24px; height:22px; background:#c9c9c9; cursor:pointer;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; font-size:13px; line-height:1; color:#222}
+  .diary-head button + button{margin-left:0}
+  .diary-head .diary-nav{display:flex; gap:4px}
+  .diary-text{color:#4a4335; line-height:1.8}
+
+  /* ---------- 小船养成 ---------- */
+  #boatOdo{position:fixed; right:14px; bottom:88px; z-index:31; background:#fbf7ec; border:1px solid #b3a88c;
+    padding:2px 8px; font-size:11.5px; color:#6b5f45; box-shadow:2px 2px 0 rgba(43,38,28,.14);
+    user-select:none; max-width:200px; text-align:right}
+  #gullPet{position:fixed; right:64px; bottom:66px; z-index:31; display:none; animation:gullFly 4.5s ease-in-out infinite}
+  @keyframes gullFly{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+  #boatPet.boatLit{filter:drop-shadow(0 0 8px rgba(255,202,102,.8))}
+
+  /* ---------- Konami 彩虹模式 ---------- */
+  body.konami #site{animation:hueSpin 3s linear infinite}
+  body.konami .titlebar{background:linear-gradient(90deg,#a83232,#e8b34c,#6ba368,#5a8fd6,#b06bb5)}
+  @keyframes hueSpin{from{filter:hue-rotate(0)}to{filter:hue-rotate(360deg)}}
 
   .confetti{position:fixed; top:-26px; z-index:9998; pointer-events:none; animation:confFall linear forwards}
   @keyframes confFall{to{transform:translateY(108vh) rotate(740deg)}}
@@ -284,7 +406,7 @@
   <div class="window" id="top">
 
     <div class="titlebar">
-      <span class="tb-title">船只悠悠的小站 — 记事本(未保存)</span>
+      <span class="tb-title" id="tbTitle" title="点一下, 或者按 ~ 键, 有别的货">船只悠悠的小站 — 记事本(未保存)</span>
       <span class="tb-btns">
         <button class="tb-btn" id="tbMin" title="最小化">—</button>
         <button class="tb-btn" id="tbMax" title="最大化">□</button>
@@ -338,6 +460,15 @@
           <li><span class="log-date">2026-08-03</span>贪吃蛇 v7.10 上线, 顺手做了个公开宣传页。</li>
           <li><span class="log-date">2026-07-08</span>写了个基于 deepseek 的小工具, 在仓库描述里我诚实地写了"没用"。</li>
         </ul>
+        <div class="diary">
+          <div class="diary-head">🧭 船舱日记<span class="diary-date" id="diaryDate"></span>
+            <span class="diary-nav">
+              <button id="diaryPrev" title="前一天" type="button">‹</button>
+              <button id="diaryNext" title="后一天" type="button">›</button>
+            </span>
+          </div>
+          <div class="diary-text" id="diaryText"></div>
+        </div>
       </section>
 
       <section id="gallery">
@@ -353,6 +484,10 @@
             <p class="section-note">用 GitHub 账号即可发言, 留言永久存在仓库 Discussions 里, 全世界可见。</p>
             <div class="gb-panel">
               <div id="giscusBox"></div>
+              <div class="gb-bottle">
+                <button id="bottleBtn" type="button" title="从 Discussions 的留言里随机捞一条">🍶 捞一个漂流瓶</button>
+                <div id="bottleResult"></div>
+              </div>
               <div class="gb-search">
                 <input id="gbSearchInput" maxlength="50" placeholder="搜留言(作者/内容)…">
                 <button id="gbSearchBtn" type="button">搜</button>
@@ -385,6 +520,8 @@
 </div>
 
 <canvas id="boatPet" title="点一下试试"></canvas>
+<canvas id="gullPet" title="海鸥伙伴"></canvas>
+<div id="boatOdo">航程 0 海里</div>
 
 <!-- ================= 相册灯箱 ================= -->
 <div id="lightbox" role="dialog" aria-modal="true" aria-label="查看像素画">
@@ -396,6 +533,48 @@
 </div>
 
 <div id="toast"></div>
+
+<!-- ================= 任务栏 ================= -->
+<div id="taskbar">
+  <button id="startBtn" type="button">⛵ 开始</button>
+  <div id="tray">
+    <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
+    <span id="trayClock" title="点一下看宜忌">--:--</span>
+  </div>
+</div>
+<div id="startMenu">
+  <button data-go="#about" type="button">📄 关于我</button>
+  <button data-go="#now" type="button">🧭 近况</button>
+  <button data-go="#gallery" type="button">🖼 像素相册</button>
+  <button data-go="#guestbook" type="button">💬 留言板</button>
+  <div class="sm-sep"></div>
+  <button id="startBottle" type="button">🍶 捞个漂流瓶</button>
+  <div class="sm-sep"></div>
+  <button id="startShutdown" type="button">🔻 关机(U)</button>
+</div>
+
+<!-- ================= 隐藏终端 ================= -->
+<div id="term">
+  <div class="titlebar"><span class="tb-title">C:\小站\command.com</span>
+    <button class="tb-btn" id="termClose" title="关闭">✕</button>
+  </div>
+  <div id="termOut"></div>
+  <div id="termRow"><label for="termIn">C:\小站&gt;</label><input id="termIn" autocomplete="off" spellcheck="false"></div>
+</div>
+
+<!-- ================= 闲置屏保 ================= -->
+<div id="saver">
+  <canvas id="saverFx"></canvas>
+  <div class="saver-hint">· 屏保: 船在夜里自己开 · 动一动鼠标回来 ·</div>
+</div>
+
+<!-- ================= 关机画面 ================= -->
+<div id="shutdown">
+  <div>
+    <div class="sd-text">小站已熄灭。<br>现在可以安全地漂走了。</div>
+    <div class="sd-hint">点一下任意位置, 试着重新开机</div>
+  </div>
+</div>
 
 <!-- 访问统计: hits.sh 免费计数徽章(免注册, 每次打开页面 +1) -->
 <script>
@@ -846,6 +1025,7 @@ function tick(){
   var d = new Date();
   var pad = function(n){ return ('0'+n).slice(-2); };
   $('#nowTime').textContent = d.getFullYear()+'年'+pad(d.getMonth()+1)+'月'+pad(d.getDate())+'日 星期'+WD[d.getDay()]+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+  $('#trayClock').textContent = pad(d.getHours())+':'+pad(d.getMinutes());
 }
 tick();
 setInterval(tick, 1000);
@@ -855,6 +1035,8 @@ setInterval(tick, 1000);
    1. 仓库开启 Discussions: 仓库 → Settings → Features → 勾选 Discussions(仓库需要公开)
    2. 安装 giscus 应用: https://github.com/apps/giscus → Install → 授权给这个仓库
    3. 打开 https://giscus.app/zh-CN 粘贴仓库名, 把生成的 repo-id / category-id 填进下面 */
+/* 主题文件基址: 锁定 commit, 仓库改动不影响线上 */
+var THEME_BASE = 'https://fastly.jsdelivr.net/gh/WEZHCE/The-small-station-of-drifting-boats@d22e6cbdfc06e739ed8dc074e4c64eeb20138229/';
 var GISCUS_CFG = {
   repo: 'WEZHCE/The-small-station-of-drifting-boats',
   repoId: 'R_kgDOUJVc2w',
@@ -879,9 +1061,8 @@ function mountGiscus(){
     s.setAttribute('data-reactions-enabled', '1');
     s.setAttribute('data-emit-metadata', '0');
     s.setAttribute('data-input-position', 'top');
-    /* 自定义主题: 羊皮纸复古配色(仓库里的 theme.css)。
-       走 fastly 镜像(大陆更稳), 并锁定 theme.css 所在的 commit, 仓库改动不影响线上 */
-    s.setAttribute('data-theme', 'https://fastly.jsdelivr.net/gh/WEZHCE/The-small-station-of-drifting-boats@d22e6cbdfc06e739ed8dc074e4c64eeb20138229/theme.css');
+    /* 自定义主题: 白天羊皮纸(theme.css), 夜航深夜海色(theme-night.css), 都锁定在同一个 commit */
+    s.setAttribute('data-theme', THEME_BASE + (nightShould() ? 'theme-night.css' : 'theme.css'));
     s.setAttribute('data-lang', 'zh-CN');
     s.setAttribute('data-loading', 'eager');
     box.appendChild(s);
@@ -996,8 +1177,29 @@ function toast(msg){
 
 /* ================= 小彩蛋们 ================= */
 
-/* 右下角的小船, 点它溅水花 */
-drawSprite($('#boatPet'), 'boat', 2);
+/* 右下角的小船: 点它溅水花, 顺便积累航程(存 localStorage, 里程碑解锁皮肤) */
+function getMiles(){ var v = 0; try{ v = parseInt(localStorage.getItem('boatMiles'), 10) || 0; }catch(e){} return v; }
+var BOAT_ROWS = SPRITES.boat.rows;
+(function(){
+  function skinPal(a, b){ var p = {}, k; for(k in SPRITES.boat.pal) p[k] = SPRITES.boat.pal[k]; p.A = a; p.B = b; return p; }
+  SPRITES.boatRed  = { out:'#43301f', shadow:'#2b1f15', pal: skinPal('#f0937c', '#cf6a52'), rows: BOAT_ROWS };
+  SPRITES.boatGold = { out:'#43301f', shadow:'#2b1f15', pal: skinPal('#ffe9a8', '#e8bd5e'), rows: BOAT_ROWS };
+  SPRITES.gull = { out:'#161616', shadow:null, pal:{G:'#f3f3f3'}, rows:['.G....G.', '.GG..GG.', '..GGGG..', '........'] };
+})();
+function boatSkinName(){ var m = getMiles(); return m >= 60 ? 'boatGold' : m >= 10 ? 'boatRed' : 'boat'; }
+function refreshPet(){
+  drawSprite($('#boatPet'), boatSkinName(), 2);
+  $('#boatPet').classList.toggle('boatLit', getMiles() >= 100);
+  var g = $('#gullPet');
+  if(getMiles() >= 30){
+    if(!g.dataset.drawn){ drawSprite(g, 'gull', 3); g.dataset.drawn = '1'; }
+    g.style.display = 'block';
+  }
+  var m = getMiles();
+  var next = m < 10 ? ' · 10 海里解锁红帆' : m < 30 ? ' · 30 海里解锁海鸥' : m < 60 ? ' · 60 海里解锁金帆' : m < 100 ? ' · 100 海里解锁夜灯' : ' · 皮肤全解锁了';
+  $('#boatOdo').textContent = '航程 ' + m + ' 海里' + next;
+  $('#boatPet').title = '点一下试试 · 已航行 ' + m + ' 海里';
+}
 var boatBusy = false;
 $('#boatPet').addEventListener('click', function(){
   if(boatBusy) return;
@@ -1015,9 +1217,18 @@ $('#boatPet').addEventListener('click', function(){
   }
   var pet = $('#boatPet');
   pet.classList.remove('splash'); void pet.offsetWidth; pet.classList.add('splash');
-  toast('扑通!');
+  var m = getMiles() + 1;
+  try{ localStorage.setItem('boatMiles', String(m)); }catch(e){}
+  var unlocked = '';
+  if(m === 10) unlocked = '航程 10 海里! 小船换上了红帆。';
+  else if(m === 30) unlocked = '航程 30 海里! 一只海鸥落在了旁边。';
+  else if(m === 60) unlocked = '航程 60 海里! 换上金帆, 招摇过海。';
+  else if(m === 100){ unlocked = '航程 100 海里! 夜里也点起灯了。'; confetti(); }
+  refreshPet();
+  toast(unlocked || '扑通! +1 海里');
   setTimeout(function(){ boatBusy = false; }, 600);
 });
+refreshPet();
 
 /* 单击站标, 船会晃两下; 双击才是彩带 */
 var logoClickT = null;
@@ -1131,6 +1342,278 @@ function confetti(){
     setTimeout(function(){ d.remove(); }, 4200);
   }
 }
+
+/* ================= 夜航模式: 19:00~6:00 自动, 托盘手动开关 ================= */
+function nightShould(){
+  var m = null;
+  try{ m = localStorage.getItem('nightMode'); }catch(e){}
+  if(m === 'on') return true;
+  if(m === 'off') return false;
+  var h = new Date().getHours();
+  return h >= 19 || h < 6;
+}
+var nightOn = nightShould();
+function applyNight(on){
+  document.body.classList.toggle('night', on);
+  $('#nightBtn').textContent = on ? '熄灯' : '点灯';
+  $('#nightBtn').title = on ? '夜航中: 点我回到白天' : '夜航灯: 点我开关(19:00~6:00 自动点)';
+}
+applyNight(nightOn);
+$('#nightBtn').addEventListener('click', function(){
+  nightOn = !nightOn;
+  try{ localStorage.setItem('nightMode', nightOn ? 'on' : 'off'); }catch(e){}
+  applyNight(nightOn);
+  mountGiscus();  /* giscus 换成对应时段的主题 */
+  toast(nightOn ? '夜航模式: 灯调暗, 船照开。' : '天亮了, 甲板见。');
+});
+setInterval(function(){
+  var want = nightShould();
+  if(want !== nightOn){
+    nightOn = want;
+    applyNight(want);
+    mountGiscus();
+    toast(want ? '天黑了, 自动进入夜航模式。' : '天亮了, 自动回到白天。');
+  }
+}, 60000);
+
+/* ================= 任务栏 ================= */
+$('#startBtn').addEventListener('click', function(e){
+  e.stopPropagation();
+  var open = $('#startMenu').classList.toggle('open');
+  this.classList.toggle('on', open);
+});
+document.addEventListener('click', function(e){
+  var menu = $('#startMenu');
+  if(menu.classList.contains('open') && !menu.contains(e.target)){
+    menu.classList.remove('open');
+    $('#startBtn').classList.remove('on');
+  }
+});
+$$('#startMenu button[data-go]').forEach(function(b){
+  b.addEventListener('click', function(){
+    var el = document.querySelector(b.getAttribute('data-go'));
+    if(el) el.scrollIntoView({behavior:'smooth'});
+    $('#startMenu').classList.remove('open');
+    $('#startBtn').classList.remove('on');
+  });
+});
+$('#startBottle').addEventListener('click', function(){
+  $('#startMenu').classList.remove('open');
+  $('#startBtn').classList.remove('on');
+  document.querySelector('#guestbook').scrollIntoView({behavior:'smooth'});
+  setTimeout(function(){ lootBottle(); }, 600);
+});
+$('#startShutdown').addEventListener('click', function(){
+  $('#startMenu').classList.remove('open');
+  $('#startBtn').classList.remove('on');
+  $('#shutdown').classList.add('show');
+});
+$('#shutdown').addEventListener('click', function(){
+  this.classList.remove('show');
+  toast('小站自己偷偷开了机, 就是不太听话。');
+});
+$('#trayClock').addEventListener('click', function(){
+  var yi = pick(['宜: 摸鱼','宜: 写代码','宜: 睡觉','宜: 发呆','宜: 吃泡面','宜: 存档']);
+  var ji = pick(['忌: 加班','忌: 熬夜','忌: 改需求','忌: 删库','忌: 内卷','忌: 手滑']);
+  toast(yi + ' · ' + ji + ' (黄历由本站友情编造)');
+});
+
+/* ================= 隐藏终端: 按 ~ 或点标题栏文字 ================= */
+var term = $('#term'), termOut = $('#termOut'), termIn = $('#termIn');
+function termToggle(open){
+  var will = (open === undefined) ? !term.classList.contains('open') : open;
+  term.classList.toggle('open', will);
+  if(will) setTimeout(function(){ termIn.focus(); }, 60);
+}
+$('#tbTitle').addEventListener('click', function(){ termToggle(true); });
+$('#termClose').addEventListener('click', function(){ termToggle(false); });
+document.addEventListener('keydown', function(e){
+  var tag = (e.target && e.target.tagName) || '';
+  if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+  if(e.key === '`' || e.key === '~') termToggle();
+});
+function termPrint(s){
+  var line = document.createElement('div');
+  line.textContent = s;
+  termOut.appendChild(line);
+  termOut.scrollTop = termOut.scrollHeight;
+}
+var TERM_CMDS = {
+  'help': function(){
+    ['可用命令:',
+     ' help   看这份清单',
+     ' about  关于本船',
+     ' ship   让船开一段',
+     ' bottle 捞个漂流瓶',
+     ' miles  查航程',
+     ' dir    看看船舱里有什么',
+     ' date   现在时间',
+     ' clear  清屏',
+     ' exit   关掉终端'].forEach(termPrint);
+  },
+  'about': function(){
+    ['船只悠悠的小站', '一条慢悠悠的船, 泊在互联网边上。', '纯 HTML + CSS + JS 手写, 没有框架, 也没有后端。'].forEach(termPrint);
+  },
+  'ship': function(){
+    ['        |', '        |\\', '        | \\', '     ___|__\\___', '     \\          /', '~~~/~~~~~~~~~~~~\\~~~', '船正在慢慢开, 别催。'].forEach(termPrint);
+  },
+  'sudo': function(){ termPrint('权限不足: 本船不归你管。'); },
+  'date': function(){ termPrint($('#nowTime').textContent); },
+  'miles': function(){
+    var m = getMiles();
+    termPrint('当前航程: ' + m + ' 海里。' + (m >= 100 ? ' 灯已长明。' : ' 点右下角的小船能攒里程。'));
+  },
+  'dir': function(){
+    [' 船票.TXT          1 KB', ' 宜忌黄历.DB       66 KB', ' 彩带.EXE         管够', ' 风浪.LOG        风平浪静', ' 共 4 个文件, 都不许删。'].forEach(termPrint);
+  },
+  'clear': function(){ termOut.innerHTML = ''; },
+  'exit': function(){ termToggle(false); toast('终端合上了, 键盘还在。'); },
+  'bottle': function(){
+    termPrint('正在撒网……');
+    lootBottle();
+  }
+};
+termIn.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){ termToggle(false); return; }
+  if(e.key !== 'Enter') return;
+  var raw = termIn.value.trim();
+  termIn.value = '';
+  if(!raw) return;
+  termPrint('C:\\小站> ' + raw);
+  var cmd = raw.toLowerCase().split(/\s+/)[0];
+  if(TERM_CMDS[cmd]) TERM_CMDS[cmd]();
+  else termPrint("'" + raw + "' 不是内部或外部命令, 也不是可运行的程序。 (试试 help)");
+});
+
+/* ================= Konami 彩蛋: ↑↑↓↓←→←→BA ================= */
+var KONAMI = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'];
+var konBuf = [];
+document.addEventListener('keydown', function(e){
+  var tag = (e.target && e.target.tagName) || '';
+  if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+  konBuf.push((e.key || '').toLowerCase());
+  if(konBuf.length > KONAMI.length) konBuf.shift();
+  if(konBuf.join(',') === KONAMI.join(',')){
+    konBuf = [];
+    var b = document.body;
+    b.classList.remove('konami'); void b.offsetWidth; b.classList.add('konami');
+    confetti();
+    toast('↑↑↓↓←→←→BA — 老玩家, 鉴定完毕。');
+    setTimeout(function(){ b.classList.remove('konami'); }, 10000);
+  }
+});
+
+/* ================= 闲置屏保: 60 秒不动, 船在星空里自己开 ================= */
+if(!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)){
+  var saver = $('#saver'), saverCv = $('#saverFx'), saverCtx = saverCv.getContext('2d');
+  var saverOn = false, saverRAF = null, saverTimer = null, saverStars = [];
+  var saverBoat = document.createElement('canvas');
+  drawSprite(saverBoat, boatSkinName(), 3);
+  function sizeSaver(){
+    saverCv.width = window.innerWidth; saverCv.height = window.innerHeight;
+    saverStars = [];
+    for(var i = 0; i < 90; i++){
+      saverStars.push({x:Math.random() * saverCv.width, y:Math.random() * saverCv.height * .8,
+        r:Math.random() * 1.6 + .5, p:Math.random() * 6.28, s:Math.random() * 1.5 + .5});
+    }
+  }
+  function saverLoop(t){
+    if(!saverOn) return;
+    var W = saverCv.width, H = saverCv.height;
+    saverCtx.fillStyle = '#050505';
+    saverCtx.fillRect(0, 0, W, H);
+    for(var i = 0; i < saverStars.length; i++){
+      var s = saverStars[i];
+      saverCtx.globalAlpha = .2 + .6 * Math.abs(Math.sin(t / 1000 * s.s + s.p));
+      saverCtx.fillStyle = '#cfe0ff';
+      saverCtx.fillRect(s.x, s.y, s.r, s.r);
+    }
+    saverCtx.globalAlpha = 1;
+    var bx = (t / 26) % (W + 240) - 120;
+    var by = H * .42 + Math.sin(t / 900) * 16;
+    saverCtx.drawImage(saverBoat, bx, by);
+    saverRAF = requestAnimationFrame(saverLoop);
+  }
+  function startSaver(){
+    if(saverOn) return;
+    saverOn = true;
+    sizeSaver();
+    saver.classList.add('show');
+    saverRAF = requestAnimationFrame(saverLoop);
+  }
+  function stopSaver(){
+    saverOn = false;
+    if(saverRAF) cancelAnimationFrame(saverRAF);
+    saver.classList.remove('show');
+  }
+  function poke(){
+    clearTimeout(saverTimer);
+    if(saverOn) stopSaver();
+    saverTimer = setTimeout(startSaver, 60000);
+  }
+  ['mousemove','keydown','click','scroll','touchstart'].forEach(function(ev){
+    document.addEventListener(ev, poke, {passive:true});
+  });
+  window.addEventListener('resize', function(){ if(saverOn) sizeSaver(); });
+  poke();
+}
+
+/* ================= 漂流瓶: 从留言里随机捞一条 ================= */
+var bottleBusy = false;
+function lootBottle(){
+  var out = $('#bottleResult');
+  if(bottleBusy) return;
+  bottleBusy = true;
+  out.innerHTML = '<div class="gb-empty">正在海里撒网……</div>';
+  var req = gbCache.length ? Promise.resolve(gbCache) : gbFetchAll();
+  req.then(function(all){
+    gbCache = all;
+    bottleBusy = false;
+    if(!all.length){
+      out.innerHTML = '<div class="gb-empty">海里空空的, 一条瓶子都没有——去留言板塞第一个瓶子吧。</div>';
+      return;
+    }
+    var c = pick(all);
+    var days = Math.max(0, Math.round((Date.now() - new Date(c.date).getTime()) / 86400000));
+    var snippet = c.body.length > 64 ? c.body.slice(0, 64) + '……' : c.body;
+    out.innerHTML = '<div class="bottle-card">🍶 捞到了一个瓶子, 是 <b>' + escHtml(c.author) + '</b> 塞的:<br>“' + escHtml(snippet) + '”' +
+      '<div class="b-meta">在海里漂了 ' + days + ' 天 · <a href="' + c.url + '" target="_blank" rel="noopener">查看原留言</a></div></div>';
+  }).catch(function(){
+    bottleBusy = false;
+    out.innerHTML = '<div class="gb-empty">网破了个洞, 没捞上来。稍后再试。</div>';
+  });
+}
+$('#bottleBtn').addEventListener('click', function(){ lootBottle(); });
+
+/* ================= 船舱日记: 按天轮换, 可翻页 ================= */
+var DIARY = [
+  ['2026-08-21', '小站建成, 船下水。说下水, 其实只是把 index.html 推了上去。'],
+  ['2026-08-23', '今天没有风, 也没有访客。给船加了一盏灯, 自己看着亮。'],
+  ['2026-08-25', '有位旅客连点了三下小船, 水花溅了我一脸。挺好, 说明彩蛋没白写。'],
+  ['2026-08-27', '留言板通了! 第一条留言是我自己写的, 权当抛砖引玉——砖有了, 玉呢?'],
+  ['2026-08-29', '梦见小站被搬到 3.5 英寸软盘上, 一张还装不下, 急醒了。'],
+  ['2026-08-31', '像素猫的眼睛有点发绿光。查了半天, 不是 bug, 是它本来就这么酷。'],
+  ['2026-09-02', '有人搜索"船", 搜到了留言板。我觉得搜索引擎比我还懂这个站。'],
+  ['2026-09-04', '一段排版把文字挤成了 45 像素宽, 险些酿成海难, 已连夜抢修。'],
+  ['2026-09-05', '相册的灯笼自己会发光了。省下一笔电费, 用来买了新帆。'],
+  ['2026-09-06', '夜航第一晚。海面很静, 只有 CSS 在轻轻作响。'],
+  ['2026-09-08', '终端里有人输入了 sudo。醒醒, 这条船不归你管。'],
+  ['1970-01-01', '这一天什么都没发生, 但所有航程都从它开始数起。']
+];
+var diaryIdx = Math.floor(Date.now() / 86400000) % DIARY.length;
+function renderDiary(){
+  $('#diaryDate').textContent = DIARY[diaryIdx][0];
+  $('#diaryText').textContent = DIARY[diaryIdx][1];
+}
+$('#diaryPrev').addEventListener('click', function(){
+  diaryIdx = (diaryIdx + DIARY.length - 1) % DIARY.length;
+  renderDiary();
+});
+$('#diaryNext').addEventListener('click', function(){
+  diaryIdx = (diaryIdx + 1) % DIARY.length;
+  renderDiary();
+});
+renderDiary();
 </script>
 </body>
 </html>
