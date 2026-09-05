@@ -54,18 +54,18 @@
 /* 迷你版像素画: 只保留上色+描边, 画一条侧翻的小船 */
 var pal = { A:'#faf3e0', B:'#d3b98c', C:'#9a7350', D:'#6b4a30', P:'#5a4632', R:'#cf5c3f' };
 var rows = [
-  '.......PR.......',
-  '.......P........',
+  '........PR......',
+  '........P.......',
+  '.......AB.......',
   '......AAB.......',
-  '.....AAAAB......',
-  '....AAAABBB.....',
-  '...AAAAABBBB....',
-  '..AAAAAABBBBB...',
-  '.AAAAAAABBBBBB..',
-  '....DDDDDDDD....',
-  '...DCCCCCCCCD...',
-  '..DDCCCCCCCCDD..',
-  '.DDDDDDDDDDDDDD.'
+  '.....AAAB.......',
+  '....AAAAB.......',
+  '...AAAAAB.......',
+  '..AAAAAAB.......',
+  '...DDDDDDDDDD...',
+  '....DCCCCCCD....',
+  '.....DCCCCD.....',
+  '......DDDD......'
 ];
 var scale = 5, pad = 2, cols = 16, rowsN = rows.length;
 var cv = document.getElementById('capBoat');

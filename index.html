@@ -295,7 +295,13 @@
   body.night .bottle-card{background:#1a2338; border-left-color:#33405f; color:#c8cfdd}
   body.night .diary{background:#1a2338; border-color:#2c3854; color:#c8cfdd}
   body.night .diary-head{color:#8fb4e8}
+  body.night .diary-text{color:#c3cbdc}
+  body.night .diary-date{color:#8b97b0}
   body.night .diary button{background:#1c2740; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .gb-search button, body.night .gb-bottle button{background:#1c2740; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .gb-search button:active, body.night .gb-bottle button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .bottle-card b{color:#8fbf8f}
+  body.night .bottle-card .b-meta a{color:#7fb0f0}
   body.night footer{color:#7d8cab; border-color:#2c3854}
   body.night #toast{background:#161e30; color:#c8cfdd; border-color:#3a4763 #101828 #101828 #3a4763}
   body.night #boatOdo{background:#161e30; border-color:#2c3854; color:#8b97b0}
@@ -646,18 +652,18 @@ var SPRITES = {
     shadow: '#2b1f15',
     pal: { A:'#faf3e0', B:'#d3b98c', C:'#9a7350', D:'#6b4a30', P:'#5a4632', R:'#cf5c3f' },
     rows: [
-      '.......PR.......',
-      '.......P........',
+      '........PR......',
+      '........P.......',
+      '.......AB.......',
       '......AAB.......',
-      '.....AAAAB......',
-      '....AAAABBB.....',
-      '...AAAAABBBB....',
-      '..AAAAAABBBBB...',
-      '.AAAAAAABBBBBB..',
-      '....DDDDDDDD....',
-      '...DCCCCCCCCD...',
-      '..DDCCCCCCCCDD..',
-      '.DDDDDDDDDDDDDD.'
+      '.....AAAB.......',
+      '....AAAAB.......',
+      '...AAAAAB.......',
+      '..AAAAAAB.......',
+      '...DDDDDDDDDD...',
+      '....DCCCCCCD....',
+      '.....DCCCCD.....',
+      '......DDDD......'
     ]
   },
   /* 黑猫: 绿眼睛两格高光, 粉耳内, 灰胸毛, 胡须 */
@@ -1452,8 +1458,9 @@ $$('#startMenu button[data-go]').forEach(function(b){
 $('#startBottle').addEventListener('click', function(){
   $('#startMenu').classList.remove('open');
   $('#startBtn').classList.remove('on');
-  document.querySelector('#guestbook').scrollIntoView({behavior:'smooth'});
-  setTimeout(function(){ lootBottle(); }, 600);
+  /* 桌面端侧栏粘顶, 直接锚到留言板时下方的瓶子按钮可能在屏幕外; 滚到页底让整条侧栏露出来 */
+  document.documentElement.scrollTop = document.documentElement.scrollHeight;
+  setTimeout(function(){ lootBottle(); }, 450);
 });
 $('#startShutdown').addEventListener('click', function(){
   $('#startMenu').classList.remove('open');
