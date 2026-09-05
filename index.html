@@ -257,16 +257,12 @@
     background:#c9c9c9; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; color:#222}
   #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
   #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
-  /* 快捷启动区: 统一银色凸起底 + 统一"黑屏小徽标"(同尺寸/同字体, 仅字色区分应用) */
+  /* 快捷启动区: 统一银色凸起底, 徽标统一任务栏灰(夜航整条任务栏换深色) */
   #tbCmd, #tbHelp, #tbCalc, #tbMine{height:26px; display:flex; align-items:center; justify-content:center;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0 4px}
   #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  .tb-badge{min-width:22px; height:16px; padding:0 3px; background:#111; border:1px solid #3a3f3a;
-    font:bold 10px/14px Consolas,monospace; display:flex; align-items:center; justify-content:center}
-  .b-green{color:#39d353}
-  .b-blue{color:#7fb0f0}
-  .b-amber{color:#ffd166}
-  #tbMine .tb-badge{padding:0 2px}
+  .tb-badge{min-width:22px; height:16px; display:flex; align-items:center; justify-content:center;
+    font:bold 10px/14px Consolas,monospace; color:#333}
 
   /* ---------- 夜航模式 ---------- */
   body.night{background-color:#0d1322;
@@ -347,6 +343,46 @@
   body.night .mine-foot #mineFlagMode{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night .mine-foot #mineFlagMode.on{background:#3d4f7d}
   body.night .mine-best{color:#8b97b0}
+
+  /* 任务栏夜航主题: 整条换深夜色, 徽标文字变亮 */
+  body.night #taskbar{background:#1a2338; border-top-color:#3a4763}
+  body.night #startBtn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night #startBtn:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine{
+    background:#243050; border-color:#3a4763 #101828 #101828 #3a4763}
+  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active{
+    border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .tb-badge{color:#c8cfdd}
+  body.night #tray{background:#243050; border-color:#101828 #3a4763 #3a4763 #101828; color:#c8cfdd}
+  body.night #nightBtn{color:#c8cfdd}
+
+  /* 日历 */
+  .cal{border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; background:#f2ecd9; padding:6px; margin-bottom:10px}
+  .cal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:4px}
+  .cal-title{font-family:"SimHei","黑体",sans-serif; font-size:13.5px; color:#4a3f2c}
+  .cal-head button{width:26px; height:22px; font-size:13px; color:#222; background:#c9c9c9;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0}
+  .cal-head button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:2px}
+  .cal-w{text-align:center; font-size:11px; color:#8a7d5f; padding:2px 0}
+  .cal-d{position:relative; border:none; background:transparent; font-family:Consolas,monospace;
+    font-size:12px; padding:4px 0; color:#2e2a22}
+  .cal-d.mark{cursor:pointer; font-weight:bold}
+  .cal-d.mark:hover{background:#e8e0cc}
+  .cal-d.mark::after{content:''; position:absolute; left:50%; bottom:0; width:5px; height:5px;
+    margin-left:-2.5px; border-radius:50%; background:#d33}
+  .cal-d.sel{background:#7c9c66; color:#fff}
+  .cal-d.sel::after{background:#fff}
+  .cal-d.today:not(.sel){box-shadow:inset 0 0 0 1px #d33}
+  body.night .cal{background:#161e30; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .cal-title{color:#d8e2f5}
+  body.night .cal-head button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .cal-w{color:#7d8cab}
+  body.night .cal-d{color:#c8cfdd}
+  body.night .cal-d.mark:hover{background:#243050}
+  body.night .cal-d.mark::after{background:#ff6b5a}
+  body.night .cal-d.sel{background:#3d6fd0; color:#fff}
+  body.night .cal-d.today:not(.sel){box-shadow:inset 0 0 0 1px #ff6b5a}
 
   /* ---------- 终端 ---------- */
   #term{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:250; width:min(760px,94vw);
@@ -588,7 +624,7 @@
 
     <nav class="menu">
       <a href="#about">关于我</a>
-      <a href="#now">近况</a>
+      <a href="#now">日记</a>
       <a href="#gallery">相册</a>
       <a href="#guestbook">留言板</a>
     </nav>
@@ -617,18 +653,21 @@
       </section>
 
       <section id="now">
-        <h2>近况</h2>
-        <ul class="log">
-          <li><span class="log-date">2026-08-13</span><a href="https://github.com/WEZHCE/chessboard" target="_blank" rel="noopener">国际象棋棋盘页</a>又更新了一版。</li>
-          <li><span class="log-date">2026-08-05</span><a href="https://github.com/WEZHCE/snake_game0011" target="_blank" rel="noopener">贪吃蛇游戏</a>更新; <a href="https://github.com/WEZHCE/City-Promotion-Page" target="_blank" rel="noopener">城市宣传页系列</a>也更新了——看看有没有你的家乡。</li>
-          <li><span class="log-date">2026-08-03</span><a href="https://github.com/WEZHCE/snake_game0011" target="_blank" rel="noopener">贪吃蛇</a> v7.10 上线, 顺手做了个<a href="https://github.com/WEZHCE/snake-game-v7-promo" target="_blank" rel="noopener">公开宣传页</a>。</li>
-          <li><span class="log-date">2026-07-08</span>写了个基于 <a href="https://github.com/WEZHCE/--deep-seek-v4-" target="_blank" rel="noopener">deepseek 的小工具</a>, 在仓库描述里我诚实地写了"没用"。</li>
-        </ul>
+        <h2>船舱日记</h2>
         <div class="diary">
-          <div class="diary-head">🧭 船舱日记<span class="diary-date" id="diaryDate"></span>
+          <div class="cal">
+            <div class="cal-head">
+              <button id="calPrev" type="button" title="上个月">‹</button>
+              <span class="cal-title" id="calTitle"></span>
+              <button id="calNext" type="button" title="下个月">›</button>
+            </div>
+            <div class="cal-grid" id="calGrid"></div>
+          </div>
+          <div class="diary-head">
+            🧭 <span class="diary-date" id="diaryDate"></span>
             <span class="diary-nav">
-              <button id="diaryPrev" title="前一天" type="button">‹</button>
-              <button id="diaryNext" title="后一天" type="button">›</button>
+              <button id="diaryPrev" title="前一条" type="button">‹</button>
+              <button id="diaryNext" title="后一条" type="button">›</button>
             </span>
           </div>
           <div class="diary-text" id="diaryText"></div>
@@ -701,9 +740,9 @@
 <!-- ================= 任务栏 ================= -->
 <div id="taskbar">
   <button id="startBtn" type="button">⛵ 开始</button>
-  <button id="tbCmd" type="button" title="cmd.exe — 命令提示符 (按 ~ 也行)"><span class="tb-badge b-green">C:\_</span></button>
-  <button id="tbHelp" type="button" title="帮助.chm — 全站彩蛋使用手册"><span class="tb-badge b-blue">?</span></button>
-  <button id="tbCalc" type="button" title="计算器"><span class="tb-badge b-amber">=</span></button>
+  <button id="tbCmd" type="button" title="cmd.exe — 命令提示符 (按 ~ 也行)"><span class="tb-badge">C:\_</span></button>
+  <button id="tbHelp" type="button" title="帮助.chm — 全站彩蛋使用手册"><span class="tb-badge">?</span></button>
+  <button id="tbCalc" type="button" title="计算器"><span class="tb-badge">=</span></button>
   <button id="tbMine" type="button" title="扫雷.EXE — 复古扫雷"><span class="tb-badge"><canvas id="tbMineCv"></canvas></span></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
@@ -712,7 +751,7 @@
 </div>
 <div id="startMenu">
   <button data-go="#about" type="button">📄 关于我</button>
-  <button data-go="#now" type="button">🧭 近况</button>
+  <button data-go="#now" type="button">🧭 日记</button>
   <button data-go="#gallery" type="button">🖼 像素相册</button>
   <button data-go="#guestbook" type="button">💬 留言板</button>
   <div class="sm-sep"></div>
@@ -961,11 +1000,11 @@ var SPRITES = {
       '.......HH.......'
     ]
   },
-  /* 扫雷的小地雷: 任务栏徽标 + 游戏通用 (8×7) */
+  /* 扫雷的小地雷: 任务栏徽标用, 夜航时会换成亮色重画 (8×7) */
   mine: {
     out: null,
     shadow: null,
-    pal: { X:'#141414', W:'#f5f5f5' },
+    pal: { X:'#333333', W:'#c9c9c9' },
     rows: [
       '...X....',
       '..X.X...',
@@ -1585,7 +1624,7 @@ $('#runDays').addEventListener('click', function(){
 /* 点板块标题: 每个板块一句吐槽 */
 var H2_LINES = {
   about: '家底全在这了, 没藏着。',
-  now: '更没更新, 一目了然。',
+  now: '红点标过的日子, 船都出过海。',
   gallery: '一格一格画出来的, 别嫌少。',
   guestbook: '来都来了, 说两句?'
 };
@@ -1635,6 +1674,9 @@ function applyNight(on){
   document.body.classList.toggle('night', on);
   $('#nightBtn').textContent = on ? '熄灯' : '点灯';
   $('#nightBtn').title = on ? '夜航中: 点我回到白天' : '夜航灯: 点我开关(19:00~6:00 自动点)';
+  /* 任务栏地雷徽标跟着换亮/暗重画 */
+  SPRITES.mine.pal = on ? { X:'#c8cfdd', W:'#1a2338' } : { X:'#333333', W:'#c9c9c9' };
+  drawSprite($('#tbMineCv'), 'mine', 1);
 }
 applyNight(nightOn);
 $('#nightBtn').addEventListener('click', function(){
@@ -1906,6 +1948,8 @@ function makeDraggable(win, handle){
 }
 makeDraggable(term, $('#term .titlebar'));
 makeDraggable($('#helpWin'), $('#helpWin .titlebar'));
+makeDraggable($('#calcWin'), $('#calcWin .titlebar'));
+makeDraggable($('#mineWin'), $('#mineWin .titlebar'));
 function helpToggle(open){
   var w = $('#helpWin');
   var will = (open === undefined) ? !w.classList.contains('open') : open;
@@ -2232,35 +2276,95 @@ function lootBottle(){
 }
 $('#bottleBtn').addEventListener('click', function(){ lootBottle(); });
 
-/* ================= 船舱日记: 按天轮换, 可翻页 ================= */
-var DIARY = [
-  ['2026-08-21', '小站建成, 船下水。说下水, 其实只是把 index.html 放进了文件夹。'],
-  ['2026-08-31', '大日子: 全站推上 GitHub, 留言板也通了。累但开心, 像把船真正放进海里。'],
-  ['2026-08-31', '黑猫和灯笼今天入住相册。灯笼号称自己会发光, 先记下这句牛皮。'],
-  ['2026-08-31', '便利贴开始每天编宜忌, 留言搜索悄悄上线。还有位陌生旅客扔下一句"!？强强 !?"就走, 看不懂, 但大受震撼。'],
-  ['2026-09-03', '无事发生的一天。记一笔, 证明船没翻。'],
-  ['2026-09-05', '一段排版把文字挤成了 45 像素宽, 险些酿成海难, 已连夜抢修。'],
-  ['2026-09-05', '像素猫换了绿眼睛, 灯笼的牛皮也兑现了——真的会发光。'],
-  ['2026-09-05', '船舱里多了个终端, 有人一上来就 sudo。醒醒, 这条船不归你管。'],
-  ['2026-09-05', '漂流瓶今天下水, 一网就捞到了五天前的瓶子。海比想象中勤快。'],
-  ['2026-09-05', '天黑有夜航, 闲着有屏保, 小船开始记航程。今天加的班, 全在这句话里。'],
-  ['2026-09-05', '留言板加高了。评论区这种东西, 一旦看顺眼了就嫌它小。'],
-  ['1970-01-01', '这一天什么都没发生, 但所有航程都从它开始数起。']
+/* ================= 船舱日记: 近况+日记统一时间线, 日历红点标记录 ================= */
+var ENTRIES = [
+  { d:'1970-01-01', h:'这一天什么都没发生, 但所有航程都从它开始数起。' },
+  { d:'2026-07-08', h:'写了个基于 <a href="https://github.com/WEZHCE/--deep-seek-v4-" target="_blank" rel="noopener">deepseek 的小工具</a>, 在仓库描述里我诚实地写了"没用"。' },
+  { d:'2026-08-03', h:'<a href="https://github.com/WEZHCE/snake_game0011" target="_blank" rel="noopener">贪吃蛇</a> v7.10 上线, 顺手做了个<a href="https://github.com/WEZHCE/snake-game-v7-promo" target="_blank" rel="noopener">公开宣传页</a>。' },
+  { d:'2026-08-05', h:'<a href="https://github.com/WEZHCE/snake_game0011" target="_blank" rel="noopener">贪吃蛇游戏</a>更新; <a href="https://github.com/WEZHCE/City-Promotion-Page" target="_blank" rel="noopener">城市宣传页系列</a>也更新了——看看有没有你的家乡。' },
+  { d:'2026-08-13', h:'<a href="https://github.com/WEZHCE/chessboard" target="_blank" rel="noopener">国际象棋棋盘页</a>又更新了一版。' },
+  { d:'2026-08-21', h:'小站建成, 船下水。说下水, 其实只是把 index.html 放进了文件夹。' },
+  { d:'2026-08-31', h:'大日子: 全站推上 GitHub, 留言板也通了。累但开心, 像把船真正放进海里。' },
+  { d:'2026-08-31', h:'黑猫和灯笼今天入住相册。灯笼号称自己会发光, 先记下这句牛皮。' },
+  { d:'2026-08-31', h:'便利贴开始每天编宜忌, 留言搜索悄悄上线。还有位陌生旅客扔下一句"!？强强 !?"就走, 看不懂, 但大受震撼。' },
+  { d:'2026-09-03', h:'无事发生的一天。记一笔, 证明船没翻。' },
+  { d:'2026-09-05', h:'一段排版把文字挤成了 45 像素宽, 险些酿成海难, 已连夜抢修。' },
+  { d:'2026-09-05', h:'像素猫换了绿眼睛, 灯笼的牛皮也兑现了——真的会发光。' },
+  { d:'2026-09-05', h:'船舱里多了个终端, 有人一上来就 sudo。醒醒, 这条船不归你管。' },
+  { d:'2026-09-05', h:'漂流瓶今天下水, 一网就捞到了五天前的瓶子。海比想象中勤快。' },
+  { d:'2026-09-05', h:'天黑有夜航, 闲着有屏保, 小船开始记航程。今天加的班, 全在这句话里。' },
+  { d:'2026-09-05', h:'留言板加高了。评论区这种东西, 一旦看顺眼了就嫌它小。' },
+  { d:'2026-09-05', h:'计算器和扫雷搬进了任务栏。这台电脑, 越来越像一台电脑了。' }
 ];
-var diaryIdx = Math.floor(Date.now() / 86400000) % DIARY.length;
-function renderDiary(){
-  $('#diaryDate').textContent = DIARY[diaryIdx][0];
-  $('#diaryText').textContent = DIARY[diaryIdx][1];
+var entryIdx = ENTRIES.length - 1;
+(function(){
+  var now = Date.now();
+  for(var i = ENTRIES.length - 1; i >= 0; i--){
+    if(new Date(ENTRIES[i].d).getTime() <= now){ entryIdx = i; return; }
+  }
+  entryIdx = 0;
+})();
+var calY = 2026, calM = 8;
+function entriesOf(ds){
+  var out = [];
+  ENTRIES.forEach(function(e, i){ if(e.d === ds) out.push(i); });
+  return out;
 }
-$('#diaryPrev').addEventListener('click', function(){
-  diaryIdx = (diaryIdx + DIARY.length - 1) % DIARY.length;
-  renderDiary();
+function calRender(){
+  $('#calTitle').textContent = calY + ' 年 ' + (calM + 1) + ' 月';
+  var grid = $('#calGrid');
+  grid.innerHTML = '';
+  ['一','二','三','四','五','六','日'].forEach(function(w){
+    var h = document.createElement('span');
+    h.className = 'cal-w'; h.textContent = w;
+    grid.appendChild(h);
+  });
+  var lead = (new Date(calY, calM, 1).getDay() + 6) % 7;
+  var days = new Date(calY, calM + 1, 0).getDate();
+  for(var i = 0; i < lead; i++) grid.appendChild(document.createElement('span'));
+  var selD = ENTRIES[entryIdx].d;
+  var now = new Date();
+  var todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  for(var d = 1; d <= days; d++){
+    var ds = calY + '-' + String(calM + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    var el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'cal-d';
+    el.textContent = d;
+    var idxs = entriesOf(ds);
+    if(idxs.length){
+      el.classList.add('mark');
+      (function(first){
+        el.addEventListener('click', function(){ showEntry(first); });
+      })(idxs[0]);
+    }
+    if(ds === selD) el.classList.add('sel');
+    if(ds === todayStr) el.classList.add('today');
+    grid.appendChild(el);
+  }
+}
+function showEntry(idx){
+  entryIdx = (idx + ENTRIES.length) % ENTRIES.length;
+  var e = ENTRIES[entryIdx];
+  $('#diaryDate').textContent = e.d;
+  $('#diaryText').innerHTML = e.h;
+  var p = e.d.split('-');
+  calY = +p[0]; calM = +p[1] - 1;
+  calRender();
+}
+$('#calPrev').addEventListener('click', function(){
+  calM--; if(calM < 0){ calM = 11; calY--; }
+  calRender();
 });
-$('#diaryNext').addEventListener('click', function(){
-  diaryIdx = (diaryIdx + 1) % DIARY.length;
-  renderDiary();
+$('#calNext').addEventListener('click', function(){
+  calM++; if(calM > 11){ calM = 0; calY++; }
+  calRender();
 });
-renderDiary();
+$('#diaryPrev').addEventListener('click', function(){ showEntry(entryIdx - 1); });
+$('#diaryNext').addEventListener('click', function(){ showEntry(entryIdx + 1); });
+var dp0 = ENTRIES[entryIdx].d.split('-');
+calY = +dp0[0]; calM = +dp0[1] - 1;
+calRender();
 </script>
 </body>
 </html>
