@@ -2128,6 +2128,7 @@ $('#mineFlagMode').addEventListener('click', function(){
   this.textContent = '⚑ 插旗: ' + (mFlagMode ? '开' : '关');
   this.classList.toggle('on', mFlagMode);
 });
+drawSprite($('#tbMineCv'), 'mine', 2);
 mineReset();
 
 /* ================= Konami 彩蛋: ↑↑↓↓←→←→BA ================= */
