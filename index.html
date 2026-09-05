@@ -468,7 +468,35 @@
     border-color:#fff #6f6f6f #6f6f6f #fff; padding:3px 8px; cursor:pointer; color:#222}
   #mineFlagMode.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
   .mine-best{font-size:11.5px; color:#555}
-  #tbMine .tb-badge canvas{display:block; image-rendering:pixelated}
+  /* ---------- 日记.EXE ---------- */
+  #diaryWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(420px,92vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #diaryWin.open{display:block}
+  #diaryWin .titlebar{cursor:move}
+  .diarywin-body{padding:8px}
+  .dw-list{max-height:150px; overflow-y:auto; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f;
+    background:#f2ecd9; margin-bottom:8px}
+  .dw-date{display:block; width:100%; text-align:left; background:transparent; border:none;
+    font-family:Consolas,monospace; font-size:12.5px; padding:5px 10px; cursor:pointer; color:#2e2a22}
+  .dw-date:hover{background:#e8e0cc}
+  .dw-date.on{background:#7c9c66; color:#fff}
+  .dw-entries{max-height:40vh; overflow-y:auto; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f;
+    background:#fbf7ec; padding:6px 12px}
+  .dw-item{padding:7px 0; border-bottom:1px dotted #c9bfa3}
+  .dw-item:last-child{border-bottom:none}
+  .dw-item-date{font-family:Consolas,monospace; font-size:11px; color:#8a7d5f; margin-bottom:2px}
+  .dw-item-text{font-size:13.5px; line-height:1.8; color:#2e2a22; word-break:break-word}
+  .dw-item-text a{color:#2038a8}
+  body.night #diaryWin{background:#1a2338; border-color:#3a4763}
+  body.night .dw-list{background:#101828; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .dw-date{color:#c8cfdd}
+  body.night .dw-date:hover{background:#243050}
+  body.night .dw-date.on{background:#3d6fd0; color:#fff}
+  body.night .dw-entries{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .dw-item{border-color:#243050}
+  body.night .dw-item-date{color:#7d8cab}
+  body.night .dw-item-text{color:#c8cfdd}
+  body.night .dw-item-text a{color:#7fb0f0}
 
   /* ---------- 屏保 ---------- */
   #saver{position:fixed; inset:0; z-index:400; background:#050505; display:none}
@@ -582,8 +610,11 @@
     .side-sticky{position:static}
     .about-grid{grid-template-columns:1fr}
     .gallery{grid-template-columns:repeat(auto-fill, minmax(150px,1fr))}
-    /* 手机上弹窗靠上放, 给输入法键盘留地方; 里程牌缩小 */
-    #term, #helpWin{top:6vh; transform:translate(-50%,0)}
+    /* 手机上弹窗靠上放, 给输入法键盘留地方; 里程牌缩小; 任务栏紧凑排布 */
+    #term, #helpWin, #diaryWin{top:6vh; transform:translate(-50%,0)}
+    #taskbar{gap:4px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary{padding:0 2px}
+    #tray{padding:0 6px}
     .help-body{max-height:56vh}
     #boatOdo{font-size:10.5px}
     footer{padding:16px 16px 20px}
@@ -751,7 +782,8 @@
   <button id="tbCmd" type="button" title="cmd.exe — 命令提示符 (按 ~ 也行)"><span class="tb-badge">C:\_</span></button>
   <button id="tbHelp" type="button" title="帮助.chm — 全站彩蛋使用手册"><span class="tb-badge">?</span></button>
   <button id="tbCalc" type="button" title="计算器"><span class="tb-badge">=</span></button>
-  <button id="tbMine" type="button" title="扫雷.EXE — 复古扫雷"><span class="tb-badge"><canvas id="tbMineCv"></canvas></span></button>
+  <button id="tbMine" type="button" title="扫雷.EXE — 复古扫雷"><span class="tb-badge">雷</span></button>
+  <button id="tbDiary" type="button" title="日记.EXE — 快速翻船舱日记"><span class="tb-badge">日</span></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
@@ -795,7 +827,7 @@
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
       <li>相册图片可点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
       <li>右下角小船: 点一下 +1 海里 (10 红帆 · 30 海鸥 · 60 金帆 · 100 夜灯)</li>
-      <li>任务栏: <b>C:\</b> 终端 · <b>?</b> 本手册 · <b>=</b> 计算器 · <b>地雷图标</b> 扫雷.EXE</li>
+      <li>任务栏: <b>C:\</b> 终端 · <b>?</b> 本手册 · <b>=</b> 计算器 · <b>雷</b> 扫雷.EXE · <b>日</b> 日记.EXE(按日期快速翻日记)</li>
     </ul>
     <div class="help-sec">🌙 这台电脑也会累</div>
     <ul>
@@ -1008,11 +1040,11 @@ var SPRITES = {
       '.......HH.......'
     ]
   },
-  /* 扫雷的小地雷: 任务栏徽标用, 夜航时会换成亮色重画 (8×7) */
+  /* 扫雷的小地雷: 已由任务栏文字徽标"雷"替代, 图标退役 (8×7) */
   mine: {
     out: null,
     shadow: null,
-    pal: { X:'#333333', W:'#c9c9c9' },
+    pal: { X:'#141414', W:'#f5f5f5' },
     rows: [
       '...X....',
       '..X.X...',
@@ -1682,9 +1714,6 @@ function applyNight(on){
   document.body.classList.toggle('night', on);
   $('#nightBtn').textContent = on ? '熄灯' : '点灯';
   $('#nightBtn').title = on ? '夜航中: 点我回到白天' : '夜航灯: 点我开关(19:00~6:00 自动点)';
-  /* 任务栏地雷徽标跟着换亮/暗重画 */
-  SPRITES.mine.pal = on ? { X:'#c8cfdd', W:'#1a2338' } : { X:'#333333', W:'#c9c9c9' };
-  drawSprite($('#tbMineCv'), 'mine', 1);
 }
 applyNight(nightOn);
 $('#nightBtn').addEventListener('click', function(){
@@ -1958,6 +1987,63 @@ makeDraggable(term, $('#term .titlebar'));
 makeDraggable($('#helpWin'), $('#helpWin .titlebar'));
 makeDraggable($('#calcWin'), $('#calcWin .titlebar'));
 makeDraggable($('#mineWin'), $('#mineWin .titlebar'));
+makeDraggable($('#diaryWin'), $('#diaryWin .titlebar'));
+
+/* ---------- 日记.EXE: 按日期快速翻船舱日记 ---------- */
+function diaryAppToggle(open){
+  var w = $('#diaryWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    dwBuildDates();
+    dwRenderList();
+    /* 默认选中: 今天的日期, 没有就是最新一天 */
+    var now = new Date();
+    var today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    dwPick(dwDates.indexOf(today) >= 0 ? today : dwDates[0]);
+  }
+}
+$('#tbDiary').addEventListener('click', function(){ diaryAppToggle(true); });
+$('#diaryWinClose').addEventListener('click', function(){ diaryAppToggle(false); });
+var dwDates = [];
+function dwBuildDates(){
+  dwDates = [];
+  var seen = {};
+  for(var i = ENTRIES.length - 1; i >= 0; i--){
+    var d = ENTRIES[i].d;
+    if(!seen[d]){ seen[d] = 1; dwDates.push(d); }
+  }
+}
+function dwRenderList(){
+  var box = $('#dwList');
+  box.innerHTML = '';
+  dwDates.forEach(function(d){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'dw-date';
+    b.textContent = d + '（' + entriesOf(d).length + ' 篇）';
+    b.addEventListener('click', function(){ dwPick(d); });
+    box.appendChild(b);
+  });
+}
+function dwPick(d){
+  $$('#dwList .dw-date').forEach(function(b){
+    b.classList.toggle('on', b.textContent.indexOf(d) === 0);
+  });
+  var box = $('#dwEntries');
+  box.innerHTML = '';
+  ENTRIES.forEach(function(e){
+    if(e.d !== d) return;
+    var item = document.createElement('div');
+    item.className = 'dw-item';
+    item.innerHTML = '<div class="dw-item-date">' + e.d + '</div><div class="dw-item-text">' + e.h + '</div>';
+    box.appendChild(item);
+  });
+  /* 和主页面的船舱日记保持同步 */
+  var idxs = entriesOf(d);
+  if(idxs.length) showEntry(idxs[0]);
+}
 function helpToggle(open){
   var w = $('#helpWin');
   var will = (open === undefined) ? !w.classList.contains('open') : open;
@@ -2181,7 +2267,6 @@ $('#mineFlagMode').addEventListener('click', function(){
   this.textContent = '⚑ 插旗: ' + (mFlagMode ? '开' : '关');
   this.classList.toggle('on', mFlagMode);
 });
-drawSprite($('#tbMineCv'), 'mine', 1);
 mineReset();
 
 /* ================= Konami 彩蛋: ↑↑↓↓←→←→BA ================= */
