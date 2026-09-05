@@ -767,13 +767,18 @@ function drawSprite(cv, name, scale){
     }
   }
 
-  /* 本体: 顶部受光提亮、底部背光压暗, 出体积感 */
+  /* 本体: 顶部受光提亮、底部背光压暗, 出体积感。
+     提亮幅度按颜色亮度衰减——浅色再提就融进纸底了(灯笼帽顶曾因此"缺一块") */
   for(var y = 0; y < rows.length; y++){
     for(var x = 0; x < cols; x++){
       if(!filled(x, y)) continue;
       var base = sp.pal[rows[y][x]];
       var c = base;
-      if(!filled(x, y - 1)) c = tint(base, .3);
+      if(!filled(x, y - 1)){
+        var n = parseInt(base.slice(1), 16);
+        var lum = (.299 * ((n >> 16) & 255) + .587 * ((n >> 8) & 255) + .114 * (n & 255)) / 255;
+        c = tint(base, .3 * (1 - lum));
+      }
       else if(!filled(x, y + 1)) c = tint(base, -.2);
       ctx.fillStyle = c;
       ctx.fillRect(px(x), py(y), scale, scale);
