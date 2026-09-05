@@ -255,12 +255,13 @@
     background:#c9c9c9; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; color:#222}
   #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
   #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
-  /* 快捷启动区 */
-  #tbCmd, #tbHelp{width:34px; height:26px; display:flex; align-items:center; justify-content:center;
+  /* 快捷启动区: 统一银色凸起底, 徽标在按钮内部表达 */
+  #tbCmd, #tbHelp{width:36px; height:26px; display:flex; align-items:center; justify-content:center;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0}
   #tbCmd:active, #tbHelp:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  #tbCmd{background:#111; color:#39d353; font-family:Consolas,monospace; font-size:11px; font-weight:bold}
-  #tbHelp{background:#fff; color:#2038a8; font-size:14px; font-weight:bold; font-family:Georgia,serif}
+  #tbCmd .cmd-ico{font-family:Consolas,monospace; font-size:9px; line-height:1; background:#111;
+    color:#39d353; padding:3px 2px; border:1px solid #444}
+  #tbHelp .help-ico{color:#1a3a8a; font-weight:bold; font-size:15px; font-family:Georgia,serif; line-height:1}
 
   /* ---------- 夜航模式 ---------- */
   body.night{background-color:#0d1322;
@@ -318,15 +319,15 @@
   body.night #boatPet.boatLit{filter:drop-shadow(0 0 10px rgba(255,202,102,.9))}
 
   /* ---------- 终端 ---------- */
-  #term{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:250; width:min(560px,92vw);
+  #term{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:250; width:min(760px,94vw);
     display:none; background:#111; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.35)}
   #term.open{display:block}
-  #termOut{height:280px; overflow-y:auto; padding:10px 12px; font-family:Consolas,"Courier New",monospace;
-    font-size:13px; color:#39d353; line-height:1.7; white-space:pre-wrap; word-break:break-all}
-  #termRow{display:flex; align-items:center; gap:6px; padding:8px 12px; border-top:1px solid #333}
-  #termRow label{font-family:Consolas,monospace; font-size:13px; color:#39d353; white-space:nowrap}
+  #termOut{height:46vh; min-height:300px; overflow-y:auto; padding:12px 14px; font-family:Consolas,"Courier New",monospace;
+    font-size:14px; color:#39d353; line-height:1.7; white-space:pre-wrap; word-break:break-all}
+  #termRow{display:flex; align-items:center; gap:6px; padding:9px 14px; border-top:1px solid #333}
+  #termRow label{font-family:Consolas,monospace; font-size:14px; color:#39d353; white-space:nowrap}
   #termIn{flex:1; min-width:0; border:none; outline:none; background:#111; color:#39d353;
-    font-family:Consolas,"Courier New",monospace; font-size:13px}
+    font-family:Consolas,"Courier New",monospace; font-size:14px}
   #term .titlebar{cursor:move}
 
   /* ---------- 帮助.chm ---------- */
@@ -620,8 +621,8 @@
 <!-- ================= 任务栏 ================= -->
 <div id="taskbar">
   <button id="startBtn" type="button">⛵ 开始</button>
-  <button id="tbCmd" type="button" title="cmd.exe — 命令提示符 (按 ~ 也行)">C:\</button>
-  <button id="tbHelp" type="button" title="帮助.chm — 全站彩蛋使用手册">?</button>
+  <button id="tbCmd" type="button" title="cmd.exe — 命令提示符 (按 ~ 也行)"><span class="cmd-ico">C:\_</span></button>
+  <button id="tbHelp" type="button" title="帮助.chm — 全站彩蛋使用手册"><span class="help-ico">?</span></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
