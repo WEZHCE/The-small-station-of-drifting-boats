@@ -72,9 +72,9 @@
 
 **AI 船员**
 
-| DeepSeek | GLM |
+| [DeepSeek](https://github.com/deepseek-ai) | [GLM](https://github.com/zai-org) |
 |:---:|:---:|
-| <img src="docs/deepseek.png" width="88" alt="DeepSeek"> | <img src="docs/glm.png" width="88" alt="GLM"> |
+| <a href="https://github.com/deepseek-ai"><img src="docs/deepseek.png" width="88" alt="DeepSeek"></a> | <a href="https://github.com/zai-org"><img src="docs/glm.png" width="88" alt="GLM"></a> |
 | AI 助手 | AI 助手 |
 
 *这台"电脑"一半是人手写的, 另一半是和 AI 一句一句聊出来的。*
