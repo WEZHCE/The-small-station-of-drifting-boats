@@ -109,6 +109,8 @@
   .log{list-style:none}
   .log li{margin:10px 0; padding:8px 13px; background:#f8f3e4; border-left:4px solid #d8cba6; font-size:15px}
   .log-date{color:#8c7c5c; font-weight:bold; font-size:13px; margin-right:10px; white-space:nowrap}
+  .log li a{color:#2038a8; text-decoration:underline}
+  .log li a:hover{color:#fff; background:#2038a8}
 
   /* 相册 */
   .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:30px 24px; padding:6px 0 10px}
@@ -274,6 +276,7 @@
   body.night .about-text .hand{color:#7d8cab}
   body.night .log li{background:#1a2338; border-left-color:#33405f; color:#c8cfdd}
   body.night .log-date{color:#7d8cab}
+  body.night .log li a{color:#7fb0f0}
   body.night .photo{background:#202a44; border-color:#33405f}
   body.night .photo::before{background:rgba(90,110,150,.45)}
   body.night .photo canvas{background:#242f4d; border-color:#2c3854}
@@ -490,6 +493,7 @@
         <div class="about-grid">
           <table class="info-table">
             <tr><th>昵称</th><td>船只悠悠</td></tr>
+            <tr><th>生日</th><td>11月13日</td></tr>
             <tr><th>常出没</th><td><a href="https://github.com/WEZHCE" target="_blank" rel="noopener">GitHub</a> · <a href="https://space.bilibili.com/1309420497" target="_blank" rel="noopener">B站空间</a></td></tr>
             <tr><th>爱好</th><td>小网页 / 小游戏 / 城市宣传页</td></tr>
             <tr><th>技能</th><td>HTML · CSS · JS, 一点 Python</td></tr>
@@ -507,10 +511,10 @@
       <section id="now">
         <h2>近况</h2>
         <ul class="log">
-          <li><span class="log-date">2026-08-13</span>国际象棋棋盘页又更新了一版。</li>
-          <li><span class="log-date">2026-08-05</span>贪吃蛇游戏更新; 城市宣传页系列也更新了——看看有没有你的家乡。</li>
-          <li><span class="log-date">2026-08-03</span>贪吃蛇 v7.10 上线, 顺手做了个公开宣传页。</li>
-          <li><span class="log-date">2026-07-08</span>写了个基于 deepseek 的小工具, 在仓库描述里我诚实地写了"没用"。</li>
+          <li><span class="log-date">2026-08-13</span><a href="https://github.com/WEZHCE/chessboard" target="_blank" rel="noopener">国际象棋棋盘页</a>又更新了一版。</li>
+          <li><span class="log-date">2026-08-05</span><a href="https://github.com/WEZHCE/snake_game0011" target="_blank" rel="noopener">贪吃蛇游戏</a>更新; <a href="https://github.com/WEZHCE/City-Promotion-Page" target="_blank" rel="noopener">城市宣传页系列</a>也更新了——看看有没有你的家乡。</li>
+          <li><span class="log-date">2026-08-03</span><a href="https://github.com/WEZHCE/snake_game0011" target="_blank" rel="noopener">贪吃蛇</a> v7.10 上线, 顺手做了个<a href="https://github.com/WEZHCE/snake-game-v7-promo" target="_blank" rel="noopener">公开宣传页</a>。</li>
+          <li><span class="log-date">2026-07-08</span>写了个基于 <a href="https://github.com/WEZHCE/--deep-seek-v4-" target="_blank" rel="noopener">deepseek 的小工具</a>, 在仓库描述里我诚实地写了"没用"。</li>
         </ul>
         <div class="diary">
           <div class="diary-head">🧭 船舱日记<span class="diary-date" id="diaryDate"></span>
@@ -1078,6 +1082,13 @@ var YI = ['摸鱼','写代码','睡觉','发呆','吃泡面','存档'];
 var JI = ['加班','熬夜','改需求','删库','内卷','手滑'];
 var dayIdx = Math.floor(Date.now() / 86400000);
 $('#snYiJi').textContent = '宜: ' + YI[dayIdx % YI.length] + ' · 忌: ' + JI[dayIdx % JI.length] + ' (黄历友情编造)';
+
+/* 船长生日报: 11 月 13 日彩带管够 */
+var nowD = new Date();
+if(nowD.getMonth() === 10 && nowD.getDate() === 13){
+  confetti();
+  toast('今天是 11 月 13 日, 船长的生日! 彩带管够。');
+}
 
 var WD = ['日','一','二','三','四','五','六'];
 function tick(){
