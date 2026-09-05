@@ -255,6 +255,12 @@
     background:#c9c9c9; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; color:#222}
   #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
   #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
+  /* 快捷启动区 */
+  #tbCmd, #tbHelp{width:34px; height:26px; display:flex; align-items:center; justify-content:center;
+    background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0}
+  #tbCmd:active, #tbHelp:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  #tbCmd{background:#111; color:#39d353; font-family:Consolas,monospace; font-size:11px; font-weight:bold}
+  #tbHelp{background:#fff; color:#2038a8; font-size:14px; font-weight:bold; font-family:Georgia,serif}
 
   /* ---------- 夜航模式 ---------- */
   body.night{background-color:#0d1322;
@@ -321,6 +327,27 @@
   #termRow label{font-family:Consolas,monospace; font-size:13px; color:#39d353; white-space:nowrap}
   #termIn{flex:1; min-width:0; border:none; outline:none; background:#111; color:#39d353;
     font-family:Consolas,"Courier New",monospace; font-size:13px}
+  #term .titlebar{cursor:move}
+
+  /* ---------- 帮助.chm ---------- */
+  #helpWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(540px,92vw);
+    display:none; background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #helpWin.open{display:block}
+  #helpWin .titlebar{cursor:move}
+  .help-body{padding:14px 18px 16px; max-height:64vh; overflow-y:auto; font-size:13.5px; line-height:1.85; color:#2e2a22}
+  .help-hero{background:#f2ecd9; border:1px dashed #c9bfa3; padding:8px 12px; margin-bottom:12px; color:#6b5f45}
+  .help-sec{font-family:"SimHei","黑体",sans-serif; font-size:14.5px; color:#4a3f2c; border-left:5px solid #7c9c66; padding-left:8px; margin:12px 0 4px}
+  .help-body ul{list-style:none; margin:0; padding:0}
+  .help-body li{padding:2px 0 2px 14px; position:relative}
+  .help-body li::before{content:'·'; position:absolute; left:2px; color:#8a7d5f}
+  .help-body b{color:#2038a8}
+  .help-foot{text-align:center; color:#a09375; font-size:12px; margin-top:12px; border-top:1px dotted #c9bfa3; padding-top:8px}
+  body.night #helpWin{background:#161e30; border-color:#3a4763}
+  body.night .help-body{color:#c8cfdd}
+  body.night .help-hero{background:#1c2740; border-color:#2c3854; color:#8b97b0}
+  body.night .help-sec{color:#d8e2f5; border-left-color:#4a7ab0}
+  body.night .help-body b{color:#7fb0f0}
+  body.night .help-foot{color:#7d8cab; border-color:#2c3854}
 
   /* ---------- 屏保 ---------- */
   #saver{position:fixed; inset:0; z-index:400; background:#050505; display:none}
@@ -593,6 +620,8 @@
 <!-- ================= 任务栏 ================= -->
 <div id="taskbar">
   <button id="startBtn" type="button">⛵ 开始</button>
+  <button id="tbCmd" type="button" title="cmd.exe — 命令提示符 (按 ~ 也行)">C:\</button>
+  <button id="tbHelp" type="button" title="帮助.chm — 全站彩蛋使用手册">?</button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
@@ -611,11 +640,41 @@
 
 <!-- ================= 隐藏终端 ================= -->
 <div id="term">
-  <div class="titlebar"><span class="tb-title">C:\小站\command.com</span>
+  <div class="titlebar"><span class="tb-title">C:\Windows\system32\cmd.exe</span>
     <button class="tb-btn" id="termClose" title="关闭">✕</button>
   </div>
   <div id="termOut"></div>
   <div id="termRow"><label for="termIn">C:\小站&gt;</label><input id="termIn" autocomplete="off" spellcheck="false"></div>
+</div>
+
+<!-- ================= 帮助.chm ================= -->
+<div id="helpWin">
+  <div class="titlebar"><span class="tb-title">帮助.chm — 船只悠悠的小站使用手册</span>
+    <button class="tb-btn" id="helpClose" title="关闭">✕</button>
+  </div>
+  <div class="help-body">
+    <div class="help-hero">❓ 这台"电脑"上所有能玩的东西, 全都在这一页里。大部分彩蛋没有提示, 但这一页是官方外挂。</div>
+    <div class="help-sec">⌨ 快捷键与暗号</div>
+    <ul>
+      <li><b>~ / `</b> — 呼出终端 (点主窗口标题栏文字也一样)</li>
+      <li><b>↑↑↓↓←→←→BA</b> — Konami 彩虹模式</li>
+      <li><b>连按 WASD / 方向键</b> — 风浪来袭, 全船摇晃</li>
+    </ul>
+    <div class="help-sec">🖱 处处可点</div>
+    <ul>
+      <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
+      <li>相册图片可点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
+      <li>右下角小船: 点一下 +1 海里 (10 红帆 · 30 海鸥 · 60 金帆 · 100 夜灯)</li>
+      <li>任务栏的 C:\ 和 ? 就是终端和本手册的入口</li>
+    </ul>
+    <div class="help-sec">🌙 这台电脑也会累</div>
+    <ul>
+      <li>19:00~6:00 自动进入夜航模式 (托盘点灯可手动切换)</li>
+      <li>60 秒不动鼠标, 屏保自己开演, 动一下就回来</li>
+      <li>开始菜单 → 关机: CRT 坍缩收场, 电源键重新开机, 还带 BIOS 自检</li>
+    </ul>
+    <div class="help-foot">— 本手册由船长手写, 错别字概不负责 —</div>
+  </div>
 </div>
 
 <!-- ================= 闲置屏保 ================= -->
@@ -1560,7 +1619,14 @@ var term = $('#term'), termOut = $('#termOut'), termIn = $('#termIn');
 function termToggle(open){
   var will = (open === undefined) ? !term.classList.contains('open') : open;
   term.classList.toggle('open', will);
-  if(will) setTimeout(function(){ termIn.focus(); }, 60);
+  if(will){
+    frontWindow(term);
+    /* 真 cmd 每次启动都打 banner */
+    termPrint('Microsoft Windows [版本 10.0.19045.3155]');
+    termPrint('(c) 船只悠悠。保留所有权利。');
+    termPrint(' ');
+    setTimeout(function(){ termIn.focus(); }, 60);
+  }
 }
 $('#tbTitle').addEventListener('click', function(){ termToggle(true); });
 $('#termClose').addEventListener('click', function(){ termToggle(false); });
@@ -1579,14 +1645,19 @@ var TERM_CMDS = {
   'help': function(){
     ['可用命令:',
      ' help   看这份清单',
+     ' ver    报个版本',
+     ' echo   你说我再说',
+     ' tree   看看船舱结构',
+     ' start  打开 帮助.chm',
      ' about  关于本船',
      ' ship   让船开一段',
      ' bottle 捞个漂流瓶',
      ' miles  查航程',
-     ' dir    看看船舱里有什么',
+     ' dir    船舱清单',
      ' date   现在时间',
-     ' clear  清屏',
-     ' exit   关掉终端'].forEach(termPrint);
+     ' cls    清屏',
+     ' exit   关掉终端',
+     ' (↑↓ 还能翻历史命令)'].forEach(termPrint);
   },
   'about': function(){
     ['船只悠悠的小站', '一条慢悠悠的船, 泊在互联网边上。', '纯 HTML + CSS + JS 手写, 没有框架, 也没有后端。'].forEach(termPrint);
@@ -1596,6 +1667,29 @@ var TERM_CMDS = {
   },
   'sudo': function(){ termPrint('权限不足: 本船不归你管。'); },
   'date': function(){ termPrint($('#nowTime').textContent); },
+  'ver': function(){ termPrint('船只悠悠的小站 [版本 7.10.2026.0913]'); },
+  'echo': function(raw){ termPrint((raw || '').replace(/^echo\s+/i, '') || 'echo 后面得带点东西。'); },
+  'cd': function(){ termPrint('拒绝访问: 船舱重地, 闲人免进。'); },
+  'color': function(){ termPrint('拒绝: 这台显示器的配色是焊死的。'); },
+  'time': function(){ termPrint($('#nowTime').textContent); },
+  'hostname': function(){ termPrint('my-boat'); },
+  'tree': function(){
+    ['C:\\小站',
+     '├─ 船票.TXT',
+     '├─ 宜忌黄历.DB',
+     '├─ 相册',
+     '│   ├─ 黑猫.PNG',
+     '│   ├─ 蘑菇.PNG',
+     '│   ├─ 小屋.PNG',
+     '│   └─ 灯笼.PNG',
+     '└─ 彩带.EXE',
+     '       (目录是假的, 回忆是真的)'].forEach(termPrint);
+  },
+  'start': function(raw){
+    var a = (raw || '').toLowerCase();
+    if(a.indexOf('help') >= 0 || a.indexOf('chm') >= 0){ helpToggle(true); termPrint('打开 帮助.chm ... 完成。'); }
+    else termPrint('用法: start help.chm');
+  },
   'miles': function(){
     var m = getMiles();
     termPrint('当前航程: ' + m + ' 海里。' + (m >= 100 ? ' 灯已长明。' : ' 点右下角的小船能攒里程。'));
@@ -1610,17 +1704,68 @@ var TERM_CMDS = {
     lootBottle();
   }
 };
+var termHist = [], termHistIdx = 0;
 termIn.addEventListener('keydown', function(e){
   if(e.key === 'Escape'){ termToggle(false); return; }
+  if(e.key === 'ArrowUp' && termHist.length){
+    termHistIdx = termHistIdx <= 0 ? termHist.length - 1 : termHistIdx - 1;
+    termIn.value = termHist[termHistIdx] || '';
+    e.preventDefault(); return;
+  }
+  if(e.key === 'ArrowDown' && termHist.length){
+    termHistIdx = Math.min(termHist.length - 1, termHistIdx + 1);
+    termIn.value = termHist[termHistIdx] || '';
+    e.preventDefault(); return;
+  }
   if(e.key !== 'Enter') return;
   var raw = termIn.value.trim();
   termIn.value = '';
   if(!raw) return;
+  if(termHist[termHist.length - 1] !== raw) termHist.push(raw);
+  termHistIdx = termHist.length;
   termPrint('C:\\小站> ' + raw);
   var cmd = raw.toLowerCase().split(/\s+/)[0];
-  if(TERM_CMDS[cmd]) TERM_CMDS[cmd]();
+  if(TERM_CMDS[cmd]) TERM_CMDS[cmd](raw);
   else termPrint("'" + raw + "' 不是内部或外部命令, 也不是可运行的程序。 (试试 help)");
 });
+
+/* ---------- 任务栏快捷入口 + 窗口拖拽/置顶 ---------- */
+var winTopZ = 260;
+function frontWindow(win){ win.style.zIndex = ++winTopZ; }
+function makeDraggable(win, handle){
+  handle.addEventListener('mousedown', function(e){
+    if(e.target.tagName === 'BUTTON') return;
+    frontWindow(win);
+    var r = win.getBoundingClientRect();
+    var sx = e.clientX, sy = e.clientY, ox = r.left, oy = r.top;
+    win.style.transform = 'none';
+    win.style.left = ox + 'px';
+    win.style.top = oy + 'px';
+    function mv(ev){
+      win.style.left = (ox + ev.clientX - sx) + 'px';
+      win.style.top = Math.max(0, oy + ev.clientY - sy) + 'px';
+    }
+    function up(){
+      document.removeEventListener('mousemove', mv);
+      document.removeEventListener('mouseup', up);
+    }
+    document.addEventListener('mousemove', mv);
+    document.addEventListener('mouseup', up);
+    e.preventDefault();
+  });
+  win.addEventListener('mousedown', function(){ frontWindow(win); });
+}
+makeDraggable(term, $('#term .titlebar'));
+makeDraggable($('#helpWin'), $('#helpWin .titlebar'));
+function helpToggle(open){
+  var w = $('#helpWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will) frontWindow(w);
+}
+$('#tbCmd').addEventListener('click', function(){ termToggle(true); });
+$('#tbHelp').addEventListener('click', function(){ helpToggle(true); });
+$('#helpClose').addEventListener('click', function(){ helpToggle(false); });
 
 /* ================= Konami 彩蛋: ↑↑↓↓←→←→BA ================= */
 var KONAMI = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'];
