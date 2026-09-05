@@ -2362,9 +2362,7 @@ $('#calNext').addEventListener('click', function(){
 });
 $('#diaryPrev').addEventListener('click', function(){ showEntry(entryIdx - 1); });
 $('#diaryNext').addEventListener('click', function(){ showEntry(entryIdx + 1); });
-var dp0 = ENTRIES[entryIdx].d.split('-');
-calY = +dp0[0]; calM = +dp0[1] - 1;
-calRender();
+showEntry(entryIdx);
 </script>
 </body>
 </html>
