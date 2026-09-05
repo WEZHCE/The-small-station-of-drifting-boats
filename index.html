@@ -716,8 +716,7 @@ function drawSprite(cv, name, scale){
   var sp = SPRITES[name], rows = sp.rows;
   var cols = 0;
   rows.forEach(function(r){ cols = Math.max(cols, r.length); });
-  /* 自带光源的(灯笼)多留一圈画布画光晕 */
-  var pad = sp.glow ? 7 : 2;
+  var pad = 2;
   cv.width = (cols + pad * 2) * scale;
   cv.height = (rows.length + pad * 2) * scale;
   var ctx = cv.getContext('2d');
@@ -742,16 +741,6 @@ function drawSprite(cv, name, scale){
   };
   var px = function(x){ return (x + pad) * scale; };
   var py = function(y){ return (y + pad) * scale; };
-
-  /* 灯笼这类光源体: 先铺一圈暖色光晕 */
-  if(sp.glow){
-    var gc = parseInt(sp.glow.slice(1), 16);
-    var gr = ctx.createRadialGradient(cv.width / 2, cv.height / 2, scale * 2, cv.width / 2, cv.height / 2, Math.max(cv.width, cv.height) * .62);
-    gr.addColorStop(0, 'rgba(' + ((gc >> 16) & 255) + ',' + ((gc >> 8) & 255) + ',' + (gc & 255) + ',.42)');
-    gr.addColorStop(1, 'rgba(' + ((gc >> 16) & 255) + ',' + ((gc >> 8) & 255) + ',' + (gc & 255) + ',0)');
-    ctx.fillStyle = gr;
-    ctx.fillRect(0, 0, cv.width, cv.height);
-  }
 
   /* 柔和投影, 让像素块立起来 */
   if(sp.shadow){
@@ -790,6 +779,10 @@ function drawSprite(cv, name, scale){
       ctx.fillRect(px(x), py(y), scale, scale);
     }
   }
+
+  /* 自带光源的(灯笼): 光晕改用 CSS 投影挂在画布外, 不占画布, 各图尺寸保持一致 */
+  if(sp.glow) cv.style.filter = 'drop-shadow(0 0 ' + Math.max(4, scale * 1.6) + 'px ' + sp.glow + ')';
+  else if(cv.style.filter) cv.style.filter = '';
 }
 /* ================= 开机动画: 雪花 → 粒子爆发 → 汇聚成站名 → 炸开进场 ================= */
 var bootCv = $('#bootFx'), bootCtx = bootCv.getContext('2d');
