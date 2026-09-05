@@ -66,6 +66,19 @@
 直接双击 `index.html` 即可（留言板、漂流瓶等功能需要联网）。
 或者起个静态服务器：`npx serve .`
 
+## 🤝 贡献者
+
+**船长 · [船只悠悠](https://github.com/WEZHCE)**（[B站](https://space.bilibili.com/1309420497)）— 全部代码的手写人
+
+**AI 船员**
+
+| DeepSeek | GLM |
+|:---:|:---:|
+| <img src="docs/deepseek.png" width="88" alt="DeepSeek"> | <img src="docs/glm.png" width="88" alt="GLM"> |
+| AI 助手 | AI 助手 |
+
+*这台"电脑"一半是人手写的, 另一半是和 AI 一句一句聊出来的。*
+
 ## 📄 其他
 
 - © 2026 船只悠悠 — 手写，慢慢更新
