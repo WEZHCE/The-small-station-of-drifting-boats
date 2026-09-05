@@ -349,11 +349,11 @@ var pick = function(arr){ return arr[Math.floor(Math.random()*arr.length)]; };
 
 /* ================= 像素画 ================= */
 var SPRITES = {
-  /* 帆船: 小旗+桅杆, 帆面左亮右暗两色 */
+  /* 帆船: 小旗+桅杆, 帆面左亮右暗两色, 不带浪花 */
   boat: {
     out: '#43301f',
     shadow: '#2b1f15',
-    pal: { A:'#faf3e0', B:'#d3b98c', C:'#9a7350', D:'#6b4a30', E:'#8fd0ef', F:'#55a0d4', G:'#2f6390', P:'#5a4632', R:'#cf5c3f' },
+    pal: { A:'#faf3e0', B:'#d3b98c', C:'#9a7350', D:'#6b4a30', P:'#5a4632', R:'#cf5c3f' },
     rows: [
       '.......PR.......',
       '.......P........',
@@ -366,11 +366,7 @@ var SPRITES = {
       '....DDDDDDDD....',
       '...DCCCCCCCCD...',
       '..DDCCCCCCCCDD..',
-      '.DDDDDDDDDDDDDD.',
-      '.....EEEEEE.....',
-      '....E..EE..E....',
-      '...F...FF...F...',
-      '..G....GG....G..'
+      '.DDDDDDDDDDDDDD.'
     ]
   },
   /* 黑猫: 绿眼睛两格高光, 粉耳内, 灰胸毛, 胡须 */
