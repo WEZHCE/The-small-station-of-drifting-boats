@@ -319,11 +319,55 @@
   #saverFx{width:100%; height:100%}
   .saver-hint{position:absolute; left:16px; bottom:14px; color:#39d353; font-family:Consolas,"Courier New",monospace; font-size:12px; opacity:.5}
 
-  /* ---------- 关机 ---------- */
-  #shutdown{position:fixed; inset:0; z-index:500; background:#000; display:none; cursor:pointer}
-  #shutdown.show{display:flex; align-items:center; justify-content:center}
-  .sd-text{color:#e8a33d; font-family:Consolas,"Courier New",monospace; font-size:17px; line-height:2; text-align:center}
-  .sd-hint{color:#7a6a3a; font-size:13px; margin-top:18px; text-align:center; font-family:"SimSun","宋体",serif}
+  /* ---------- 关机: CRT 坍缩 → 睡觉的小船 → BIOS 重新开机 ---------- */
+  #shutdown{position:fixed; inset:0; z-index:500; background:#000; display:none; cursor:pointer; overflow:hidden}
+  #shutdown.show{display:block}
+  #shutdown .crt-line{position:absolute; left:0; right:0; top:50%; height:100vh; opacity:0;
+    background:#fff; box-shadow:0 0 46px 10px rgba(255,255,255,.85);
+    transform:translateY(-50%) scale(1,1)}
+  #shutdown.show .crt-line{animation:crtOff 1s ease-in forwards}
+  @keyframes crtOff{
+    0%{transform:translateY(-50%) scale(1,1); opacity:0}
+    12%{opacity:.95}
+    40%{transform:translateY(-50%) scale(1,.012); opacity:1}
+    62%{transform:translateY(-50%) scale(1,.012)}
+    84%{transform:translateY(-50%) scale(.015,.012)}
+    100%{transform:translateY(-50%) scale(0,.012); opacity:0}
+  }
+  .sd-stage{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:16px; opacity:0; animation:sdIn .7s ease 1s forwards}
+  @keyframes sdIn{to{opacity:1}}
+  .sd-boat{position:relative; margin-bottom:6px}
+  #sdBoatCv{transform:rotate(104deg); animation:sdBoatBob 3.6s ease-in-out infinite}
+  @keyframes sdBoatBob{0%,100%{transform:rotate(100deg) translateY(0)}50%{transform:rotate(110deg) translateY(-4px)}}
+  .sd-z{position:absolute; top:-8px; right:-16px; color:#e8a33d; font-family:"KaiTi","楷体",serif;
+    font-size:18px; opacity:0; animation:zUp 2.4s ease-out infinite}
+  .sd-z:nth-of-type(2){font-size:14px; animation-delay:.8s}
+  .sd-z:nth-of-type(3){font-size:11px; animation-delay:1.6s}
+  @keyframes zUp{0%{opacity:0; transform:translate(0,0)}30%{opacity:.9}100%{opacity:0; transform:translate(16px,-28px)}}
+  .sd-text{color:#e8a33d; font-family:Consolas,"Courier New",monospace; font-size:16px; line-height:2; text-align:center}
+  .sd-power{width:52px; height:52px; margin-top:8px; border-radius:50%; position:relative; cursor:pointer;
+    background:radial-gradient(circle at 35% 30%, #3a3f4a, #14161c); border:2px solid #2c3038;
+    box-shadow:0 0 0 4px #0a0b0e, 0 0 14px rgba(232,163,61,.25); animation:sdPulse 2.2s ease-in-out infinite}
+  .sd-power::before{content:''; position:absolute; left:50%; top:9px; width:2px; height:11px; background:#e8a33d; transform:translateX(-50%)}
+  .sd-power::after{content:''; position:absolute; inset:0; margin:auto; width:16px; height:16px; border:2px solid #e8a33d; border-radius:50%}
+  .sd-power:hover{box-shadow:0 0 0 4px #0a0b0e, 0 0 30px rgba(232,163,61,.6)}
+  @keyframes sdPulse{0%,100%{box-shadow:0 0 0 4px #0a0b0e, 0 0 10px rgba(232,163,61,.2)}50%{box-shadow:0 0 0 4px #0a0b0e, 0 0 26px rgba(232,163,61,.55)}}
+  .sd-power-label{color:#7a6a3a; font-family:Consolas,monospace; font-size:11px; letter-spacing:3px}
+  .sd-hint{position:absolute; left:0; right:0; bottom:26px; text-align:center; color:#5a5140;
+    font-size:12.5px; font-family:"SimSun","宋体",serif}
+  .sd-bios{display:none; position:absolute; inset:0; padding:38px 48px; font-family:Consolas,"Courier New",monospace;
+    font-size:14px; color:#39d353; line-height:2.1; white-space:pre-wrap; overflow:hidden}
+  #shutdown.booting .sd-bios{display:block}
+  #shutdown.booting .sd-stage{display:none}
+  .sd-flash{position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none}
+  #shutdown.flash .sd-flash{animation:sdFlash .32s ease forwards}
+  @keyframes sdFlash{0%{opacity:0}40%{opacity:.95}100%{opacity:0}}
+  @media (prefers-reduced-motion: reduce){
+    #shutdown.show .crt-line{animation:none; opacity:0}
+    .sd-stage{animation:none; opacity:1}
+    #sdBoatCv{animation:none}
+  }
 
   /* ---------- 漂流瓶 / 船舱日记 ---------- */
   .gb-bottle{margin:12px 0 2px}
@@ -571,10 +615,19 @@
 
 <!-- ================= 关机画面 ================= -->
 <div id="shutdown">
-  <div>
+  <div class="crt-line"></div>
+  <div class="sd-bios" id="sdBios"></div>
+  <div class="sd-stage">
+    <div class="sd-boat">
+      <canvas id="sdBoatCv"></canvas>
+      <span class="sd-z">Z</span><span class="sd-z">z</span><span class="sd-z">z</span>
+    </div>
     <div class="sd-text">小站已熄灭。<br>现在可以安全地漂走了。</div>
-    <div class="sd-hint">点一下任意位置, 试着重新开机</div>
+    <button class="sd-power" type="button" title="POWER · 点我重新开机"></button>
+    <div class="sd-power-label">POWER</div>
+    <div class="sd-hint">点电源键重新开机 —— 点屏幕任意位置也一样 · 再点一下可跳过自检</div>
   </div>
+  <div class="sd-flash"></div>
 </div>
 
 <!-- 访问统计: hits.sh 免费计数徽章(免注册, 每次打开页面 +1) -->
@@ -1405,11 +1458,74 @@ $('#startBottle').addEventListener('click', function(){
 $('#startShutdown').addEventListener('click', function(){
   $('#startMenu').classList.remove('open');
   $('#startBtn').classList.remove('on');
+  if($('#shutdown').classList.contains('show')) return;
   $('#shutdown').classList.add('show');
+  drawSprite($('#sdBoatCv'), boatSkinName(), 2);
 });
+/* BIOS 自检 + 重新开机 */
+var sdLines = [
+  'ZhanZhang(R) BIOS v7.10 — 船只悠悠',
+  'Memory Test : 640K OK',
+  'Detecting 风浪 ............ 平静',
+  'Loading 漂流模块 .......... OK',
+  'Loading 彩带.EXE .......... 管够',
+  'Starting 船只悠悠的小站 ...'
+];
+function sdBeep(freq, dur){
+  try{
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return;
+    sdBeep.ac = sdBeep.ac || new AC();
+    var o = sdBeep.ac.createOscillator(), g = sdBeep.ac.createGain();
+    o.type = 'square'; o.frequency.value = freq;
+    g.gain.value = .04;
+    o.connect(g); g.connect(sdBeep.ac.destination);
+    o.start(); o.stop(sdBeep.ac.currentTime + dur);
+  }catch(e){}
+}
+function sdType(el, text, done){
+  var i = 0;
+  (function tick(){
+    el.textContent = text.slice(0, ++i);
+    if(i < text.length) setTimeout(tick, 16);
+    else if(done) done();
+  })();
+}
+var sdBooting = false, sdFinish = null;
+function sdPowerOn(){
+  if(sdBooting) return;
+  sdBooting = true;
+  var bios = $('#sdBios');
+  $('#shutdown').classList.add('booting');
+  bios.innerHTML = '';
+  sdBeep(880, .08);
+  var li = 0, finished = false;
+  sdFinish = function(){
+    if(finished) return;
+    finished = true;
+    sdBeep(1318, .1);
+    $('#shutdown').classList.add('flash');
+    setTimeout(function(){
+      $('#shutdown').classList.remove('show', 'booting', 'flash');
+      bios.innerHTML = '';
+      sdBooting = false;
+      var site = $('#site');
+      site.style.animation = 'none'; void site.offsetWidth; site.style.animation = '';
+      confetti();
+      toast('重新开回来了, 一切正常。');
+    }, 300);
+  };
+  (function next(){
+    if(finished) return;
+    if(li >= sdLines.length){ sdFinish(); return; }
+    var line = document.createElement('div');
+    bios.appendChild(line);
+    sdType(line, sdLines[li], function(){ li++; setTimeout(next, 110); });
+  })();
+}
 $('#shutdown').addEventListener('click', function(){
-  this.classList.remove('show');
-  toast('小站自己偷偷开了机, 就是不太听话。');
+  if(sdBooting){ if(sdFinish) sdFinish(); return; }
+  sdPowerOn();
 });
 $('#trayClock').addEventListener('click', function(){
   var yi = pick(['宜: 摸鱼','宜: 写代码','宜: 睡觉','宜: 发呆','宜: 吃泡面','宜: 存档']);
