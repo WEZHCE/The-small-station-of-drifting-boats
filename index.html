@@ -271,8 +271,13 @@
     background-image:linear-gradient(rgba(140,170,230,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(140,170,230,.05) 1px, transparent 1px);
     color:#c8cfdd}
   body.night ::selection{background:#2f5a8f; color:#fff}
-  body.night ::-webkit-scrollbar{background:#1a2136}
-  body.night ::-webkit-scrollbar-thumb{background:#33405f; border-color:#1a2136}
+  /* 夜航滚动条要同时匹配: body自身 / body后代 / 根元素(body溢出传播到视口, 最右那根属于html) */
+  body.night::-webkit-scrollbar,
+  body.night ::-webkit-scrollbar,
+  :root:has(body.night)::-webkit-scrollbar{background:#1a2136}
+  body.night::-webkit-scrollbar-thumb,
+  body.night ::-webkit-scrollbar-thumb,
+  :root:has(body.night)::-webkit-scrollbar-thumb{background:#33405f; border-color:#1a2136}
   body.night{scrollbar-color:#33405f #1a2136}
   :root:has(body.night){scrollbar-color:#33405f #1a2136}
   body.night .window{background:#161e30; border-color:#3a4763; box-shadow:8px 8px 0 rgba(0,0,0,.4)}
