@@ -91,9 +91,11 @@
   .side-col .gb-setup ol{margin-left:18px}
   h2{margin:30px 0 12px; font-family:"SimHei","黑体",sans-serif; font-size:21px; color:#4a3f2c;
     border-left:7px solid #7c9c66; padding-left:10px; letter-spacing:2px}
+  /* 锚点跳转时给粘顶菜单留出高度, 不让标题压在菜单底下 */
+  section{scroll-margin-top:56px}
 
   /* 关于我 */
-  .about-grid{display:grid; grid-template-columns:300px 1fr; gap:22px; align-items:start}
+  .about-grid{display:grid; grid-template-columns:260px 1fr; gap:22px; align-items:start}
   .info-table{width:100%; border-collapse:collapse; font-size:14px}
   .info-table th{width:70px; text-align:right; padding:6px 10px; color:#7b6f52; font-weight:normal;
     background:#f2ecd9; border:1px solid #ddd3b8; white-space:nowrap}
@@ -126,8 +128,9 @@
   /* 留言板(giscus) */
   .gb-panel{background:#efe8d4; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     padding:10px 12px; box-shadow:3px 3px 0 rgba(43,38,28,.08)}
-  /* 高度跟随视口: 大屏不留一片空白, 小笔记本不顶出屏幕; giscus 会自动回报内容高度 */
-  #giscusBox{height:calc(100vh - 180px); min-height:430px; overflow-y:auto; overflow-x:hidden; padding-right:4px}
+  /* 高度按"粘顶时整条侧栏刚好塞进视口"校准(侧栏其余部分约340px+菜单46px):
+     悬浮时搜索框和便利贴都在屏内; giscus 会自动回报内容高度 */
+  #giscusBox{height:calc(100vh - 390px); min-height:300px; overflow-y:auto; overflow-x:hidden; padding-right:4px}
   #giscusBox iframe{width:100%; border:none; background:transparent}
 
   /* 留言搜索 */
@@ -205,6 +208,9 @@
   .site-name, #siteSub, .window h2, #runDays, .sticky-note{cursor:pointer; user-select:none}
   #runDays{display:inline-block}
   #runDays.bump, .window h2.bump{animation:bump .4s ease}
+  .window h2{transition:color .15s, border-color .15s}
+  .window h2:hover{color:#2f5a28; border-left-color:#558b45}
+  #siteSub:hover{text-decoration:underline; text-underline-offset:4px}
   .sticky-note.wiggle{animation:wiggle .5s ease}
   @keyframes wiggle{0%,100%{transform:rotate(-2deg)}30%{transform:rotate(-5.5deg) scale(1.02)}65%{transform:rotate(.5deg) scale(1.01)}}
 
@@ -229,6 +235,17 @@
   .confetti{position:fixed; top:-26px; z-index:9998; pointer-events:none; animation:confFall linear forwards}
   @keyframes confFall{to{transform:translateY(108vh) rotate(740deg)}}
 
+  /* 中等宽度(平板/半屏, 761~1020px): 侧栏挪到主栏下方, 关于我改单列, 留言板放开高度 */
+  @media (max-width:1020px){
+    main{grid-template-columns:1fr}
+    .side-col{border-left:none; padding-left:0}
+    .side-sticky{position:static}
+    .about-grid{grid-template-columns:1fr}
+    .info-table{max-width:430px}
+    .about-text{max-width:560px}
+    #giscusBox{height:auto; min-height:0; overflow:visible}
+  }
+
   @media (max-width:760px){
     #giscusBox{height:auto; min-height:0; overflow:visible}
     .masthead{padding:22px 16px 12px}
@@ -239,6 +256,7 @@
     .side-col{border-left:none; padding-left:0}
     .side-sticky{position:static}
     .about-grid{grid-template-columns:1fr}
+    .gallery{grid-template-columns:repeat(auto-fill, minmax(150px,1fr))}
     footer{padding:16px 16px 20px}
     .boot-title{font-size:28px; letter-spacing:3px}
   }
