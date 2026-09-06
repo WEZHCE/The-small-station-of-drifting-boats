@@ -2245,7 +2245,8 @@ function brNormalize(u){
 }
 function brFind(u){
   return BR_SITES.filter(function(s){ return !s.hidden; }).find(function(s){
-    return s.url === u || (s.alias || []).indexOf(u) >= 0 || s.name.indexOf(u) >= 0;
+    var su = brNormalize(s.url);
+    return su === u || su.indexOf('.' + u) >= 0 || (s.alias || []).indexOf(u) >= 0 || s.name.indexOf(u) >= 0;
   });
 }
 function brToggle(open){
@@ -2297,6 +2298,7 @@ function brNavigate(input, fromHist){
   setTimeout(function(){
     if(token !== brToken) return;
     brRender(site, u);
+    $('#brUrl').value = site ? site.url : u;
     $('#brStatus').textContent = '完成';
   }, 650);
 }
