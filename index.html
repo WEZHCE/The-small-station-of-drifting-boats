@@ -502,6 +502,87 @@
   body.night .dw-item-text{color:#c8cfdd}
   body.night .dw-item-text a{color:#7fb0f0}
 
+  /* ---------- 小站浏览器 ---------- */
+  #browserWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(760px,94vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #browserWin.open{display:block}
+  #browserWin .titlebar{cursor:move}
+  .br-toolbar{position:relative; display:flex; align-items:center; gap:4px; padding:4px 6px;
+    background:#c9c9c9; border-bottom:1px solid #9a9a9a}
+  .br-btn{min-width:24px; height:24px; background:#d9d9d9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    cursor:pointer; color:#222; font-family:Consolas,monospace; font-size:13px; line-height:1; padding:0 2px}
+  .br-btn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .br-btn[disabled]{color:#9a9a9a; cursor:default}
+  .br-addr{flex:1; min-width:0; display:flex; align-items:center; gap:4px; background:#fff;
+    border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; padding:2px 6px}
+  #brUrl{flex:1; min-width:0; border:none; outline:none; background:transparent;
+    font-family:Consolas,monospace; font-size:13px; color:#222}
+  .br-go{border:none; background:transparent; color:#2038a8; font-weight:bold; font-size:12px;
+    cursor:pointer; font-family:inherit; padding:0}
+  .br-sug{position:absolute; left:104px; right:8px; top:calc(100% - 2px); background:#fff;
+    border:1px solid #9a9a9a; z-index:5; display:none}
+  .br-sug.open{display:block}
+  .br-sug button{display:block; width:100%; text-align:left; background:#fff; border:none;
+    padding:5px 8px; font-family:Consolas,monospace; font-size:12px; cursor:pointer; color:#222}
+  .br-sug button:hover{background:#ece2c8}
+  .br-sug .s-name{color:#2038a8; font-weight:bold}
+  .br-sug .s-url{color:#8a7d5f; margin-left:6px}
+  .br-view{height:52vh; min-height:300px; overflow-y:auto; background:#fff; border-top:1px solid #9a9a9a}
+  .br-page{min-height:100%}
+  .br-status{display:flex; justify-content:space-between; align-items:center; gap:8px;
+    border-top:1px solid #9a9a9a; padding:3px 8px; font-family:Consolas,monospace; font-size:11px;
+    color:#333; background:#c9c9c9}
+  .br-progress{width:120px; height:5px; background:#e8e0cc; border:1px solid #9a9a9a}
+  .br-progress i{display:block; height:100%; width:0; background:#3d6fd0; transition:width .18s}
+  /* 各站点自带皮肤(它们是"别的网站", 有自己的主题) */
+  .site-home{min-height:100%; background:#fffef5; font-family:"SimSun",serif; color:#222}
+  .hp-banner{background:#2038a8; color:#fff; font-family:"SimHei","黑体",sans-serif; padding:8px 12px;
+    font-size:16px; letter-spacing:2px}
+  .hp-marquee{overflow:hidden; white-space:nowrap; border-bottom:1px dashed #aaa; padding:4px 0; color:#a33}
+  .hp-marquee span{display:inline-block; padding-left:100%; animation:hpMq 9s linear infinite}
+  @keyframes hpMq{to{transform:translateX(-100%)}}
+  .site-home p{margin:8px 0; font-size:13px}
+  .hp-links{list-style:none; padding:0; margin:8px 0}
+  .hp-links a{color:#2038a8; text-decoration:underline; cursor:pointer}
+  .hp-links a:hover{background:#2038a8; color:#fff}
+  .hp-fine{color:#999; font-size:11px}
+  .hp-count b{color:#c00; font-family:Consolas,monospace}
+  .site-bbs{min-height:100%; background:linear-gradient(#012,#021); color:#4f4; font-family:Consolas,monospace;
+    padding:14px; font-size:13px; line-height:1.8; white-space:pre-wrap}
+  .bbs-title{color:#afa; font-size:15px}
+  .bbs-meta{color:#2a2}
+  .bbs-art{color:#7c7; white-space:pre; line-height:1.3}
+  .site-weather{min-height:100%; background:#1a1206; color:#ffb340; font-family:Consolas,monospace;
+    padding:14px; font-size:13px; line-height:2}
+  .wx-big{font-size:22px; color:#ffd166}
+  .site-news{min-height:100%; background:#f7f4ec; font-family:"SimSun",serif; color:#222; padding:16px 18px}
+  .np-masthead{text-align:center; font-family:"KaiTi","楷体",serif; font-size:26px; letter-spacing:8px;
+    border-bottom:3px double #333; padding-bottom:6px}
+  .np-issue{text-align:center; color:#777; font-size:11px; margin:4px 0 10px}
+  .np-item{margin-bottom:12px}
+  .np-item h3{font-size:15px; margin:0 0 3px; border-left:4px solid #444; padding-left:8px; font-weight:normal}
+  .np-item p{margin:0; font-size:13px; color:#444}
+  .np-d{color:#999; font-size:11px}
+  .site-404{min-height:100%; background:#eee; padding:30px 24px; font-family:"SimSun",serif; color:#333}
+  .s4-title{font-size:20px; font-family:"SimHei","黑体",sans-serif; color:#c00; margin-bottom:10px}
+  .site-404 a{color:#2038a8; cursor:pointer; text-decoration:underline}
+  .site-deepsea{min-height:100%; background:#000; color:#3a6ea8; font-family:Consolas,monospace;
+    padding:34px; text-align:center; font-size:14px; line-height:2.4}
+  .site-deepsea .dp-big{font-size:22px; color:#6fa8dc; letter-spacing:6px}
+  /* 浏览器外壳夜航(站点保留自己的主题, 它们是"别的网站") */
+  body.night #browserWin{background:#1a2338; border-color:#3a4763}
+  body.night .br-toolbar, body.night .br-status{background:#243050; border-color:#101828}
+  body.night .br-btn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .br-btn:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .br-addr{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night #brUrl{color:#c8cfdd}
+  body.night .br-status{color:#8b97b0}
+  body.night .br-progress{background:#101828; border-color:#243050}
+  body.night .br-sug{background:#101828; border-color:#243050}
+  body.night .br-sug button{background:#101828; color:#c8cfdd}
+  body.night .br-sug button:hover{background:#243050}
+  body.night .br-sug .s-url{color:#7d8cab}
+
   /* ---------- 屏保 ---------- */
   #saver{position:fixed; inset:0; z-index:400; background:#050505; display:none}
   #saver.show{display:block}
@@ -788,6 +869,7 @@
   <button id="tbCalc" type="button" title="计算器"><span class="tb-badge">=</span></button>
   <button id="tbMine" type="button" title="扫雷.EXE — 复古扫雷"><span class="tb-badge">雷</span></button>
   <button id="tbDiary" type="button" title="日记.EXE — 快速翻船舱日记"><span class="tb-badge">日</span></button>
+  <button id="tbBr" type="button" title="小站浏览器 — 船际网络"><span class="tb-badge">e</span></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
@@ -831,7 +913,7 @@
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
       <li>相册图片可点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
       <li>右下角小船: 点一下 +1 海里 (10 红帆 · 30 海鸥 · 60 金帆 · 100 夜灯)</li>
-      <li>任务栏: <b>C:\</b> 终端 · <b>?</b> 本手册 · <b>=</b> 计算器 · <b>雷</b> 扫雷.EXE · <b>日</b> 日记.EXE(按日期快速翻日记)</li>
+      <li>任务栏: <b>C:\</b> 终端 · <b>?</b> 本手册 · <b>=</b> 计算器 · <b>雷</b> 扫雷.EXE · <b>日</b> 日记.EXE · <b>e</b> 小站浏览器(船际网络, 试试乱输网址)</li>
     </ul>
     <div class="help-sec">🌙 这台电脑也会累</div>
     <ul>
@@ -902,6 +984,30 @@
   <div class="diarywin-body">
     <div class="dw-list" id="dwList"></div>
     <div class="dw-entries" id="dwEntries"></div>
+  </div>
+</div>
+
+<!-- ================= 小站浏览器 ================= -->
+<div id="browserWin">
+  <div class="titlebar"><span class="tb-title" id="brTitle">小站浏览器 — 船际网络</span>
+    <button class="tb-btn" id="brClose" title="关闭">✕</button>
+  </div>
+  <div class="br-toolbar">
+    <button class="br-btn" id="brBack" title="后退">◀</button>
+    <button class="br-btn" id="brFwd" title="前进">▶</button>
+    <button class="br-btn" id="brReload" title="刷新">↻</button>
+    <button class="br-btn" id="brHome" title="主页">⌂</button>
+    <div class="br-addr">
+      <input id="brUrl" autocomplete="off" spellcheck="false" placeholder="输入网址, 或点击输入框从列表选择">
+      <button class="br-go" id="brGo" type="button">转到</button>
+    </div>
+    <div class="br-sug" id="brSug"></div>
+  </div>
+  <div class="br-view" id="brView"></div>
+  <div class="br-status">
+    <span id="brStatus">完成</span>
+    <span class="br-progress"><i id="brProg"></i></span>
+    <span>船际网络 · 未加密(反正也不在网上)</span>
   </div>
 </div>
 
@@ -2068,6 +2174,175 @@ function helpToggle(open){
 $('#tbCmd').addEventListener('click', function(){ termToggle(true); });
 $('#tbHelp').addEventListener('click', function(){ helpToggle(true); });
 $('#helpClose').addEventListener('click', function(){ helpToggle(false); });
+
+/* ---------- 小站浏览器: 只能访问船际网络里认证过的站点 ---------- */
+var BR_SITES = [
+  { url:'www.xiaozhan.com', name:'船只悠悠的小站', cls:'site-home',
+    alias:['xiaozhan', '小站', 'home', '主页', 'index'],
+    html: function(){
+      return '<div class="hp-banner">欢迎光临 船只悠悠的个人主页</div>' +
+        '<div class="hp-marquee"><span>★ 欢迎来到船际网络第一站 ★ 本站已安全运行 ' + days + ' 天 ★ 建议使用 IE5.0 以上版本浏览 ★ 请把分辨率调到 800×600 ★</span></div>' +
+        '<p>您是第 <span class="hp-count"><b>004826</b></span> 位访客(计数器上次断电后从这重新数的)。</p>' +
+        '<ul class="hp-links">' +
+          '<li><a data-go="bbs.ship.cn">→ 船舱 BBS(绿屏警告)</a></li>' +
+          '<li><a data-go="weather.sea.cn">→ 航海气象台(今日浪况)</a></li>' +
+          '<li><a data-go="news.lighthouse.cn">→ 灯塔日报(号外号外)</a></li>' +
+        '</ul>' +
+        '<p class="hp-fine">本站由船长手工锤炼, 转载请注明出处(虽然应该也没人转载)。本页最佳浏览效果: 800×600 · IE5.0 · 256 色。</p>';
+    }
+  },
+  { url:'bbs.ship.cn', name:'船舱BBS', cls:'site-bbs',
+    alias:['bbs', '论坛', '船舱bbs'],
+    html: function(){
+      var posts = ENTRIES.slice(-4).reverse().map(function(e){
+        return '<div class="bbs-meta">[' + e.d + '] 船只悠悠 发帖:</div><div>' + e.h + '</div>';
+      }).join('<br>');
+      return '<div class="bbs-title">■ 船 舱 B B S ■</div>' +
+        '<div class="bbs-art">        |\n        |\\\n        | \\\n     ___|__\\___\n     \\          /\n  ~~~/~~~~~~~~~~~~\\~~~</div>' +
+        '<div class="bbs-meta">在线船员: 1 人(就是你) | 本版版规: 只许聊天, 不许翻船</div><br>' + posts +
+        '<br><div>回帖请移步真·留言板, 这里只出不进。</div>';
+    }
+  },
+  { url:'weather.sea.cn', name:'航海气象台', cls:'site-weather',
+    alias:['weather', '天气', '气象台', 'sea'],
+    html: function(){
+      var now = new Date();
+      var seed = now.getDate() * 13 + now.getHours() * 2 + Math.floor(now.getMinutes() / 30);
+      var dirs = ['东南风 2 级', '东风 3 级', '西南风 1 级', '无风 · 海面睡着了', '乱流 · 风也不知道想去哪', '顺风 · 适合把帆拉满'];
+      var waves = ['浪高 0.3 米 · 海面像镜子', '浪高 1.2 米 · 微浪, 适合发呆', '浪高 2.4 米 · 浪有点皮', '浪高 3.8 米 · 浪在发脾气', '浪高 0.8 米 · 风平浪静', '浪高 5.0 米 · 别出海, 听劝'];
+      var tips = ['今日宜: 给像素猫梳毛', '今日宜: 修一个不重要的 bug', '今日宜: 吃零食看海', '今日宜: 重读一遍 README', '今日忌: 手滑删库', '今日宜: 早点睡'];
+      var i = seed % 6;
+      return '<div class="wx-big">◈ 航海气象台</div>' +
+        '观测时间: ' + $('#nowTime').textContent + '<br>' +
+        '风向风速: <span class="wx-big">' + dirs[i] + '</span><br>' +
+        '海浪状况: ' + waves[i] + '<br>' +
+        '能见度: ' + (3 + seed % 7) + ' 海里 · 水平随风<br>' +
+        '航海建议: ' + tips[i] + '<br>' +
+        '<button class="wx-btn" data-br-refresh type="button">重新观测</button>(海的心情每半小时一变)';
+    }
+  },
+  { url:'news.lighthouse.cn', name:'灯塔日报', cls:'site-news',
+    alias:['news', '日报', '新闻', '灯塔'],
+    html: function(){
+      var items = ENTRIES.slice().reverse().slice(0, 5).map(function(e){
+        return '<div class="np-item"><h3>' + e.h + '</h3><div class="np-d">本报记者 船只悠悠 · ' + e.d + ' 电</div></div>';
+      }).join('');
+      return '<div class="np-masthead">灯 塔 日 报</div>' +
+        '<div class="np-issue">船际网络出版 · 总第 ' + ENTRIES.length + ' 期 · 售价: 一颗糖</div>' +
+        '<div class="np-item"><h3>号外: 小站浏览器今日上线</h3><p>你现在正用它看这条新闻。套娃预警。</p><div class="np-d">本报记者 船只悠悠 · 即时电</div></div>' +
+        items;
+    }
+  },
+  { url:'deepsea.void', name:'深海', cls:'site-deepsea', hidden:true,
+    alias:['deepsea', '深海', '暗网'],
+    html: '<div class="dp-big">深 海 层</div>' +
+      '你输入的网址, 通向了一个没有网页的地方。<br>这里没有内容, 只有鲸鱼的歌声。<br>……<br>咕噜。咕噜咕噜。<br>(能找到这里, 你挺适合当船员的。)'
+  }
+];
+function brNormalize(u){
+  return (u || '').trim().toLowerCase()
+    .replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/+$/, '');
+}
+function brFind(u){
+  return BR_SITES.filter(function(s){ return !s.hidden; }).find(function(s){
+    return s.url === u || (s.alias || []).indexOf(u) >= 0 || s.name.indexOf(u) >= 0;
+  });
+}
+function brToggle(open){
+  var w = $('#browserWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    if(brIdx < 0) brNavigate('www.xiaozhan.com');
+  }
+}
+$('#tbBr').addEventListener('click', function(){ brToggle(true); });
+$('#brClose').addEventListener('click', function(){ brToggle(false); });
+var brHist = [], brIdx = -1, brToken = 0;
+function brProgressRun(token){
+  [[15, 0], [45, 180], [80, 400], [100, 620]].forEach(function(s){
+    setTimeout(function(){ if(token === brToken) $('#brProg').style.width = s[0] + '%'; }, s[1]);
+  });
+}
+function brRender(site, u){
+  var v = $('#brView');
+  if(!site){
+    $('#brTitle').textContent = '无法显示网页 — 小站浏览器';
+    v.innerHTML = '<div class="br-page site-404">' +
+      '<div class="s4-title">无法显示该网页</div>' +
+      '<p>您访问的 <b>' + u + '</b> 不存在, 或者已经被海浪冲走了。</p>' +
+      '<p>建议: 检查拼写 / 回小站待着 / 从地址栏下拉里挑一个认证过的站点。</p>' +
+      '<p><a data-go="www.xiaozhan.com">→ 回小站主页</a></p></div>';
+    return;
+  }
+  $('#brTitle').textContent = site.name + ' — 小站浏览器';
+  v.innerHTML = '<div class="br-page ' + site.cls + '">' +
+    (typeof site.html === 'function' ? site.html() : site.html) + '</div>';
+}
+function brNavigate(input, fromHist){
+  var u = brNormalize(input);
+  var site = brFind(u);
+  var token = ++brToken;
+  if(!fromHist){
+    brHist = brHist.slice(0, brIdx + 1);
+    brHist.push(u);
+    brIdx = brHist.length - 1;
+  }
+  brUpdateBtns();
+  $('#brUrl').value = u;
+  $('#brSug').classList.remove('open');
+  $('#brStatus').textContent = '正在打开 ' + (site ? site.name : u) + ' ……';
+  brProgressRun(token);
+  setTimeout(function(){
+    if(token !== brToken) return;
+    brRender(site, u);
+    $('#brStatus').textContent = '完成';
+  }, 650);
+}
+function brUpdateBtns(){
+  $('#brBack').disabled = brIdx <= 0;
+  $('#brFwd').disabled = brIdx >= brHist.length - 1;
+}
+$('#brBack').addEventListener('click', function(){
+  if(brIdx > 0){ brIdx--; brNavigate(brHist[brIdx], true); }
+});
+$('#brFwd').addEventListener('click', function(){
+  if(brIdx < brHist.length - 1){ brIdx++; brNavigate(brHist[brIdx], true); }
+});
+$('#brReload').addEventListener('click', function(){ if(brHist[brIdx]) brNavigate(brHist[brIdx], true); });
+$('#brHome').addEventListener('click', function(){ brNavigate('www.xiaozhan.com'); });
+$('#brGo').addEventListener('click', function(){ brNavigate($('#brUrl').value); });
+$('#brUrl').addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){ brNavigate(this.value); }
+});
+$('#brUrl').addEventListener('input', function(){ brSuggest(this.value); });
+$('#brUrl').addEventListener('focus', function(){ brSuggest(this.value); });
+function brSuggest(q){
+  var box = $('#brSug');
+  var u = brNormalize(q);
+  var hits = BR_SITES.filter(function(s){
+    if(s.hidden) return false;
+    return !u || s.url.indexOf(u) >= 0 || s.name.indexOf(q.trim()) >= 0 || (s.alias || []).some(function(a){ return a.indexOf(u) >= 0; });
+  });
+  if(!hits.length){ box.classList.remove('open'); return; }
+  box.innerHTML = hits.map(function(s){
+    return '<button type="button" data-u="' + s.url + '"><span class="s-name">' + s.name + '</span><span class="s-url">' + s.url + '</span></button>';
+  }).join('');
+  box.classList.add('open');
+  $$('#brSug button').forEach(function(b){
+    b.addEventListener('click', function(){ brNavigate(b.dataset.u); });
+  });
+}
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.br-toolbar')) $('#brSug').classList.remove('open');
+});
+$('#brView').addEventListener('click', function(e){
+  var go = e.target.closest('[data-go]');
+  if(go){ brNavigate(go.getAttribute('data-go')); return; }
+  if(e.target.closest('[data-br-refresh]')) brNavigate(brHist[brIdx], true);
+});
+makeDraggable($('#browserWin'), $('#browserWin .titlebar'));
 
 /* ---------- 计算器 ---------- */
 function calcToggle(open){
