@@ -561,6 +561,8 @@
   .br-status{display:flex; justify-content:space-between; align-items:center; gap:8px;
     border-top:1px solid #9a9a9a; padding:3px 8px; font-family:Consolas,monospace; font-size:11px;
     color:#333; background:#c9c9c9}
+  .br-note{padding:2px 8px 3px; font-size:10.5px; color:#8a7d5f; background:#c9c9c9;
+    border-top:1px solid #b5b5b5; text-align:center}
   .br-progress{width:120px; height:5px; background:#e8e0cc; border:1px solid #9a9a9a}
   .br-progress i{display:block; height:100%; width:0; background:#3d6fd0; transition:width .18s}
   /* 各站点自带皮肤(它们是"别的网站", 有自己的主题) */
@@ -606,6 +608,7 @@
   body.night .br-addr{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828}
   body.night #brUrl{color:#c8cfdd}
   body.night .br-status{color:#8b97b0}
+  body.night .br-note{background:#101828; color:#7d8cab; border-color:#243050}
   body.night .br-progress{background:#101828; border-color:#243050}
   body.night .br-sug{background:#101828; border-color:#243050}
   body.night .br-sug button{background:#101828; color:#c8cfdd}
@@ -1038,6 +1041,7 @@
     <span class="br-progress"><i id="brProg"></i></span>
     <span>船际网络 · 未加密(反正也不在网上)</span>
   </div>
+  <div class="br-note">※ 老版本不支持夜航模式 · 怀旧配色请自行适应</div>
 </div>
 
 <!-- ================= 闲置屏保 ================= -->
