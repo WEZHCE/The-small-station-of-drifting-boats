@@ -753,6 +753,9 @@
   }
 
   @media (max-width:760px){
+    /* 手机上强制铺满可用宽度, 不给浏览器排版差异留余地 */
+    #site{max-width:100%; padding:20px 10px 60px}
+    .window{width:100%}
     #giscusBox{height:auto; min-height:0; overflow:visible}
     .masthead{padding:22px 16px 12px}
     .site-name{font-size:32px; letter-spacing:3px}
@@ -772,6 +775,12 @@
     #boatOdo{font-size:10.5px}
     footer{padding:16px 16px 20px}
     .boot-title{font-size:28px; letter-spacing:3px}
+  }
+  /* 窄屏: 收起托盘时钟、收紧应用按钮, 保证八键一行放下 */
+  @media (max-width:480px){
+    #trayClock{display:none}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg{padding:0 1px}
+    #taskbar{gap:3px}
   }
 </style>
 </head>
