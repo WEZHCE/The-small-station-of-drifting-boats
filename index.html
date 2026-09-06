@@ -116,6 +116,31 @@
 
   /* 相册 */
   .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:30px 24px; padding:6px 0 10px}
+  /* ---------- 相册板块封面 ---------- */
+  .album-covers{display:grid; grid-template-columns:repeat(6,1fr); gap:14px; margin:6px 0 18px}
+  .album-cover{position:relative; background:#fbf7ec; border:1px solid #d9d2c0; padding:8px 6px 6px;
+    cursor:pointer; box-shadow:3px 4px 8px rgba(0,0,0,.13); transition:transform .2s; font-family:inherit}
+  .album-cover:hover{transform:translateY(-3px)}
+  .album-cover.sel{outline:3px solid #7c9c66; outline-offset:2px}
+  .album-cv{width:100%; image-rendering:pixelated; border:1px solid #d5ccb4; background:#ddd3ba; display:block}
+  .acv-empty{display:block; aspect-ratio:1; background:linear-gradient(135deg, #d8d3c6, #b3ada0);
+    border:1px solid #c9c2b0}
+  .acv-empty::after{content:'空'; position:absolute; left:50%; top:38%; transform:translate(-50%,-50%);
+    color:#9a9284; font-family:"KaiTi","楷体",serif; font-size:16px; letter-spacing:2px}
+  .album-cover.empty .acv-empty{position:relative}
+  .album-name{display:block; margin-top:6px; font-size:12px; color:#5c5340; font-family:"KaiTi","楷体",serif;
+    text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .album-empty{padding:20px 0 8px}
+  .ae-gray{aspect-ratio:16/7; background:linear-gradient(135deg, #d8d3c6, #b3ada0); border:1px solid #c9c2b0}
+  .ae-note{margin-top:10px; color:#8a7d5f; font-size:13px}
+  body.night .album-cover{background:#202a44; border-color:#33405f}
+  body.night .album-cover.sel{outline-color:#4a7ab0}
+  body.night .album-cv{border-color:#2c3854; background:#101828}
+  body.night .acv-empty{background:linear-gradient(135deg, #243050, #141b2c); border-color:#2c3854}
+  body.night .acv-empty::after{color:#5a6a8a}
+  body.night .album-name{color:#9fb0cd}
+  body.night .ae-gray{background:linear-gradient(135deg, #243050, #141b2c); border-color:#2c3854}
+  body.night .ae-note{color:#7d8cab}
   .photo{background:#fff; border:1px solid #d9d2c0; padding:10px 10px 13px;
     box-shadow:3px 4px 8px rgba(0,0,0,.13); position:relative; transform:rotate(var(--tilt,0deg));
     transition:transform .2s; cursor:pointer}
@@ -798,8 +823,9 @@
       </section>
 
       <section id="gallery">
-        <h2>像素相册</h2>
-        <div class="gallery" id="galleryGrid"></div>
+        <h2>相册</h2>
+        <div class="album-covers" id="albumCovers"></div>
+        <div id="albumContent"></div>
       </section>
       </div>
 
@@ -1430,16 +1456,71 @@ var PHOTOS = [
   {s:'house',   title:'小屋',   cap:'瓦面屋顶, 窗户亮着暖黄的灯, 烟囱里冒着烟。'},
   {s:'lantern', title:'灯笼',   cap:'灯芯换成暖黄亮核, 灯身自己会发光, 穗子收尾。'}
 ];
-var gal = $('#galleryGrid');
-PHOTOS.forEach(function(p, i){
-  var f = document.createElement('figure');
-  f.className = 'photo';
-  f.style.setProperty('--tilt', (i % 2 ? 1.6 : -1.8) + 'deg');
-  f.innerHTML = '<canvas data-sprite="' + p.s + '"></canvas>' +
-    '<figcaption><b>' + p.title + '</b><br>' + p.cap + '</figcaption>';
-  gal.appendChild(f);
-});
-$$('#galleryGrid canvas').forEach(function(cv){ drawSprite(cv, cv.dataset.sprite, 6); });
+/* ================= 相册: 六个板块, 第一本像素画集, 其余虚位以待 ================= */
+var ALBUMS = [
+  { name:'像素画集', desc:'一格一格画出来的四个小家伙。', filled:true },
+  { name:'相册 · 贰', desc:'', filled:false },
+  { name:'相册 · 叁', desc:'', filled:false },
+  { name:'相册 · 肆', desc:'', filled:false },
+  { name:'相册 · 伍', desc:'', filled:false },
+  { name:'相册 · 陆', desc:'', filled:false }
+];
+var albumSel = 0;
+function renderAlbums(){
+  var wrap = $('#albumCovers');
+  wrap.innerHTML = '';
+  ALBUMS.forEach(function(a, i){
+    var cover = document.createElement('button');
+    cover.type = 'button';
+    cover.className = 'album-cover' + (i === albumSel ? ' sel' : '') + (a.filled ? '' : ' empty');
+    if(a.filled){
+      cover.innerHTML = '<canvas class="album-cv" width="80" height="80"></canvas>';
+      var cv = cover.querySelector('.album-cv').getContext('2d');
+      cv.imageSmoothingEnabled = false;
+      PHOTOS.forEach(function(p, k){
+        var tmp = document.createElement('canvas');
+        drawSprite(tmp, p.s, 2);
+        cv.drawImage(tmp, (k % 2) * 40, Math.floor(k / 2) * 40);
+      });
+    } else {
+      cover.innerHTML = '<span class="acv-empty"></span>';
+    }
+    var name = document.createElement('span');
+    name.className = 'album-name';
+    name.textContent = a.name;
+    cover.appendChild(name);
+    cover.addEventListener('click', function(){
+      if(albumSel === i) return;
+      albumSel = i;
+      renderAlbums();
+      renderAlbumContent();
+    });
+    wrap.appendChild(cover);
+  });
+}
+function renderAlbumContent(){
+  var box = $('#albumContent');
+  var a = ALBUMS[albumSel];
+  if(!a.filled){
+    box.innerHTML = '<div class="album-empty"><div class="ae-gray"></div>' +
+      '<p class="ae-note">' + (a.desc || '这个相册还空着——等船长把新画搬进来。') + '</p></div>';
+    return;
+  }
+  box.innerHTML = '<div class="gallery" id="galleryGrid"></div>';
+  var gal = $('#galleryGrid');
+  PHOTOS.forEach(function(p, i){
+    var f = document.createElement('figure');
+    f.className = 'photo';
+    f.dataset.idx = i;
+    f.style.setProperty('--tilt', (i % 2 ? 1.6 : -1.8) + 'deg');
+    f.innerHTML = '<canvas data-sprite="' + p.s + '"></canvas>' +
+      '<figcaption><b>' + p.title + '</b><br>' + p.cap + '</figcaption>';
+    gal.appendChild(f);
+  });
+  $$('#galleryGrid canvas').forEach(function(cv){ drawSprite(cv, cv.dataset.sprite, 6); });
+}
+renderAlbums();
+renderAlbumContent();
 
 /* ================= 相册灯箱: 点开大图, 左右切换, Esc/点背景关闭 ================= */
 var lbIndex = 0;
@@ -1450,11 +1531,11 @@ function lbShow(i){
   $('#lbTitle').textContent = p.title;
   $('#lbCap').textContent = p.cap;
 }
-$$('#galleryGrid .photo').forEach(function(f, i){
-  f.addEventListener('click', function(){
-    lbShow(i);
-    $('#lightbox').classList.add('open');
-  });
+$('#albumContent').addEventListener('click', function(e){
+  var f = e.target.closest('.photo');
+  if(!f) return;
+  lbShow(+f.dataset.idx);
+  $('#lightbox').classList.add('open');
 });
 $('.lb-close').addEventListener('click', function(){ $('#lightbox').classList.remove('open'); });
 $('#lightbox').addEventListener('click', function(e){ if(e.target === this) this.classList.remove('open'); });
@@ -1784,7 +1865,7 @@ $('#runDays').addEventListener('click', function(){
 var H2_LINES = {
   about: '家底全在这了, 没藏着。',
   now: '红点标过的日子, 船都出过海。',
-  gallery: '一格一格画出来的, 别嫌少。',
+  gallery: '六本相册, 目前只填满了一本。',
   guestbook: '来都来了, 说两句?'
 };
 $$('.window h2').forEach(function(h){
