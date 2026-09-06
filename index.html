@@ -2487,7 +2487,7 @@ $('#brView').addEventListener('click', function(e){
 });
 makeDraggable($('#browserWin'), $('#browserWin .titlebar'));
 
-/* ---------- 沙漏: 时间可视化 ---------- */
+/* ---------- 沙漏: 时间可视化(逐帧渲染 + 掉落粒子) ---------- */
 function hgToggle(open){
   var w = $('#hgWin');
   var will = (open === undefined) ? !w.classList.contains('open') : open;
@@ -2495,80 +2495,22 @@ function hgToggle(open){
   if(will){
     frontWindow(w);
     hgShow();
-    hgDraw();
-    if(!hgDrawIv) hgDrawIv = setInterval(function(){ hgFrame++; hgDraw(); }, 200);
-  } else if(hgDrawIv){
-    clearInterval(hgDrawIv); hgDrawIv = null;
+    if(!hgRAF) hgRAF = requestAnimationFrame(hgLoop);
+  } else if(hgRAF){
+    cancelAnimationFrame(hgRAF); hgRAF = null;
   }
 }
 $('#tbHg').addEventListener('click', function(){ hgToggle(true); });
 $('#hgClose').addEventListener('click', function(){ hgToggle(false); });
 var hg = { total: 180, remain: 180, running: false, done: false };
-var hgIv = null, hgDrawIv = null, hgFrame = 0;
+var hgIv = null, hgRAF = null, hgFrame = 0, hgGrains = [];
 function hgShow(){
   var s = Math.ceil(hg.remain);
   $('#hgLed').textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
 }
-function hgDraw(){
-  var c = $('#hgCv').getContext('2d');
-  var night = document.body.classList.contains('night');
-  var frame = night ? '#3a4763' : '#6b4a30';
-  var frameHi = night ? '#55618a' : '#8a6a45';
-  var glass = night ? '#55618a' : '#8a7d5f';
-  var sand = night ? '#ffd166' : '#d9a441';
-  var sandDark = night ? '#ffca66' : '#b8862f';
-  c.fillStyle = night ? '#101828' : '#f2ecd9';
-  c.fillRect(0, 0, 24, 28);
-  /* 木框 */
-  c.fillStyle = frame;
-  c.fillRect(0, 0, 24, 2);
-  c.fillRect(0, 26, 24, 2);
-  c.fillRect(0, 0, 2, 28);
-  c.fillRect(22, 0, 2, 28);
-  c.fillStyle = frameHi;
-  c.fillRect(2, 2, 20, 1);
-  c.fillRect(2, 25, 20, 1);
-  /* 玻璃漏斗轮廓: 颈在 13-14 行之间, 半宽 2→12 */
-  function hwTop(r){ return 2 + (12 - r); }
-  function hwBot(r){ return 2 + (r - 14); }
-  c.fillStyle = glass;
-  for(var r = 2; r <= 12; r++){
-    c.fillRect(12 - hwTop(r), r, 1, 1);
-    c.fillRect(11 + hwTop(r), r, 1, 1);
-  }
-  for(var r2 = 14; r2 <= 24; r2++){
-    c.fillRect(12 - hwBot(r2), r2, 1, 1);
-    c.fillRect(11 + hwBot(r2), r2, 1, 1);
-  }
-  c.fillRect(9, 13, 2, 1);
-  c.fillRect(13, 13, 2, 1);
-  /* 沙量: f=剩余比例 */
-  var f = hg.total ? hg.remain / hg.total : 0;
-  var level = Math.round(f * 11);
-  var pile = Math.round((1 - f) * 11);
-  c.fillStyle = sand;
-  for(var rr = 13 - level; rr <= 12; rr++){
-    c.fillRect(13 - hwTop(rr), rr, hwTop(rr) * 2 - 2, 1);
-  }
-  for(var rr2 = 25 - pile; rr2 <= 24; rr2++){
-    c.fillRect(13 - hwBot(rr2), rr2, hwBot(rr2) * 2 - 2, 1);
-  }
-  /* 流沙: 运行中才滴 */
-  if(hg.running && hg.remain > 0){
-    c.fillStyle = sandDark;
-    c.fillRect(11, 13, 2, 1);
-    if(hgFrame % 2) c.fillRect(11, 12, 1, 1); else c.fillRect(12, 12, 1, 1);
-  }
-  /* 玻璃高光 */
-  c.fillStyle = night ? 'rgba(140,160,220,.25)' : 'rgba(255,255,255,.4)';
-  c.fillRect(4, 4, 1, 3);
-  c.fillRect(5, 3, 1, 1);
-  c.fillRect(19, 16, 1, 3);
-}
 function hgTick(){
   hg.remain = Math.max(0, hg.remain - 1);
   hgShow();
-  hgDraw();
   if(hg.remain <= 0){
     hg.running = false; hg.done = true;
     clearInterval(hgIv); hgIv = null;
@@ -2590,17 +2532,17 @@ $('#hgStart').addEventListener('click', function(){
     this.textContent = '继续';
     $('#hgNote').textContent = '暂停中, 沙子也屏住了呼吸。';
   }
-  hgDraw();
 });
 $('#hgReset').addEventListener('click', function(){
   clearInterval(hgIv); hgIv = null;
   hg.remain = hg.total; hg.running = false; hg.done = false;
+  hgGrains = [];
   $('#hgStart').textContent = '开始';
   $('#hgNote').textContent = '沙子翻了个面, 随时可以再流。';
   var cv = $('#hgCv');
   cv.classList.add('flip');
   setTimeout(function(){ cv.classList.remove('flip'); }, 520);
-  hgShow(); hgDraw();
+  hgShow();
 });
 $$('#hgWin .hg-presets button').forEach(function(b){
   b.addEventListener('click', function(){
@@ -2608,12 +2550,124 @@ $$('#hgWin .hg-presets button').forEach(function(b){
     b.classList.add('on');
     clearInterval(hgIv); hgIv = null;
     hg.total = (+b.dataset.min) * 60; hg.remain = hg.total;
-    hg.running = false; hg.done = false;
+    hg.running = false; hg.done = false; hgGrains = [];
     $('#hgStart').textContent = '开始';
     $('#hgNote').textContent = '已换上一瓶 ' + b.dataset.min + ' 分钟的沙。';
-    hgShow(); hgDraw();
+    hgShow();
   });
 });
+/* 逐帧渲染: 每帧重画沙漏 + 更新掉落粒子 */
+var hgCtx = null;
+function hgLoop(t){
+  hgFrame++;
+  hgUpdateGrains();
+  hgDraw();
+  hgRAF = requestAnimationFrame(hgLoop);
+}
+function hgUpdateGrains(){
+  /* 运行中才从颈部生成沙粒 */
+  if(hg.running && hg.remain > 0 && hgGrains.length < 90 && Math.random() < 0.45){
+    hgGrains.push({ x: Math.random() < .5 ? 11 : 12, y: 14, vy: .5 + Math.random() * .4 });
+  }
+  if(!hg.running) return;  /* 暂停时沙粒凝在半空 */
+  var pile = Math.round((1 - (hg.total ? hg.remain / hg.total : 0)) * 11);
+  var floor = 25 - Math.max(1, pile);
+  for(var i = hgGrains.length - 1; i >= 0; i--){
+    var g = hgGrains[i];
+    g.vy += .12; g.y += g.vy;
+    if(g.y >= floor) hgGrains.splice(i, 1);
+  }
+}
+function hgDraw(){
+  if(!hgCtx) hgCtx = $('#hgCv').getContext('2d');
+  var c = hgCtx;
+  var night = document.body.classList.contains('night');
+  var frame = night ? '#3a4763' : '#6b4a30';
+  var frameHi = night ? '#55618a' : '#8a6a45';
+  var glass = night ? '#6a7ab0' : '#8a7d5f';
+  var bg = night ? '#101828' : '#f2ecd9';
+  var sand = night ? '#ffd166' : '#d9a441';
+  var sandDark = night ? '#d9a83f' : '#b8862f';
+  var sandLite = night ? '#fff3c4' : '#ffe9b8';
+  c.fillStyle = bg;
+  c.fillRect(0, 0, 24, 28);
+  function hwTop(r){ return 2 + (12 - r); }
+  function hwBot(r){ return 2 + (r - 14); }
+  /* 木框 */
+  c.fillStyle = frame;
+  c.fillRect(0, 0, 24, 2);
+  c.fillRect(0, 26, 24, 2);
+  c.fillRect(0, 0, 2, 28);
+  c.fillRect(22, 0, 2, 28);
+  c.fillStyle = frameHi;
+  c.fillRect(2, 2, 20, 1);
+  c.fillRect(2, 25, 20, 1);
+  /* 玻璃漏斗轮廓 */
+  c.fillStyle = glass;
+  for(var r = 2; r <= 12; r++){
+    c.fillRect(12 - hwTop(r), r, 1, 1);
+    c.fillRect(11 + hwTop(r), r, 1, 1);
+  }
+  for(var r2 = 14; r2 <= 24; r2++){
+    c.fillRect(12 - hwBot(r2), r2, 1, 1);
+    c.fillRect(11 + hwBot(r2), r2, 1, 1);
+  }
+  c.fillRect(9, 13, 2, 1);
+  c.fillRect(13, 13, 2, 1);
+  var f = hg.total ? hg.remain / hg.total : 1;
+  var level = Math.round(f * 11);
+  var topRow = 13 - level;
+  var pile = Math.round((1 - f) * 11);
+  /* 上腔沙: 分层 + 斑点纹理 */
+  for(var rr = topRow; rr <= 12; rr++){
+    var hw = hwTop(rr), x0 = 13 - hw, w = hw * 2 - 2;
+    c.fillStyle = sand;
+    c.fillRect(x0, rr, w, 1);
+    c.fillStyle = sandDark;
+    for(var sx = x0; sx < x0 + w; sx += 2){
+      if((sx * 7 + rr * 5) % 4 === 0) c.fillRect(sx, rr, 1, 1);
+    }
+  }
+  /* 表面高光 + 漏斗坑(中央随流失凹陷) */
+  if(level >= 2){
+    c.fillStyle = sandLite;
+    c.fillRect(13 - hwTop(topRow) + 1, topRow, Math.max(1, hwTop(topRow) * 2 - 3), 1);
+    for(var cr = topRow + 1; cr <= Math.min(11, topRow + 3); cr++){
+      var cw = Math.min(1 + (cr - topRow), 3);
+      c.fillStyle = bg;
+      c.fillRect(12 - Math.floor(cw / 2), cr, cw, 1);
+    }
+  }
+  /* 下腔沙堆: 带坡度的 mound + 斑点 */
+  for(var hb = 0; hb < pile; hb++){
+    var rr2 = 24 - hb;
+    var hw2 = hwBot(rr2) - 1;
+    var taper = 1 - (hb / (pile + 1)) * 0.5;
+    var halfW = Math.max(1, Math.round(hw2 * taper));
+    c.fillStyle = sand;
+    c.fillRect(12 - halfW, rr2, halfW * 2, 1);
+    c.fillStyle = sandDark;
+    for(var sx2 = 12 - halfW; sx2 <= 11 + halfW; sx2 += 3){
+      if((sx2 * 5 + rr2 * 3) % 4 === 0) c.fillRect(sx2, rr2, 1, 1);
+    }
+  }
+  if(pile >= 2){
+    c.fillStyle = sandLite;
+    c.fillRect(11, 25 - pile, 2, 1);
+  }
+  /* 颈部流沙 + 掉落粒子 */
+  if(hg.running && hg.remain > 0){
+    c.fillStyle = sandDark;
+    c.fillRect(11, 13, 2, 1);
+  }
+  c.fillStyle = sand;
+  hgGrains.forEach(function(g){ c.fillRect(g.x, Math.round(g.y), 1, 1); });
+  /* 玻璃高光 */
+  c.fillStyle = night ? 'rgba(140,160,220,.25)' : 'rgba(255,255,255,.4)';
+  c.fillRect(4, 4, 1, 3);
+  c.fillRect(5, 3, 1, 1);
+  c.fillRect(19, 16, 1, 3);
+}
 
 /* ---------- 计算器 ---------- */
 function calcToggle(open){
