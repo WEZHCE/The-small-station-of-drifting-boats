@@ -289,9 +289,9 @@
   #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
   #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
   /* 快捷启动区: 统一银色凸起底, 徽标统一任务栏灰(夜航整条任务栏换深色) */
-  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr{height:26px; display:flex; align-items:center; justify-content:center;
+  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg{height:26px; display:flex; align-items:center; justify-content:center;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0 4px}
-  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbHg:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .tb-badge{min-width:22px; height:16px; display:flex; align-items:center; justify-content:center;
     font:bold 10px/14px Consolas,monospace; color:#333}
 
@@ -385,9 +385,9 @@
   body.night #taskbar{background:#1a2338; border-top-color:#3a4763}
   body.night #startBtn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night #startBtn:active{border-color:#101828 #3a4763 #3a4763 #101828}
-  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr{
+  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg{
     background:#243050; border-color:#3a4763 #101828 #101828 #3a4763}
-  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active{
+  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active{
     border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .tb-badge{color:#c8cfdd}
   body.night #tray{background:#243050; border-color:#101828 #3a4763 #3a4763 #101828; color:#c8cfdd}
@@ -530,6 +530,33 @@
   body.night .dw-item-date{color:#7d8cab}
   body.night .dw-item-text{color:#c8cfdd}
   body.night .dw-item-text a{color:#7fb0f0}
+
+  /* ---------- 沙漏.EXE ---------- */
+  #hgWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(300px,90vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #hgWin.open{display:block}
+  #hgWin .titlebar{cursor:move}
+  .hg-body{padding:10px; text-align:center}
+  .hg-led{background:#111; color:#ff3b30; font-family:Consolas,monospace; font-size:22px; padding:2px 12px;
+    display:inline-block; letter-spacing:3px; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; margin-bottom:8px}
+  #hgCv{width:min(200px, 70vw); image-rendering:pixelated; display:block; margin:0 auto 8px; transition:transform .5s}
+  #hgCv.flip{transform:rotate(180deg)}
+  .hg-presets{display:flex; gap:4px; justify-content:center; margin-bottom:8px; flex-wrap:wrap}
+  .hg-presets button{font-family:inherit; font-size:12px; padding:4px 8px; background:#d9d9d9; color:#222;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer}
+  .hg-presets button.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
+  .hg-ctrl{display:flex; gap:6px; justify-content:center; margin-bottom:8px}
+  .hg-ctrl button{font-family:inherit; font-size:13px; padding:5px 14px; color:#222; background:#d9d9d9;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer}
+  .hg-ctrl button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  #hgStart{background:#ece2c8; font-weight:bold}
+  .hg-note{font-size:11.5px; color:#77706a; min-height:18px}
+  body.night #hgWin{background:#1a2338; border-color:#3a4763}
+  body.night .hg-led{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828; color:#ff6b5a}
+  body.night .hg-presets button, body.night .hg-ctrl button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .hg-presets button.on{background:#3d4f7d; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night #hgStart{background:#3d6fd0; color:#fff}
+  body.night .hg-note{color:#7d8cab}
 
   /* ---------- 小站浏览器 ---------- */
   #browserWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(760px,94vw);
@@ -902,6 +929,7 @@
   <button id="tbMine" type="button" title="扫雷.EXE — 复古扫雷"><span class="tb-badge">雷</span></button>
   <button id="tbDiary" type="button" title="日记.EXE — 快速翻船舱日记"><span class="tb-badge">日</span></button>
   <button id="tbBr" type="button" title="小站浏览器 — 船际网络"><span class="tb-badge">e</span></button>
+  <button id="tbHg" type="button" title="沙漏.EXE — 倒计时"><span class="tb-badge">漏</span></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
@@ -945,7 +973,7 @@
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
       <li>相册图片可点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
       <li>右下角小船: 点一下 +1 海里 (10 红帆 · 30 海鸥 · 60 金帆 · 100 夜灯)</li>
-      <li>任务栏: <b>C:\</b> 终端 · <b>?</b> 本手册 · <b>=</b> 计算器 · <b>雷</b> 扫雷.EXE · <b>日</b> 日记.EXE · <b>e</b> 小站浏览器(船际网络, 试试乱输网址)</li>
+      <li>任务栏: <b>C:\</b> 终端 · <b>?</b> 本手册 · <b>=</b> 计算器 · <b>雷</b> 扫雷.EXE · <b>日</b> 日记.EXE · <b>e</b> 小站浏览器(试试乱输网址) · <b>漏</b> 沙漏倒计时(写作业专用)</li>
     </ul>
     <div class="help-sec">🌙 这台电脑也会累</div>
     <ul>
@@ -1016,6 +1044,29 @@
   <div class="diarywin-body">
     <div class="dw-list" id="dwList"></div>
     <div class="dw-entries" id="dwEntries"></div>
+  </div>
+</div>
+
+<!-- ================= 沙漏 ================= -->
+<div id="hgWin">
+  <div class="titlebar"><span class="tb-title">沙漏.EXE — 时间可视化</span>
+    <button class="tb-btn" id="hgClose" title="关闭">✕</button>
+  </div>
+  <div class="hg-body">
+    <div class="hg-led" id="hgLed">03:00</div>
+    <canvas id="hgCv" width="24" height="28"></canvas>
+    <div class="hg-presets">
+      <button data-min="1" type="button">1分</button>
+      <button data-min="3" type="button" class="on">3分</button>
+      <button data-min="5" type="button">5分</button>
+      <button data-min="10" type="button">10分</button>
+      <button data-min="25" type="button">25分</button>
+    </div>
+    <div class="hg-ctrl">
+      <button id="hgStart" type="button">开始</button>
+      <button id="hgReset" type="button">翻转重置</button>
+    </div>
+    <div class="hg-note" id="hgNote">选个时长, 点开始, 看沙子替你数时间。</div>
   </div>
 </div>
 
@@ -2432,6 +2483,134 @@ $('#brView').addEventListener('click', function(e){
   if(e.target.closest('[data-br-refresh]')) brNavigate(brHist[brIdx], true);
 });
 makeDraggable($('#browserWin'), $('#browserWin .titlebar'));
+
+/* ---------- 沙漏: 时间可视化 ---------- */
+function hgToggle(open){
+  var w = $('#hgWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    hgShow();
+    hgDraw();
+    if(!hgDrawIv) hgDrawIv = setInterval(function(){ hgFrame++; hgDraw(); }, 200);
+  } else if(hgDrawIv){
+    clearInterval(hgDrawIv); hgDrawIv = null;
+  }
+}
+$('#tbHg').addEventListener('click', function(){ hgToggle(true); });
+$('#hgClose').addEventListener('click', function(){ hgToggle(false); });
+var hg = { total: 180, remain: 180, running: false, done: false };
+var hgIv = null, hgDrawIv = null, hgFrame = 0;
+function hgShow(){
+  var s = Math.ceil(hg.remain);
+  $('#hgLed').textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+}
+function hgDraw(){
+  var c = $('#hgCv').getContext('2d');
+  var night = document.body.classList.contains('night');
+  var frame = night ? '#3a4763' : '#6b4a30';
+  var frameHi = night ? '#55618a' : '#8a6a45';
+  var glass = night ? '#55618a' : '#8a7d5f';
+  var sand = night ? '#ffd166' : '#d9a441';
+  var sandDark = night ? '#ffca66' : '#b8862f';
+  c.fillStyle = night ? '#101828' : '#f2ecd9';
+  c.fillRect(0, 0, 24, 28);
+  /* 木框 */
+  c.fillStyle = frame;
+  c.fillRect(0, 0, 24, 2);
+  c.fillRect(0, 26, 24, 2);
+  c.fillRect(0, 0, 2, 28);
+  c.fillRect(22, 0, 2, 28);
+  c.fillStyle = frameHi;
+  c.fillRect(2, 2, 20, 1);
+  c.fillRect(2, 25, 20, 1);
+  /* 玻璃漏斗轮廓: 颈在 13-14 行之间, 半宽 2→12 */
+  function hwTop(r){ return 2 + (12 - r); }
+  function hwBot(r){ return 2 + (r - 14); }
+  c.fillStyle = glass;
+  for(var r = 2; r <= 12; r++){
+    c.fillRect(12 - hwTop(r), r, 1, 1);
+    c.fillRect(11 + hwTop(r), r, 1, 1);
+  }
+  for(var r2 = 14; r2 <= 24; r2++){
+    c.fillRect(12 - hwBot(r2), r2, 1, 1);
+    c.fillRect(11 + hwBot(r2), r2, 1, 1);
+  }
+  c.fillRect(9, 13, 2, 1);
+  c.fillRect(13, 13, 2, 1);
+  /* 沙量: f=剩余比例 */
+  var f = hg.total ? hg.remain / hg.total : 0;
+  var level = Math.round(f * 11);
+  var pile = Math.round((1 - f) * 11);
+  c.fillStyle = sand;
+  for(var rr = 13 - level; rr <= 12; rr++){
+    c.fillRect(13 - hwTop(rr), rr, hwTop(rr) * 2 - 2, 1);
+  }
+  for(var rr2 = 25 - pile; rr2 <= 24; rr2++){
+    c.fillRect(13 - hwBot(rr2), rr2, hwBot(rr2) * 2 - 2, 1);
+  }
+  /* 流沙: 运行中才滴 */
+  if(hg.running && hg.remain > 0){
+    c.fillStyle = sandDark;
+    c.fillRect(11, 13, 2, 1);
+    if(hgFrame % 2) c.fillRect(11, 12, 1, 1); else c.fillRect(12, 12, 1, 1);
+  }
+  /* 玻璃高光 */
+  c.fillStyle = night ? 'rgba(140,160,220,.25)' : 'rgba(255,255,255,.4)';
+  c.fillRect(4, 4, 1, 3);
+  c.fillRect(5, 3, 1, 1);
+  c.fillRect(19, 16, 1, 3);
+}
+function hgTick(){
+  hg.remain = Math.max(0, hg.remain - 1);
+  hgShow();
+  hgDraw();
+  if(hg.remain <= 0){
+    hg.running = false; hg.done = true;
+    clearInterval(hgIv); hgIv = null;
+    $('#hgStart').textContent = '开始';
+    $('#hgNote').textContent = '沙漏流完了。点翻转重置, 沙子再跑一轮。';
+    confetti();
+    sdBeep(1318, .12);
+  }
+}
+$('#hgStart').addEventListener('click', function(){
+  if(hg.done) return;
+  hg.running = !hg.running;
+  if(hg.running){
+    if(!hgIv) hgIv = setInterval(hgTick, 1000);
+    this.textContent = '暂停';
+    $('#hgNote').textContent = '沙子在流了, 别催它。';
+  } else {
+    clearInterval(hgIv); hgIv = null;
+    this.textContent = '继续';
+    $('#hgNote').textContent = '暂停中, 沙子也屏住了呼吸。';
+  }
+  hgDraw();
+});
+$('#hgReset').addEventListener('click', function(){
+  clearInterval(hgIv); hgIv = null;
+  hg.remain = hg.total; hg.running = false; hg.done = false;
+  $('#hgStart').textContent = '开始';
+  $('#hgNote').textContent = '沙子翻了个面, 随时可以再流。';
+  var cv = $('#hgCv');
+  cv.classList.add('flip');
+  setTimeout(function(){ cv.classList.remove('flip'); }, 520);
+  hgShow(); hgDraw();
+});
+$$('#hgWin .hg-presets button').forEach(function(b){
+  b.addEventListener('click', function(){
+    $$('#hgWin .hg-presets button').forEach(function(x){ x.classList.remove('on'); });
+    b.classList.add('on');
+    clearInterval(hgIv); hgIv = null;
+    hg.total = (+b.dataset.min) * 60; hg.remain = hg.total;
+    hg.running = false; hg.done = false;
+    $('#hgStart').textContent = '开始';
+    $('#hgNote').textContent = '已换上一瓶 ' + b.dataset.min + ' 分钟的沙。';
+    hgShow(); hgDraw();
+  });
+});
 
 /* ---------- 计算器 ---------- */
 function calcToggle(open){
