@@ -973,26 +973,48 @@
   </div>
   <div class="help-body">
     <div class="help-hero">❓ 这台"电脑"上所有能玩的东西, 全都在这一页里。大部分彩蛋没有提示, 但这一页是官方外挂。</div>
+
     <div class="help-sec">⌨ 快捷键与暗号</div>
     <ul>
       <li><b>~ / `</b> — 呼出终端 (点主窗口标题栏文字也一样)</li>
       <li><b>↑↑↓↓←→←→BA</b> — Konami 彩虹模式</li>
       <li><b>连按 WASD / 方向键</b> — 风浪来袭, 全船摇晃</li>
+      <li>终端里输入 <b>help</b>, 能看到它的全部命令; <b>↑↓</b> 翻历史</li>
     </ul>
+
     <div class="help-sec">🖱 处处可点</div>
     <ul>
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
-      <li>相册图片可点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
-      <li>右下角小船: 点一下 +1 海里 (10 红帆 · 30 海鸥 · 60 金帆 · 100 夜灯)</li>
-      <li>任务栏: <b>C:\</b> 终端 · <b>?</b> 本手册 · <b>=</b> 计算器 · <b>雷</b> 扫雷.EXE · <b>日</b> 日记.EXE · <b>e</b> 小站浏览器(试试乱输网址) · <b>漏</b> 沙漏倒计时(写作业专用)</li>
+      <li>相册: 六本板块相册, 点封面切换; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
+      <li>右下角小船: 点一下 +1 海里 — <b>10</b> 红帆 · <b>30</b> 海鸥 · <b>60</b> 金帆 · <b>100</b> 夜灯</li>
     </ul>
+
+    <div class="help-sec">🗂 任务栏应用一览</div>
+    <ul>
+      <li><b>C:\ 终端</b> — 仿真命令行, help 看命令; 试试 ship / tree / sudo / start help.chm</li>
+      <li><b>? 帮助.chm</b> — 就是你现在看的这个</li>
+      <li><b>= 计算器</b> — 支持键盘输入, ÷0 会被严肃拒绝</li>
+      <li><b>雷 扫雷.EXE</b> — 首点必安全; 右键或长按插旗, 点笑脸再来一局</li>
+      <li><b>日 日记.EXE</b> — 按日期快速翻船舱日记, 和主页日历联动</li>
+      <li><b>e 小站浏览器</b> — 只能访问船际网络认证站点; 乱输网址有老式 404, 输 deepsea 有惊喜</li>
+      <li><b>漏 沙漏.EXE</b> — 像素沙漏倒计时, 沙粒真实掉落; 1/3/5/10/25 分钟, 写作业开 25 分钟正好</li>
+    </ul>
+
     <div class="help-sec">🌙 这台电脑也会累</div>
     <ul>
-      <li>19:00~6:00 自动进入夜航模式 (托盘点灯可手动切换)</li>
-      <li>60 秒不动鼠标, 屏保自己开演, 动一下就回来</li>
-      <li>开始菜单 → 关机: CRT 坍缩收场, 电源键重新开机, 还带 BIOS 自检</li>
+      <li>19:00~6:00 自动进入夜航模式 (托盘点灯可手动切换, 全站配色跟随)</li>
+      <li>闲置 <b>两分钟</b>, 屏保自己开演: 星空 + 小船 + 像素时钟, 动一下就回来</li>
+      <li>开始菜单 → 关机: CRT 坍缩收场, "电源"键重新开机, 还带 BIOS 自检</li>
     </ul>
-    <div class="help-foot">— 本手册由船长手写, 错别字概不负责 —</div>
+
+    <div class="help-sec">🌊 还有些温柔的角落</div>
+    <ul>
+      <li>船舱日记的日历上, 红点标过的日子船都出过海</li>
+      <li>留言板可以捞漂流瓶 — 每一条都是真的旅客留言</li>
+      <li>便利贴的宜忌是编的, 但"宜: 写代码"每天都灵</li>
+    </ul>
+
+    <div class="help-foot">— 本手册由船长与 AI 船员共同维护, 错别字概不负责 —</div>
   </div>
 </div>
 
@@ -3025,7 +3047,7 @@ if(!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').
   function poke(){
     clearTimeout(saverTimer);
     if(saverOn) stopSaver();
-    saverTimer = setTimeout(startSaver, 60000);
+    saverTimer = setTimeout(startSaver, 120000);
   }
   ['mousemove','keydown','click','scroll','touchstart'].forEach(function(ev){
     document.addEventListener(ev, poke, {passive:true});
@@ -3079,7 +3101,8 @@ var ENTRIES = [
   { d:'2026-09-05', h:'漂流瓶今天下水, 一网就捞到了五天前的瓶子。海比想象中勤快。' },
   { d:'2026-09-05', h:'天黑有夜航, 闲着有屏保, 小船开始记航程。写完作业才开的船, 开得理直气壮。' },
   { d:'2026-09-05', h:'留言板加高了。评论区这种东西, 一旦看顺眼了就嫌它小。' },
-  { d:'2026-09-05', h:'计算器和扫雷搬进了任务栏。这台电脑, 越来越像一台电脑了。' }
+  { d:'2026-09-05', h:'计算器和扫雷搬进了任务栏。这台电脑, 越来越像一台电脑了。' },
+  { d:'2026-09-06', h:'今天给相册分了家, 迎来新住客"捣鼓token"; 屏保学会了看钟, 沙漏里掉起了像素沙子。这台电脑越来越像样——明明是造它的人越来越像样了。' }
 ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
