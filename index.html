@@ -117,8 +117,8 @@
   /* 相册 */
   .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:30px 24px; padding:6px 0 10px}
   /* ---------- 相册板块封面 ---------- */
-  .album-covers{display:grid; grid-template-columns:repeat(6,1fr); gap:14px; margin:6px 0 18px}
-  .album-cover{position:relative; background:#fbf7ec; border:1px solid #d9d2c0; padding:8px 6px 6px;
+  .album-covers{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:6px 0 18px}
+  .album-cover{position:relative; min-width:0; background:#fbf7ec; border:1px solid #d9d2c0; padding:8px 6px 6px;
     cursor:pointer; box-shadow:3px 4px 8px rgba(0,0,0,.13); transition:transform .2s; font-family:inherit}
   .album-cover:hover{transform:translateY(-3px)}
   .album-cover.sel{outline:2px solid #7c9c66; outline-offset:-3px}
