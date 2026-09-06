@@ -2663,15 +2663,15 @@ function hgDraw(){
       if((sx * 7 + rr * 5) % 4 === 0) c.fillRect(sx, rr, 1, 1);
     }
   }
-  /* 表面高光 + 漏斗坑(中央随流失凹陷) */
-  if(level >= 2){
+  /* 表面高光 */
+  if(level >= 1){
     c.fillStyle = sandLite;
     c.fillRect(13 - hwTop(topRow) + 1, topRow, Math.max(1, hwTop(topRow) * 2 - 3), 1);
-    for(var cr = topRow + 1; cr <= Math.min(11, topRow + 3); cr++){
-      var cw = Math.min(1 + (cr - topRow), 3);
-      c.fillStyle = bg;
-      c.fillRect(12 - Math.floor(cw / 2), cr, cw, 1);
-    }
+  }
+  /* 流动时表面中央有个小凹坑阴影(不是洞) */
+  if(hg.running && level >= 3){
+    c.fillStyle = sandDark;
+    c.fillRect(11, topRow + 1, 2, 1);
   }
   /* 下腔沙堆: 带坡度的 mound + 斑点 */
   for(var hb = 0; hb < pile; hb++){
