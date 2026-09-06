@@ -560,6 +560,13 @@
   body.night .lb-cap{background:#161e30; border-color:#3a4763 #101828 #101828 #3a4763; color:#aeb9d0}
   body.night .lb-cap b{color:#8fbf8f}
   body.night .lb-nav, body.night .lb-close{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  /* 图片型相册: 照片与缩略图 */
+  .photo img{width:100%; display:block; border:1px solid #d5ccb4; background:#ddd3ba}
+  #lbImg{display:none; max-width:86vw; max-height:60vh; border:1px solid #d5ccb4; background:#ddd3ba}
+  .album-thumbs{display:grid; grid-template-columns:1fr 1fr; width:100%; aspect-ratio:1;
+    border:1px solid #d5ccb4; overflow:hidden}
+  .album-thumbs img{width:100%; height:100%; object-fit:cover; display:block}
+  body.night .photo img, body.night #lbImg, body.night .album-thumbs{border-color:#2c3854; background:#101828}
 
   /* ---------- 小站浏览器 ---------- */
   #browserWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(760px,94vw);
@@ -917,6 +924,7 @@
   <button class="lb-close" title="关闭" type="button">✕</button>
   <button class="lb-nav lb-prev" title="上一张" type="button">‹</button>
   <canvas id="lbCanvas"></canvas>
+  <img id="lbImg" alt="">
   <button class="lb-nav lb-next" title="下一张" type="button">›</button>
   <div class="lb-cap"><b id="lbTitle"></b><span id="lbCap"></span></div>
 </div>
@@ -1518,24 +1526,40 @@ var PHOTOS = [
   {s:'house',   title:'小屋',   cap:'瓦面屋顶, 窗户亮着暖黄的灯, 烟囱里冒着烟。'},
   {s:'lantern', title:'灯笼',   cap:'灯芯换成暖黄亮核, 灯身自己会发光, 穗子收尾。'}
 ];
-/* ================= 相册: 六个板块, 第一本像素画集, 其余虚位以待 ================= */
+/* ================= 相册: 六个板块——像素画集 / 捣鼓token / 四本虚位以待 ================= */
 var ALBUMS = [
-  { name:'像素画集', desc:'一格一格画出来的四个小家伙。', filled:true },
-  { name:'相册 · 贰', desc:'', filled:false },
+  { name:'像素画集', desc:'一格一格画出来的四个小家伙。', kind:'sprite' },
+  { name:'捣鼓token', desc:'AI 船员的燃料账本——配置、额度、账单, 和一些吓人的数字。', kind:'img',
+    photos:[
+      { img:'docs/tokens/zcode-model.png', title:'模型军火库',
+        cap:'ZCode 的模型设置: 智谱 BigModel 领衔, 美团、deepseek、小红书排排坐——3 亿 Token 的周末礼包就挂在这。' },
+      { img:'docs/tokens/taskmgr.png', title:'船员比鱼多',
+        cap:'任务管理器打开一看: ChatGPT 20 个、ZCode 4 个、Claude Code 也在凑热闹——内存 74%, 全是船员的行李。' },
+      { img:'docs/tokens/claim.png', title:'三亿补助到账',
+        cap:'ZCode Weekend Build: 3 亿 Token 靓号一张, 9 月 5 日上午 9 点生效。领取成功那一刻, 海面都在发光。' },
+      { img:'docs/tokens/longcat.png', title:'LongCat 试航',
+        cap:'新船员 LongCat 第一顿猫粮: 7.4 万 Token、11 条助手消息、成本 $0.23——试航顺利, 喵。' },
+      { img:'docs/tokens/free-token.png', title:'单日破亿',
+        cap:'免费 Token 包某天直接吃掉 1 亿: 缓存命中 100,376,960 整——这么能吃, 是鲸鱼本鱼没错了。' },
+      { img:'docs/tokens/bill.png', title:'两块九的浪漫',
+        cap:'账单来了: 累计消费 ¥2.90, Token 消耗 1324 万。是的, 两块九, 船长的钱包毫发无损。' },
+      { img:'docs/tokens/ccswitch.png', title:'总账吓人版',
+        cap:'CC Switch 总账: 22.17 亿 Token、10973 次请求、$128.78。缓存命中率 96.9%——这数字看着就治愈。' }
+    ] },
   { name:'相册 · 叁', desc:'', filled:false },
   { name:'相册 · 肆', desc:'', filled:false },
   { name:'相册 · 伍', desc:'', filled:false },
   { name:'相册 · 陆', desc:'', filled:false }
 ];
-var albumSel = 0;
+var albumSel = 0, curPhotos = PHOTOS;
 function renderAlbums(){
   var wrap = $('#albumCovers');
   wrap.innerHTML = '';
   ALBUMS.forEach(function(a, i){
     var cover = document.createElement('button');
     cover.type = 'button';
-    cover.className = 'album-cover' + (i === albumSel ? ' sel' : '') + (a.filled ? '' : ' empty');
-    if(a.filled){
+    cover.className = 'album-cover' + (i === albumSel ? ' sel' : '') + (a.kind ? '' : ' empty');
+    if(a.kind === 'sprite'){
       cover.innerHTML = '<canvas class="album-cv" width="80" height="80"></canvas>';
       var cv = cover.querySelector('.album-cv').getContext('2d');
       cv.imageSmoothingEnabled = false;
@@ -1544,6 +1568,9 @@ function renderAlbums(){
         drawSprite(tmp, p.s, 2);
         cv.drawImage(tmp, (k % 2) * 40, Math.floor(k / 2) * 40);
       });
+    } else if(a.kind === 'img'){
+      cover.innerHTML = '<span class="album-thumbs">' +
+        a.photos.slice(0, 4).map(function(p){ return '<img src="' + p.img + '" alt="">'; }).join('') + '</span>';
     } else {
       cover.innerHTML = '<span class="acv-empty"></span>';
     }
@@ -1563,20 +1590,22 @@ function renderAlbums(){
 function renderAlbumContent(){
   var box = $('#albumContent');
   var a = ALBUMS[albumSel];
-  if(!a.filled){
+  if(!a.kind){
     box.innerHTML = '<div class="album-empty"><div class="ae-gray"></div>' +
       '<p class="ae-note">' + (a.desc || '这个相册还空着——等船长把新画搬进来。') + '</p></div>';
     return;
   }
+  curPhotos = a.kind === 'sprite' ? PHOTOS : a.photos;
   box.innerHTML = '<div class="gallery" id="galleryGrid"></div>';
   var gal = $('#galleryGrid');
-  PHOTOS.forEach(function(p, i){
+  curPhotos.forEach(function(p, i){
     var f = document.createElement('figure');
     f.className = 'photo';
     f.dataset.idx = i;
     f.style.setProperty('--tilt', (i % 2 ? 1.6 : -1.8) + 'deg');
-    f.innerHTML = '<canvas data-sprite="' + p.s + '"></canvas>' +
-      '<figcaption><b>' + p.title + '</b><br>' + p.cap + '</figcaption>';
+    var media = p.s ? '<canvas data-sprite="' + p.s + '"></canvas>'
+                    : '<img src="' + p.img + '" alt="' + p.title + '">';
+    f.innerHTML = media + '<figcaption><b>' + p.title + '</b><br>' + p.cap + '</figcaption>';
     gal.appendChild(f);
   });
   $$('#galleryGrid canvas').forEach(function(cv){ drawSprite(cv, cv.dataset.sprite, 6); });
@@ -1587,9 +1616,15 @@ renderAlbumContent();
 /* ================= 相册灯箱: 点开大图, 左右切换, Esc/点背景关闭 ================= */
 var lbIndex = 0;
 function lbShow(i){
-  lbIndex = (i + PHOTOS.length) % PHOTOS.length;
-  var p = PHOTOS[lbIndex];
-  drawSprite($('#lbCanvas'), p.s, 13);
+  lbIndex = (i + curPhotos.length) % curPhotos.length;
+  var p = curPhotos[lbIndex];
+  var cv = $('#lbCanvas'), im = $('#lbImg');
+  if(p.s){
+    cv.style.display = 'block'; im.style.display = 'none';
+    drawSprite(cv, p.s, 13);
+  } else {
+    cv.style.display = 'none'; im.style.display = 'block'; im.src = p.img;
+  }
   $('#lbTitle').textContent = p.title;
   $('#lbCap').textContent = p.cap;
 }
