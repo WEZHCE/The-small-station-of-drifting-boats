@@ -2668,8 +2668,45 @@ if(!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').
   var saverOn = false, saverRAF = null, saverTimer = null, saverStars = [];
   var saverBoat = document.createElement('canvas');
   drawSprite(saverBoat, boatSkinName(), 3);
+  /* 像素数字字体 3×5, 屏保时钟用 */
+  var SAVER_FONT = {
+    '0':['111','101','101','101','111'],
+    '1':['010','110','010','010','111'],
+    '2':['111','001','111','100','111'],
+    '3':['111','001','111','001','111'],
+    '4':['101','101','111','001','001'],
+    '5':['111','100','111','001','111'],
+    '6':['111','100','111','101','111'],
+    '7':['111','001','001','001','001'],
+    '8':['111','101','111','101','111'],
+    '9':['111','101','111','001','111'],
+    ':':['000','010','000','010','000']
+  };
+  var saverClockCv = document.createElement('canvas'), saverClockStr = '';
+  function drawClockCanvas(){
+    var d = new Date();
+    var tm = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    if(tm === saverClockStr) return;
+    saverClockStr = tm;
+    var sc = Math.max(4, Math.min(6, Math.floor(saverCv.width / 200)));
+    saverClockCv.width = (tm.length * 4 - 1) * sc;
+    saverClockCv.height = 5 * sc;
+    var c = saverClockCv.getContext('2d');
+    c.fillStyle = '#39d353';
+    c.shadowColor = 'rgba(57,211,83,.9)';
+    c.shadowBlur = 8;
+    var px = 0;
+    for(var k = 0; k < tm.length; k++){
+      var g = SAVER_FONT[tm[k]];
+      for(var gy = 0; gy < 5; gy++)
+        for(var gx = 0; gx < 3; gx++)
+          if(g[gy][gx] === '1') c.fillRect(px + gx * sc, gy * sc, sc, sc);
+      px += 4 * sc;
+    }
+  }
   function sizeSaver(){
     saverCv.width = window.innerWidth; saverCv.height = window.innerHeight;
+    saverClockStr = '';
     saverStars = [];
     for(var i = 0; i < 90; i++){
       saverStars.push({x:Math.random() * saverCv.width, y:Math.random() * saverCv.height * .8,
@@ -2691,6 +2728,11 @@ if(!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').
     var bx = (t / 26) % (W + 240) - 120;
     var by = H * .42 + Math.sin(t / 900) * 16;
     saverCtx.drawImage(saverBoat, bx, by);
+    /* 像素时钟: 真实时间, 在星空上方缓缓飘 */
+    drawClockCanvas();
+    var ckX = W / 2 - saverClockCv.width / 2 + Math.sin(t / 1000 * .13) * W * .15;
+    var ckY = H * .13 + Math.sin(t / 1000 * .09 + 1.2) * 18;
+    saverCtx.drawImage(saverClockCv, ckX, ckY);
     saverRAF = requestAnimationFrame(saverLoop);
   }
   function startSaver(){
