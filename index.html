@@ -117,12 +117,21 @@
   /* 相册 */
   .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:30px 24px; padding:6px 0 10px}
   /* ---------- 相册板块封面 ---------- */
-  .album-covers{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:6px 0 18px}
-  .album-cover{position:relative; min-width:0; background:#fbf7ec; border:1px solid #d9d2c0; padding:8px 6px 6px;
-    cursor:pointer; box-shadow:3px 4px 8px rgba(0,0,0,.13); transition:transform .2s; font-family:inherit}
+  .album-covers{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:6px 0 10px}
+  .album-cover{position:relative; min-width:0; background:#fbf7ec; border:1px solid #d9d2c0; padding:8px 6px 9px;
+    cursor:pointer; box-shadow:3px 4px 8px rgba(0,0,0,.13); transition:transform .2s; font-family:inherit; text-align:left}
   .album-cover:hover{transform:translateY(-3px)}
   .album-cover.sel{outline:2px solid #7c9c66; outline-offset:-3px}
   .album-cv{width:100%; image-rendering:pixelated; border:1px solid #d5ccb4; background:#ddd3ba; display:block}
+  .album-desc{display:block; min-height:2.8em; margin:6px 2px 0; color:#8a7d5f; font-size:12px; line-height:1.45}
+  .album-actions{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 14px; padding:8px 10px;
+    background:#efe8d4; border:1px dashed #c9bfa3}
+  .album-current{min-width:0; color:#6b5f45; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .album-open{flex:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    padding:4px 12px; font-family:"SimHei","黑体",sans-serif; font-size:13px; cursor:pointer; color:#222}
+  .album-open:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .album-open[disabled]{color:#888; cursor:default; border-color:#aaa #eee #eee #aaa}
+  .album-open[disabled]:active{border-color:#aaa #eee #eee #aaa}
   .acv-empty{display:block; aspect-ratio:1; background:linear-gradient(135deg, #d8d3c6, #b3ada0);
     border:1px solid #c9c2b0}
   .acv-empty::after{content:'空'; position:absolute; left:50%; top:38%; transform:translate(-50%,-50%);
@@ -145,6 +154,11 @@
   body.night .album-empty{border-color:#2c3854; background:rgba(16,24,40,.45)}
   body.night .ae-gray{background:linear-gradient(135deg, #243050, #141b2c); border-color:#2c3854}
   body.night .ae-note{color:#7d8cab}
+  body.night .album-actions{background:#1a2338; border-color:#2c3854}
+  body.night .album-current{color:#8b97b0}
+  body.night .album-open{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .album-open:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .album-open[disabled]{color:#7d8cab; border-color:#1c2740 #0d1322 #0d1322 #1c2740}
   .photo{background:#fff; border:1px solid #d9d2c0; padding:10px 10px 13px;
     box-shadow:3px 4px 8px rgba(0,0,0,.13); position:relative; transform:rotate(var(--tilt,0deg));
     transition:transform .2s; cursor:pointer}
@@ -207,6 +221,8 @@
   footer a{color:#0033cc; text-decoration:underline; font-size:13.5px}
   footer a:hover{color:#fff; background:#2038a8}
   .footer-links{display:flex; justify-content:center; gap:28px}
+  .footer-friends{gap:18px}
+  .fl-label{color:#84775a; font-size:13px}
   .counter-box{display:inline-block; background:#111; color:#39d353; font-family:"Courier New",monospace;
     font-size:15px; letter-spacing:2px; padding:4px 12px; border:2px solid #555;
     box-shadow:inset 0 0 10px #000}
@@ -276,11 +292,11 @@
   #startBtn{height:26px; padding:0 12px; display:flex; align-items:center; gap:6px; font-weight:bold;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222; font-family:inherit; font-size:13px}
   #startBtn.on, #startBtn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  #startMenu{position:fixed; left:4px; bottom:calc(40px + env(safe-area-inset-bottom)); z-index:95; min-width:190px; display:none;
+  #startMenu{position:fixed; left:4px; bottom:calc(40px + env(safe-area-inset-bottom)); z-index:95; min-width:186px; display:none;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     box-shadow:4px 4px 0 rgba(0,0,0,.25); padding:4px}
   #startMenu.open{display:block}
-  #startMenu button{display:block; width:100%; text-align:left; padding:7px 12px; background:transparent;
+  #startMenu button{display:block; width:100%; text-align:left; padding:4px 12px; background:transparent;
     border:none; font-family:inherit; font-size:13px; cursor:pointer; color:#222}
   #startMenu button:hover{background:#12277e; color:#fff}
   .sm-sep{height:1px; margin:4px 2px; background:#8a8a8a; border-bottom:1px solid #fff}
@@ -289,9 +305,9 @@
   #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
   #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
   /* 快捷启动区: 统一银色凸起底, 徽标统一任务栏灰(夜航整条任务栏换深色) */
-  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg{height:26px; display:flex; align-items:center; justify-content:center;
+  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar{height:26px; display:flex; align-items:center; justify-content:center;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0 4px}
-  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbHg:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .tb-badge{min-width:22px; height:16px; display:flex; align-items:center; justify-content:center;
     font:bold 10px/14px Consolas,monospace; color:#333}
 
@@ -385,9 +401,9 @@
   body.night #taskbar{background:#1a2338; border-top-color:#3a4763}
   body.night #startBtn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night #startBtn:active{border-color:#101828 #3a4763 #3a4763 #101828}
-  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg{
+  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar{
     background:#243050; border-color:#3a4763 #101828 #101828 #3a4763}
-  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active{
+  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active{
     border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .tb-badge{color:#c8cfdd}
   body.night #tray{background:#243050; border-color:#101828 #3a4763 #3a4763 #101828; color:#c8cfdd}
@@ -557,6 +573,235 @@
   body.night .hg-presets button.on{background:#3d4f7d; border-color:#101828 #3a4763 #3a4763 #101828}
   body.night #hgStart{background:#3d6fd0; color:#fff}
   body.night .hg-note{color:#7d8cab}
+
+  /* ---------- 画板.EXE ---------- */
+  #paintWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(352px,92vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #paintWin.open{display:block}
+  #paintWin .titlebar{cursor:move}
+  .pt-body{padding:8px}
+  .pt-row{display:flex; gap:4px; margin-bottom:6px}
+  .pt-tool{flex:1; font-family:"SimHei","黑体",sans-serif; font-size:13px; color:#222; background:#d9d9d9;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:4px 0}
+  .pt-tool:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .pt-tool.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
+  .pt-colors{display:grid; grid-template-columns:repeat(10,1fr); gap:3px; margin-bottom:6px}
+  .pt-sw{aspect-ratio:1; width:100%; padding:0; cursor:pointer;
+    border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f}
+  .pt-sw.on{outline:2px solid #2e2a22; outline-offset:-3px}
+  #ptCv{width:100%; image-rendering:pixelated; display:block; background:#fbf7ec;
+    border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; cursor:crosshair; touch-action:none}
+  .pt-foot{display:flex; gap:5px; margin-top:7px}
+  .pt-act{flex:1; font-family:"SimHei","黑体",sans-serif; font-size:13px; color:#222; background:#d9d9d9;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:5px 0}
+  .pt-act:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .pt-act.save{background:#ece2c8; font-weight:bold}
+  .pt-note{margin-top:6px; font-size:11.5px; color:#77706a; text-align:center}
+  body.night #paintWin{background:#1a2338; border-color:#3a4763}
+  body.night .pt-tool, body.night .pt-act{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .pt-tool:active, body.night .pt-act:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .pt-tool.on{background:#3d4f7d; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .pt-sw{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .pt-sw.on{outline-color:#e8e8e8}
+  body.night #ptCv{background:#101828; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .pt-act.save{background:#3d6fd0; color:#fff}
+  body.night .pt-note{color:#7d8cab}
+
+  /* ---------- 太阳系.EXE ---------- */
+  #solarWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(760px,94vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #solarWin.open{display:block}
+  #solarWin .titlebar{cursor:move}
+  .solar-bar{display:flex; align-items:center; gap:4px; padding:4px 6px; background:#c9c9c9; border-bottom:1px solid #9a9a9a}
+  .solar-btn{min-width:26px; height:24px; background:#d9d9d9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    cursor:pointer; color:#222; font-family:Consolas,monospace; font-size:13px; line-height:1; padding:0 4px}
+  .solar-btn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .solar-speed{margin-left:auto; font-family:Consolas,monospace; font-size:12px; color:#333}
+  .solar-main{display:flex; align-items:stretch}
+  .solar-nav{width:78px; flex:none; background:#c9c9c9; border-right:1px solid #9a9a9a;
+    padding:4px 3px; display:flex; flex-direction:column; gap:2px; overflow-y:auto}
+  .solar-nav button{display:flex; align-items:center; gap:5px; padding:4px 5px; background:transparent;
+    border:1px solid transparent; font-family:inherit; font-size:12px; color:#222; cursor:pointer; text-align:left; white-space:nowrap}
+  .solar-nav button:hover{background:#ece2c8}
+  .solar-nav button.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
+  .solar-nav i{width:10px; height:10px; flex:none; display:inline-block; border:1px solid rgba(0,0,0,.35)}
+  #solarCv{display:block; width:100%; height:52vh; min-height:300px; background:#050505; cursor:grab; touch-action:none; flex:1; min-width:0}
+  #solarCv.grabbing{cursor:grabbing}
+  .solar-status{display:flex; justify-content:space-between; align-items:center; gap:8px;
+    border-top:1px solid #9a9a9a; padding:3px 8px; font-family:Consolas,monospace; font-size:11px; color:#333; background:#c9c9c9}
+  #solarInfo{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  body.night #solarWin{background:#1a2338; border-color:#3a4763}
+  body.night .solar-bar{background:#243050; border-bottom-color:#101828}
+  body.night .solar-btn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .solar-btn:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .solar-speed{color:#8b97b0}
+  body.night .solar-nav{background:#1c2740; border-right-color:#101828}
+  body.night .solar-nav button{color:#c8cfdd}
+  body.night .solar-nav button:hover{background:#243050}
+  body.night .solar-nav button.on{background:#3d4f7d; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .solar-nav i{border-color:rgba(255,255,255,.4)}
+  body.night .solar-status{background:#243050; border-top-color:#101828; color:#8b97b0}
+
+  /* ---------- 相册.EXE: 翻开相册后的独立图片窗 ---------- */
+  #albumWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(880px,94vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #albumWin.open{display:block}
+  #albumWin .titlebar{cursor:move}
+  .ab-view{height:56vh; min-height:340px; overflow-y:auto; background:#f2ecdd; padding:14px 16px; border-top:1px solid #9a9a9a}
+  .ab-status{display:flex; justify-content:space-between; align-items:center; gap:8px;
+    border-top:1px solid #9a9a9a; padding:3px 8px; font-family:Consolas,monospace; font-size:11px; color:#333; background:#c9c9c9}
+  #albumWinInfo{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  body.night #albumWin{background:#1a2338; border-color:#3a4763}
+  body.night .ab-view{background:#0d1322; border-top-color:#101828}
+  body.night .ab-status{background:#243050; border-top-color:#101828; color:#8b97b0}
+
+  /* ---------- 蓝屏: 同时开 4 个应用, 640K 内存的极限 ---------- */
+  /* 系统级界面, 不分昼夜都是这一身蓝 — #0000aa 亮度足够低, 不算夜航亮背景 */
+  #bsod{position:fixed; inset:0; z-index:450; background:#0000aa; display:none;
+    color:#fff; font-family:Consolas,"Courier New",monospace; font-size:14px; line-height:1.7;
+    padding:0 24px; cursor:pointer; user-select:none; overflow:hidden}
+  #bsod.show{display:flex; align-items:center; justify-content:center}
+  .bsod-box{max-width:600px}
+  .bsod-box p{margin:0}
+  .bsod-head{margin-bottom:8px}
+  .bsod-win{display:inline-block; background:#c9c9c9; color:#0000aa; padding:1px 16px;
+    font-weight:bold; letter-spacing:3px; font-size:15px}
+  .bsod-rule{height:2px; background:#5566dd; margin:9px 0}
+  .bsod-cur{font-weight:bold; animation:bsodBlink 1.1s steps(1) infinite}
+  @keyframes bsodBlink{50%{opacity:0}}
+
+  /* ---------- 系统属性: 开始菜单三件套(系统 / 设置 / 游客) ---------- */
+  #sysWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(440px,92vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #sysWin.open{display:block}
+  #sysWin .titlebar{cursor:move}
+  .sys-tabs{display:flex; gap:2px; padding:8px 8px 0}
+  .sys-tab{padding:4px 16px; font-family:"SimHei","黑体",sans-serif; font-size:13px; color:#222; background:#c9c9c9;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; border-bottom:none; cursor:pointer; position:relative; top:2px}
+  .sys-tab:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .sys-tab.on{background:#f2d97c; top:0; padding-top:6px; font-weight:bold}
+  .sys-body{margin:0 8px 8px; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    background:#ece5d0; padding:12px 12px 10px; min-height:250px}
+  .sys-panel{display:none}
+  .sys-panel.on{display:block}
+  .sys-panel .info-table{margin:2px 0 6px}
+  .sys-panel .info-table th{width:76px}
+  .set-row{padding:9px 2px 7px; border-bottom:1px dotted #c9bfa3}
+  .set-row:last-child{border-bottom:none}
+  .set-label{font-family:"SimHei","黑体",sans-serif; font-size:13.5px; color:#4a3f2c; margin-bottom:6px}
+  .set-opts{display:flex; gap:4px 14px; flex-wrap:wrap}
+  .set-opts label, .set-check{display:flex; align-items:center; gap:6px; font-size:13.5px; color:#2e2a22; cursor:pointer}
+  .set-opts input, .set-check input{accent-color:#3d6fd0; width:14px; height:14px; margin:0}
+  .set-note{margin-top:5px; font-size:11.5px; color:#8a7d5f}
+  .sys-foot{padding:0 8px 8px; font-size:11px; color:#84775a; text-align:center}
+  body.night #sysWin{background:#1a2338; border-color:#3a4763}
+  body.night .sys-tab{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .sys-tab.on{background:#3d4f7d; color:#c8cfdd}
+  body.night .sys-body{background:#101828; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .set-label{color:#d8e2f5}
+  body.night .set-row{border-color:#243050}
+  body.night .set-opts label, body.night .set-check{color:#c8cfdd}
+  body.night .set-note{color:#7d8cab}
+  body.night .sys-foot{color:#7d8cab; border-color:#243050}
+
+  /* ---------- 欢迎登船: 第一次打开网站的欢迎信 ---------- */
+  #welcomeWrap{position:fixed; inset:0; z-index:350; background:rgba(32,26,15,.55); display:none;
+    align-items:center; justify-content:center; padding:18px}
+  #welcomeWrap.open{display:flex}
+  #welcome{width:min(470px,94vw); background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    box-shadow:8px 8px 0 rgba(0,0,0,.3)}
+  #welcome .titlebar{cursor:default}
+  .wc-body{padding:16px 18px 14px}
+  .wc-hero{display:flex; align-items:center; gap:14px; padding-bottom:12px; border-bottom:1px dashed #cfc4a5}
+  #wcBoat{flex:none}
+  .wc-title{font-family:"KaiTi","楷体",serif; font-size:30px; letter-spacing:5px; color:#3f5c33;
+    text-shadow:2px 2px 0 #d8cdb2; line-height:1.25}
+  .wc-sub{margin-top:2px; color:#8a7f68; font-size:13px; letter-spacing:1px}
+  .wc-badge{display:inline-block; margin:12px 0 2px; background:#f2d97c; color:#4a3d1e;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; padding:4px 12px; font-size:13px}
+  .wc-badge b{font-family:Consolas,monospace; font-size:15px}
+  .wc-text{margin-top:8px; font-size:13.5px; line-height:1.85; color:#4a4335}
+  .wc-text p{margin:6px 0}
+  .wc-text b{color:#2038a8}
+  .wc-hint{color:#6f6047}
+  .wc-device{margin-top:10px; padding:8px 11px; background:#efe8d4; border:1px dashed #b3a88c;
+    font-size:12.5px; color:#6b5f45; line-height:1.7}
+  .wc-btns{display:flex; gap:8px; margin-top:13px}
+  .wc-btns button{font-family:"SimHei","黑体",sans-serif; font-size:14px; cursor:pointer; color:#222;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; padding:7px 18px}
+  .wc-btns button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .wc-go{flex:1; background:#3d6fd0; color:#fff; font-weight:bold}
+  .wc-go:active{background:#355fa8}
+  .wc-again{margin-top:9px; text-align:right}
+  .wc-again button{background:transparent; border:none; color:#0033cc; text-decoration:underline;
+    cursor:pointer; font-family:inherit; font-size:12px; padding:0}
+  body.night #welcomeWrap{background:rgba(5,8,18,.66)}
+  body.night #welcome{background:#161e30; border-color:#3a4763}
+  body.night .wc-title{color:#9fc3ef; text-shadow:2px 2px 0 #0a1020}
+  body.night .wc-sub, body.night .wc-device{color:#8b97b0}
+  body.night .wc-hero{border-color:#2c3854}
+  body.night .wc-badge{background:#3d4f7d; color:#c8cfdd; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .wc-text{color:#c3cbdc}
+  body.night .wc-text b{color:#7fb0f0}
+  body.night .wc-hint{color:#7d8cab}
+  body.night .wc-device{background:#1c2740; border-color:#2c3854}
+  body.night .wc-btns button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .wc-btns button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .wc-go{background:#3d6fd0; color:#fff}
+  body.night .wc-again button{color:#7fb0f0}
+
+  /* ---------- 剧透确认: 翻 help.chm 前的门帘 ---------- */
+  #spoilerWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:270; width:min(370px,90vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.3)}
+  #spoilerWin.open{display:block}
+  #spoilerWin .titlebar{cursor:move}
+  .sp-body{padding:14px 16px 10px; display:flex; gap:13px; align-items:flex-start}
+  #spoilerIcon{flex:none}
+  .sp-title{font-family:"SimHei","黑体",sans-serif; font-size:14.5px; color:#4a3f2c; margin-bottom:5px}
+  .sp-text{font-size:13px; line-height:1.85; color:#2e2a22}
+  .sp-text b{color:#2038a8}
+  .sp-foot{padding:0 16px 13px}
+  .sp-remember{display:flex; align-items:center; gap:6px; font-size:12.5px; color:#4a4335; cursor:pointer; margin-bottom:10px}
+  .sp-remember input{accent-color:#3d6fd0; width:13px; height:13px; margin:0}
+  .sp-btns{display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap}
+  .sp-btns button{font-family:"SimHei","黑体",sans-serif; font-size:13px; cursor:pointer; color:#222;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; padding:6px 13px; background:#d9d9d9}
+  .sp-btns button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .sp-go{background:#ece2c8; font-weight:bold}
+  body.night #spoilerWin{background:#1a2338; border-color:#3a4763}
+  body.night .sp-title{color:#d8e2f5}
+  body.night .sp-text{color:#c3cbdc}
+  body.night .sp-text b{color:#7fb0f0}
+  body.night .sp-remember{color:#aeb9d0}
+  body.night .sp-btns button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .sp-btns button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .sp-go{background:#3d6fd0; color:#fff}
+
+  /* ---------- 左下角双黑盒: 甲板音乐 + 灵动岛 ---------- */
+  #deckMusic, #dynIsland{position:fixed; left:10px; z-index:60; background:#000; color:#39d353;
+    font-family:Consolas,"Courier New",monospace; border:1px solid #2e2a22;
+    box-shadow:3px 3px 0 rgba(43,38,28,.22)}
+  #deckMusic{bottom:calc(76px + env(safe-area-inset-bottom)); width:192px; padding:8px 9px 9px}
+  .dm-head{display:flex; justify-content:space-between; align-items:baseline; font-size:11px;
+    letter-spacing:2px; color:#1f7a33; margin-bottom:6px}
+  .dm-head b{color:#39d353; letter-spacing:1px}
+  #dmViz{display:block; width:100%; height:42px; background:#000; border:1px solid #1f7a33}
+  .dm-track{margin-top:6px; font-size:12px; color:#b8f5c4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .dm-ctrl{display:flex; align-items:center; gap:4px; margin-top:7px}
+  .dm-btn{width:26px; height:22px; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    cursor:pointer; color:#222; font-family:Consolas,monospace; font-size:10px; line-height:1; padding:0}
+  .dm-btn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .dm-count{margin-left:auto; font-size:11px; color:#1f7a33}
+  #dynIsland{bottom:calc(40px + env(safe-area-inset-bottom)); width:192px; height:30px;
+    display:flex; align-items:center; gap:6px; padding:0 9px; font-size:11.5px}
+  #dynDot{width:7px; height:7px; background:#39d353; flex:none; animation:dmPulse 1.6s steps(2) infinite}
+  @keyframes dmPulse{50%{opacity:.2}}
+  #dynText{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  #dynText.swap{animation:dynSwap .3s steps(3)}
+  @keyframes dynSwap{0%{opacity:0; transform:translateY(4px)}100%{opacity:1; transform:none}}
+  #dynMin{flex:none; color:#1f7a33}
+  body.night #deckMusic, body.night #dynIsland{border-color:#243050; box-shadow:3px 3px 0 rgba(0,0,0,.5)}
+
   body.night .lb-cap{background:#161e30; border-color:#3a4763 #101828 #101828 #3a4763; color:#aeb9d0}
   body.night .lb-cap b{color:#8fbf8f}
   body.night .lb-nav, body.night .lb-close{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
@@ -705,6 +950,7 @@
     .sd-stage{animation:none; opacity:1}
     #sdBoatCv{animation:none}
     .sd-power{animation:none}
+    .bsod-cur{animation:none}
   }
 
   /* ---------- 漂流瓶 / 船舱日记 ---------- */
@@ -769,9 +1015,9 @@
     .album-covers{grid-template-columns:repeat(3,1fr); gap:10px}
     .album-cover{min-width:0}
     /* 手机上弹窗靠上放, 给输入法键盘留地方; 里程牌缩小; 任务栏紧凑排布 */
-    #term, #helpWin, #diaryWin{top:6vh; transform:translate(-50%,0)}
+    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin{top:6vh; transform:translate(-50%,0)}
     #taskbar{gap:4px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr{padding:0 2px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar{padding:0 2px}
     #tray{padding:0 6px}
     .help-body{max-height:56vh}
     #boatOdo{font-size:10.5px}
@@ -781,8 +1027,11 @@
   /* 窄屏: 收起托盘时钟、收紧应用按钮, 保证八键一行放下 */
   @media (max-width:480px){
     #trayClock{display:none}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg{padding:0 1px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar{padding:0 1px}
     #taskbar{gap:3px}
+    /* 左下角双黑盒收窄, 别盖住正文 */
+    #deckMusic, #dynIsland{width:158px}
+    #deckMusic{bottom:calc(72px + env(safe-area-inset-bottom))}
   }
 </style>
 </head>
@@ -880,7 +1129,7 @@
       <section id="gallery">
         <h2>相册</h2>
         <div class="album-covers" id="albumCovers"></div>
-        <div id="albumContent"></div>
+        <div class="album-actions"><span class="album-current" id="albumCurrent"></span><button class="album-open" id="albumOpenBtn" type="button" title="在独立窗口里翻看当前相册的全部图片">翻开相册</button></div>
       </section>
       </div>
 
@@ -916,6 +1165,12 @@
         本站已运行 <span id="runDays">?</span> 天
       </div>
       <div>现在时间: <span id="nowTime"></span></div>
+      <div class="footer-links footer-friends">
+        <span class="fl-label">友情链接</span>
+        <a href="https://wezhce.github.io/City-Promotion-Page/" target="_blank" rel="noopener" title="城市宣传页系列">城市宣传页</a>
+        <a href="https://wezhce.github.io/chessboard/" target="_blank" rel="noopener" title="井字棋 / 五子棋 / 围棋 / 象棋, 都能下">棋艺对弈</a>
+        <a href="https://wezhce.github.io/voxel-temple/" target="_blank" rel="noopener" title="体素堆的中国古典建筑群">体素古建</a>
+      </div>
       <div class="footer-links">
         <a href="https://github.com/WEZHCE" target="_blank" rel="noopener">GitHub</a>
         <a href="https://space.bilibili.com/1309420497" target="_blank" rel="noopener">B站空间</a>
@@ -940,6 +1195,24 @@
   <div class="lb-cap"><b id="lbTitle"></b><span id="lbCap"></span></div>
 </div>
 
+<!-- ================= 左下角双黑盒: 甲板音乐 + 灵动岛 ================= -->
+<div id="deckMusic">
+  <div class="dm-head"><b>甲板音乐</b><span>MUSIC</span></div>
+  <canvas id="dmViz" width="172" height="42"></canvas>
+  <div class="dm-track" id="dmTrack">歌单还空着——等船长进货。</div>
+  <div class="dm-ctrl">
+    <button class="dm-btn" id="dmPrev" type="button" title="上一首">◀◀</button>
+    <button class="dm-btn" id="dmPlay" type="button" title="播放 / 暂停">▶</button>
+    <button class="dm-btn" id="dmNext" type="button" title="下一首">▶▶</button>
+    <span class="dm-count" id="dmCount">0/0</span>
+  </div>
+</div>
+<div id="dynIsland" title="游客此刻的状态">
+  <span id="dynDot"></span>
+  <span id="dynText">正在苏醒……</span>
+  <span id="dynMin">0 分</span>
+</div>
+
 <div id="toast"></div>
 
 <!-- ================= 任务栏 ================= -->
@@ -952,20 +1225,19 @@
   <button id="tbDiary" type="button" title="日记.EXE — 快速翻船舱日记"><span class="tb-badge">日</span></button>
   <button id="tbBr" type="button" title="小站浏览器 — 船际网络"><span class="tb-badge">e</span></button>
   <button id="tbHg" type="button" title="沙漏.EXE — 倒计时"><span class="tb-badge">漏</span></button>
+  <button id="tbPaint" type="button" title="画板.EXE — 一格一格画"><span class="tb-badge">画</span></button>
+  <button id="tbSolar" type="button" title="太阳系.EXE — 真实比例"><span class="tb-badge">阳</span></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
   </div>
 </div>
 <div id="startMenu">
-  <button data-go="#about" type="button">📄 关于我</button>
-  <button data-go="#now" type="button">🧭 日记</button>
-  <button data-go="#gallery" type="button">🖼 像素相册</button>
-  <button data-go="#guestbook" type="button">💬 留言板</button>
+  <button id="smSys" type="button">系统与设备(I)</button>
+  <button id="smSettings" type="button">网站设置(S)</button>
+  <button id="smVisitor" type="button">游客信息(V)</button>
   <div class="sm-sep"></div>
-  <button id="startBottle" type="button">🍶 捞个漂流瓶</button>
-  <div class="sm-sep"></div>
-  <button id="startShutdown" type="button">🔻 关机(U)</button>
+  <button id="startShutdown" type="button">关机(U)</button>
 </div>
 
 <!-- ================= 隐藏终端 ================= -->
@@ -995,20 +1267,24 @@
 
     <div class="help-sec">🖱 处处可点</div>
     <ul>
+      <li>开始菜单翻新了: <b>系统与设备</b> / <b>网站设置</b>(屏保时长·夜航·音效·开机动画) / <b>游客信息</b> — 你是第几次上船, 它记得</li>
+      <li>左下角两块黑色小屏: <b>甲板音乐</b>(歌单等船长进货, 到货就能点播) + <b>灵动岛</b>(实时报你此刻在干嘛, 顺便记你上船几分钟)</li>
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
-      <li>相册: 六本板块相册, 点封面切换; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
+      <li>相册: 九本板块相册, 点封面选中, 点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
       <li>右下角小船: 点一下 +1 海里 — <b>10</b> 红帆 · <b>30</b> 海鸥 · <b>60</b> 金帆 · <b>100</b> 夜灯</li>
     </ul>
 
     <div class="help-sec">🗂 任务栏应用一览</div>
     <ul>
       <li><b>C:\ 终端</b> — 仿真命令行, help 看命令; 试试 ship / tree / sudo / start help.chm</li>
-      <li><b>? 帮助.chm</b> — 就是你现在看的这个</li>
+      <li><b>? 帮助.chm</b> — 就是你现在看的这个(翻开前会先过一道剧透确认, 你已经过了)</li>
       <li><b>= 计算器</b> — 支持键盘输入, ÷0 会被严肃拒绝</li>
       <li><b>雷 扫雷.EXE</b> — 首点必安全; 右键或长按插旗, 点笑脸再来一局</li>
       <li><b>日 日记.EXE</b> — 按日期快速翻船舱日记, 和主页日历联动</li>
       <li><b>e 小站浏览器</b> — 只能访问船际网络认证站点; 乱输网址有老式 404, 输 deepsea 有惊喜</li>
       <li><b>漏 沙漏.EXE</b> — 像素沙漏倒计时, 沙粒真实掉落; 1/3/5/10/25 分钟, 写作业开 25 分钟正好</li>
+      <li><b>画 画板.EXE</b> — 24×24 像素画板: 画笔/油漆桶/橡皮/撤销, 画完点"下载 PNG"打包带走</li>
+      <li><b>阳 太阳系.EXE</b> — 真实比例+真实周期: 左侧星球列表点谁去谁, 拖动平移, 滚轮缩放, 点行星看资料; 找不到地球? 先缩小看全家福, 再凑近</li>
     </ul>
 
     <div class="help-sec">🌙 这台电脑也会累</div>
@@ -1016,10 +1292,12 @@
       <li>19:00~6:00 自动进入夜航模式 (托盘点灯可手动切换, 全站配色跟随)</li>
       <li>闲置 <b>两分钟</b>, 屏保自己开演: 星空 + 小船 + 像素时钟, 动一下就回来</li>
       <li>开始菜单 → 关机: CRT 坍缩收场, "电源"键重新开机, 还带 BIOS 自检</li>
+      <li>同时开 <b>4 个</b>应用会蓝屏 — 640K 内存的极限; 按任意键退出, 代价是全部窗口关闭</li>
     </ul>
 
     <div class="help-sec">🌊 还有些温柔的角落</div>
     <ul>
+      <li>第一次登船会收到一封欢迎信; 想重读的话, 开始菜单 → 游客信息里能再要一份</li>
       <li>船舱日记的日历上, 红点标过的日子船都出过海</li>
       <li>留言板可以捞漂流瓶 — 每一条都是真的旅客留言</li>
       <li>便利贴的宜忌是编的, 但"宜: 写代码"每天都灵</li>
@@ -1114,6 +1392,61 @@
   </div>
 </div>
 
+<!-- ================= 画板 ================= -->
+<div id="paintWin">
+  <div class="titlebar"><span class="tb-title">画板.EXE — 一格一格画</span>
+    <button class="tb-btn" id="paintClose" title="关闭">✕</button>
+  </div>
+  <div class="pt-body">
+    <div class="pt-row">
+      <button class="pt-tool on" data-tool="pen" type="button">画笔</button>
+      <button class="pt-tool" data-tool="fill" type="button">油漆桶</button>
+      <button class="pt-tool" data-tool="eraser" type="button">橡皮</button>
+    </div>
+    <div class="pt-colors" id="ptColors"></div>
+    <canvas id="ptCv" width="288" height="288"></canvas>
+    <div class="pt-foot">
+      <button class="pt-act" id="ptUndo" type="button">撤销</button>
+      <button class="pt-act" id="ptClear" type="button">清空</button>
+      <button class="pt-act save" id="ptSave" type="button">下载 PNG</button>
+    </div>
+    <div class="pt-note" id="ptNote">24×24 格, 画错了点撤销, 画好了点下载。船上不卖画。</div>
+  </div>
+</div>
+
+<!-- ================= 太阳系 ================= -->
+<div id="solarWin">
+  <div class="titlebar"><span class="tb-title">太阳系.EXE — 真实比例</span>
+    <button class="tb-btn" id="solarClose" title="关闭">✕</button>
+  </div>
+  <div class="solar-bar">
+    <button class="solar-btn" id="solarIn" title="放大" type="button">+</button>
+    <button class="solar-btn" id="solarOut" title="缩小" type="button">−</button>
+    <button class="solar-btn" id="solarHome" title="回到全局视角" type="button">☉</button>
+    <span class="solar-speed" id="solarSpeed">1秒 = 30天</span>
+  </div>
+  <div class="solar-main">
+    <div class="solar-nav" id="solarNav"></div>
+    <canvas id="solarCv"></canvas>
+  </div>
+  <div class="solar-status">
+    <span id="solarInfo">拖动平移 · 滚轮缩放 · 左侧列表点谁去谁 — 提醒: 真实比例下, 太空几乎是空的</span>
+    <span id="solarScale"></span>
+  </div>
+</div>
+
+<!-- ================= 相册.EXE: 翻开相册后的独立图片窗 ================= -->
+<div id="albumWin">
+  <div class="titlebar"><span class="tb-title" id="albumWinTitle">相册.EXE</span>
+    <button class="tb-btn" id="albumWinClose" title="关闭">✕</button>
+  </div>
+  <div class="ab-view" id="albumWinView"></div>
+  <div class="ab-status">
+    <span id="albumWinInfo"></span>
+    <span>图片可点开大图 · ← → 切换 · Esc 关闭</span>
+  </div>
+</div>
+
 <!-- ================= 小站浏览器 ================= -->
 <div id="browserWin">
   <div class="titlebar"><span class="tb-title" id="brTitle">小站浏览器 — 船际网络</span>
@@ -1140,9 +1473,113 @@
 </div>
 
 <!-- ================= 闲置屏保 ================= -->
+<!-- ================= 系统属性: 系统与设备 / 网站设置 / 游客信息 ================= -->
+<div id="sysWin">
+  <div class="titlebar"><span class="tb-title">系统属性 — 船只悠悠的小站</span>
+    <button class="tb-btn" id="sysClose" title="关闭">✕</button>
+  </div>
+  <div class="sys-tabs">
+    <button class="sys-tab on" data-tab="sys" type="button">系统</button>
+    <button class="sys-tab" data-tab="set" type="button">设置</button>
+    <button class="sys-tab" data-tab="visit" type="button">游客</button>
+  </div>
+  <div class="sys-body">
+    <div class="sys-panel on" id="sysPanelSys"></div>
+    <div class="sys-panel" id="sysPanelSet">
+      <div class="set-row">
+        <div class="set-label">屏保等待</div>
+        <div class="set-opts" id="setSaver">
+          <label><input type="radio" name="saverWait" value="1">1 分钟</label>
+          <label><input type="radio" name="saverWait" value="2">2 分钟</label>
+          <label><input type="radio" name="saverWait" value="5">5 分钟</label>
+          <label><input type="radio" name="saverWait" value="0">永不</label>
+        </div>
+        <div class="set-note">挂机太久, 船会自己开走(星空屏保, 动一下就回来)。</div>
+      </div>
+      <div class="set-row">
+        <label class="set-check"><input type="checkbox" id="setNight"> 夜航模式 <span class="set-note" style="display:inline">(19:00~6:00 也会自动点灯)</span></label>
+      </div>
+      <div class="set-row">
+        <label class="set-check"><input type="checkbox" id="setSfx"> 系统音效 <span class="set-note" style="display:inline">(蜂鸣器是认真的)</span></label>
+      </div>
+      <div class="set-row">
+        <label class="set-check"><input type="checkbox" id="setBoot"> 播放开机动画 <span class="set-note" style="display:inline">(每会话一次; 关掉则刷新直接进站)</span></label>
+      </div>
+    </div>
+    <div class="sys-panel" id="sysPanelVisit"></div>
+  </div>
+  <div class="sys-foot">改动即时生效, 资料只存在你这台电脑上, 船上不装监控。</div>
+</div>
+
+<!-- ================= 欢迎登船: 首次到访的欢迎信 ================= -->
+<div id="welcomeWrap">
+  <div id="welcome">
+    <div class="titlebar"><span class="tb-title">welcome.exe — 欢迎登船</span>
+      <button class="tb-btn" id="welcomeClose" title="关闭">✕</button>
+    </div>
+    <div class="wc-body">
+      <div class="wc-hero">
+        <canvas id="wcBoat"></canvas>
+        <div>
+          <div class="wc-title">欢迎登船</div>
+          <div class="wc-sub">欢迎你，小朋友。这条船泊在互联网边上, 你刚好路过。</div>
+        </div>
+      </div>
+      <div class="wc-badge">你是第 <b id="wcVisitN">?</b> 次登船的旅客 · <span id="wcRank"></span></div>
+      <div class="wc-text">
+        <p>这是一个把自己伪装成<b>老电脑</b>的个人网站: 会开机, 会关机, 闲置太久还会自己放屏保。</p>
+        <p>任务栏里藏着九个真能玩的应用 — 终端、扫雷、画板、倒计时沙漏, 还有一台<b>真实比例的太阳系</b>。彩蛋没有提示, 但值得自己撞见; 撞不明白再去翻帮助.chm, 那是官方外挂。</p>
+        <p>站名、便利贴、右下角的小船, 挨个点过去都有回应。相册是真的校园, 日记是真的近况, 留言板等真话。</p>
+        <p class="wc-hint">别急着逛完 — 这条船的座右铭是: 更新了, 又好像没更新。</p>
+      </div>
+      <div class="wc-device" id="wcDevice"></div>
+      <div class="wc-btns">
+        <button id="welcomeStart" type="button">开始探索</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 剧透确认: 翻 help.chm 前的门帘 ================= -->
+<div id="spoilerWin">
+  <div class="titlebar"><span class="tb-title">剧透警告</span>
+    <button class="tb-btn" id="spoilerClose" title="关闭">✕</button>
+  </div>
+  <div class="sp-body">
+    <canvas id="spoilerIcon"></canvas>
+    <div>
+      <div class="sp-title">前面高能预警</div>
+      <div class="sp-text">帮助.chm 收录了这台电脑上<b>全部彩蛋的答案</b>。<br>自己撞见的惊喜和看答案得来的, 中间差着一条海峡。彩蛋不会跑, 手册也不会跑 — 真想好了再翻。</div>
+    </div>
+  </div>
+  <div class="sp-foot">
+    <label class="sp-remember"><input type="checkbox" id="spoilerRemember"> 以后直接翻, 不再问</label>
+    <div class="sp-btns">
+      <button id="spoilerNo" type="button">算了, 我自己撞</button>
+      <button id="spoilerGo" type="button" class="sp-go">我就是来看剧透的</button>
+    </div>
+  </div>
+</div>
+
 <div id="saver">
   <canvas id="saverFx"></canvas>
   <div class="saver-hint">· 屏保: 船在夜里自己开 · 动一动鼠标回来 ·</div>
+</div>
+
+<!-- ================= 蓝屏: 640K 的极限 ================= -->
+<div id="bsod" title="点一下也能退出">
+  <div class="bsod-box">
+    <div class="bsod-head"><span class="bsod-win">Windows</span></div>
+    <div class="bsod-rule"></div>
+    <p>A fatal exception 0E has occurred at 0028:C0011E36 in VXD</p>
+    <p>MEMORY(01) + 00010E36. 当前的应用们将被全部终止。</p>
+    <div class="bsod-rule"></div>
+    <p>* 同时开 4 个窗口 — 640K 内存亲自试过了, 绷不住。</p>
+    <p>* 按任意键(或点一下屏幕): 关掉全部应用, 回到甲板。</p>
+    <p>* 别找 CTRL+ALT+DEL, 这台电脑没配那两个键。</p>
+    <div class="bsod-rule"></div>
+    <p>按任意键继续 <span class="bsod-cur">_</span></p>
+  </div>
 </div>
 
 <!-- ================= 关机画面 ================= -->
@@ -1302,6 +1739,209 @@ var SPRITES = {
       '..X.X...',
       '...X....'
     ]
+  },
+  /* 太阳: 射线八角, 核心亮黄, 自带光晕 (16×16) */
+  sun: {
+    out: '#c96a2f',
+    shadow: null,
+    glow: '#ffca66',
+    pal: { Y:'#ffd166', W:'#fff3c4', O:'#e8a33d' },
+    rows: [
+      '.......YY.......',
+      '.......YY.......',
+      '..O..........O..',
+      '...OYYYYYYYYO...',
+      '...YYYWWWWYYY...',
+      '..YYYWWWWWWYYY..',
+      '..YYWWWWWWWWYY..',
+      'OOYYWWWWWWWWYYOO',
+      '..YYWWWWWWWWYY..',
+      '..YYYWWWWWWYYY..',
+      '...YYYWWWWYYY...',
+      '...YYYYYYYYYY...',
+      '...OYYYYYYYYO...',
+      '....OYYYYYYO....',
+      '..O..........O..',
+      '.......YY.......'
+    ]
+  },
+  /* 水星: 灰底环形山 (10×10) */
+  mercury: {
+    out: '#5e5451',
+    shadow: null,
+    pal: { A:'#b3a6a6', D:'#8a7d7a' },
+    rows: [
+      '...AAAA...',
+      '..AAAAAA..',
+      '.AADAADAA.',
+      '.AAAAAAAA.',
+      '.ADAADAAA.',
+      '.AAAAAADA.',
+      '.AADAAAAA.',
+      '.AAAAAAAA.',
+      '..DAAAAA..',
+      '...AAAA...'
+    ]
+  },
+  /* 金星: 奶黄云带 (12×12) */
+  venus: {
+    out: '#9a713a',
+    shadow: null,
+    pal: { A:'#e8c07a', B:'#d19a4e' },
+    rows: [
+      '....AAAA....',
+      '..AAAAAAAA..',
+      '.AABBBBBBAA.',
+      '.AAAAAAAAAA.',
+      '.ABBBBBBBBA.',
+      '.AAAAAAAAAA.',
+      '.AABBBBBBAA.',
+      '.AAAAAAAAAA.',
+      '.ABBBBBBBBA.',
+      '.AAAAAAAAAA.',
+      '..AAAAAAAA..',
+      '....AAAA....'
+    ]
+  },
+  /* 地球: 蓝海绿陆白极冠 (12×12) */
+  earth: {
+    out: '#2c4a78',
+    shadow: null,
+    pal: { A:'#4a7ec8', G:'#5a9c50', W:'#eef2f5' },
+    rows: [
+      '....AAWW....',
+      '..AAAWWAAA..',
+      '.AAGGAAAAAA.',
+      '.AAGAAAAAGA.',
+      'AAAAAAAGGAAA',
+      'AGAAAAGAAAAA',
+      'AGGAAAAAAGAA',
+      'AAAAAAGGAAAA',
+      '.AAAAAAAAAG.',
+      '.AGAAAAAAGA.',
+      '..AAAAAAAA..',
+      '....AAAA....'
+    ]
+  },
+  /* 火星: 锈红大沙暴 (10×10) */
+  mars: {
+    out: '#7a3020',
+    shadow: null,
+    pal: { A:'#cf5c3f', D:'#a03d2a', W:'#e8b09a' },
+    rows: [
+      '...AAWA...',
+      '..AAAAAA..',
+      '.AADAAADA.',
+      '.AAAAAAAA.',
+      'ADAADAAADA',
+      'AAAAADAADA',
+      '.AADAAADA.',
+      '.ADAADAAA.',
+      '..AAAADA..',
+      '...AAAA...'
+    ]
+  },
+  /* 木星: 16×16, 双云带 + 大红斑 (刮了三百多年) */
+  jupiter: {
+    out: '#8a5f33',
+    shadow: null,
+    pal: { A:'#d2a26a', B:'#b5804e', W:'#e8c896', R:'#c94f3d' },
+    rows: [
+      '....AAAAAAAA....',
+      '..AAAAAAAAAAAA..',
+      '.AAAWAAAAAWAAAA.',
+      '.AAAAAAAAAAAAAA.',
+      'ABBBBBBAABBBBBBA',
+      'ABBBBBBAABBBBBBA',
+      'AAWAAAAAAAAAAWAA',
+      'AAAAAAAAAAAAAAAA',
+      'AAAAAAAAAAARRAAA',
+      'ABBBBBBBBBRRRRBB',
+      'ABBBBBBBBBRRRRBB',
+      'AAWAAAAAAAAWAAAA',
+      'AAAAAAAAAAAAAAAA',
+      '.AAAWAAAAWAAAAA.',
+      '..AAAAAAAAAAAA..',
+      '....AAAAAAAA....'
+    ]
+  },
+  /* 土星: 18×12, 光环横贯 (密度比水小, 找个大浴缸能浮起来) */
+  saturn: {
+    out: '#8a6a3f',
+    shadow: null,
+    pal: { A:'#e0c084', D:'#b8904e', R:'#c9a35f' },
+    rows: [
+      '.......AAAA.......',
+      '.....AAAAAAAA.....',
+      '....AAAAAAAAAA....',
+      '...AAAAAAAAAAAA...',
+      '.RRRRRRRRRRRRRRRR.',
+      'RRRRRRRRRRRRRRRRRR',
+      '.RRRRRRRRRRRRRRRR.',
+      '...AAAAAAAAAAAA...',
+      '....ADAADAAAAA....',
+      '....AAAAAAAAAA....',
+      '.....ADAAAADAA....',
+      '.......AAAA.......'
+    ]
+  },
+  /* 天王星: 躺着自转的淡青球 (12×12) */
+  uranus: {
+    out: '#4a8a8f',
+    shadow: null,
+    pal: { A:'#8fd4d9', W:'#c9eff2' },
+    rows: [
+      '....AAAA....',
+      '..AAWAAAAA..',
+      '.AAWWAAAAAA.',
+      '.AAWAAAAAAA.',
+      'AAAAAAAAAAAA',
+      'AAAAAAAAAAAA',
+      'AAAAAAAAAAAA',
+      'AAAAAAAAAAAA',
+      '.AAAAAAAAAA.',
+      '.AAAAAAAAAA.',
+      '..AAAAAAAA..',
+      '....AAAA....'
+    ]
+  },
+  /* 海王星: 深蓝风暴, 全系统最速 (12×12) */
+  neptune: {
+    out: '#26386e',
+    shadow: null,
+    pal: { A:'#4a6fd6', D:'#35519e', W:'#8fb0f0' },
+    rows: [
+      '....AAAA....',
+      '..AAAWAAAA..',
+      '.AAAAADAAAA.',
+      '.AAADAAAAAA.',
+      'AAAADAADAAAA',
+      'AAAADAAAAAAA',
+      'AAAAAAADAADA',
+      'AADAADAAAAAA',
+      '.AAAAAAADAA.',
+      '.AAADAADAAA.',
+      '..AAAAAAAA..',
+      '....AAAA....'
+    ]
+  },
+  /* 警告三角: 黄底黑叹号, 剧透确认弹窗用 (11×10) */
+  warn: {
+    out: '#4a3d1e',
+    shadow: null,
+    pal: { Y:'#f2d97c', B:'#4a3d1e' },
+    rows: [
+      '.....Y.....',
+      '....YYY....',
+      '....YBY....',
+      '...YYBYY...',
+      '...YYBYY...',
+      '..YYYBYYY..',
+      '..YYYBYYY..',
+      '.YYYYYYYYY.',
+      '.YYYYBYYYY.',
+      'YYYYYYYYYYY'
+    ]
   }
 };
 /* 颜色明暗: amt 为正提亮, 为负压暗, 用来做受光面/背光面 */
@@ -1453,6 +2093,10 @@ function finishBoot(silent){
   document.body.classList.add('on');
   try{ sessionStorage.setItem('bootPlayed', '1'); }catch(e){}
   setTimeout(function(){ $('#flash').classList.remove('go'); }, 300);
+  if(window.welcomePending){   /* 站台亮出来一会儿, 首访欢迎信再递上来 */
+    window.welcomePending = false;
+    setTimeout(showWelcome, 700);
+  }
 }
 $('#bootSkip').addEventListener('click', function(){ finishBoot(); });
 
@@ -1462,10 +2106,14 @@ function easeInCubic(k){ return k * k * k; }
 
 var bootPlayed = false;
 try{ bootPlayed = sessionStorage.getItem('bootPlayed') === '1'; }catch(e){}
+var bootSkipPref = false;
+try{ bootSkipPref = localStorage.getItem('skipBoot') === 'on'; }catch(e){}   /* 系统属性里可关开机动画 */
+/* 欢迎信挂起标记要赶在 finishBoot 可能被提前调用(减动效/跳过)之前就位 */
+try{ window.welcomePending = localStorage.getItem('welcomed') !== '1'; }catch(e){ window.welcomePending = true; }
 if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
   finishBoot(); /* 尊重系统减动效设置, 直接进场 */
-} else if(bootPlayed){
-  finishBoot(true); /* 这个会话里播过了, 回访直接进站, 刷新不重播 */
+} else if(bootSkipPref || bootPlayed){
+  finishBoot(true); /* 被设置关掉, 或这个会话里播过了 — 回访直接进站 */
 } else {
   var startT = null;
   (function frame(t){
@@ -1588,11 +2236,54 @@ var ALBUMS = [
       { img:'docs/campus/classroom.png', title:'空教室', cap:'桌椅摞起来放了假，黑板擦得干干净净，就等开学那声上课铃。' },
       { img:'docs/campus/track-bollard.png', title:'跑道边', cap:'一排石球守着弯道，雨点砸出一圈圈涟漪。' }
     ] },
-  { name:'相册 · 肆', desc:'', filled:false },
+  { name:'船长的画', desc:'铅笔 + 横线作业本——画纸从来不是问题。', kind:'img',
+    photos:[
+      { img:'docs/art/art-1.png', title:'长发少女', cap:'横线本上一笔一笔长出来的头发, 耐心全在排线里。' },
+      { img:'docs/art/art-2.png', title:'魔女帽', cap:'帽檐压得低低的, 巫师气息快从作业本里溢出来了。' },
+      { img:'docs/art/art-3.png', title:'短发少年', cap:'领结和外套的褶皱都认真交代过, 署名 CUSE.DRW。' },
+      { img:'docs/art/art-4.png', title:'眼睛练习', cap:'一页八双眼睛, 画师的基本功修行现场。' },
+      { img:'docs/art/art-5.png', title:'Q版小人', cap:'圆圆的连帽衫, 连影子都画得规规矩矩。' },
+      { img:'docs/art/art-6.png', title:'双马尾', cap:'笑到眯眼, 手机都拿不稳的那种开心。' }
+    ] },
   { name:'相册 · 伍', desc:'', filled:false },
-  { name:'相册 · 陆', desc:'', filled:false }
+  { name:'相册 · 陆', desc:'', filled:false },
+  { name:'相册 · 柒', desc:'', filled:false },
+  { name:'相册 · 捌', desc:'', filled:false },
+  { name:'相册 · 玖', desc:'', filled:false }
 ];
 var albumSel = 0, curPhotos = PHOTOS;
+var barCur = $('#albumCurrent'), barBtn = $('#albumOpenBtn');
+function albumCount(a){
+  return a.kind === 'sprite' ? PHOTOS.length : (a.photos ? a.photos.length : 0);
+}
+function albumWinOpen(){ return $('#albumWin').classList.contains('open'); }
+/* 操作栏: 文案与按钮可点性跟随所选相册; 图片统一在 相册.EXE 窗口里看, 主页面只陈列封面 */
+function updateAlbumBar(){
+  var a = ALBUMS[albumSel];
+  if(!a.kind){
+    barCur.textContent = '《' + a.name + '》还空着——等船长把新画搬进来。';
+    barBtn.disabled = true;
+    barBtn.textContent = '空舱';
+  } else {
+    barCur.textContent = '当前翻到:《' + a.name + '》 · 共 ' + albumCount(a) + ' 张';
+    barBtn.disabled = false;
+    barBtn.textContent = albumWinOpen() ? '在窗口里翻看' : '翻开相册';
+  }
+}
+function albumWinToggle(open){
+  var w = $('#albumWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    renderAlbumContent();
+    updateAlbumBar();
+  } else {
+    updateAlbumBar();
+  }
+}
+$('#albumWinClose').addEventListener('click', function(){ albumWinToggle(false); });
+makeDraggable($('#albumWin'), $('#albumWin .titlebar'));
 function renderAlbums(){
   var wrap = $('#albumCovers');
   wrap.innerHTML = '';
@@ -1619,19 +2310,27 @@ function renderAlbums(){
     name.className = 'album-name';
     name.textContent = a.name;
     cover.appendChild(name);
+    var d = document.createElement('span');
+    d.className = 'album-desc';
+    d.textContent = a.kind ? a.desc : '还空着, 等船长上货。';
+    cover.appendChild(d);
     cover.addEventListener('click', function(){
       if(albumSel === i) return;
       albumSel = i;
       renderAlbums();
-      renderAlbumContent();
+      if(albumWinOpen()) renderAlbumContent(); /* 图片窗开着时换选, 窗口内容就地换 */
+      updateAlbumBar();
     });
     wrap.appendChild(cover);
   });
 }
 function renderAlbumContent(){
-  var box = $('#albumContent');
+  var box = $('#albumWinView');
   var a = ALBUMS[albumSel];
+  $('#albumWinTitle').textContent = '相册.EXE — 《' + a.name + '》';
+  $('#albumWinInfo').textContent = '《' + a.name + '》 · 共 ' + albumCount(a) + ' 张';
   if(!a.kind){
+    curPhotos = [];
     box.innerHTML = '<div class="album-empty"><div class="ae-gray"></div>' +
       '<p class="ae-note">' + (a.desc || '这个相册还空着——等船长把新画搬进来。') + '</p></div>';
     return;
@@ -1652,7 +2351,10 @@ function renderAlbumContent(){
   $$('#galleryGrid canvas').forEach(function(cv){ drawSprite(cv, cv.dataset.sprite, 6); });
 }
 renderAlbums();
-renderAlbumContent();
+updateAlbumBar();
+barBtn.addEventListener('click', function(){
+  if(!barBtn.disabled) albumWinToggle(true);
+});
 
 /* ================= 相册灯箱: 点开大图, 左右切换, Esc/点背景关闭 ================= */
 var lbIndex = 0;
@@ -1669,7 +2371,7 @@ function lbShow(i){
   $('#lbTitle').textContent = p.title;
   $('#lbCap').textContent = p.cap;
 }
-$('#albumContent').addEventListener('click', function(e){
+$('#albumWinView').addEventListener('click', function(e){
   var f = e.target.closest('.photo');
   if(!f) return;
   lbShow(+f.dataset.idx);
@@ -2003,7 +2705,7 @@ $('#runDays').addEventListener('click', function(){
 var H2_LINES = {
   about: '家底全在这了, 没藏着。',
   now: '红点标过的日子, 船都出过海。',
-  gallery: '六本相册, 已经开张三本了。',
+  gallery: '九本相册, 已经开张四本了。',
   guestbook: '来都来了, 说两句?'
 };
 $$('.window h2').forEach(function(h){
@@ -2052,6 +2754,7 @@ function applyNight(on){
   document.body.classList.toggle('night', on);
   $('#nightBtn').textContent = on ? '熄灯' : '点灯';
   $('#nightBtn').title = on ? '夜航中: 点我回到白天' : '夜航灯: 点我开关(19:00~6:00 自动点)';
+  if(window.ptOpened) ptRender();  /* 画板开着时换夜航, 画布底色跟着换, 画作不丢 */
 }
 applyNight(nightOn);
 $('#nightBtn').addEventListener('click', function(){
@@ -2084,24 +2787,6 @@ document.addEventListener('click', function(e){
     $('#startBtn').classList.remove('on');
   }
 });
-$$('#startMenu button[data-go]').forEach(function(b){
-  b.addEventListener('click', function(){
-    var el = document.querySelector(b.getAttribute('data-go'));
-    if(el) el.scrollIntoView({behavior:'smooth'});
-    $('#startMenu').classList.remove('open');
-    $('#startBtn').classList.remove('on');
-  });
-});
-$('#startBottle').addEventListener('click', function(){
-  $('#startMenu').classList.remove('open');
-  $('#startBtn').classList.remove('on');
-  /* 桌面端侧栏粘顶, 直接锚到留言板时下方的瓶子按钮可能在屏幕外; 滚到页底让整条侧栏露出来 */
-  var de = document.documentElement;
-  de.style.scrollBehavior = 'auto';   /* 跳过平滑滚动, 一次到位 */
-  de.scrollTop = de.scrollHeight;
-  de.style.scrollBehavior = '';
-  setTimeout(function(){ lootBottle(); }, 450);
-});
 $('#startShutdown').addEventListener('click', function(){
   $('#startMenu').classList.remove('open');
   $('#startBtn').classList.remove('on');
@@ -2120,6 +2805,7 @@ var sdLines = [
 ];
 function sdBeep(freq, dur){
   try{
+    if(localStorage.getItem('sfxOn') === 'off') return;   /* 系统属性里的音效总开关 */
     var AC = window.AudioContext || window.webkitAudioContext;
     if(!AC) return;
     sdBeep.ac = sdBeep.ac || new AC();
@@ -2253,8 +2939,10 @@ var TERM_CMDS = {
   },
   'start': function(raw){
     var a = (raw || '').toLowerCase();
-    if(a.indexOf('help') >= 0 || a.indexOf('chm') >= 0){ helpToggle(true); termPrint('打开 帮助.chm ... 完成。'); }
-    else termPrint('用法: start help.chm');
+    if(a.indexOf('help') >= 0 || a.indexOf('chm') >= 0){ helpAsk(); termPrint('help.chm 在一道剧透确认后面, 想好了再翻。'); }
+    else if(a.indexOf('paint') >= 0 || a.indexOf('画板') >= 0){ ptPaintToggle(true); termPrint('打开 画板.EXE ... 画笔就位。'); }
+    else if(a.indexOf('solar') >= 0 || a.indexOf('sun') >= 0 || a.indexOf('太阳') >= 0){ solarToggle(true); termPrint('打开 太阳系.EXE ... 引力正常。'); }
+    else termPrint('用法: start help.chm | paint.exe | solar.exe');
   },
   'miles': function(){
     var m = getMiles();
@@ -2389,7 +3077,7 @@ function helpToggle(open){
   if(will) frontWindow(w);
 }
 $('#tbCmd').addEventListener('click', function(){ termToggle(true); });
-$('#tbHelp').addEventListener('click', function(){ helpToggle(true); });
+$('#tbHelp').addEventListener('click', function(){ helpAsk(); });
 $('#helpClose').addEventListener('click', function(){ helpToggle(false); });
 
 /* ---------- 小站浏览器: 只能访问船际网络里认证过的站点 ---------- */
@@ -2745,6 +3433,794 @@ function hgDraw(){
   c.fillRect(19, 16, 1, 3);
 }
 
+/* ---------- 画板.EXE: 24×24 像素画, 画完能下载成 PNG ---------- */
+var PT_N = 24, PT_CELL = 12;   /* 逻辑网格 24×24, 画布每格 12px = 288×288 */
+var PT_COLORS = ['#2e2a22','#fffef5','#c94f3d','#e8a33d','#f2d97c','#7c9c66','#5bbcbf','#3d6fd0','#b06bb5','#8a5a2a'];
+var ptGrid = new Uint8Array(PT_N * PT_N).fill(255);  /* 每格存调色板下标, 255 = 空白(画布色) */
+var ptColor = 0, ptTool = 'pen', ptUndoStack = [], ptDrawing = false, ptLast = null, ptOpened = false;
+var ptCv = $('#ptCv'), ptCtx = ptCv.getContext('2d');
+function ptPaintToggle(open){
+  var w = $('#paintWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    if(!ptOpened){ ptOpened = true; ptRender(); }
+  }
+}
+$('#tbPaint').addEventListener('click', function(){ ptPaintToggle(true); });
+$('#paintClose').addEventListener('click', function(){ ptPaintToggle(false); });
+/* 调色板: 色块即按钮, 选中色的同时逃出橡皮模式 */
+PT_COLORS.forEach(function(c, i){
+  var b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'pt-sw' + (i === 0 ? ' on' : '');
+  b.style.background = c;
+  b.title = '颜色 ' + (i + 1);
+  b.addEventListener('click', function(){
+    ptColor = i;
+    if(ptTool === 'eraser') ptPickTool('pen');
+    $$('#ptColors .pt-sw').forEach(function(x, k){ x.classList.toggle('on', k === i); });
+    ptUpdateCursor();   /* 指针色点跟着换色走 */
+  });
+  $('#ptColors').appendChild(b);
+});
+$$('#paintWin .pt-tool').forEach(function(b){
+  b.addEventListener('click', function(){ ptPickTool(b.dataset.tool); });
+});
+function ptPickTool(t){
+  ptTool = t;
+  $$('#paintWin .pt-tool').forEach(function(x){ x.classList.toggle('on', x.dataset.tool === t); });
+  ptUpdateCursor();   /* 橡皮/画笔的指针芯不一样 */
+}
+function ptPushUndo(){
+  ptUndoStack.push(ptGrid.slice());
+  if(ptUndoStack.length > 30) ptUndoStack.shift();
+}
+$('#ptUndo').addEventListener('click', function(){
+  if(!ptUndoStack.length){ toast('没有可撤销的了, 手滑这一下收不回来。'); return; }
+  ptGrid = ptUndoStack.pop();
+  ptRender();
+});
+$('#ptClear').addEventListener('click', function(){
+  if(ptGrid.every(function(v){ return v === 255; })) return;
+  ptPushUndo();
+  ptGrid = new Uint8Array(PT_N * PT_N).fill(255);
+  ptRender();
+  toast('画布擦干净了, 撤销还能反悔。');
+});
+/* 事件坐标 → 格子下标 */
+function ptCell(e){
+  var r = ptCv.getBoundingClientRect();
+  var x = Math.floor((e.clientX - r.left) / r.width * PT_N);
+  var y = Math.floor((e.clientY - r.top) / r.height * PT_N);
+  return (x < 0 || y < 0 || x >= PT_N || y >= PT_N) ? null : y * PT_N + x;
+}
+function ptDot(i){
+  ptGrid[i] = (ptTool === 'eraser') ? 255 : ptColor;
+}
+function ptLine(a, b){  /* 快拖时两格之间补线, 不断墨 */
+  var x0 = a % PT_N, y0 = (a / PT_N) | 0, x1 = b % PT_N, y1 = (b / PT_N) | 0;
+  var dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1, err = dx - dy;
+  for(;;){
+    ptDot(y0 * PT_N + x0);
+    if(x0 === x1 && y0 === y1) break;
+    var e2 = 2 * err;
+    if(e2 > -dy){ err -= dy; x0 += sx; }
+    if(e2 < dx){ err += dx; y0 += sy; }
+  }
+}
+function ptFlood(i){  /* 油漆桶: 连通同色一口气填掉 */
+  var from = ptGrid[i], to = (ptTool === 'eraser') ? 255 : ptColor;
+  if(from === to) return;
+  var st = [i];
+  while(st.length){
+    var k = st.pop();
+    if(k < 0 || k >= ptGrid.length || ptGrid[k] !== from) continue;
+    ptGrid[k] = to;
+    var x = k % PT_N;
+    st.push(x > 0 ? k - 1 : -1, x < PT_N - 1 ? k + 1 : -1, k - PT_N, k + PT_N);
+  }
+}
+ptCv.addEventListener('pointerdown', function(e){
+  var i = ptCell(e);
+  if(i === null) return;
+  e.preventDefault();
+  ptPushUndo();
+  ptDrawing = true;
+  try{ ptCv.setPointerCapture(e.pointerId); }catch(err){}
+  if(ptTool === 'fill'){ ptFlood(i); ptRender(); return; }
+  ptDot(i); ptLast = i;
+  ptRender();
+});
+ptCv.addEventListener('pointermove', function(e){
+  if(!ptDrawing || ptTool === 'fill') return;
+  var i = ptCell(e);
+  if(i === null) return;
+  if(ptLast !== null && i !== ptLast) ptLine(ptLast, i);
+  else ptDot(i);
+  ptLast = i;
+  ptRender();
+});
+['pointerup', 'pointercancel'].forEach(function(ev){
+  ptCv.addEventListener(ev, function(){ ptDrawing = false; ptLast = null; });
+});
+/* 自定义画笔指针: 色点 + 双圈描边, 随画布日/夜底色反转圈色 — 不认路的 crosshair 在夜航画布上会隐身 */
+function ptUpdateCursor(){
+  var night = document.body.classList.contains('night');
+  var c = document.createElement('canvas');
+  c.width = 18; c.height = 18;
+  var x = c.getContext('2d');
+  var core = (ptTool === 'eraser') ? (night ? '#101828' : '#fbf7ec') : PT_COLORS[ptColor];
+  var ring1 = night ? '#0d1322' : '#ffffff';   /* 贴着画布底色的那圈, 故意融底 */
+  var ring2 = night ? '#ffffff' : '#2e2a22';   /* 反差圈, 负责看得见 */
+  x.fillStyle = ring2; x.fillRect(3, 3, 12, 12);
+  x.fillStyle = ring1; x.fillRect(4, 4, 10, 10);
+  x.fillStyle = core; x.fillRect(6, 6, 6, 6);
+  ptCv.style.cursor = 'url(' + c.toDataURL() + ') 9 9, crosshair';
+}
+/* 渲染: 网格线画在最底, 夜航换深色画布, 画作本身不丢 */
+function ptRender(){
+  var night = document.body.classList.contains('night');
+  var bg = night ? '#101828' : '#fbf7ec';
+  var grid = night ? '#1c2740' : '#ece5d0';
+  ptCtx.fillStyle = bg;
+  ptCtx.fillRect(0, 0, 288, 288);
+  ptCtx.fillStyle = grid;
+  for(var i = 1; i < PT_N; i++){
+    ptCtx.fillRect(i * PT_CELL, 0, 1, 288);
+    ptCtx.fillRect(0, i * PT_CELL, 288, 1);
+  }
+  for(var k = 0; k < ptGrid.length; k++){
+    if(ptGrid[k] === 255) continue;
+    ptCtx.fillStyle = PT_COLORS[ptGrid[k]];
+    ptCtx.fillRect((k % PT_N) * PT_CELL, ((k / PT_N) | 0) * PT_CELL, PT_CELL, PT_CELL);
+  }
+  ptUpdateCursor();
+}
+$('#ptSave').addEventListener('click', function(){
+  if(ptGrid.every(function(v){ return v === 255; })){ toast('画布还空着, 下载一张寂寞吗?'); return; }
+  var out = document.createElement('canvas');   /* 导出固定白天画布色, 16px 一格, 手感更清楚 */
+  out.width = PT_N * 16; out.height = PT_N * 16;
+  var c = out.getContext('2d');
+  c.fillStyle = '#fbf7ec';
+  c.fillRect(0, 0, out.width, out.height);
+  for(var k = 0; k < ptGrid.length; k++){
+    if(ptGrid[k] === 255) continue;
+    c.fillStyle = PT_COLORS[ptGrid[k]];
+    c.fillRect((k % PT_N) * 16, ((k / PT_N) | 0) * 16, 16, 16);
+  }
+  var a = document.createElement('a');
+  a.href = out.toDataURL('image/png');
+  a.download = '船上的像素画.png';
+  a.click();
+  toast('已打包下船: 船上的像素画.png');
+});
+
+/* ---------- 太阳系.EXE: 真实比例+真实周期, 拖动平移, 滚轮缩放 ---------- */
+/* 半径 km / 轨道半长轴(百万km) / 公转周期(天) 全是真数据; 画面上"小到几乎看不见"是特性不是 bug */
+var SOLAR_BODIES = [
+  { sp:'mercury', name:'水星',   r:2440,  a:57.9,   T:88,    th0:0.8,
+    fact:'离太阳最近, 白天 430℃, 晚上 -180℃, 冰火两重天的钉子户。' },
+  { sp:'venus',   name:'金星',   r:6052,  a:108.2,  T:225,   th0:2.4,
+    fact:'自转是反着来的, 这里太阳真的从西边出来。' },
+  { sp:'earth',   name:'地球',   r:6371,  a:149.6,  T:365.25,th0:4.1, moon:true,
+    fact:'目前唯一确认有作业要写的地方。' },
+  { sp:'mars',    name:'火星',   r:3390,  a:227.9,  T:687,   th0:5.5,
+    fact:'各国探测器排队打卡的网红景点。' },
+  { sp:'jupiter', name:'木星',   r:69911, a:778.5,  T:4333,  th0:1.6,
+    fact:'太阳系老大哥, 质量是其余行星总和的 2.5 倍; 大红斑刮了三百多年还没停。' },
+  { sp:'saturn',  name:'土星',   r:58232, a:1433.5, T:10759, th0:3.2,
+    fact:'自带光环, 密度比水小——找个足够大的浴缸, 它能浮起来。' },
+  { sp:'uranus',  name:'天王星', r:25362, a:2872.5, T:30687, th0:0.3,
+    fact:'躺着自转, 像一颗滚着走的保龄球。' },
+  { sp:'neptune', name:'海王星', r:24622, a:4495.1, T:60190, th0:2.0,
+    fact:'离太阳最远, 风速 2100 km/h, 全系统最速。' }
+];
+var SOLAR_SUN = { r:696340, fact:'占了全系 99.86% 的质量。剩下 0.14% 里, 木星又拿走一大半。' };
+var solCv = $('#solarCv'), solCtx = solCv.getContext('2d');
+var sol = { scale:0, camX:0, camY:0, days:0, speedIdx:1, raf:null, stars:[], W:0, H:0, last:0, scaleTxt:'', follow:null, view:null };
+var SOLAR_SPEEDS = [
+  { label:'1秒 = 1天',  dpd:1 },
+  { label:'1秒 = 30天', dpd:30 },
+  { label:'1秒 = 1年',  dpd:365.25 }
+];
+var solSprites = {}, solCols = {};
+['sun','mercury','venus','earth','mars','jupiter','saturn','uranus','neptune'].forEach(function(n){
+  var cv = document.createElement('canvas');
+  drawSprite(cv, n, 1);
+  solSprites[n] = cv;
+  solCols[n] = cv.width - 4;   /* 减掉 drawSprite 前后各 2px 留边 = 画芯宽 */
+});
+function solarToggle(open){
+  var w = $('#solarWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    solSize();
+    if(!sol.scale) solFit();
+    if(!sol.raf){ sol.last = performance.now(); sol.raf = requestAnimationFrame(solLoop); }
+  } else if(sol.raf){
+    cancelAnimationFrame(sol.raf); sol.raf = null;
+  }
+}
+$('#tbSolar').addEventListener('click', function(){ solarToggle(true); });
+$('#solarClose').addEventListener('click', function(){ solarToggle(false); });
+solBuildNav();   /* 星球列表: DOM 已就绪, 直接建 */
+function solSize(){
+  var r = solCv.getBoundingClientRect();
+  if(r.width < 10) return;
+  solCv.width = Math.round(r.width);
+  solCv.height = Math.round(r.height);
+  sol.W = solCv.width; sol.H = solCv.height;
+  sol.stars = [];
+  for(var i = 0; i < 120; i++){
+    sol.stars.push({ x:Math.random()*sol.W, y:Math.random()*sol.H,
+      s:Math.random() < .85 ? 1 : 2, a:.2 + Math.random()*.55,
+      tw:Math.random() < .3 ? 1.5 + Math.random()*3 : 0 });
+  }
+}
+function solScaleMin(){
+  return (Math.min(sol.W, sol.H) / 2 - 22) / 4600 / 2;
+}
+function solFit(){  /* 全局视角: 海王星轨道刚好装下 */
+  sol.scale = (Math.min(sol.W, sol.H) / 2 - 22) / 4600;
+  sol.camX = 0; sol.camY = 0;
+}
+function solZoomAt(px, py, f){
+  var wx = sol.camX + (px - sol.W/2) / sol.scale;
+  var wy = sol.camY + (py - sol.H/2) / sol.scale;
+  sol.scale = Math.min(30000, Math.max(solScaleMin(), sol.scale * f));
+  sol.camX = wx - (px - sol.W/2) / sol.scale;
+  sol.camY = wy - (py - sol.H/2) / sol.scale;
+}
+/* 星球列表: 点谁, 镜头锁定谁, 并放大到"看得清"的尺度 */
+function solGoto(b){
+  sol.follow = b; sol.view = b;
+  sol.scale = Math.min(30000, Math.max(solScaleMin(), 28 / (b.r / 1e6)));
+  $('#solarInfo').textContent = b.name + ' — 距日 ' + solFmtKm(b.a * 1e6) + ' · ' + b.fact + ' (镜头已锁定, 回☉解开)';
+  sdBeep(520, .06);
+  solNavSync();
+}
+function solGotoSun(){
+  sol.follow = null; sol.view = 'sun';
+  sol.camX = 0; sol.camY = 0;
+  sol.scale = Math.min(30000, Math.max(solScaleMin(), 40));
+  $('#solarInfo').textContent = '太阳 — ' + SOLAR_SUN.fact;
+  sdBeep(660, .06);
+  solNavSync();
+}
+function solBuildNav(){
+  var nav = $('#solarNav');
+  nav.innerHTML = '';
+  var mk = function(label, color, fn){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.innerHTML = '<i style="background:' + color + '"></i>' + label;
+    b.addEventListener('click', fn);
+    nav.appendChild(b);
+  };
+  mk('太阳', '#ffd166', solGotoSun);
+  SOLAR_BODIES.forEach(function(b){
+    mk(b.name, SPRITES[b.sp].pal.A, function(){ solGoto(b); });
+  });
+  solNavSync();
+}
+function solNavSync(){
+  $$('#solarNav button').forEach(function(b, i){
+    var mine = i === 0 ? 'sun' : SOLAR_BODIES[i - 1];
+    b.classList.toggle('on', sol.view === mine);
+  });
+}
+$('#solarIn').addEventListener('click', function(){ solZoomAt(sol.W/2, sol.H/2, 1.7); });
+$('#solarOut').addEventListener('click', function(){ solZoomAt(sol.W/2, sol.H/2, 1/1.7); });
+$('#solarHome').addEventListener('click', function(){ solFit(); sol.follow = null; sol.view = null; solNavSync(); });
+$('#solarSpeed').addEventListener('click', function(){
+  sol.speedIdx = (sol.speedIdx + 1) % SOLAR_SPEEDS.length;
+  this.textContent = SOLAR_SPEEDS[sol.speedIdx].label;
+});
+solCv.addEventListener('wheel', function(e){
+  e.preventDefault();
+  var r = solCv.getBoundingClientRect();
+  solZoomAt(e.clientX - r.left, e.clientY - r.top, e.deltaY < 0 ? 1.25 : 1/1.25);
+}, { passive:false });
+/* 拖动平移; 基本没动的"点一下"按选行星处理 */
+var solDrag = null;
+solCv.addEventListener('pointerdown', function(e){
+  e.preventDefault();
+  solDrag = { x:e.clientX, y:e.clientY, cx:sol.camX, cy:sol.camY, moved:0 };
+  try{ solCv.setPointerCapture(e.pointerId); }catch(err){}
+  solCv.classList.add('grabbing');
+});
+solCv.addEventListener('pointermove', function(e){
+  if(!solDrag) return;
+  var dx = e.clientX - solDrag.x, dy = e.clientY - solDrag.y;
+  solDrag.moved = Math.max(solDrag.moved, Math.abs(dx) + Math.abs(dy));
+  sol.camX = solDrag.cx - dx / sol.scale;
+  sol.camY = solDrag.cy - dy / sol.scale;
+});
+['pointerup', 'pointercancel'].forEach(function(ev){
+  solCv.addEventListener(ev, function(e){
+    if(solDrag && solDrag.moved < 5) solPick(e);
+    solDrag = null;
+    solCv.classList.remove('grabbing');
+  });
+});
+function solPick(e){
+  var r = solCv.getBoundingClientRect();
+  var x = e.clientX - r.left, y = e.clientY - r.top;
+  var best = null, bestD = 1e9;
+  function consider(name, fact, x2, y2, rad){
+    var d = Math.hypot(x - x2, y - y2);
+    if(d < Math.max(10, rad) && d < bestD){ bestD = d; best = { name:name, fact:fact }; }
+  }
+  var sp = 2 * (SOLAR_SUN.r / 1e6) * sol.scale;
+  consider('太阳', SOLAR_SUN.fact, sol.W/2 + (0 - sol.camX)*sol.scale, sol.H/2 + (0 - sol.camY)*sol.scale, sp/2);
+  SOLAR_BODIES.forEach(function(b){
+    var p = 2 * (b.r / 1e6) * sol.scale;
+    consider(b.name, '距日 ' + solFmtKm(b.a * 1e6) + ' · ' + b.fact, b._sx, b._sy, p/2 + 4);
+    if(best && best.name === b.name) best.body = b;
+  });
+  if(best){
+    sol.follow = best.body;
+    sol.view = best.body ? best.body : (best.name === '太阳' ? 'sun' : null);
+    $('#solarInfo').textContent = best.name + ' — ' + best.fact + (best.body ? ' (镜头已锁定, 回☉解开)' : '');
+    sdBeep(320 + bestD * 2, .06);
+    solNavSync();
+  }
+}
+function solFmtKm(v){  /* 亿公里 / 万公里 / 公里, 按量级换挡 */
+  if(v >= 1e8) return (v / 1e8).toFixed(2).replace(/\.?0+$/, '') + ' 亿公里';
+  if(v >= 1e5) return Math.round(v / 1e4).toLocaleString() + ' 万公里';
+  return Math.round(v).toLocaleString() + ' 公里';
+}
+function solLoop(t){
+  var dt = Math.min(.1, (t - sol.last) / 1000);
+  sol.last = t;
+  sol.days += dt * SOLAR_SPEEDS[sol.speedIdx].dpd;
+  if(sol.follow){  /* 锁定跟随: 行星跑, 镜头跟着跑, 凑多近都不丢 */
+    var fb = sol.follow;
+    var fth = fb.th0 + sol.days / fb.T * 6.2832;
+    sol.camX = Math.cos(fth) * fb.a;
+    sol.camY = Math.sin(fth) * fb.a;
+  }
+  solDraw(t / 1000);
+  sol.raf = requestAnimationFrame(solLoop);
+}
+function solDraw(t){
+  var c = solCtx, W = sol.W, H = sol.H, sc = sol.scale;
+  if(!W) return;
+  c.imageSmoothingEnabled = false;
+  c.fillStyle = '#050505';
+  c.fillRect(0, 0, W, H);
+  /* 星空: 屏幕坐标, 不跟着拖跑 — 它们是背景, 不是邻居 */
+  sol.stars.forEach(function(s){
+    c.globalAlpha = s.tw ? s.a * (.55 + .45 * Math.sin(t * s.tw)) : s.a;
+    c.fillStyle = '#cfd8e8';
+    c.fillRect(s.x, s.y, s.s, s.s);
+  });
+  c.globalAlpha = 1;
+  function sxv(wx){ return W/2 + (wx - sol.camX) * sc; }
+  function syv(wy){ return H/2 + (wy - sol.camY) * sc; }
+  /* 轨道: 点线, 只负责交代"这一圈都是它家" */
+  c.strokeStyle = 'rgba(160,180,220,.26)';
+  c.lineWidth = 1;
+  c.setLineDash([2, 5]);
+  SOLAR_BODIES.forEach(function(b){
+    c.beginPath();
+    c.arc(sxv(0), syv(0), Math.max(1, b.a * sc), 0, 6.2832);
+    c.stroke();
+  });
+  c.setLineDash([]);
+  /* 太阳: 小到不够画像素时就给一颗暖黄的星点; 像素块统一放大 1.2 倍 */
+  var sunP = 2 * (SOLAR_SUN.r / 1e6) * sc;
+  var sunX = Math.round(sxv(0)), sunY = Math.round(syv(0));
+  if(sunP >= 14){
+    var f = Math.min(8, Math.max(1, Math.ceil(sunP / solCols.sun * 1.2)));
+    var scv = solSprites.sun;
+    c.drawImage(scv, sunX - scv.width*f/2, sunY - scv.height*f/2, scv.width*f, scv.height*f);
+  } else {
+    c.fillStyle = '#ffd166';
+    c.fillRect(sunX - 1, sunY - 1, 3, 3);
+  }
+  /* 行星: 真实比例下是 3px 小点(原来 2px 确实费眼), 凑近才显出放大 1.4 倍的像素真身 */
+  SOLAR_BODIES.forEach(function(b){
+    var th = b.th0 + sol.days / b.T * 6.2832;
+    b._sx = sxv(Math.cos(th) * b.a);
+    b._sy = syv(Math.sin(th) * b.a);
+    var p = 2 * (b.r / 1e6) * sc;
+    if(p < 3){
+      var d = Math.max(3, Math.round(p));
+      c.fillStyle = SPRITES[b.sp].pal.A;
+      c.fillRect(Math.round(b._sx - d/2), Math.round(b._sy - d/2), d, d);
+    } else {
+      var f2 = Math.min(8, Math.max(1, Math.ceil(p / solCols[b.sp] * 1.4)));
+      var cv2 = solSprites[b.sp];
+      var w2 = cv2.width * f2;
+      c.drawImage(cv2, Math.round(b._sx - w2/2), Math.round(b._sy - cv2.height*f2/2), w2, cv2.height*f2);
+      c.fillStyle = 'rgba(200,214,235,.8)';
+      c.font = '10px Consolas,monospace';
+      c.textBaseline = 'top';
+      c.fillText(b.name, b._sx + w2/2 + 3, b._sy - 5);
+    }
+    /* 月亮: 真实比例下离地球 30 个地球远, 凑近了才找得到 */
+    if(b.moon && p >= 8){
+      var mt = sol.days / 27.3 * 6.2832 + 1;
+      var mx = sxv(Math.cos(th) * b.a + Math.cos(mt) * .3844);
+      var my = syv(Math.sin(th) * b.a + Math.sin(mt) * .3844);
+      if(mx > 0 && mx < W && my > 0 && my < H){
+        c.fillStyle = '#cfcfcf';
+        c.fillRect(Math.round(mx) - 1, Math.round(my) - 1, 2, 2);
+      }
+    }
+  });
+  var txt = '1 像素 ≈ ' + solFmtKm(1e6 / sc);
+  if(txt !== sol.scaleTxt){ sol.scaleTxt = txt; $('#solarScale').textContent = txt; }
+}
+window.addEventListener('resize', function(){
+  if($('#solarWin').classList.contains('open')) solSize();
+});
+
+/* ---------- 彩蛋: 同时开 4 个应用 → 640K 内存绷不住 → 蓝屏 ---------- */
+/* 退出走各应用自己的关闭函数, 沙漏计时器/太阳系动画/扫雷局面才能停干净; 第三个名字给灵动岛报状态用 */
+var BSOD_APPS = [
+  ['#term', termToggle, '终端'], ['#helpWin', helpToggle, '帮助.chm'], ['#calcWin', calcToggle, '计算器'],
+  ['#mineWin', mineToggle, '扫雷'], ['#diaryWin', diaryAppToggle, '日记.EXE'], ['#browserWin', brToggle, '小站浏览器'],
+  ['#hgWin', hgToggle, '沙漏'], ['#paintWin', ptPaintToggle, '画板'], ['#solarWin', solarToggle, '太阳系']
+];
+var bsodArmed = true;
+function bsodOpenCount(){
+  return BSOD_APPS.filter(function(a){ return $(a[0]).classList.contains('open'); }).length;
+}
+new MutationObserver(function(){
+  if(!bsodArmed || $('#shutdown').classList.contains('show')) return;
+  if(bsodOpenCount() >= 4){
+    bsodArmed = false;   /* 压垮已在进行中, 这时候关窗口也来不及了 */
+    setTimeout(bsodCrash, 650);
+  }
+}).observe(document.body, { attributes:true, attributeFilter:['class'], subtree:true });
+function bsodCrash(){
+  if($('#shutdown').classList.contains('show')){ bsodArmed = true; return; }
+  $('#startMenu').classList.remove('open');
+  $('#startBtn').classList.remove('on');
+  document.documentElement.style.overflow = 'hidden';   /* 蓝屏要盖住整屏, 滚动条也得收敛 */
+  $('#bsod').classList.add('show');
+  sdBeep(160, .4);
+}
+function bsodExit(){
+  if(!$('#bsod').classList.contains('show')) return;
+  $('#bsod').classList.remove('show');
+  document.documentElement.style.overflow = '';
+  BSOD_APPS.forEach(function(a){ if($(a[0]).classList.contains('open')) a[1](false); });
+  var f = $('#flash');   /* 白闪一帧, 假装内存清零了 */
+  f.classList.remove('go'); void f.offsetWidth; f.classList.add('go');
+  bsodArmed = true;
+  setTimeout(function(){ toast('蓝屏报告: 640K 内存清点完毕, 一个窗口都没剩。'); }, 350);
+}
+document.addEventListener('keydown', function(e){
+  if($('#bsod').classList.contains('show')){ e.preventDefault(); bsodExit(); }
+});
+$('#bsod').addEventListener('click', bsodExit);
+
+/* ---------- 系统属性: 系统与设备 / 网站设置 / 游客信息 (开始菜单三件套) ---------- */
+/* 访问计数: 每次加载 +1, 只存本地 */
+var visitN = 1, visitFirst = '';
+try{
+  visitN = (parseInt(localStorage.getItem('visitCount'), 10) || 0) + 1;
+  localStorage.setItem('visitCount', String(visitN));
+  visitFirst = localStorage.getItem('visitFirst');
+  if(!visitFirst){
+    var fd = new Date();
+    visitFirst = fd.getFullYear() + '-' + ('0' + (fd.getMonth() + 1)).slice(-2) + '-' + ('0' + fd.getDate()).slice(-2);
+    localStorage.setItem('visitFirst', visitFirst);
+  }
+}catch(e){}
+function sysBrowser(){
+  var ua = navigator.userAgent;
+  if(ua.indexOf('Edg') >= 0) return 'Edge';
+  if(ua.indexOf('Firefox') >= 0) return 'Firefox';
+  if(ua.indexOf('Chrome') >= 0) return 'Chrome';
+  if(ua.indexOf('Safari') >= 0) return 'Safari';
+  return '不明船型';
+}
+function sysTZ(){
+  try{ return Intl.DateTimeFormat().resolvedOptions().timeZone || '本地'; }catch(e){ return '本地'; }
+}
+function sysRow(k, v){ return '<tr><th>' + k + '</th><td>' + v + '</td></tr>'; }
+function visitRank(n){
+  if(n <= 1) return '新乘客(椅背上有晕船袋)';
+  if(n <= 3) return '面熟的旅客';
+  if(n <= 9) return '常客';
+  if(n <= 19) return '老水手';
+  return '编外船员(该发工牌了)';
+}
+function sysToggle(open, tab){
+  var w = $('#sysWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    sysSyncSettings();
+    sysFill();
+    if(tab) sysPickTab(tab);
+  }
+}
+function sysPickTab(t){
+  $$('#sysWin .sys-tab').forEach(function(b){ b.classList.toggle('on', b.dataset.tab === t); });
+  $('#sysPanelSys').classList.toggle('on', t === 'sys');
+  $('#sysPanelSet').classList.toggle('on', t === 'set');
+  $('#sysPanelVisit').classList.toggle('on', t === 'visit');
+}
+$$('#sysWin .sys-tab').forEach(function(b){
+  b.addEventListener('click', function(){ sysPickTab(b.dataset.tab); });
+});
+$('#sysClose').addEventListener('click', function(){ sysToggle(false); });
+makeDraggable($('#sysWin'), $('#sysWin .titlebar'));
+function smClose(){
+  $('#startMenu').classList.remove('open');
+  $('#startBtn').classList.remove('on');
+}
+$('#smSys').addEventListener('click', function(){ smClose(); sysToggle(true, 'sys'); });
+$('#smSettings').addEventListener('click', function(){ smClose(); sysToggle(true, 'set'); });
+$('#smVisitor').addEventListener('click', function(){ smClose(); sysToggle(true, 'visit'); });
+function sysFill(){
+  $('#sysPanelSys').innerHTML =
+    '<table class="info-table">' +
+    sysRow('操作系统', 'Windows 98 · 船只悠悠版(内核 v7.10)') +
+    sysRow('内存', '640K(自检通过; 同时开 4 个应用除外)') +
+    sysRow('处理器', '船长的大脑 ×1, 单核, 常年超频') +
+    sysRow('屏幕', screen.width + '×' + screen.height + ' · ' + screen.colorDepth + '位色') +
+    sysRow('浏览器', sysBrowser() + '(船际网络认证)') +
+    sysRow('渲染引擎', '手写 HTML + CSS + JS, 无框架无后端') +
+    sysRow('在线状态', navigator.onLine ? '已接入船际网络' : '离线漂流中') +
+    sysRow('已航行', days + ' 天(2026-08-21 下水)') +
+    sysRow('当前载货', '日记 ' + ENTRIES.length + ' 篇 · 相册 ' + ALBUMS.length + ' 本 · 在开应用 ' + bsodOpenCount() + ' 个') +
+    '</table>';
+  var rank = visitRank(visitN);
+  var from = '地址栏直接闯进来的';
+  if(document.referrer){
+    try{ from = '从 ' + new URL(document.referrer).hostname + ' 漂过来'; }catch(e){}
+  }
+  var d = new Date();
+  var now = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + ' ' +
+    ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+  $('#sysPanelVisit').innerHTML =
+    '<table class="info-table">' +
+    sysRow('身份', '第 ' + visitN + ' 次上船 · ' + rank) +
+    sysRow('首次登船', visitFirst || '(航海日志泡了海水, 没查到)') +
+    sysRow('本次靠岸', now) +
+    sysRow('语言', navigator.language) +
+    sysRow('时区', sysTZ()) +
+    sysRow('视野', window.innerWidth + '×' + window.innerHeight + '(浏览器视口)') +
+    sysRow('来路', from) +
+    sysRow('网络', navigator.onLine ? '在线' : '离线') +
+    '</table>' +
+    '<p class="set-note">以上资料只存在你这台电脑的 localStorage 里, 不上传任何地方 — 船上不装监控。</p>' +
+    '<div class="wc-again"><button id="wcAgain" type="button">再看一遍欢迎信 »</button></div>';
+}
+function sysSyncSettings(){
+  var sw = 2;
+  try{ sw = parseInt(localStorage.getItem('saverWait'), 10); }catch(e){}
+  if(isNaN(sw) || sw < 0) sw = 2;
+  $$('#setSaver input').forEach(function(r){ r.checked = (+r.value === sw); });
+  var sfxOnPref = true, skipBootPref2 = false;
+  try{
+    sfxOnPref = localStorage.getItem('sfxOn') !== 'off';
+    skipBootPref2 = localStorage.getItem('skipBoot') === 'on';
+  }catch(e){}
+  $('#setSfx').checked = sfxOnPref;
+  $('#setBoot').checked = !skipBootPref2;
+  $('#setNight').checked = nightOn;
+}
+$$('#setSaver input').forEach(function(r){
+  r.addEventListener('change', function(){
+    if(!r.checked) return;
+    try{ localStorage.setItem('saverWait', r.value); }catch(e){}
+    if(window.saverRefresh) window.saverRefresh();   /* 新时长马上生效 */
+  });
+});
+$('#setNight').addEventListener('change', function(){
+  nightOn = this.checked;
+  try{ localStorage.setItem('nightMode', nightOn ? 'on' : 'off'); }catch(e){}
+  applyNight(nightOn);
+  mountGiscus();   /* 和托盘点灯共用一套, giscus 主题跟着换 */
+});
+$('#setSfx').addEventListener('change', function(){
+  try{ localStorage.setItem('sfxOn', this.checked ? 'on' : 'off'); }catch(e){}
+});
+$('#setBoot').addEventListener('change', function(){
+  try{ localStorage.setItem('skipBoot', this.checked ? 'off' : 'on'); }catch(e){}
+});
+
+/* ---------- 欢迎登船: 首次到访的欢迎信 ---------- */
+function showWelcome(){
+  $('#wcVisitN').textContent = visitN;
+  $('#wcRank').textContent = visitRank(visitN);
+  $('#wcDevice').textContent = window.innerWidth < 760
+    ? '设备建议: 小屏也能开船, 但舱位紧凑 — 任务栏会挤成一排沙丁鱼。有空换电脑来, 这台假电脑的全部乐趣才铺得开。'
+    : '设备建议: 大屏 + 鼠标, 你现在的装备就很对味。浏览器认最新版 Chrome / Edge, 别用祖传 IE, 它连船票都买不了。';
+  drawSprite($('#wcBoat'), 'boat', 4);
+  $('#welcomeWrap').classList.add('open');
+  try{ localStorage.setItem('welcomed', '1'); }catch(e){}
+}
+function hideWelcome(){ $('#welcomeWrap').classList.remove('open'); }
+$('#welcomeClose').addEventListener('click', hideWelcome);
+$('#welcomeStart').addEventListener('click', function(){
+  hideWelcome();
+  confetti();      /* 送上甲板的彩带 */
+  sdBeep(660, .08);
+});
+$('#welcomeWrap').addEventListener('click', function(e){ if(e.target === this) hideWelcome(); });
+$('#sysPanelVisit').addEventListener('click', function(e){
+  if(e.target.closest('#wcAgain')){ smClose(); sysToggle(false); showWelcome(); }
+});
+
+/* ---------- 左下角双黑盒 · 甲板音乐 ---------- */
+/* 加歌: 音频文件放进 docs/music/, 再往 SONGS 里加一行 { name:'歌名', src:'docs/music/文件.mp3' } */
+var SONGS = [];
+var dm = { idx:0, loadedIdx:-1, playing:false, actx:null, analyser:null, srcNode:null, raf:null, data:null, zeroFrames:0 };
+var dmAudio = null;
+function dmAudioEl(){
+  if(!dmAudio){
+    dmAudio = new Audio();
+    dmAudio.addEventListener('ended', function(){ dmNext(); });
+    dmAudio.addEventListener('error', function(){
+      if(dm.playing){ dmPause(); toast('这首歌加载失败了, 换一首试试。'); }
+    });
+  }
+  return dmAudio;
+}
+function dmRender(){
+  $('#dmTrack').textContent = !SONGS.length ? '歌单还空着——等船长进货。'
+    : (dm.playing ? '♪ ' : '· ') + SONGS[dm.idx].name;
+  $('#dmCount').textContent = SONGS.length ? (dm.idx + 1) + '/' + SONGS.length : '0/0';
+  $('#dmPlay').textContent = dm.playing ? '❚❚' : '▶';
+}
+function dmStart(){
+  if(!SONGS.length){ toast('歌单空着, 船长还没进货。'); return; }
+  var a = dmAudioEl();
+  if(dm.loadedIdx !== dm.idx){ a.src = SONGS[dm.idx].src; dm.loadedIdx = dm.idx; }
+  a.play().then(function(){
+    dm.playing = true; dmRender(); dmVizStart();
+  }).catch(function(){ toast('这首歌没加载出来, 稍后再试。'); });
+}
+function dmPause(){
+  dm.playing = false;
+  if(dmAudio) dmAudio.pause();
+  if(dm.raf){ cancelAnimationFrame(dm.raf); dm.raf = null; }
+  dmVizFrame(0);   /* 定格成待机的矮柱 */
+  dmRender();
+}
+function dmToggle(){ if(dm.playing) dmPause(); else dmStart(); }
+function dmNext(){
+  if(!SONGS.length) return;
+  dm.idx = (dm.idx + 1) % SONGS.length;
+  if(dm.playing){ dm.playing = false; dmStart(); } else dmRender();
+}
+function dmPrev(){
+  if(!SONGS.length) return;
+  dm.idx = (dm.idx - 1 + SONGS.length) % SONGS.length;
+  if(dm.playing){ dm.playing = false; dmStart(); } else dmRender();
+}
+$('#dmPlay').addEventListener('click', dmToggle);
+$('#dmNext').addEventListener('click', dmNext);
+$('#dmPrev').addEventListener('click', dmPrev);
+/* 像素频谱: 有 analyser 就跳真舞, 分析不出来就自己哼(假柱子也是柱子) */
+var dmVizCv = $('#dmViz'), dmVizCtx = dmVizCv.getContext('2d');
+function dmHookAnalyser(){
+  if(dm.analyser || !(window.AudioContext || window.webkitAudioContext)) return;
+  try{
+    var AC = window.AudioContext || window.webkitAudioContext;
+    dm.actx = dm.actx || new AC();
+    dm.srcNode = dm.actx.createMediaElementSource(dmAudio);
+    dm.analyser = dm.actx.createAnalyser();
+    dm.analyser.fftSize = 64;
+    dm.srcNode.connect(dm.analyser);
+    dm.analyser.connect(dm.actx.destination);
+    dm.data = new Uint8Array(dm.analyser.frequencyBinCount);
+  }catch(e){ dm.analyser = null; }
+}
+function dmVizFrame(t){
+  var c = dmVizCtx, w = dmVizCv.width, h = dmVizCv.height;
+  c.fillStyle = '#000'; c.fillRect(0, 0, w, h);
+  var bars = 14, bw = Math.floor(w / bars) - 2;
+  var live = false, i, v;
+  if(dm.analyser && dm.playing){
+    dm.analyser.getByteFrequencyData(dm.data);
+    for(i = 2; i < dm.data.length; i++) if(dm.data[i] > 4) live = true;
+  }
+  for(i = 0; i < bars; i++){
+    if(dm.playing && live) v = (dm.data[i + 2] || 0) / 255;
+    else if(dm.playing) v = 0.3 + 0.55 * Math.abs(Math.sin(t / 160 + i * 0.9));   /* 假舞: 等真数据 */
+    else v = 0.08;
+    var bh = Math.max(2, Math.round(v * (h - 6)));
+    c.fillStyle = '#39d353';
+    c.fillRect(2 + i * (bw + 2), h - 3 - bh, bw, bh);
+  }
+}
+function dmVizLoop(t){
+  dmVizFrame(t);
+  dm.raf = requestAnimationFrame(dmVizLoop);
+}
+function dmVizStart(){
+  if(dmAudio) dmHookAnalyser();
+  if(!dm.raf) dm.raf = requestAnimationFrame(dmVizLoop);
+}
+dmRender();
+dmVizFrame(0);
+
+/* ---------- 左下角双黑盒 · 灵动岛: 游客此刻在干嘛 ---------- */
+var dynLastText = '', dynT0 = Date.now(), dynLastActive = Date.now();
+['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(function(ev){
+  document.addEventListener(ev, function(){ dynLastActive = Date.now(); }, { passive: true });
+});
+var DYN_SECTIONS = [['#about', '「关于我」'], ['#now', '「船舱日记」'], ['#gallery', '「相册」'], ['#guestbook', '「留言板」']];
+function dynSection(){
+  /* 留言板在右侧栏, offsetTop 很小, 不能比谁靠上 — 以"视野中心落在谁的矩形里"为准 */
+  var mid = window.scrollY + window.innerHeight * 0.45, cur = null;
+  DYN_SECTIONS.forEach(function(s){
+    if(cur) return;
+    var el = document.querySelector(s[0]);
+    if(!el) return;
+    var top = el.getBoundingClientRect().top + window.scrollY, bot = top + el.offsetHeight;
+    if(mid >= top && mid < bot) cur = s[1];
+  });
+  if(!cur){   /* 中心落在两段之间的缝里: 找中心上方最近的一段 */
+    var best = -1;
+    DYN_SECTIONS.forEach(function(s){
+      var el = document.querySelector(s[0]);
+      if(!el) return;
+      var top = el.getBoundingClientRect().top + window.scrollY;
+      if(top <= mid && top > best){ best = top; cur = s[1]; }
+    });
+  }
+  return cur || DYN_SECTIONS[0][1];
+}
+function dynUpdate(){
+  var txt = null;
+  for(var i = 0; i < BSOD_APPS.length; i++){
+    if($(BSOD_APPS[i][0]).classList.contains('open')){ txt = '正在玩 ' + BSOD_APPS[i][2]; break; }
+  }
+  if(!txt && albumWinOpen()) txt = '正在翻《' + ALBUMS[albumSel].name + '》';
+  if(!txt && $('#sysWin').classList.contains('open')) txt = '正在研究系统属性';
+  if(!txt && Date.now() - dynLastActive > 45000) txt = '挂机中…… 船在替你开';
+  if(!txt) txt = '正在逛 ' + dynSection();
+  if(txt !== dynLastText){
+    dynLastText = txt;
+    var el = $('#dynText');
+    el.textContent = txt;
+    el.classList.remove('swap'); void el.offsetWidth; el.classList.add('swap');
+  }
+  $('#dynMin').textContent = Math.floor((Date.now() - dynT0) / 60000) + ' 分';
+}
+setInterval(dynUpdate, 1000);
+dynUpdate();
+
+/* ---------- 剧透确认: help.chm 的门帘, 三个入口(任务栏/欢迎信/终端)都从这里过 ---------- */
+drawSprite($('#spoilerIcon'), 'warn', 3);
+function helpAsk(){
+  var ok = false;
+  try{ ok = localStorage.getItem('helpSpoiler') === 'ok'; }catch(e){}
+  if(ok){ helpToggle(true); return; }
+  var w = $('#spoilerWin');
+  w.classList.add('open');
+  frontWindow(w);
+}
+$('#spoilerGo').addEventListener('click', function(){
+  if($('#spoilerRemember').checked){ try{ localStorage.setItem('helpSpoiler', 'ok'); }catch(e){} }
+  $('#spoilerWin').classList.remove('open');
+  helpToggle(true);
+});
+$('#spoilerNo').addEventListener('click', function(){
+  $('#spoilerWin').classList.remove('open');
+  toast('好眼光。彩蛋自己撞见的才算数。');
+});
+$('#spoilerClose').addEventListener('click', function(){ $('#spoilerWin').classList.remove('open'); });
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape' && $('#spoilerWin').classList.contains('open')) $('#spoilerWin').classList.remove('open');
+});
+makeDraggable($('#spoilerWin'), $('#spoilerWin .titlebar'));
 /* ---------- 计算器 ---------- */
 function calcToggle(open){
   var w = $('#calcWin');
@@ -3052,7 +4528,7 @@ if(!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').
     saverRAF = requestAnimationFrame(saverLoop);
   }
   function startSaver(){
-    if(saverOn) return;
+    if(saverOn || saverWaitMs() <= 0) return;
     saverOn = true;
     sizeSaver();
     saver.classList.add('show');
@@ -3063,15 +4539,23 @@ if(!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').
     if(saverRAF) cancelAnimationFrame(saverRAF);
     saver.classList.remove('show');
   }
+  function saverWaitMs(){   /* 等待时长由 网站设置 控制, 0 = 永不 */
+    var m = 2;
+    try{ m = parseInt(localStorage.getItem('saverWait'), 10); }catch(e){}
+    if(isNaN(m) || m < 0) m = 2;
+    return m * 60000;
+  }
   function poke(){
     clearTimeout(saverTimer);
     if(saverOn) stopSaver();
-    saverTimer = setTimeout(startSaver, 120000);
+    var ms = saverWaitMs();
+    if(ms > 0) saverTimer = setTimeout(startSaver, ms);
   }
   ['mousemove','keydown','click','scroll','touchstart'].forEach(function(ev){
     document.addEventListener(ev, poke, {passive:true});
   });
   window.addEventListener('resize', function(){ if(saverOn) sizeSaver(); });
+  window.saverRefresh = poke;   /* 设置改完时长, 叫一声就生效 */
   poke();
 }
 
@@ -3113,7 +4597,6 @@ var ENTRIES = [
   { d:'2026-08-31', h:'大日子: 全站推上 GitHub, 留言板也通了。累但开心, 像把船真正放进海里。' },
   { d:'2026-08-31', h:'黑猫和灯笼今天入住相册。灯笼号称自己会发光, 先记下这句牛皮。' },
   { d:'2026-08-31', h:'便利贴开始每天编宜忌, 留言搜索悄悄上线。还有位陌生旅客扔下一句"!？强强 !?"就走, 看不懂, 但大受震撼。' },
-  { d:'2026-09-03', h:'无事发生的一天。记一笔, 证明船没翻。' },
   { d:'2026-09-05', h:'一段排版把文字挤成了 45 像素宽, 险些酿成海难。周末在家捣鼓了一晚上, 总算修好了。' },
   { d:'2026-09-05', h:'像素猫换了绿眼睛, 灯笼的牛皮也兑现了——真的会发光。' },
   { d:'2026-09-05', h:'船舱里多了个终端, 有人一上来就 sudo。醒醒, 这条船不归你管。' },
@@ -3122,7 +4605,9 @@ var ENTRIES = [
   { d:'2026-09-05', h:'留言板加高了。评论区这种东西, 一旦看顺眼了就嫌它小。' },
   { d:'2026-09-05', h:'计算器和扫雷搬进了任务栏。这台电脑, 越来越像一台电脑了。' },
   { d:'2026-09-06', h:'今天给相册分了家, 迎来新住客"捣鼓token"; 屏保学会了看钟, 沙漏里掉起了像素沙子。这台电脑越来越像样——明明是造它的人越来越像样了。' },
-  { d:'2026-09-06', h:'改完了, 开学住校去了。船就泊在这里, 慢慢地晃。等我放假回来, 再继续开。' }
+  { d:'2026-09-06', h:'改完了, 开学住校去了。船就泊在这里, 慢慢地晃。等我放假回来, 再继续开。' },
+  { d:'2026-09-12', h:'周末回家开船: 相册改成先看封面、点开才翻; 船上多了画板.EXE 和一台真实比例的太阳系.EXE——把太阳系缩到最小才发现, 我们住的地方在屏幕上还凑不出一个点。警告后来人: 同时开 4 个应用会蓝屏, 640K 内存就这么个脾气。开始菜单翻新了, 第一次上船的旅客会先收到一封欢迎信——常来, 升老水手。' },
+  { d:'2026-09-12', h:'「船长的画」今天开馆: 六张铅笔稿搬进第四本相册, 横线作业本就是画纸。另有五本空相册虚位以待——慢慢画, 不着急。' }
 ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
