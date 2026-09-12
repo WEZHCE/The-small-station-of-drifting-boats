@@ -777,30 +777,39 @@
   body.night .sp-btns button:active{border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .sp-go{background:#3d6fd0; color:#fff}
 
-  /* ---------- 左下角双黑盒: 甲板音乐 + 灵动岛 ---------- */
-  #deckMusic, #dynIsland{position:fixed; left:10px; z-index:60; background:#000; color:#39d353;
-    font-family:Consolas,"Courier New",monospace; border:1px solid #2e2a22;
-    box-shadow:3px 3px 0 rgba(43,38,28,.22)}
+  /* ---------- 左下角双黑盒: 甲板音乐 + 灵动岛(灰黄面板, 配整站羊皮纸) ---------- */
+  #deckMusic, #dynIsland{position:fixed; left:10px; z-index:60; background:#ece5d0; color:#4a4335;
+    font-family:Consolas,"Courier New",monospace; border:1px solid #b3a88c;
+    box-shadow:3px 3px 0 rgba(43,38,28,.18)}
   #deckMusic{bottom:calc(76px + env(safe-area-inset-bottom)); width:192px; padding:8px 9px 9px}
   .dm-head{display:flex; justify-content:space-between; align-items:baseline; font-size:11px;
-    letter-spacing:2px; color:#1f7a33; margin-bottom:6px}
-  .dm-head b{color:#39d353; letter-spacing:1px}
-  #dmViz{display:block; width:100%; height:42px; background:#000; border:1px solid #1f7a33}
-  .dm-track{margin-top:6px; font-size:12px; color:#b8f5c4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+    letter-spacing:2px; color:#b3a88c; margin-bottom:6px}
+  .dm-head b{color:#3f5c33; letter-spacing:1px}
+  #dmViz{display:block; width:100%; height:42px; background:#0d1322; border:1px solid #b3a88c}
+  .dm-track{margin-top:6px; font-size:12px; color:#4a4335; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .dm-ctrl{display:flex; align-items:center; gap:4px; margin-top:7px}
-  .dm-btn{width:26px; height:22px; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
-    cursor:pointer; color:#222; font-family:Consolas,monospace; font-size:10px; line-height:1; padding:0}
-  .dm-btn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  .dm-count{margin-left:auto; font-size:11px; color:#1f7a33}
+  .dm-btn{width:26px; height:22px; background:#e8e0cc; border:2px solid; border-color:#fff #a89d84 #a89d84 #fff;
+    cursor:pointer; color:#4a3f2c; font-family:Consolas,monospace; font-size:10px; line-height:1; padding:0}
+  .dm-btn:active{border-color:#a89d84 #fff #fff #a89d84}
+  .dm-count{margin-left:auto; font-size:11px; color:#8a7d5f}
   #dynIsland{bottom:calc(40px + env(safe-area-inset-bottom)); width:192px; height:30px;
     display:flex; align-items:center; gap:6px; padding:0 9px; font-size:11.5px}
-  #dynDot{width:7px; height:7px; background:#39d353; flex:none; animation:dmPulse 1.6s steps(2) infinite}
+  #dynDot{width:7px; height:7px; background:#7c9c66; flex:none; animation:dmPulse 1.6s steps(2) infinite}
   @keyframes dmPulse{50%{opacity:.2}}
   #dynText{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   #dynText.swap{animation:dynSwap .3s steps(3)}
   @keyframes dynSwap{0%{opacity:0; transform:translateY(4px)}100%{opacity:1; transform:none}}
-  #dynMin{flex:none; color:#1f7a33}
-  body.night #deckMusic, body.night #dynIsland{border-color:#243050; box-shadow:3px 3px 0 rgba(0,0,0,.5)}
+  #dynMin{flex:none; color:#8a7d5f}
+  body.night #deckMusic, body.night #dynIsland{background:#161e30; border-color:#2c3854;
+    box-shadow:3px 3px 0 rgba(0,0,0,.5); color:#c8cfdd}
+  body.night .dm-head{color:#55618a}
+  body.night .dm-head b{color:#8fbf8f}
+  body.night #dmViz{border-color:#243050}
+  body.night .dm-track{color:#c3cbdc}
+  body.night .dm-btn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .dm-btn:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .dm-count, body.night #dynMin{color:#7d8cab}
+  body.night #dynDot{background:#8fbf8f}
 
   body.night .lb-cap{background:#161e30; border-color:#3a4763 #101828 #101828 #3a4763; color:#aeb9d0}
   body.night .lb-cap b{color:#8fbf8f}
@@ -1268,9 +1277,9 @@
     <div class="help-sec">🖱 处处可点</div>
     <ul>
       <li>开始菜单翻新了: <b>系统与设备</b> / <b>网站设置</b>(屏保时长·夜航·音效·开机动画) / <b>游客信息</b> — 你是第几次上船, 它记得</li>
-      <li>左下角两块黑色小屏: <b>甲板音乐</b>(歌单等船长进货, 到货就能点播) + <b>灵动岛</b>(实时报你此刻在干嘛, 顺便记你上船几分钟)</li>
+      <li>左下角两块小面板: <b>甲板音乐</b>(五首 VOCALOID 已上架, 像素频谱跟着唱) + <b>灵动岛</b>(实时报你此刻在干嘛, 顺便记你上船几分钟)</li>
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
-      <li>相册: 九本板块相册, 点封面选中, 点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
+      <li>相册: 九本板块相册, 点封面选中, 双击封面或点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
       <li>右下角小船: 点一下 +1 海里 — <b>10</b> 红帆 · <b>30</b> 海鸥 · <b>60</b> 金帆 · <b>100</b> 夜灯</li>
     </ul>
 
@@ -2251,6 +2260,7 @@ var ALBUMS = [
   { name:'相册 · 玖', desc:'', filled:false }
 ];
 var albumSel = 0, curPhotos = PHOTOS;
+var lastCoverClick = { i: -1, t: 0 };   /* 双击判定: 单击会重建封面节点, 原生 dblclick 靠不住 */
 var barCur = $('#albumCurrent'), barBtn = $('#albumOpenBtn');
 function albumCount(a){
   return a.kind === 'sprite' ? PHOTOS.length : (a.photos ? a.photos.length : 0);
@@ -2314,9 +2324,17 @@ function renderAlbums(){
     d.textContent = a.kind ? a.desc : '还空着, 等船长上货。';
     cover.appendChild(d);
     cover.addEventListener('click', function(){
-      if(albumSel === i) return;
+      var now = Date.now();
+      var dbl = (lastCoverClick.i === i && now - lastCoverClick.t < 350);
+      lastCoverClick = { i: i, t: now };
+      if(albumSel === i && !dbl) return;
       albumSel = i;
       renderAlbums();
+      if(dbl){   /* 双击封面 = 直接翻开 */
+        if(!ALBUMS[i].kind){ toast('这本还空着——等船长把新画搬进来。'); updateAlbumBar(); return; }
+        albumWinToggle(true);
+        return;
+      }
       if(albumWinOpen()) renderAlbumContent(); /* 图片窗开着时换选, 窗口内容就地换 */
       updateAlbumBar();
     });
@@ -4057,7 +4075,13 @@ $('#sysPanelVisit').addEventListener('click', function(e){
 
 /* ---------- 左下角双黑盒 · 甲板音乐 ---------- */
 /* 加歌: 音频文件放进 docs/music/, 再往 SONGS 里加一行 { name:'歌名', src:'docs/music/文件.mp3' } */
-var SONGS = [];
+var SONGS = [
+  { name:'月が綺麗ねと言われたい！ · 初音ミク', src:'docs/music/song-1.mp3' },
+  { name:'こわいこと · 镜音铃', src:'docs/music/song-2.mp3' },
+  { name:'角色T · 重音テト', src:'docs/music/song-3.mp3' },
+  { name:'バカみたいに · 初音ミク', src:'docs/music/song-4.mp3' },
+  { name:'影色舞', src:'docs/music/song-5.mp3' }
+];
 var dm = { idx:0, loadedIdx:-1, playing:false, actx:null, analyser:null, srcNode:null, raf:null, data:null, zeroFrames:0 };
 var dmAudio = null;
 function dmAudioEl(){
@@ -4122,9 +4146,10 @@ function dmHookAnalyser(){
 }
 function dmVizFrame(t){
   var c = dmVizCtx, w = dmVizCv.width, h = dmVizCv.height;
-  c.fillStyle = '#000'; c.fillRect(0, 0, w, h);
+  c.fillStyle = '#0d1322'; c.fillRect(0, 0, w, h);   /* 小 LCD 屏, 昼夜同一块深色 */
   var bars = 14, bw = Math.floor(w / bars) - 2;
-  var live = false, i, v;
+  var i, v;
+  var live = false;
   if(dm.analyser && dm.playing){
     dm.analyser.getByteFrequencyData(dm.data);
     for(i = 2; i < dm.data.length; i++) if(dm.data[i] > 4) live = true;
