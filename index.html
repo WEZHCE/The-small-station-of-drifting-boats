@@ -305,9 +305,9 @@
   #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
   #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
   /* 快捷启动区: 统一银色凸起底, 徽标统一任务栏灰(夜航整条任务栏换深色) */
-  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar{height:26px; display:flex; align-items:center; justify-content:center;
+  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount{height:26px; display:flex; align-items:center; justify-content:center;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0 4px}
-  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active, #tbCount:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .tb-badge{min-width:22px; height:16px; display:flex; align-items:center; justify-content:center;
     font:bold 10px/14px Consolas,monospace; color:#333}
 
@@ -401,9 +401,9 @@
   body.night #taskbar{background:#1a2338; border-top-color:#3a4763}
   body.night #startBtn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night #startBtn:active{border-color:#101828 #3a4763 #3a4763 #101828}
-  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar{
+  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar, body.night #tbCount{
     background:#243050; border-color:#3a4763 #101828 #101828 #3a4763}
-  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active{
+  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active, body.night #tbCount:active{
     border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .tb-badge{color:#c8cfdd}
   body.night #tray{background:#243050; border-color:#101828 #3a4763 #3a4763 #101828; color:#c8cfdd}
@@ -786,11 +786,24 @@
     letter-spacing:2px; color:#b3a88c; margin-bottom:6px}
   .dm-head b{color:#3f5c33; letter-spacing:1px}
   #dmViz{display:block; width:100%; height:42px; background:#0d1322; border:1px solid #b3a88c}
-  .dm-track{margin-top:6px; font-size:12px; color:#4a4335; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .dm-prog{height:10px; margin-top:7px; background:#f7f2e3; border:2px solid;
+    border-color:#a89d84 #fff #fff #a89d84; cursor:pointer}
+  .dm-prog i{display:block; height:100%; width:0; background:#7c9c66}
+  .dm-time{font-size:10.5px; color:#8a7d5f; margin-top:3px; text-align:right}
+  .dm-list{margin-top:6px; max-height:104px; overflow-y:auto; background:#f7f2e3;
+    border:2px solid; border-color:#a89d84 #fff #fff #a89d84}
+  .dm-item{display:block; width:100%; text-align:left; padding:3px 7px; background:transparent; border:none;
+    font-family:inherit; font-size:11.5px; color:#4a4335; cursor:pointer;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .dm-item:hover{background:#e8e0cc}
+  .dm-item.on{background:#f2d97c; color:#4a3d1e; font-weight:bold}
+  .dm-item i{font-style:normal; margin-right:5px; color:#8a7d5f}
+  .dm-item.on i{color:#4a3d1e}
   .dm-ctrl{display:flex; align-items:center; gap:4px; margin-top:7px}
   .dm-btn{width:26px; height:22px; background:#e8e0cc; border:2px solid; border-color:#fff #a89d84 #a89d84 #fff;
     cursor:pointer; color:#4a3f2c; font-family:Consolas,monospace; font-size:10px; line-height:1; padding:0}
   .dm-btn:active{border-color:#a89d84 #fff #fff #a89d84}
+  .dm-loop{width:auto; padding:0 6px; letter-spacing:1px}
   .dm-count{margin-left:auto; font-size:11px; color:#8a7d5f}
   #dynIsland{bottom:calc(40px + env(safe-area-inset-bottom)); width:192px; height:30px;
     display:flex; align-items:center; gap:6px; padding:0 9px; font-size:11.5px}
@@ -805,11 +818,75 @@
   body.night .dm-head{color:#55618a}
   body.night .dm-head b{color:#8fbf8f}
   body.night #dmViz{border-color:#243050}
-  body.night .dm-track{color:#c3cbdc}
+  body.night .dm-prog{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .dm-prog i{background:#39d353}
+  body.night .dm-time{color:#7d8cab}
+  body.night .dm-list{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .dm-item{color:#c8cfdd}
+  body.night .dm-item:hover{background:#243050}
+  body.night .dm-item.on{background:#3d4f7d; color:#fff}
+  body.night .dm-item i{color:#7d8cab}
   body.night .dm-btn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night .dm-btn:active{border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .dm-count, body.night #dynMin{color:#7d8cab}
   body.night #dynDot{background:#8fbf8f}
+
+  /* ---------- 倒数日.EXE: 节日与自定义倒数 ---------- */
+  #ddWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(400px,92vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #ddWin.open{display:block}
+  #ddWin .titlebar{cursor:move}
+  .dd-body{padding:9px}
+  .dd-list{max-height:320px; overflow-y:auto; display:flex; flex-direction:column; gap:6px}
+  .dd-card{display:flex; align-items:center; gap:10px; background:#f8f3e4; border:1px solid #ddd3b8;
+    border-left:4px solid #7c9c66; padding:7px 10px}
+  .dd-card.soon{border-left-color:#d9a441}
+  .dd-card.soon .dd-num{color:#c94f3d}
+  .dd-card.today{background:#f2d97c; border-color:#d9c66a; border-left-color:#c94f3d}
+  .dd-card.today .dd-num{color:#c94f3d}
+  .dd-card.past{opacity:.55; border-left-color:#b3a88c}
+  .dd-num{min-width:76px; text-align:center; font-family:"SimHei","黑体",sans-serif; font-size:13px;
+    color:#3f5c33; white-space:nowrap}
+  .dd-num b{font-size:25px; margin-right:2px}
+  .dd-info{flex:1; min-width:0}
+  .dd-info b{display:block; font-family:"SimHei","黑体",sans-serif; font-size:13.5px; color:#2e2a22}
+  .dd-info span{display:block; font-family:Consolas,monospace; font-size:11px; color:#8a7d5f}
+  .dd-info em{display:block; font-style:normal; font-size:12px; color:#6b5f45; margin-top:2px; line-height:1.5; word-break:break-all}
+  .dd-ctrl{display:flex; flex-direction:column; gap:3px; flex:none}
+  .dd-ctrl button{width:32px; height:20px; font-family:inherit; font-size:11px; color:#222; background:#e8e0cc;
+    border:2px solid; border-color:#fff #a89d84 #a89d84 #fff; cursor:pointer; padding:0}
+  .dd-ctrl button:active{border-color:#a89d84 #fff #fff #a89d84}
+  .dd-form{display:none; margin-bottom:8px; background:#f8f3e4; border:1px dashed #b3a88c; padding:8px}
+  .dd-form.open{display:block}
+  .dd-form input{display:block; width:100%; box-sizing:border-box; margin-bottom:6px; padding:5px 8px;
+    font-family:inherit; font-size:13px; background:#fbf7ec; color:#2e2a22;
+    border:2px solid; border-color:#a89d84 #fff #fff #a89d84}
+  .dd-form-btns{display:flex; gap:6px; justify-content:flex-end}
+  .dd-form-btns button{font-family:inherit; font-size:12px; color:#222; background:#e8e0cc; cursor:pointer;
+    border:2px solid; border-color:#fff #a89d84 #a89d84 #fff; padding:4px 14px}
+  .dd-form-btns button:active{border-color:#a89d84 #fff #fff #a89d84}
+  .dd-foot{display:flex; justify-content:space-between; align-items:center; margin-top:8px}
+  .dd-foot button{font-family:"SimHei","黑体",sans-serif; font-size:12.5px; color:#222; background:#e8e0cc; cursor:pointer;
+    border:2px solid; border-color:#fff #a89d84 #a89d84 #fff; padding:4px 12px}
+  .dd-foot button:active{border-color:#a89d84 #fff #fff #a89d84}
+  .dd-foot span{font-size:11px; color:#8a7d5f}
+  body.night #ddWin{background:#1a2338; border-color:#3a4763}
+  body.night .dd-card{background:#101828; border-color:#2c3854; border-left-color:#4a7ab0}
+  body.night .dd-card.soon{border-left-color:#d9a441}
+  body.night .dd-card.today{background:#3d4f7d; border-color:#55618a; border-left-color:#ff6b5a}
+  body.night .dd-card.past{border-left-color:#33405f}
+  body.night .dd-num{color:#8fbf8f}
+  body.night .dd-card.soon .dd-num, body.night .dd-card.today .dd-num{color:#ff6b5a}
+  body.night .dd-info b{color:#c8cfdd}
+  body.night .dd-info span{color:#7d8cab}
+  body.night .dd-info em{color:#aeb9d0}
+  body.night .dd-form{background:#101828; border-color:#2c3854}
+  body.night .dd-form input{background:#0d1322; color:#c8cfdd;
+    border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .dd-form-btns button, body.night .dd-foot button{background:#243050;
+    border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .dd-form-btns button:active, body.night .dd-foot button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .dd-foot span{color:#7d8cab}
 
   body.night .lb-cap{background:#161e30; border-color:#3a4763 #101828 #101828 #3a4763; color:#aeb9d0}
   body.night .lb-cap b{color:#8fbf8f}
@@ -960,6 +1037,7 @@
     #sdBoatCv{animation:none}
     .sd-power{animation:none}
     .bsod-cur{animation:none}
+    body.konami #site, body.konami #boatPet{animation:none}
   }
 
   /* ---------- 漂流瓶 / 船舱日记 ---------- */
@@ -991,6 +1069,8 @@
   /* ---------- Konami 彩虹模式 ---------- */
   body.konami #site{animation:hueSpin 3s linear infinite}
   body.konami .titlebar{background:linear-gradient(90deg,#a83232,#e8b34c,#6ba368,#5a8fd6,#b06bb5)}
+  body.konami #taskbar{background:linear-gradient(90deg,#c05050,#e8b34c,#6ba368,#5a8fd6,#b06bb5)}
+  body.konami #boatPet{animation:bob 3.2s ease-in-out infinite, hueSpin 3s linear infinite}
   @keyframes hueSpin{from{filter:hue-rotate(0)}to{filter:hue-rotate(360deg)}}
 
   .confetti{position:fixed; top:-26px; z-index:9998; pointer-events:none; animation:confFall linear forwards}
@@ -1024,23 +1104,30 @@
     .album-covers{grid-template-columns:repeat(3,1fr); gap:10px}
     .album-cover{min-width:0}
     /* 手机上弹窗靠上放, 给输入法键盘留地方; 里程牌缩小; 任务栏紧凑排布 */
-    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin{top:6vh; transform:translate(-50%,0)}
+    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin{top:6vh; transform:translate(-50%,0)}
     #taskbar{gap:4px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar{padding:0 2px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount{padding:0 2px}
     #tray{padding:0 6px}
     .help-body{max-height:56vh}
     #boatOdo{font-size:10.5px}
     footer{padding:16px 16px 20px}
     .boot-title{font-size:28px; letter-spacing:3px}
   }
-  /* 窄屏: 收起托盘时钟、收紧应用按钮, 保证八键一行放下 */
+  /* 窄屏: 任务栏改两行, 应用键不再挤沙丁鱼; 双黑盒/菜单/提示跟着抬高不遮挡 */
   @media (max-width:480px){
     #trayClock{display:none}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar{padding:0 1px}
-    #taskbar{gap:3px}
-    /* 左下角双黑盒收窄, 别盖住正文 */
-    #deckMusic, #dynIsland{width:158px}
-    #deckMusic{bottom:calc(72px + env(safe-area-inset-bottom))}
+    #taskbar{flex-wrap:wrap; height:auto; padding:3px 4px calc(3px + env(safe-area-inset-bottom)); row-gap:3px; gap:3px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount{padding:0 5px}
+    body.on{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
+    #dynIsland{bottom:calc(78px + env(safe-area-inset-bottom)); width:158px}
+    #deckMusic{bottom:calc(114px + env(safe-area-inset-bottom)); width:158px}
+    #startMenu{bottom:calc(78px + env(safe-area-inset-bottom))}
+    #toast{bottom:calc(68px + env(safe-area-inset-bottom))}
+    /* 音乐盒控制行四键 + 计数, 再窄也放得下 */
+    .dm-btn{width:24px}
+    .dm-loop{padding:0 3px}
+    .dm-ctrl{gap:3px}
+    .dm-count{font-size:10px}
   }
 </style>
 </head>
@@ -1208,11 +1295,14 @@
 <div id="deckMusic">
   <div class="dm-head"><b>甲板音乐</b><span>MUSIC</span></div>
   <canvas id="dmViz" width="172" height="42"></canvas>
-  <div class="dm-track" id="dmTrack">歌单还空着——等船长进货。</div>
+  <div class="dm-prog" id="dmProg" title="点哪里, 跳哪里"><i id="dmProgFill"></i></div>
+  <div class="dm-time"><span id="dmTime">0:00 / 0:00</span></div>
+  <div class="dm-list" id="dmList"></div>
   <div class="dm-ctrl">
     <button class="dm-btn" id="dmPrev" type="button" title="上一首">◀◀</button>
     <button class="dm-btn" id="dmPlay" type="button" title="播放 / 暂停">▶</button>
     <button class="dm-btn" id="dmNext" type="button" title="下一首">▶▶</button>
+    <button class="dm-btn dm-loop" id="dmLoopBtn" type="button" title="循环模式">循环</button>
     <span class="dm-count" id="dmCount">0/0</span>
   </div>
 </div>
@@ -1236,6 +1326,7 @@
   <button id="tbHg" type="button" title="沙漏.EXE — 倒计时"><span class="tb-badge">漏</span></button>
   <button id="tbPaint" type="button" title="画板.EXE — 一格一格画"><span class="tb-badge">画</span></button>
   <button id="tbSolar" type="button" title="太阳系.EXE — 真实比例"><span class="tb-badge">阳</span></button>
+  <button id="tbCount" type="button" title="倒数日.EXE — 数着日子等什么"><span class="tb-badge">倒</span></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
@@ -1269,7 +1360,7 @@
     <div class="help-sec">⌨ 快捷键与暗号</div>
     <ul>
       <li><b>~ / `</b> — 呼出终端 (点主窗口标题栏文字也一样)</li>
-      <li><b>↑↑↓↓←→←→BA</b> — Konami 彩虹模式</li>
+      <li><b>↑↑↓↓←→←→BA</b> — Konami 彩虹模式(再输一遍收起来)</li>
       <li><b>连按 WASD / 方向键</b> — 风浪来袭, 全船摇晃</li>
       <li>终端里输入 <b>help</b>, 能看到它的全部命令; <b>↑↓</b> 翻历史</li>
     </ul>
@@ -1279,7 +1370,7 @@
       <li>开始菜单翻新了: <b>系统与设备</b> / <b>网站设置</b>(屏保时长·夜航·音效·开机动画) / <b>游客信息</b> — 你是第几次上船, 它记得</li>
       <li>左下角两块小面板: <b>甲板音乐</b>(五首 VOCALOID 已上架, 像素频谱跟着唱) + <b>灵动岛</b>(实时报你此刻在干嘛, 顺便记你上船几分钟)</li>
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
-      <li>相册: 九本板块相册, 点封面选中, 双击封面或点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
+      <li>相册: 九本板块相册(已开张七本), 点封面选中, 双击封面或点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
       <li>右下角小船: 点一下 +1 海里 — <b>10</b> 红帆 · <b>30</b> 海鸥 · <b>60</b> 金帆 · <b>100</b> 夜灯</li>
     </ul>
 
@@ -1294,6 +1385,7 @@
       <li><b>漏 沙漏.EXE</b> — 像素沙漏倒计时, 沙粒真实掉落; 1/3/5/10/25 分钟, 写作业开 25 分钟正好</li>
       <li><b>画 画板.EXE</b> — 24×24 像素画板: 画笔/油漆桶/橡皮/撤销, 画完点"下载 PNG"打包带走</li>
       <li><b>阳 太阳系.EXE</b> — 真实比例+真实周期: 左侧星球列表点谁去谁, 拖动平移, 滚轮缩放, 点行星看资料; 找不到地球? 先缩小看全家福, 再凑近</li>
+      <li><b>倒 倒数日.EXE</b> — 内置节日倒数(含农历) + 自定义事件可写详细说明, 谁的日子近谁排前面</li>
     </ul>
 
     <div class="help-sec">🌙 这台电脑也会累</div>
@@ -1453,6 +1545,29 @@
   <div class="ab-status">
     <span id="albumWinInfo"></span>
     <span>图片可点开大图 · ← → 切换 · Esc 关闭</span>
+  </div>
+</div>
+
+<!-- ================= 倒数日 ================= -->
+<div id="ddWin">
+  <div class="titlebar"><span class="tb-title">倒数日.EXE — 数着日子等什么</span>
+    <button class="tb-btn" id="ddClose" title="关闭">✕</button>
+  </div>
+  <div class="dd-body">
+    <div class="dd-list" id="ddList"></div>
+    <div class="dd-form" id="ddForm">
+      <input id="ddName" maxlength="20" placeholder="倒数的事(必填, 如: 放假)">
+      <input id="ddDate" type="date" title="目标日期">
+      <input id="ddNote" maxlength="60" placeholder="详细说明(可不填)">
+      <div class="dd-form-btns">
+        <button id="ddSave" type="button">保存</button>
+        <button id="ddCancel" type="button">取消</button>
+      </div>
+    </div>
+    <div class="dd-foot">
+      <button id="ddAdd" type="button">+ 新增倒数</button>
+      <span>节日内置 · 自定义存在本地</span>
+    </div>
   </div>
 </div>
 
@@ -1637,101 +1752,198 @@ var SPRITES = {
       '......DDDD......'
     ]
   },
-  /* 黑猫: 绿眼睛两格高光, 粉耳内, 灰胸毛, 胡须 */
+  /* 黑猫 24×24: 绿眼双高光, 灰嘴灰胸, 肩上两道暗纹 */
   cat: {
     out: '#161616',
     shadow: '#090909',
-    pal: { A:'#2e2e2e', G:'#9ccf5f', P:'#d98a8a', C:'#6e6e6e', D:'#cfcfcf' },
+    pal: { A:'#2e2e2e', S:'#454545', D:'#cfcfcf', G:'#9ccf5f', W:'#ffffff', P:'#d98a8a' },
     rows: [
-      '....A.....A.....',
-      '...APA...APA....',
-      '...AAAAAAAAA....',
-      '..AAAAAAAAAAA...',
-      '..AAGGAAAGGAA...',
-      '.DAAGGAAAGGAA.D.',
-      '..AAAAPPAAAAA...',
-      '..AAAAAAAAAAA...',
-      '...AAAAAAAAA....',
-      '....AAAAAAA.....',
-      '...AACCAAAAA....',
-      '..AACCAAAAAAA...',
-      '..AACCAAAAAAA...',
-      '..AAAAAAAAAAA...',
-      '...AA..AA..AA...',
-      '................'
+      '...AA..............AA...',
+      '..AAAA............AAAA..',
+      '..AAPA............APAA..',
+      '..AAAAA..........AAAAA..',
+      '..AAAAAAAAAAAAAAAAAAAA..',
+      '..AAAAAAAAAAAAAAAAAAAA..',
+      '..AAGGGGAAAAAAAAGGGGAA..',
+      '..AGWWGAAAAAAAAGWWGAA...',
+      '..AGGGGAAAAAAAAGGGGAA...',
+      '..AADDDAAAAAAAAAAADDDAA.',
+      '..AADDDDDDDPPDDDDDDDAA..',
+      '..AADDDDDDDDDDDDDDDDAA..',
+      '..AADDDDDDSSDDDDDDDDAA..',
+      '..AAAAAAAAAAAAAAAAAAAA..',
+      '..AAAASSAAAAAAAASSAAAA..',
+      '..AAAAAAAAAAAAAAAAAAAA..',
+      '..AAADDDAAAAAAAAAAAAAAA.',
+      '..AADDDDAAAAAAAAAAAAAAA.',
+      '..AADDDDDAAASSAAAAAAAAAA',
+      '..AADDDDDDDAAAAAAAAAAAAA',
+      '..AADDDDDDDDAAAAAAAAAA..',
+      '..AAADDDDDDDDDAAAAAAA...',
+      '..AAAADDDDDDDDAAAAAA....',
+      '..AAAAAAAAAAAAAAAAAAAA..'
     ]
   },
-  /* 蘑菇: 伞面左上受光, 白点, 伞底菌褶, 草地 */
+  /* 蘑菇 24×24: 伞面受光, 白点描亮边, 菌柄带高光, 底下一撮草 */
   mush: {
     out: '#4c3827',
     shadow: '#2b2016',
-    pal: { A:'#f08a6a', B:'#d94f41', C:'#b03a2e', D:'#f9f2e0', S:'#ffe9e2', I:'#f2e3c2', J:'#c4a982', E:'#efe0bd', F:'#cdb894', G:'#6fa95a' },
+    pal: { R:'#d94f41', L:'#f08a6a', W:'#f9f2e0', E:'#f2e3c2', S:'#efe0bd', H:'#fffdf5', G:'#6fa95a' },
     rows: [
-      '......AAAA......',
-      '....ASBBBBAA....',
-      '...ASBDBBBDBA...',
-      '..ABDDBBBBDBBA..',
-      '.ABBDBBBBBBDBBA.',
-      '.ABBBBBBBBBBBBA.',
-      '..ACCCCCCCCCCA..',
-      '...IJIJIJIJIJ...',
-      '.....EEEEEE.....',
-      '.....EEEEEFF....',
-      '.....EEEEEFF....',
-      '.....EEEEEFF....',
-      '....EEEEFFFF....',
-      '...GG..GG..GG...',
-      '....G...G....G..',
-      '................'
+      '.......RRRRRRRR.........',
+      '.....RRRRWWRRRRRR.......',
+      '....RLLRRWWRRRLLRR......',
+      '...RLLRRRWWWWRRRLRR.....',
+      '..RRRRRRRWWWWRRRRRRR....',
+      '..RRWRRRRRRRRRRRWRRR....',
+      '.RRWWRRRLLRRRRWWRRRR....',
+      '.RRRRRRRLLRRRRRRRRRRR...',
+      '.RRRRRRRRRRRRRRRRRRRR...',
+      '..RRRRRRRRRRRRRRRRRR....',
+      '...RRRRRRRRRRRRRRRR.....',
+      '....RRRRRRRRRRRRR.......',
+      '......ESSSSSSSSE........',
+      '.......SSSSSSSSS........',
+      '.......SSSHSSSSS........',
+      '.......SSSSSSSSS........',
+      '.......SSSSSSSSS........',
+      '.......SSSSSSSSS........',
+      '......GSSSSSSSSSG.......',
+      '.....GGGSSSSSSGGGG......',
+      '....GGGGGGGGGGGGGGG.....',
+      '....GGGGGGGGGGGGGGGG....',
+      '.....GG.GGG.GG.GGGG.....',
+      '........................'
     ]
   },
-  /* 小屋: 瓦面屋顶, 暖灯窗户, 烟囱冒烟 */
+  /* 小屋 24×24: 双色瓦面, 十字窗透暖光, 门框木梁, 烟囱冒烟 */
   house: {
     out: '#4b3724',
     shadow: '#2a1f16',
-    pal: { R:'#d96a48', Q:'#a84a32', W:'#f0dfb4', N:'#6b4a2a', L:'#f7c85f', S:'#fff3cf', D:'#8b5a3c', G:'#88ad68', C:'#9a6a50', M:'#c9c9c9' },
+    pal: { R:'#d96a48', Q:'#a84a32', T:'#c05a3e', W:'#f0dfb4', N:'#6b4a2a', Y:'#f7c85f', S:'#fff3cf', D:'#8b5a3c', G:'#88ad68', C:'#9a6a50', M:'#c9c9c9', B:'#6b4a2a' },
     rows: [
-      '..........MM....',
-      '.........M......',
-      '.........CCC....',
-      '.......RR.CC....',
-      '......RRRRCC....',
-      '.....RRRRRCC....',
-      '....RRRRRRRR....',
-      '...RRRRRRRRRR...',
-      '..QQQQQQQQQQQQ..',
-      '..WWWWWWWWWWWW..',
-      '..WNNWWWWWNNWW..',
-      '..WSLWWDDDSLWW..',
-      '..WNNWWDDDNNWW..',
-      '..WWWWWDDDWWWW..',
-      '..GGGGGGGGGGGG..',
-      '................'
+      '.............SS.........',
+      '............SS..........',
+      '...........SS.RR........',
+      '..........TTTTTRR.......',
+      '.........TTTTTTRR.......',
+      '........TRTTTTRR........',
+      '.......TRTRTRTR.........',
+      '......TRTRTRTRTRT.......',
+      '.....TRTRTRTRTRTRT......',
+      '....TRTRTRTRTRTRTRT.....',
+      '...TRTRTRTRTRTRTRTRT....',
+      '.QQQQQQQQQQQQQQQQQQQQQQ.',
+      '.NWWWWWWWWWWWWWWWWWWWWN.',
+      '.NWWWWWWWWWWWWWWWWWWWWN.',
+      '.NWDDDDWWWWWWWWDDDDWN...',
+      '.NWDYYDWWWWWWWWDYYDWN...',
+      '.NWDYYDWWWWWWWWDYYDWN...',
+      '.NWWWWWWWBBWWWWWWWWWWN..',
+      '.NWWWWWWBBDDWWWWWWWWWN..',
+      '.NWWWWWWBBDDWWWWWWWWWN..',
+      '.NWWWWWWBBDDWWWWWWWWWN..',
+      '.NWWWWWWBBBBWWWWWWWWWN..',
+      '..GGGGGGGGGGGGGGGGGGGG..',
+      '.GGGGGGGGGGGGGGGGGGGGGG.'
     ]
   },
-  /* 灯笼: 暖黄亮核灯芯, 灯身自带光晕(glow) */
+  /* 灯笼 24×24: 暖黄亮核, 左上受光, 上下金箍, 三缕穗子, 自带光晕 */
   lantern: {
     out: '#4a3526',
     shadow: '#271c14',
     glow: '#ffca66',
-    pal: { A:'#ffe09a', B:'#f2b84f', C:'#e28a39', D:'#c9532f', E:'#fff1bd', G:'#7c4a23', H:'#efcf86' },
+    pal: { R:'#d94f41', L:'#e88a70', W:'#fff1bd', Y:'#ffd166', B:'#d9a441', T:'#c9a35f', S:'#7c4a23' },
     rows: [
-      '......AAAA......',
-      '.....ABBBBA.....',
-      '....ABCCCCBA....',
-      '...ABCEEEDCBA...',
-      '...ABCEEEDCBA...',
-      '...ABCEEEDCBA...',
-      '...ABCEEEDCBA...',
-      '...ABCEEEDCBA...',
-      '...ABCEEEDCBA...',
-      '...ABCEEEDCBA...',
-      '....ACEEDCBA....',
-      '.....ACCCCA.....',
-      '......AAAA......',
-      '......GGGG......',
-      '.....HHHHHH.....',
-      '.......HH.......'
+      '..........SS............',
+      '..........SS............',
+      '........BBBBBBBB........',
+      '.......BRRRRRRRRB.......',
+      '......BRRWWRRRRRRB......',
+      '.....BRRWWYYRRRRRRB.....',
+      '....BRRWWYYYYRRRRRRB....',
+      '....BRWWYYYYYYRRRRRB....',
+      '...BRRWWYYYYYYRRRRRRB...',
+      '...BRRWWYYYYYYRRRRRRB...',
+      '...BRRWWYYYYYYRRRRRRB...',
+      '...BRRWWYYYYYYRRRRRRB...',
+      '...BRRRWWYYYYRRRRRRRB...',
+      '...BRRRRWWYYRRRRRRRRB...',
+      '...BRRRRRWWRRRRRRRRRB...',
+      '....BRRRRRRRRRRRRRRB....',
+      '.....BRRRRRRRRRRRRB.....',
+      '......BRRRRRRRRRRB......',
+      '.......BRRRRRRRRB.......',
+      '........BBBBBBBB........',
+      '..........TT............',
+      '..........TT............',
+      '.........TTTT...........',
+      '..........TT............'
+    ]
+  },
+  /* 灯塔 24×24: 光束扫向右上, 红白条纹塔身, 石头底座, 灯室自带光晕 */
+  lighthouse: {
+    out: '#3a2c1c',
+    shadow: null,
+    glow: '#ffca66',
+    pal: { R:'#c94f3d', W:'#f2e6c8', D:'#43301f', Y:'#ffd166', G:'#43301f', S:'#9a927e' },
+    rows: [
+      '........................',
+      '......D.......YYY.......',
+      '.....DDD......YYY.......',
+      '.....DDDDD....YYY.......',
+      '.....DYYYD...YYY........',
+      '.....DYYYD..YYY.........',
+      '.....DYYYD..............',
+      '.....DYYYD..............',
+      '.....DGGGD..............',
+      '.....WWWWW..............',
+      '.....RRRRR..............',
+      '.....WWWWW..............',
+      '.....RRRRR..............',
+      '.....WWWWW..............',
+      '.....RRRRR..............',
+      '....WWWWWWW.............',
+      '....RRRRRRR.............',
+      '...WWWWWWWWW............',
+      '...RRRRRRRRR............',
+      '..WWWWWWWWWWW...........',
+      '..RRRRRRRRRRR...........',
+      '.SSWWWWWWWWWSS..........',
+      '.SSSSSSSSSSSSS..........',
+      '.SSSSSSSSSSSSS..........'
+    ]
+  },
+  /* 鲸鱼 24×24: 喷潮的水柱, 白肚皮比海面亮, 一只眼睛看船 */
+  whale: {
+    out: '#1d3a6e',
+    shadow: null,
+    pal: { B:'#3d6fd0', L:'#8fb4e8', W:'#ffffff', S:'#bfe3f5' },
+    rows: [
+      '............SS..........',
+      '...........SS...........',
+      '..........S.S...........',
+      '..........SSS...........',
+      '.....BBBB..S............',
+      '...BBBBBBBB.............',
+      '..BBBBBBBBBBB...........',
+      '.BBBBBBBBBBBBBB.........',
+      '.BBBBBBBBBBBBBBBB.......',
+      'BBLBBBBBBBBBBBBBBB......',
+      'BLLBBBBBBBBBBBBBBBB.....',
+      'BWLLBBBBBBBBBBBBBBBB....',
+      'BLLBBBBBBBBBBBBBBBBBB...',
+      '.BLLBBBBBBBBBBBBBBBBB...',
+      '.BBBLLBBBBBBBBBBBBBBB...',
+      '..BBBLLBBBBBBBBBBBBBB...',
+      '..BBBLLLLBBBBBBBBBBBB...',
+      '...BBLLLLLLBBBBBBBBBB...',
+      '...BBLLLLLLLLBBBBBBB....',
+      '....BLLLLLLLLLLBBB......',
+      '....LLLLLLLLLLL.........',
+      '.....LLLLLLLLL..........',
+      '......LLLLLLL...........',
+      '........................'
     ]
   },
   /* 扫雷的小地雷: 已由任务栏文字徽标"雷"替代, 图标退役 (8×7) */
@@ -2211,14 +2423,16 @@ if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').ma
 /* ================= 站标 & 相册 ================= */
 drawSprite($('#logo'), 'boat', 4);
 var PHOTOS = [
-  {s:'cat',     title:'黑猫',   cap:'绿眼睛带两格高光, 胸口一撮灰毛, 胡须向两边翘。'},
-  {s:'mush',    title:'蘑菇',   cap:'伞面左上受光, 白点点了亮边, 伞底排着一列菌褶。'},
-  {s:'house',   title:'小屋',   cap:'瓦面屋顶, 窗户亮着暖黄的灯, 烟囱里冒着烟。'},
-  {s:'lantern', title:'灯笼',   cap:'灯芯换成暖黄亮核, 灯身自己会发光, 穗子收尾。'}
+  { s:'cat',        title:'黑猫',   cap:'绿眼睛带两格高光, 胸口一撮灰毛, 端正得像在拍证件照。' },
+  { s:'mush',       title:'蘑菇',   cap:'伞面左上受光, 白点描了亮边, 底下还藏了一撮草。' },
+  { s:'house',      title:'小屋',   cap:'瓦片一行压一行, 烟囱的烟被风吹成了三段。' },
+  { s:'lantern',    title:'灯笼',   cap:'暖黄亮核, 上下金箍, 穗子三缕收尾。' },
+  { s:'whale',      title:'鲸鱼',   cap:'喷潮的水柱是鲸鱼的问好, 肚皮比海面还亮。' },
+  { s:'lighthouse', title:'灯塔',   cap:'光束扫过去, 夜里的船就知道岸在哪。' }
 ];
 /* ================= 相册: 六个板块——像素画集 / 捣鼓token / 四本虚位以待 ================= */
 var ALBUMS = [
-  { name:'像素画集', desc:'一格一格画出来的四个小家伙。', kind:'sprite' },
+  { name:'像素画集', desc:'一格一格画出来的六个小家伙。', kind:'sprite' },
   { name:'捣鼓token', desc:'AI 船员的燃料账本——配置、额度、账单, 和一些吓人的数字。', kind:'img',
     photos:[
       { img:'docs/tokens/zcode-model.png', title:'模型军火库',
@@ -2247,15 +2461,45 @@ var ALBUMS = [
     ] },
   { name:'船长的画', desc:'铅笔 + 横线作业本——画纸从来不是问题。', kind:'img',
     photos:[
+      { img:'docs/art/art-1.png', title:'长发少女', cap:'横线本上一笔一笔长出来的头发, 耐心全在排线里。' },
       { img:'docs/art/art-2.png', title:'魔女帽', cap:'帽檐压得低低的, 巫师气息快从作业本里溢出来了。' },
       { img:'docs/art/art-3.png', title:'短发少年', cap:'领结和外套的褶皱都认真交代过, 署名 CUSE.DRW。' },
       { img:'docs/art/art-4.png', title:'眼睛练习', cap:'一页八双眼睛, 画师的基本功修行现场。' },
       { img:'docs/art/art-5.png', title:'Q版小人', cap:'圆圆的连帽衫, 连影子都画得规规矩矩。' },
       { img:'docs/art/art-6.png', title:'双马尾', cap:'笑到眯眼, 手机都拿不稳的那种开心。' }
     ] },
-  { name:'相册 · 伍', desc:'', filled:false },
-  { name:'相册 · 陆', desc:'', filled:false },
-  { name:'相册 · 柒', desc:'', filled:false },
+  { name:'摄影作品', desc:'透过镜头看世界——天上的, 地上的, 都收进来。', kind:'img',
+    photos:[
+      { img:'docs/photo/p-1.jpg', title:'河畔小城', cap:'2010 年的俯瞰——小河绕了个弯, 蓝顶的屋顶挤在一起。' },
+      { img:'docs/photo/p-2.jpg', title:'火烧云', cap:'塔吊和晚霞同框, 整座城市下班前的样子。' },
+      { img:'docs/photo/p-3.jpg', title:'落日', cap:'2023 年的黄昏, 太阳落到楼后面, 才想起回家。' },
+      { img:'docs/photo/p-4.jpg', title:'盛夏的绿', cap:'教学楼前的杨树, 绿得理直气壮。' },
+      { img:'docs/photo/p-5.jpg', title:'粉色的晚空', cap:'端午节的傍晚, 天空是草莓味的。' },
+      { img:'docs/photo/p-6.jpg', title:'桥下路过', cap:'高架桥下的光影, 白车刚好入镜。' },
+      { img:'docs/photo/p-7.jpg', title:'农家院', cap:'秋千、桃树和圆桌——标准的农家乐配置。' },
+      { img:'docs/photo/p-8.jpg', title:'有云的天', cap:'什么也没干, 就拍了拍天上的云。' }
+    ] },
+  { name:'生活碎片', desc:'边角料也是日子——猫、墙、玩偶和随手一拍。', kind:'img',
+    photos:[
+      { img:'docs/life/l-1.jpg', title:'电动车上的猫', cap:'橘白猫蜷在脚踏垫上——它睡它的, 谁也不服。' },
+      { img:'docs/life/l-2.jpg', title:'WHAT?', cap:'墙上一个巨大的问号——问得好, 我也想知道。' },
+      { img:'docs/life/l-3.jpg', title:'厂区下午', cap:'变压器列队, 叉车待命, 院子安静得很。' },
+      { img:'docs/life/l-4.jpg', title:'袋鼠哨兵', cap:'床头的袋鼠玩偶, 站岗时间: 永远。' },
+      { img:'docs/life/l-5.jpg', title:'Supreme 佩奇', cap:'手电一打, 小猪佩奇秒变全球代言人。' },
+      { img:'docs/life/l-6.jpg', title:'抱球小人', cap:'抱着篮球的小人偶, 隔着滤镜看还是圆的。' },
+      { img:'docs/life/l-7.jpg', title:'六月的风扇', cap:'六月的电风扇, 是全世界最好的乐器。' },
+      { img:'docs/life/l-8.jpg', title:'方块小狼', cap:'方块脸小狼挂件, 3D 打印的层纹都看得见。' }
+    ] },
+  { name:'九小回忆', desc:'第九小学的回忆——2023 年夏天, 我们毕业了。', kind:'img',
+    photos:[
+      { img:'docs/jx/j-1.jpg', title:'楼梯间', cap:'毕业那天的楼梯间, 星空书包走出了画面。' },
+      { img:'docs/jx/j-2.jpg', title:'最后一个夏天', cap:'教学楼前, 水手服们跑过六月的风。' },
+      { img:'docs/jx/j-3.jpg', title:'别拍我', cap:'走廊里捂脸的同学——好, 就拍你。' },
+      { img:'docs/jx/j-4.jpg', title:'校名石', cap:'南阳市第九小学校——故事开始的地方。' },
+      { img:'docs/jx/j-5.jpg', title:'捡书的雨', cap:'一场雨把课本淋了一操场, 有人蹲下来一张张捡。' },
+      { img:'docs/jx/j-6.jpg', title:'笑作一团', cap:'谁讲的笑话已经不记得了, 笑是真的。' },
+      { img:'docs/jx/j-7.jpg', title:'拿相机的人', cap:'她举着相机——这张照片之外, 还有很多张。' }
+    ] },
   { name:'相册 · 捌', desc:'', filled:false },
   { name:'相册 · 玖', desc:'', filled:false }
 ];
@@ -2301,13 +2545,13 @@ function renderAlbums(){
     cover.type = 'button';
     cover.className = 'album-cover' + (i === albumSel ? ' sel' : '') + (a.kind ? '' : ' empty');
     if(a.kind === 'sprite'){
-      cover.innerHTML = '<canvas class="album-cv" width="80" height="80"></canvas>';
+      cover.innerHTML = '<canvas class="album-cv" width="84" height="64"></canvas>';
       var cv = cover.querySelector('.album-cv').getContext('2d');
       cv.imageSmoothingEnabled = false;
+      var tmp = document.createElement('canvas');
       PHOTOS.forEach(function(p, k){
-        var tmp = document.createElement('canvas');
-        drawSprite(tmp, p.s, 2);
-        cv.drawImage(tmp, (k % 2) * 40, Math.floor(k / 2) * 40);
+        drawSprite(tmp, p.s, 1);
+        cv.drawImage(tmp, (k % 3) * 28, Math.floor(k / 3) * 32);
       });
     } else if(a.kind === 'img'){
       cover.innerHTML = '<span class="album-thumbs">' +
@@ -2722,7 +2966,7 @@ $('#runDays').addEventListener('click', function(){
 var H2_LINES = {
   about: '家底全在这了, 没藏着。',
   now: '红点标过的日子, 船都出过海。',
-  gallery: '九本相册, 已经开张四本了。',
+  gallery: '九本相册, 已经开张七本了。',
   guestbook: '来都来了, 说两句?'
 };
 $$('.window h2').forEach(function(h){
@@ -4073,6 +4317,144 @@ $('#sysPanelVisit').addEventListener('click', function(e){
   if(e.target.closest('#wcAgain')){ smClose(); sysToggle(false); showWelcome(); }
 });
 
+/* ---------- 倒数日.EXE: 内置节日 + 自定义倒数(localStorage) ---------- */
+var DD_LUNAR = {   /* 农历节日对照(公历), 只备到 2028 — 再远的等日历自己长 */
+  '春节': { '2026':'02-17', '2027':'02-06', '2028':'01-26' },
+  '清明': { '2026':'04-05', '2027':'04-05', '2028':'04-04' },
+  '端午': { '2026':'06-19', '2027':'06-09', '2028':'06-22' },
+  '中秋': { '2026':'09-25', '2027':'09-15', '2028':'10-03' }
+};
+var DD_FIXED = [
+  { n:'元旦', md:'01-01', note:'新的一年, 旧的新决心。' },
+  { n:'小站生日', md:'08-21', note:'这条船 2026 年的下水纪念日。' },
+  { n:'劳动节', md:'05-01', note:'劳动者的节日, 也包括写作业的。' },
+  { n:'国庆节', md:'10-01', note:'举国同庆, 作业同在。' },
+  { n:'船长生日', md:'11-13', note:'站名本人的 +1 岁仪式。' }
+];
+var ddUser = [];
+try{ ddUser = JSON.parse(localStorage.getItem('ddEvents') || '[]'); }catch(e){ ddUser = []; }
+if(!ddUser.length) ddUser = [];
+function ddSaveUser(){
+  try{ localStorage.setItem('ddEvents', JSON.stringify(ddUser)); }catch(e){}
+}
+function ddToday0(){ var t = new Date(); t.setHours(0, 0, 0, 0); return t; }
+function ddDays(iso){
+  return Math.round((new Date(iso + 'T00:00:00') - ddToday0()) / 86400000);
+}
+function ddNextFixed(md){
+  var t = ddToday0(), y = t.getFullYear(), iso;
+  for(var k = 0; k < 2; k++){
+    iso = (y + k) + '-' + md;
+    if(ddDays(iso) >= 0) return iso;
+  }
+  return (y + 1) + '-' + md;
+}
+function ddNextLunar(n){
+  var years = Object.keys(DD_LUNAR[n] || {}).sort();
+  for(var i = 0; i < years.length; i++){
+    var iso = years[i] + '-' + DD_LUNAR[n][years[i]];
+    if(ddDays(iso) >= 0) return iso;
+  }
+  return null;   /* 对照表用完了 */
+}
+function ddBuildAll(){
+  var items = [];
+  DD_FIXED.forEach(function(f){
+    items.push({ n:f.n, iso:ddNextFixed(f.md), note:f.note, builtin:true });
+  });
+  Object.keys(DD_LUNAR).forEach(function(n){
+    var iso = ddNextLunar(n);
+    if(iso) items.push({ n:n, iso:iso, note:'农历节日, 以公历为准。', builtin:true });
+  });
+  ddUser.forEach(function(u){
+    items.push({ n:u.n, iso:u.d, note:u.note || '', id:u.id, builtin:false, days:ddDays(u.d) });
+  });
+  items.forEach(function(it){
+    if(it.days === undefined) it.days = ddDays(it.iso);
+    it.sortKey = it.days < 0 ? 9999 + it.days : it.days;
+  });
+  items.sort(function(a, b){ return a.sortKey - b.sortKey; });
+  return items;
+}
+function ddRender(){
+  var html = ddBuildAll().map(function(it){
+    var cls = 'dd-card' + (it.days === 0 ? ' today' : (it.days > 0 && it.days <= 7) ? ' soon' : (it.days < 0 ? ' past' : ''));
+    var num = it.days === 0 ? '就是今天'
+      : it.days < 0 ? '过去 ' + (-it.days) + ' 天'
+      : '<b>' + it.days + '</b> 天';
+    var ctrl = it.builtin ? '' :
+      '<span class="dd-ctrl"><button data-dd-edit="' + it.id + '" type="button" title="编辑">改</button>' +
+      '<button data-dd-del="' + it.id + '" type="button" title="删除">删</button></span>';
+    return '<div class="' + cls + '"><div class="dd-num">' + num + '</div>' +
+      '<div class="dd-info"><b>' + escHtml(it.n) + '</b><span>' + it.iso + '</span>' +
+      (it.note ? '<em>' + escHtml(it.note) + '</em>' : '') + '</div>' + ctrl + '</div>';
+  }).join('');
+  $('#ddList').innerHTML = html || '<div class="dd-card"><div class="dd-info"><em>一个倒数都没有, 像一段不着急的日子。</em></div></div>';
+}
+function ddToggle(open){
+  var w = $('#ddWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    ddCloseForm();
+    ddRender();
+  }
+}
+function ddCloseForm(){
+  $('#ddForm').classList.remove('open');
+  $('#ddAdd').style.display = '';
+  $('#ddName').value = ''; $('#ddDate').value = ''; $('#ddNote').value = '';
+  ddEditing = -1;
+}
+var ddEditing = -1;
+$('#tbCount').addEventListener('click', function(){ ddToggle(true); });
+$('#ddClose').addEventListener('click', function(){ ddToggle(false); });
+makeDraggable($('#ddWin'), $('#ddWin .titlebar'));
+$('#ddAdd').addEventListener('click', function(){
+  ddEditing = -1;
+  $('#ddForm').classList.add('open');
+  this.style.display = 'none';
+  $('#ddName').focus();
+});
+$('#ddCancel').addEventListener('click', ddCloseForm);
+$('#ddSave').addEventListener('click', function(){
+  var n = $('#ddName').value.trim(), d = $('#ddDate').value, note = $('#ddNote').value.trim();
+  if(!n){ toast('总得有个名字, 不然数的是哪天。'); return; }
+  if(!d){ toast('日期也要填, 不然数不动。'); return; }
+  if(ddEditing >= 0){
+    ddUser[ddEditing].n = n; ddUser[ddEditing].d = d; ddUser[ddEditing].note = note;
+    toast('改好了, 日子重新数。');
+  } else {
+    if(ddUser.length >= 12){ toast('本子就这么厚(12 条上限), 先删一条。'); return; }
+    ddUser.push({ n:n, d:d, note:note, id:Date.now() });
+    toast('倒数已上新。');
+  }
+  ddSaveUser();
+  ddCloseForm();
+  ddRender();
+});
+$('#ddList').addEventListener('click', function(e){
+  var del = e.target.closest('[data-dd-del]');
+  var edit = e.target.closest('[data-dd-edit]');
+  if(del){
+    var id = Number(del.getAttribute('data-dd-del'));
+    ddUser = ddUser.filter(function(u){ return u.id !== id; });
+    ddSaveUser(); ddRender();
+    toast('删掉了, 不回头。');
+  } else if(edit){
+    var eid = Number(edit.getAttribute('data-dd-edit'));
+    var u = ddUser.filter(function(x){ return x.id === eid; })[0];
+    if(!u) return;
+    ddEditing = ddUser.indexOf(u);
+    $('#ddName').value = u.n; $('#ddDate').value = u.d; $('#ddNote').value = u.note || '';
+    $('#ddForm').classList.add('open');
+    $('#ddAdd').style.display = 'none';
+    $('#ddForm').scrollIntoView({ block: 'nearest' });
+  }
+});
+ddRender();
+
 /* ---------- 左下角双黑盒 · 甲板音乐 ---------- */
 /* 加歌: 音频文件放进 docs/music/, 再往 SONGS 里加一行 { name:'歌名', src:'docs/music/文件.mp3' } */
 var SONGS = [
@@ -4084,10 +4466,48 @@ var SONGS = [
 ];
 var dm = { idx:0, loadedIdx:-1, playing:false, actx:null, analyser:null, srcNode:null, raf:null, data:null, zeroFrames:0 };
 var dmAudio = null;
+/* 循环模式: all=列表循环 / one=单曲循环 / seq=顺序播放(放完就停), 记忆到本地 */
+var dmLoop = 'all';
+var DM_LOOP_META = {
+  all: { label:'循环', title:'循环模式: 列表循环(点击切到单曲循环)', full:'列表循环' },
+  one: { label:'单曲', title:'循环模式: 单曲循环(点击切到顺序播放)', full:'单曲循环' },
+  seq: { label:'顺序', title:'循环模式: 顺序播放(点击切回列表循环)', full:'顺序播放' }
+};
+function dmApplyLoop(){
+  var m = DM_LOOP_META[dmLoop];
+  $('#dmLoopBtn').textContent = m.label;
+  $('#dmLoopBtn').title = m.title;
+  try{ localStorage.setItem('dmLoop', dmLoop); }catch(e){}
+}
+$('#dmLoopBtn').addEventListener('click', function(){
+  dmLoop = dmLoop === 'all' ? 'one' : dmLoop === 'one' ? 'seq' : 'all';
+  dmApplyLoop();
+  toast('循环模式: ' + DM_LOOP_META[dmLoop].full + '。');
+});
+try{
+  var dmLoopSaved = localStorage.getItem('dmLoop');
+  if(dmLoopSaved === 'one' || dmLoopSaved === 'seq') dmLoop = dmLoopSaved;
+}catch(e){}
+dmApplyLoop();
 function dmAudioEl(){
   if(!dmAudio){
     dmAudio = new Audio();
-    dmAudio.addEventListener('ended', function(){ dmNext(); });
+    dmAudio.addEventListener('ended', function(){
+      if(dmLoop === 'one'){
+        dmAudio.currentTime = 0;
+        dmAudio.play().catch(function(){});
+        return;
+      }
+      if(dmLoop === 'seq' && dm.idx >= SONGS.length - 1){
+        dmPause();
+        dmAudio.currentTime = 0;
+        toast('顺序播放到头了, 歌单放完一遍。');
+        return;
+      }
+      dmNext();
+    });
+    dmAudio.addEventListener('timeupdate', function(){ dmProgSync(); });
+    dmAudio.addEventListener('durationchange', function(){ dmProgSync(true); });
     dmAudio.addEventListener('error', function(){
       if(dm.playing){ dmPause(); toast('这首歌加载失败了, 换一首试试。'); }
     });
@@ -4095,11 +4515,50 @@ function dmAudioEl(){
   return dmAudio;
 }
 function dmRender(){
-  $('#dmTrack').textContent = !SONGS.length ? '歌单还空着——等船长进货。'
-    : (dm.playing ? '♪ ' : '· ') + SONGS[dm.idx].name;
   $('#dmCount').textContent = SONGS.length ? (dm.idx + 1) + '/' + SONGS.length : '0/0';
   $('#dmPlay').textContent = dm.playing ? '❚❚' : '▶';
+  var list = $('#dmList');
+  list.innerHTML = !SONGS.length ? '<div class="dm-item">歌单还空着。</div>' : '';
+  SONGS.forEach(function(s, i){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'dm-item' + (i === dm.idx ? ' on' : '');
+    b.innerHTML = '<i>' + (i === dm.idx && dm.playing ? '♪' : (i + 1) + '.') + '</i>' + s.name;
+    b.title = s.name;
+    b.addEventListener('click', function(){ dmPick(i); });
+    list.appendChild(b);
+  });
+  var on = list.querySelector('.dm-item.on');
+  if(on) on.scrollIntoView({ block: 'nearest' });
+  dmProgSync(true);
 }
+function dmPick(i){
+  if(i === dm.idx && dm.playing){ dmPause(); return; }   /* 点正在放的 = 暂停 */
+  dm.idx = i;
+  if(dm.playing){ dm.playing = false; dmStart(); } else dmRender();
+}
+/* 进度条: 按秒刷新(不逐帧抖 DOM), 点哪里跳哪里 */
+var dmLastSec = -1;
+function dmFmt(s){
+  s = Math.max(0, Math.round(s || 0));
+  return Math.floor(s / 60) + ':' + ('0' + s % 60).slice(-2);
+}
+function dmProgSync(force){
+  var a = dmAudio;
+  var cur = a && isFinite(a.currentTime) ? a.currentTime : 0;
+  var dur = a && isFinite(a.duration) ? a.duration : 0;
+  var s = Math.floor(cur);
+  if(!force && s === dmLastSec) return;
+  dmLastSec = s;
+  $('#dmProgFill').style.width = (dur ? cur / dur * 100 : 0) + '%';
+  $('#dmTime').textContent = dmFmt(cur) + ' / ' + dmFmt(dur);
+}
+$('#dmProg').addEventListener('click', function(e){
+  if(!dmAudio || !SONGS.length || !isFinite(dmAudio.duration) || !dmAudio.duration) return;
+  var r = this.getBoundingClientRect();
+  dmAudio.currentTime = (e.clientX - r.left) / r.width * dmAudio.duration;
+  dmProgSync(true);
+});
 function dmStart(){
   if(!SONGS.length){ toast('歌单空着, 船长还没进货。'); return; }
   var a = dmAudioEl();
@@ -4162,6 +4621,7 @@ function dmVizFrame(t){
     c.fillStyle = '#39d353';
     c.fillRect(2 + i * (bw + 2), h - 3 - bh, bw, bh);
   }
+  dmProgSync();   /* 进度条搭频谱的车刷新 */
 }
 function dmVizLoop(t){
   dmVizFrame(t);
@@ -4471,10 +4931,14 @@ document.addEventListener('keydown', function(e){
   if(konBuf.join(',') === KONAMI.join(',')){
     konBuf = [];
     var b = document.body;
+    if(b.classList.contains('konami')){
+      b.classList.remove('konami');
+      toast('彩虹模式收好了, 甲板恢复本色。');
+      return;
+    }
     b.classList.remove('konami'); void b.offsetWidth; b.classList.add('konami');
     confetti();
-    toast('↑↑↓↓←→←→BA — 老玩家, 鉴定完毕。');
-    setTimeout(function(){ b.classList.remove('konami'); }, 10000);
+    toast('↑↑↓↓←→←→BA — 老玩家, 鉴定完毕。彩虹模式开启, 再输一遍收起来。');
   }
 });
 
@@ -4631,7 +5095,11 @@ var ENTRIES = [
   { d:'2026-09-06', h:'今天给相册分了家, 迎来新住客"捣鼓token"; 屏保学会了看钟, 沙漏里掉起了像素沙子。这台电脑越来越像样——明明是造它的人越来越像样了。' },
   { d:'2026-09-06', h:'改完了, 开学住校去了。船就泊在这里, 慢慢地晃。等我放假回来, 再继续开。' },
   { d:'2026-09-12', h:'周末回家开船: 相册改成先看封面、点开才翻; 船上多了画板.EXE 和一台真实比例的太阳系.EXE——把太阳系缩到最小才发现, 我们住的地方在屏幕上还凑不出一个点。警告后来人: 同时开 4 个应用会蓝屏, 640K 内存就这么个脾气。开始菜单翻新了, 第一次上船的旅客会先收到一封欢迎信——常来, 升老水手。' },
-  { d:'2026-09-12', h:'「船长的画」今天开馆: 铅笔稿搬进第四本相册, 横线作业本就是画纸。另有五本空相册虚位以待——慢慢画, 不着急。' }
+  { d:'2026-09-12', h:'「船长的画」今天开馆: 铅笔稿搬进第四本相册, 横线作业本就是画纸。另有五本空相册虚位以待——慢慢画, 不着急。' },
+  { d:'2026-09-12', h:'倒数日.EXE 上架, 节日和自定义倒数一目了然——值得等的日子, 永远排在最上面。' },
+  { d:'2026-09-12', h:'「摄影作品」也开馆了: 从 2010 年的河到 2023 年的云——原来这台相机跟了船长十三年。' },
+  { d:'2026-09-12', h:'「生活碎片」开馆: 猫、WHAT 墙、佩奇和方块小狼——生活的边角料, 拼起来就是日子。' },
+  { d:'2026-09-12', h:'「九小回忆」开馆: 第九小学的毕业季都在里面——楼梯间、水手服和那块校名石。原来毕业已经三年了。' }
 ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
