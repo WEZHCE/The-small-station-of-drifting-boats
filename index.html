@@ -777,11 +777,17 @@
   body.night .sp-btns button:active{border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .sp-go{background:#3d6fd0; color:#fff}
 
-  /* ---------- 左下角双黑盒: 甲板音乐 + 灵动岛(灰黄面板, 配整站羊皮纸) ---------- */
-  #deckMusic, #dynIsland{position:fixed; left:10px; z-index:60; background:#ece5d0; color:#4a4335;
+  /* ---------- 左下角面板组: 甲板音乐 + 船长状态 + 灵动岛(灰黄面板, 配整站羊皮纸) ---------- */
+  #deckDock{position:fixed; left:10px; bottom:calc(40px + env(safe-area-inset-bottom)); z-index:60;
+    display:flex; flex-direction:column; gap:6px; align-items:stretch}
+  #deckMusic, #capState, #dynIsland{background:#ece5d0; color:#4a4335;
     font-family:Consolas,"Courier New",monospace; border:1px solid #b3a88c;
     box-shadow:3px 3px 0 rgba(43,38,28,.18)}
-  #deckMusic{bottom:calc(76px + env(safe-area-inset-bottom)); width:192px; padding:8px 9px 9px}
+  #deckMusic{width:192px; padding:8px 9px 9px}
+  #capState{width:192px; height:30px; display:flex; align-items:center; gap:6px; padding:0 9px; font-size:11.5px}
+  #csDot{width:7px; height:7px; flex:none; animation:dmPulse 1.6s steps(2) infinite}
+  #csText{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  #csText em{font-style:normal; color:#8a7d5f}
   .dm-head{display:flex; justify-content:space-between; align-items:baseline; font-size:11px;
     letter-spacing:2px; color:#b3a88c; margin-bottom:6px}
   .dm-head b{color:#3f5c33; letter-spacing:1px}
@@ -805,7 +811,7 @@
   .dm-btn:active{border-color:#a89d84 #fff #fff #a89d84}
   .dm-loop{width:auto; padding:0 6px; letter-spacing:1px}
   .dm-count{margin-left:auto; font-size:11px; color:#8a7d5f}
-  #dynIsland{bottom:calc(40px + env(safe-area-inset-bottom)); width:192px; height:30px;
+  #dynIsland{width:192px; height:30px;
     display:flex; align-items:center; gap:6px; padding:0 9px; font-size:11.5px}
   #dynDot{width:7px; height:7px; background:#7c9c66; flex:none; animation:dmPulse 1.6s steps(2) infinite}
   @keyframes dmPulse{50%{opacity:.2}}
@@ -813,7 +819,7 @@
   #dynText.swap{animation:dynSwap .3s steps(3)}
   @keyframes dynSwap{0%{opacity:0; transform:translateY(4px)}100%{opacity:1; transform:none}}
   #dynMin{flex:none; color:#8a7d5f}
-  body.night #deckMusic, body.night #dynIsland{background:#161e30; border-color:#2c3854;
+  body.night #deckMusic, body.night #capState, body.night #dynIsland{background:#161e30; border-color:#2c3854;
     box-shadow:3px 3px 0 rgba(0,0,0,.5); color:#c8cfdd}
   body.night .dm-head{color:#55618a}
   body.night .dm-head b{color:#8fbf8f}
@@ -830,6 +836,8 @@
   body.night .dm-btn:active{border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .dm-count, body.night #dynMin{color:#7d8cab}
   body.night #dynDot{background:#8fbf8f}
+  body.night #capState{color:#c8cfdd}
+  body.night #csText em{color:#7d8cab}
 
   /* ---------- 倒数日.EXE: 节日与自定义倒数 ---------- */
   #ddWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(400px,92vw);
@@ -1119,8 +1127,8 @@
     #taskbar{flex-wrap:wrap; height:auto; padding:3px 4px calc(3px + env(safe-area-inset-bottom)); row-gap:3px; gap:3px}
     #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount{padding:0 5px}
     body.on{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
-    #dynIsland{bottom:calc(78px + env(safe-area-inset-bottom)); width:158px}
-    #deckMusic{bottom:calc(114px + env(safe-area-inset-bottom)); width:158px}
+    #deckDock{bottom:calc(78px + env(safe-area-inset-bottom))}
+    #deckMusic, #capState, #dynIsland{width:158px}
     #startMenu{bottom:calc(78px + env(safe-area-inset-bottom))}
     #toast{bottom:calc(68px + env(safe-area-inset-bottom))}
     /* 音乐盒控制行四键 + 计数, 再窄也放得下 */
@@ -1291,7 +1299,8 @@
   <div class="lb-cap"><b id="lbTitle"></b><span id="lbCap"></span></div>
 </div>
 
-<!-- ================= 左下角双黑盒: 甲板音乐 + 灵动岛 ================= -->
+<!-- ================= 左下角面板组: 甲板音乐 + 船长状态 + 灵动岛 ================= -->
+<div id="deckDock">
 <div id="deckMusic">
   <div class="dm-head"><b>甲板音乐</b><span>MUSIC</span></div>
   <canvas id="dmViz" width="172" height="42"></canvas>
@@ -1306,10 +1315,15 @@
     <span class="dm-count" id="dmCount">0/0</span>
   </div>
 </div>
+<div id="capState" title="船长状态监控 — 按课表实时更新">
+  <span id="csDot"></span>
+  <span id="csText">读取课表中……</span>
+</div>
 <div id="dynIsland" title="游客此刻的状态">
   <span id="dynDot"></span>
   <span id="dynText">正在苏醒……</span>
   <span id="dynMin">0 分</span>
+</div>
 </div>
 
 <div id="toast"></div>
@@ -1368,7 +1382,7 @@
     <div class="help-sec">🖱 处处可点</div>
     <ul>
       <li>开始菜单翻新了: <b>系统与设备</b> / <b>网站设置</b>(屏保时长·夜航·音效·开机动画) / <b>游客信息</b> — 你是第几次上船, 它记得</li>
-      <li>左下角两块小面板: <b>甲板音乐</b>(五首 VOCALOID 已上架, 像素频谱跟着唱) + <b>灵动岛</b>(实时报你此刻在干嘛, 顺便记你上船几分钟)</li>
+      <li>左下角三块小面板: <b>甲板音乐</b>(五首 VOCALOID 已上架, 像素频谱跟着唱) + <b>船长状态</b>(课表驱动的状态灯, 地点/事情/心情实时更新) + <b>灵动岛</b>(实时报你此刻在干嘛, 顺便记你上船几分钟)</li>
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
       <li>相册: 九本板块相册(已开张七本), 点封面选中, 双击封面或点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
       <li>右下角小船: 点一下 +1 海里 — <b>10</b> 红帆 · <b>30</b> 海鸥 · <b>60</b> 金帆 · <b>100</b> 夜灯</li>
@@ -4331,6 +4345,9 @@ var DD_FIXED = [
   { n:'国庆节', md:'10-01', note:'举国同庆, 作业同在。' },
   { n:'船长生日', md:'11-13', note:'站名本人的 +1 岁仪式。' }
 ];
+var DD_ONCE = [
+  { n:'高考', iso:'2029-06-07', note:'船长的最终关卡——三年磨一剑, 这天开锋。' }
+];
 var ddUser = [];
 try{ ddUser = JSON.parse(localStorage.getItem('ddEvents') || '[]'); }catch(e){ ddUser = []; }
 if(!ddUser.length) ddUser = [];
@@ -4365,6 +4382,9 @@ function ddBuildAll(){
   Object.keys(DD_LUNAR).forEach(function(n){
     var iso = ddNextLunar(n);
     if(iso) items.push({ n:n, iso:iso, note:'农历节日, 以公历为准。', builtin:true });
+  });
+  DD_ONCE.forEach(function(f){
+    items.push({ n:f.n, iso:f.iso, note:f.note, builtin:true });
   });
   ddUser.forEach(function(u){
     items.push({ n:u.n, iso:u.d, note:u.note || '', id:u.id, builtin:false, days:ddDays(u.d) });
@@ -4462,7 +4482,10 @@ var SONGS = [
   { name:'こわいこと · 镜音铃', src:'docs/music/song-2.mp3' },
   { name:'角色T · 重音テト', src:'docs/music/song-3.mp3' },
   { name:'バカみたいに · 初音ミク', src:'docs/music/song-4.mp3' },
-  { name:'影色舞', src:'docs/music/song-5.mp3' }
+  { name:'影色舞', src:'docs/music/song-5.mp3' },
+  { name:'栞 (Shiori)', src:'docs/music/song-6.mp3' },
+  { name:"I Can't Wait · GUMI", src:'docs/music/song-7.mp3' },
+  { name:'死別 · Shannon feat. GUMI', src:'docs/music/song-8.mp3' }
 ];
 var dm = { idx:0, loadedIdx:-1, playing:false, actx:null, analyser:null, srcNode:null, raf:null, data:null, zeroFrames:0 };
 var dmAudio = null;
@@ -4680,6 +4703,66 @@ function dynUpdate(){
 }
 setInterval(dynUpdate, 1000);
 dynUpdate();
+
+/* ---------- 左下角面板组 · 船长状态: 课表驱动的状态灯 ---------- */
+/* 课表: [星期(0=周日), 起点, 终点(分钟), 地点, 事情, 心情, 灯色] — 作息变了只改这里 */
+var CS_WEEK = [];
+CS_WEEK.push([0, 0, 360, '家', '补觉', '周五熬的债周日还', 'rest']);
+CS_WEEK.push([0, 360, 540, '家', '睡懒觉', '再五分钟', 'rest']);
+CS_WEEK.push([0, 540, 720, '家', '自由活动', '周日早上的松弛感', 'free']);
+CS_WEEK.push([0, 720, 840, '家', '午饭午休', '饭后犯困定律', 'rest']);
+CS_WEEK.push([0, 840, 960, '家', '写代码', '小站诞生现场', 'code']);
+CS_WEEK.push([0, 960, 1020, '家里', '打包行李', '下周的袜子得带够', 'move']);
+CS_WEEK.push([0, 1020, 1080, '路上', '返校中', '书包比上周又重了一点', 'move']);
+CS_WEEK.push([0, 1080, 1140, '学校', '返校整理', '把一周的衣服码整齐', 'busy']);
+CS_WEEK.push([0, 1140, 1320, '学校', '晚自习', '周日晚自习是开学的仪式感', 'busy']);
+CS_WEEK.push([0, 1320, 1440, '学校', '熄灯就寝', '梦里也在背单词', 'sleep']);
+[1, 2, 3, 4].forEach(function(d){
+  CS_WEEK.push(
+    [d, 0, 360, '学校', '熄灯就寝', '梦里也在背单词', 'sleep'],
+    [d, 360, 440, '学校', '早操早读', '眼皮还没开机', 'busy'],
+    [d, 440, 480, '学校', '早饭', '包子是第一动力', 'eat'],
+    [d, 480, 720, '学校', '上午课程', '笔记全靠意志力', 'busy'],
+    [d, 720, 840, '学校', '午饭午休', '充电中, 勿扰', 'rest'],
+    [d, 840, 1080, '学校', '下午课程', '黑板上的字越来越小', 'busy'],
+    [d, 1080, 1140, '学校', '晚饭', '干饭时间, 心情满分', 'eat'],
+    [d, 1140, 1320, '学校', '晚自习', '与试卷斗争中', 'busy'],
+    [d, 1320, 1440, '学校', '熄灯就寝', '梦里也在背单词', 'sleep']
+  );
+});
+CS_WEEK.push(
+  [5, 0, 360, '学校', '熄灯就寝', '梦里也在背单词', 'sleep'],
+  [5, 360, 440, '学校', '早操早读', '眼皮还没开机', 'busy'],
+  [5, 440, 480, '学校', '早饭', '包子是第一动力', 'eat'],
+  [5, 480, 720, '学校', '上午课程', '笔记全靠意志力', 'busy'],
+  [5, 720, 840, '学校', '午饭午休', '充电中, 勿扰', 'rest'],
+  [5, 840, 1080, '学校', '下午课程', '撑过这节就回家', 'busy'],
+  [5, 1080, 1110, '路上', '返家中', '一周一次的大逃亡', 'move'],
+  [5, 1110, 1320, '家', '放松时间', '补番/游戏/装死三选一', 'free'],
+  [5, 1320, 1440, '家', '熬夜冠军赛', '周五夜的仪式感', 'owl'],
+  [6, 0, 420, '家', '补觉', '周五熬的债周六还', 'rest'],
+  [6, 420, 540, '家', '睡懒觉', '再五分钟', 'rest'],
+  [6, 540, 720, '家', '写作业', '周六上午留给作业', 'busy'],
+  [6, 720, 840, '家', '午饭午休', '饭后犯困定律', 'rest'],
+  [6, 840, 1140, '家', '自由活动', '游戏/番剧/瞎晃三选一', 'free'],
+  [6, 1140, 1260, '家', '晚饭', '干饭时间, 心情满分', 'eat'],
+  [6, 1260, 1440, '家', '熬夜冠军赛', '周六夜的保留节目', 'owl']
+);
+var CS_COLORS = { busy:'#e5484d', eat:'#e8a33d', rest:'#98999c', code:'#3cb46e', free:'#3d9df0', move:'#3d6fd0', owl:'#9a5fd0', sleep:'#6b7280' };
+function csPick(now){
+  var day = now.getDay(), m = now.getHours() * 60 + now.getMinutes(), hit = null;
+  CS_WEEK.forEach(function(seg){
+    if(seg[0] === day && m >= seg[1] && m < seg[2] && !hit) hit = seg;
+  });
+  return hit || [null, null, null, '学校', '课表外的时空', ' antimatter 泄漏了', 'busy'];
+}
+function csUpdate(){
+  var seg = csPick(new Date());
+  $('#csDot').style.background = CS_COLORS[seg[6]] || '#98999c';
+  $('#csText').innerHTML = seg[3] + ' · ' + seg[4] + '<em>(心情: ' + seg[5] + ')</em>';
+}
+setInterval(csUpdate, 30000);
+csUpdate();
 
 /* ---------- 剧透确认: help.chm 的门帘, 三个入口(任务栏/欢迎信/终端)都从这里过 ---------- */
 drawSprite($('#spoilerIcon'), 'warn', 3);
@@ -5097,6 +5180,7 @@ var ENTRIES = [
   { d:'2026-09-12', h:'周末回家开船: 相册改成先看封面、点开才翻; 船上多了画板.EXE 和一台真实比例的太阳系.EXE——把太阳系缩到最小才发现, 我们住的地方在屏幕上还凑不出一个点。警告后来人: 同时开 4 个应用会蓝屏, 640K 内存就这么个脾气。开始菜单翻新了, 第一次上船的旅客会先收到一封欢迎信——常来, 升老水手。' },
   { d:'2026-09-12', h:'「船长的画」今天开馆: 铅笔稿搬进第四本相册, 横线作业本就是画纸。另有五本空相册虚位以待——慢慢画, 不着急。' },
   { d:'2026-09-12', h:'倒数日.EXE 上架, 节日和自定义倒数一目了然——值得等的日子, 永远排在最上面。' },
+  { d:'2026-09-12', h:'船长状态监控上线——红的是学习, 绿的是写代码, 灰的是睡着了。现在你们可以精准避开我的作业时间来催更了。' },
   { d:'2026-09-12', h:'「摄影作品」也开馆了: 从 2010 年的河到 2023 年的云——原来这台相机跟了船长十三年。' },
   { d:'2026-09-12', h:'「生活碎片」开馆: 猫、WHAT 墙、佩奇和方块小狼——生活的边角料, 拼起来就是日子。' },
   { d:'2026-09-12', h:'「九小回忆」开馆: 第九小学的毕业季都在里面——楼梯间、水手服和那块校名石。原来毕业已经三年了。' }
