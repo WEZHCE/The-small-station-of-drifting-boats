@@ -784,10 +784,11 @@
     font-family:Consolas,"Courier New",monospace; border:1px solid #b3a88c;
     box-shadow:3px 3px 0 rgba(43,38,28,.18)}
   #deckMusic{width:192px; padding:8px 9px 9px}
-  #capState{width:192px; height:30px; display:flex; align-items:center; gap:6px; padding:0 9px; font-size:11.5px}
+  #capState{width:192px; min-height:30px; display:flex; align-items:center; gap:6px; padding:3px 9px; font-size:11.5px}
   #csDot{width:7px; height:7px; flex:none; animation:dmPulse 1.6s steps(2) infinite}
-  #csText{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-  #csText em{font-style:normal; color:#8a7d5f}
+  #csText{flex:1; min-width:0; line-height:1.45}
+  #csText b{display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:normal}
+  #csText em{display:block; font-style:normal; color:#8a7d5f; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .dm-head{display:flex; justify-content:space-between; align-items:baseline; font-size:11px;
     letter-spacing:2px; color:#b3a88c; margin-bottom:6px}
   .dm-head b{color:#3f5c33; letter-spacing:1px}
@@ -4657,7 +4658,29 @@ function dmVizStart(){
 }
 dmRender();
 dmVizFrame(0);
-
+/* 开站随机播放: 被浏览器自动播放策略拦下时, 第一次交互接着播 */
+function dmShuffleStart(){
+  if(!SONGS.length) return;
+  dm.idx = Math.floor(Math.random() * SONGS.length);
+  dm.loadedIdx = -1;
+  dmRender();
+  dmStart();
+}
+function dmArmGesture(){
+  var fire = function(){
+    ['pointerdown','keydown','touchstart'].forEach(function(ev){
+      document.removeEventListener(ev, fire, true);
+    });
+    if(!dm.playing){ dmStart(); toast('甲板音乐接着上, 想静音点 ▶ 旁的暂停。'); }
+  };
+  ['pointerdown','keydown','touchstart'].forEach(function(ev){
+    document.addEventListener(ev, fire, { capture:true, once:false });
+  });
+}
+if(SONGS.length){
+  dmShuffleStart();
+  if(!dm.playing) dmArmGesture();
+}
 /* ---------- 左下角双黑盒 · 灵动岛: 游客此刻在干嘛 ---------- */
 var dynLastText = '', dynT0 = Date.now(), dynLastActive = Date.now();
 ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(function(ev){
@@ -4760,7 +4783,7 @@ function csPick(now){
 function csUpdate(){
   var seg = csPick(new Date());
   $('#csDot').style.background = CS_COLORS[seg[6]] || '#98999c';
-  $('#csText').innerHTML = seg[3] + ' · ' + seg[4] + '<em>(心情: ' + seg[5] + ')</em>';
+  $('#csText').innerHTML = '<b>' + seg[3] + ' · ' + seg[4] + '</b><em>(心情: ' + seg[5] + ')</em>';
 }
 setInterval(csUpdate, 30000);
 csUpdate();
