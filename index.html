@@ -151,6 +151,7 @@
   body.night .acv-empty{background:linear-gradient(135deg, #243050, #141b2c); border-color:#2c3854}
   body.night .acv-empty::after{color:#5a6a8a}
   body.night .album-name{color:#9fb0cd}
+  body.night .album-desc{color:#7d8cab}
   body.night .album-empty{border-color:#2c3854; background:rgba(16,24,40,.45)}
   body.night .ae-gray{background:linear-gradient(135deg, #243050, #141b2c); border-color:#2c3854}
   body.night .ae-note{color:#7d8cab}
@@ -1385,7 +1386,7 @@
       <li>开始菜单翻新了: <b>系统与设备</b> / <b>网站设置</b>(屏保时长·夜航·音效·开机动画) / <b>游客信息</b> — 你是第几次上船, 它记得</li>
       <li>左下角三块小面板: <b>甲板音乐</b>(五首 VOCALOID 已上架, 像素频谱跟着唱) + <b>船长状态</b>(课表驱动的状态灯, 地点/事情/心情实时更新) + <b>灵动岛</b>(实时报你此刻在干嘛, 顺便记你上船几分钟)</li>
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
-      <li>相册: 九本板块相册(已开张七本), 点封面选中, 双击封面或点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
+      <li>相册: 九本板块相册(全部开张), 点封面选中, 双击封面或点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
       <li>右下角小船: 点一下 +1 海里 — <b>10</b> 红帆 · <b>30</b> 海鸥 · <b>60</b> 金帆 · <b>100</b> 夜灯</li>
     </ul>
 
@@ -2445,7 +2446,7 @@ var PHOTOS = [
   { s:'whale',      title:'鲸鱼',   cap:'喷潮的水柱是鲸鱼的问好, 肚皮比海面还亮。' },
   { s:'lighthouse', title:'灯塔',   cap:'光束扫过去, 夜里的船就知道岸在哪。' }
 ];
-/* ================= 相册: 六个板块——像素画集 / 捣鼓token / 四本虚位以待 ================= */
+/* ================= 相册: 九个板块, 全部开馆 ================= */
 var ALBUMS = [
   { name:'像素画集', desc:'一格一格画出来的六个小家伙。', kind:'sprite' },
   { name:'捣鼓token', desc:'AI 船员的燃料账本——配置、额度、账单, 和一些吓人的数字。', kind:'img',
@@ -2525,7 +2526,14 @@ var ALBUMS = [
       { img:'docs/yigao/y-6.jpg', title:'早读前十分钟', cap:'七点五十三的广场空无一人，树站得笔直——大概它们也要早读。' },
       { img:'docs/yigao/y-7.jpg', title:'天刚亮', cap:'五点五十八，篮球场还没醒，先醒的人替它看了一会儿日出。' }
     ] },
-  { name:'相册 · 玖', desc:'', filled:false }
+  { name:'出去玩', desc:'假期出去晃悠的实拍——雪王、商场、大笑的雕像，和一条很敬业的狗。', kind:'img',
+    photos:[
+      { img:'docs/trip/t-1.jpg', title:'雪王站岗', cap:'上午十点的蜜雪冰城，雪王举着冰淇淋权杖站在招牌上——去哪儿玩不重要，先来一口甜的。' },
+      { img:'docs/trip/t-2.jpg', title:'车窗外的校门', cap:'隔着车窗路过一所学校，树和栏杆都不给面子，校名糊得刚刚好——又是所不肯透露姓名的学校。' },
+      { img:'docs/trip/t-3.jpg', title:'商场俯瞰', cap:'扶梯上往下看：小孩把碰碰车开出了 F1 的气势，粉色那辆最高调——我们站得高，像两个没买票的评委。' },
+      { img:'docs/trip/t-4.jpg', title:'大笑雕像', cap:'吾悦广场门口一排金属人，笑得前仰后合——路过的人多多少少都会跟着笑一下，这也算公共设施的服务范围。' },
+      { img:'docs/trip/t-5.jpg', title:'看门狗一家', cap:'小院里的狗一家：大的负责喊，小的负责睡，狗碗比脸都干净——敬业，respect。' }
+    ] }
 ];
 var albumSel = 0, curPhotos = PHOTOS;
 var lastCoverClick = { i: -1, t: 0 };   /* 双击判定: 单击会重建封面节点, 原生 dblclick 靠不住 */
@@ -2990,7 +2998,7 @@ $('#runDays').addEventListener('click', function(){
 var H2_LINES = {
   about: '家底全在这了, 没藏着。',
   now: '红点标过的日子, 船都出过海。',
-  gallery: '九本相册, 已经开张七本了。',
+  gallery: '九本相册, 本本都开张了。',
   guestbook: '来都来了, 说两句?'
 };
 $$('.window h2').forEach(function(h){
