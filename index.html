@@ -781,7 +781,7 @@
   /* ---------- 左下角面板组: 甲板音乐 + 船长状态 + 灵动岛(灰黄面板, 配整站羊皮纸) ---------- */
   #deckDock{position:fixed; left:10px; bottom:calc(40px + env(safe-area-inset-bottom)); z-index:60;
     display:flex; flex-direction:column; gap:6px; align-items:stretch}
-  #deckMusic, #capState, #dynIsland{background:#ece5d0; color:#4a4335;
+  #deckMusic, #capState, #dynIsland{background:rgba(236,229,208,.72); color:#4a4335;
     font-family:Consolas,"Courier New",monospace; border:1px solid #b3a88c;
     box-shadow:3px 3px 0 rgba(43,38,28,.18)}
   #deckMusic{width:192px; padding:8px 9px 9px}
@@ -794,16 +794,16 @@
     letter-spacing:2px; color:#b3a88c; margin-bottom:6px}
   .dm-head b{color:#3f5c33; letter-spacing:1px}
   #dmViz{display:block; width:100%; height:42px; background:#0d1322; border:1px solid #b3a88c}
-  .dm-prog{height:10px; margin-top:7px; background:#f7f2e3; border:2px solid;
+  .dm-prog{height:10px; margin-top:7px; background:rgba(247,242,227,.5); border:2px solid;
     border-color:#a89d84 #fff #fff #a89d84; cursor:pointer}
   .dm-prog i{display:block; height:100%; width:0; background:#7c9c66}
   .dm-time{font-size:10.5px; color:#8a7d5f; margin-top:3px; text-align:right}
-  .dm-list{margin-top:6px; max-height:104px; overflow-y:auto; background:#f7f2e3;
+  .dm-list{margin-top:6px; max-height:104px; overflow-y:auto; background:rgba(247,242,227,.5);
     border:2px solid; border-color:#a89d84 #fff #fff #a89d84}
   .dm-item{display:block; width:100%; text-align:left; padding:3px 7px; background:transparent; border:none;
     font-family:inherit; font-size:11.5px; color:#4a4335; cursor:pointer;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-  .dm-item:hover{background:#e8e0cc}
+  .dm-item:hover{background:rgba(232,224,204,.55)}
   .dm-item.on{background:#f2d97c; color:#4a3d1e; font-weight:bold}
   .dm-item i{font-style:normal; margin-right:5px; color:#8a7d5f}
   .dm-item.on i{color:#4a3d1e}
@@ -821,17 +821,17 @@
   #dynText.swap{animation:dynSwap .3s steps(3)}
   @keyframes dynSwap{0%{opacity:0; transform:translateY(4px)}100%{opacity:1; transform:none}}
   #dynMin{flex:none; color:#8a7d5f}
-  body.night #deckMusic, body.night #capState, body.night #dynIsland{background:#161e30; border-color:#2c3854;
+  body.night #deckMusic, body.night #capState, body.night #dynIsland{background:rgba(22,30,48,.8); border-color:#2c3854;
     box-shadow:3px 3px 0 rgba(0,0,0,.5); color:#c8cfdd}
   body.night .dm-head{color:#55618a}
   body.night .dm-head b{color:#8fbf8f}
   body.night #dmViz{border-color:#243050}
-  body.night .dm-prog{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .dm-prog{background:rgba(13,19,34,.6); border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .dm-prog i{background:#39d353}
   body.night .dm-time{color:#7d8cab}
-  body.night .dm-list{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .dm-list{background:rgba(13,19,34,.6); border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .dm-item{color:#c8cfdd}
-  body.night .dm-item:hover{background:#243050}
+  body.night .dm-item:hover{background:rgba(36,48,80,.65)}
   body.night .dm-item.on{background:#3d4f7d; color:#fff}
   body.night .dm-item i{color:#7d8cab}
   body.night .dm-btn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
