@@ -115,7 +115,7 @@
   .log li a:hover{color:#fff; background:#2038a8}
 
   /* 相册 */
-  .gallery{display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:30px 24px; padding:6px 0 10px}
+  .gallery{display:grid; grid-template-columns:repeat(4,1fr); gap:26px 20px; padding:6px 0 10px}
   /* ---------- 相册板块封面 ---------- */
   .album-covers{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:6px 0 10px}
   .album-cover{position:relative; min-width:0; background:#fbf7ec; border:1px solid #d9d2c0; padding:8px 6px 9px;
@@ -170,8 +170,8 @@
     border-right:1px dashed rgba(255,255,255,.65)}
   .photo canvas{width:100%; height:auto; image-rendering:pixelated;
     background:#ddd3ba; border:1px solid #d5ccb4}
-  figcaption{margin-top:9px; font-size:13px; color:#5c5340; line-height:1.6}
-  figcaption b{font-family:"KaiTi","楷体",serif; font-size:15px; color:#3f5c33}
+  figcaption{margin-top:9px; font-size:14.5px; color:#5c5340; line-height:1.7}
+  figcaption b{font-family:"KaiTi","楷体",serif; font-size:16.5px; color:#3f5c33}
 
   /* 留言板(giscus) */
   .gb-panel{background:#efe8d4; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
@@ -306,9 +306,9 @@
   #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
   #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
   /* 快捷启动区: 统一银色凸起底, 徽标统一任务栏灰(夜航整条任务栏换深色) */
-  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount{height:26px; display:flex; align-items:center; justify-content:center;
+  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg{height:26px; display:flex; align-items:center; justify-content:center;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0 4px}
-  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active, #tbCount:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active, #tbCount:active, #tbImg:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .tb-badge{min-width:22px; height:16px; display:flex; align-items:center; justify-content:center;
     font:bold 10px/14px Consolas,monospace; color:#333}
 
@@ -402,9 +402,9 @@
   body.night #taskbar{background:#1a2338; border-top-color:#3a4763}
   body.night #startBtn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night #startBtn:active{border-color:#101828 #3a4763 #3a4763 #101828}
-  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar, body.night #tbCount{
+  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar, body.night #tbCount, body.night #tbImg{
     background:#243050; border-color:#3a4763 #101828 #101828 #3a4763}
-  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active, body.night #tbCount:active{
+  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active, body.night #tbCount:active, body.night #tbImg:active{
     border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .tb-badge{color:#c8cfdd}
   body.night #tray{background:#243050; border-color:#101828 #3a4763 #3a4763 #101828; color:#c8cfdd}
@@ -909,6 +909,50 @@
   .album-thumbs img{width:100%; height:100%; object-fit:cover; display:block}
   body.night .photo img, body.night #lbImg, body.night .album-thumbs{border-color:#2c3854; background:#101828}
 
+  /* ---------- 图片搜索.EXE: 按内容和标签找图 ---------- */
+  #imgSearchWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(560px,92vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #imgSearchWin.open{display:block}
+  #imgSearchWin .titlebar{cursor:move}
+  .is-body{padding:9px}
+  .is-row{display:flex; gap:6px}
+  .is-row input{flex:1; min-width:0; font-family:inherit; font-size:13px; padding:5px 8px; background:#fbf7ec; color:#2e2a22;
+    border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f}
+  .is-row button{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; padding:4px 14px;
+    font-family:"SimHei","黑体",sans-serif; font-size:13px; cursor:pointer; color:#222; flex:none}
+  .is-row button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .is-tags{display:flex; flex-wrap:wrap; gap:5px; margin-top:8px}
+  .is-tag{background:#ece5d0; border:1px solid #b3a88c; padding:2px 9px; font-size:12px; color:#5c5340; cursor:pointer; font-family:inherit}
+  .is-tag:hover{background:#f2d97c; border-color:#8a7d5f}
+  .is-hint{font-size:11.5px; color:#8a7d5f; margin:8px 0 6px}
+  .is-results{max-height:340px; overflow-y:auto; display:grid; grid-template-columns:repeat(2,1fr); gap:10px; padding-right:2px}
+  .is-item{background:#fbf7ec; border:1px solid #d9d2c0; padding:7px; cursor:pointer; text-align:left; font-family:inherit;
+    box-shadow:2px 2px 0 rgba(43,38,28,.1); transition:transform .15s}
+  .is-item:hover{background:#f7f2e3; transform:translateY(-2px)}
+  .is-thumb{display:block; width:100%; height:96px; object-fit:cover; border:1px solid #d5ccb4; background:#ddd3ba}
+  canvas.is-thumb{image-rendering:pixelated; object-fit:contain}
+  .is-item b{display:block; margin-top:6px; font-size:12.5px; color:#3f5c33; font-family:"KaiTi","楷体",serif}
+  .is-item .is-from{display:block; font-size:11px; color:#8a7d5f; margin-top:2px}
+  .is-item .is-cap{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+    font-size:11.5px; color:#4a4335; line-height:1.5; margin-top:3px}
+  .is-item mark{background:#f2d97c; color:#4a3d1e; padding:0 1px}
+  .is-empty{color:#8a7d5f; font-size:12.5px; padding:12px 4px}
+  body.night #imgSearchWin{background:#1a2338; border-color:#3a4763}
+  body.night .is-row input{background:#101828; color:#c8cfdd; border-color:#3a4763 #101828 #101828 #3a4763}
+  body.night .is-row button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .is-row button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .is-tag{background:#1e2a45; border-color:#2c3854; color:#9fb0cd}
+  body.night .is-tag:hover{background:#3d4f7d; color:#fff}
+  body.night .is-hint{color:#7d8cab}
+  body.night .is-item{background:#16203a; border-color:#2c3854}
+  body.night .is-item:hover{background:#1e2a45}
+  body.night .is-thumb{border-color:#2c3854; background:#101828}
+  body.night .is-item b{color:#8fbf8f}
+  body.night .is-item .is-from{color:#7d8cab}
+  body.night .is-item .is-cap{color:#c8cfdd}
+  body.night .is-item mark{background:#3d4f7d; color:#fff}
+  body.night .is-empty{color:#7d8cab}
+
   /* ---------- 小站浏览器 ---------- */
   #browserWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(760px,94vw);
     display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
@@ -1114,9 +1158,9 @@
     .album-covers{grid-template-columns:repeat(3,1fr); gap:10px}
     .album-cover{min-width:0}
     /* 手机上弹窗靠上放, 给输入法键盘留地方; 里程牌缩小; 任务栏紧凑排布 */
-    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin{top:6vh; transform:translate(-50%,0)}
+    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin, #imgSearchWin{top:6vh; transform:translate(-50%,0)}
     #taskbar{gap:4px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount{padding:0 2px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg{padding:0 2px}
     #tray{padding:0 6px}
     .help-body{max-height:56vh}
     #boatOdo{font-size:10.5px}
@@ -1127,7 +1171,7 @@
   @media (max-width:480px){
     #trayClock{display:none}
     #taskbar{flex-wrap:wrap; height:auto; padding:3px 4px calc(3px + env(safe-area-inset-bottom)); row-gap:3px; gap:3px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount{padding:0 5px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg{padding:0 5px}
     body.on{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
     #deckDock{bottom:calc(78px + env(safe-area-inset-bottom))}
     #deckMusic, #capState, #dynIsland{width:158px}
@@ -1343,6 +1387,7 @@
   <button id="tbPaint" type="button" title="画板.EXE — 一格一格画"><span class="tb-badge">画</span></button>
   <button id="tbSolar" type="button" title="太阳系.EXE — 真实比例"><span class="tb-badge">阳</span></button>
   <button id="tbCount" type="button" title="倒数日.EXE — 数着日子等什么"><span class="tb-badge">倒</span></button>
+  <button id="tbImg" type="button" title="图片搜索.EXE — 按内容和标签找图"><span class="tb-badge">搜</span></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
@@ -1402,6 +1447,7 @@
       <li><b>画 画板.EXE</b> — 24×24 像素画板: 画笔/油漆桶/橡皮/撤销, 画完点"下载 PNG"打包带走</li>
       <li><b>阳 太阳系.EXE</b> — 真实比例+真实周期: 左侧星球列表点谁去谁, 拖动平移, 滚轮缩放, 点行星看资料; 找不到地球? 先缩小看全家福, 再凑近</li>
       <li><b>倒 倒数日.EXE</b> — 内置节日倒数(含农历) + 自定义事件可写详细说明, 谁的日子近谁排前面</li>
+      <li><b>搜 图片搜索.EXE</b> — 按内容和标签找图: 输入"猫/操场/云/毕业"这类关键词, 或直接点标签; 点结果原图大图看</li>
     </ul>
 
     <div class="help-sec">🌙 这台电脑也会累</div>
@@ -1584,6 +1630,22 @@
       <button id="ddAdd" type="button">+ 新增倒数</button>
       <span>节日内置 · 自定义存在本地</span>
     </div>
+  </div>
+</div>
+
+<!-- ================= 图片搜索.EXE: 按内容和标签找图 ================= -->
+<div id="imgSearchWin">
+  <div class="titlebar"><span class="tb-title">图片搜索.EXE — 按内容和标签找图</span>
+    <button class="tb-btn" id="imgSearchClose" title="关闭">✕</button>
+  </div>
+  <div class="is-body">
+    <div class="is-row">
+      <input id="isInput" placeholder="输入关键词: 猫 / 操场 / 云 / 毕业 …" autocomplete="off" spellcheck="false">
+      <button id="isGo" type="button">搜一下</button>
+    </div>
+    <div class="is-tags" id="isTags"></div>
+    <div class="is-hint" id="isHint"></div>
+    <div class="is-results" id="isResults"></div>
   </div>
 </div>
 
@@ -2449,7 +2511,7 @@ var PHOTOS = [
 /* ================= 相册: 十五本——九本开馆, 六本虚位以待 ================= */
 var ALBUMS = [
   { name:'像素画集', desc:'一格一格画出来的六个小家伙。', kind:'sprite' },
-  { name:'捣鼓token', desc:'AI 船员的燃料账本——配置、额度、账单, 和一些吓人的数字。', kind:'img',
+  { name:'捣鼓token', desc:'AI 船员的燃料账本——配置、额度、账单, 和一些吓人的数字。', kw:'AI 模型 账单 代码', kind:'img',
     photos:[
       { img:'docs/tokens/zcode-model.png', title:'模型军火库',
         cap:'ZCode 的模型军火库: BigModel 领衔, longcat、deepseek、note、ikuncode 列队——周末礼包只剩 14%, 且用且珍惜。' },
@@ -2468,7 +2530,7 @@ var ALBUMS = [
       { img:'docs/tokens/usage.png', title:'干饭排行榜',
         cap:'模型用量环形图: 8.5 亿 tokens 下肚——GLM-5.3-Flash 独吞 81%, DeepSeek 两兄弟合起来约 14%, gpt-5.5 只舔到 2.1%。谁在船上干活, 饼图最诚实。' }
     ] },
-  { name:'校园时光', desc:'南阳市第三中学紫竹林校区 · 2026 年 5 月 24 日～6 月 24 日，从雨天到毕业。', kind:'img',
+  { name:'校园时光', desc:'南阳市第三中学紫竹林校区 · 2026 年 5 月 24 日～6 月 24 日，从雨天到毕业。', kw:'初中 中考 学校 三中', kind:'img',
     photos:[
       { img:'docs/campus/gate.png', title:'校门', cap:'揽星河，写华章——周日雨天的校门，石球列队，水洼里倒映着教学楼。' },
       { img:'docs/campus/track-rain.png', title:'雨中的操场', cap:'红旗杆立在看台前，雨水把跑道刷得发亮，空着的篮球场安静得能听见雨声。' },
@@ -2485,7 +2547,7 @@ var ALBUMS = [
       { img:'docs/campus/graduation-stage.jpg', title:'毕业典礼的舞台', cap:'六月二十四号一早，横幅挂好了：南阳市第三中学 2026 届毕业典礼——开场前台子空着，像一张等着被签满名的纸。' },
       { img:'docs/campus/shirt-signing.jpg', title:'校服签名', cap:'马克笔在浅蓝校服上排队留名——这件衣服再也洗不干净了，正合适。' }
     ] },
-  { name:'船长的画', desc:'铅笔 + 横线作业本——画纸从来不是问题。', kind:'img',
+  { name:'船长的画', desc:'铅笔 + 横线作业本——画纸从来不是问题。', kw:'铅笔 手绘 素描 少女', kind:'img',
     photos:[
       { img:'docs/art/art-1.png', title:'长发少女', cap:'横线本上一笔一笔长出来的头发, 耐心全在排线里。' },
       { img:'docs/art/art-2.png', title:'魔女帽', cap:'帽檐压得低低的, 巫师气息快从作业本里溢出来了。' },
@@ -2494,7 +2556,7 @@ var ALBUMS = [
       { img:'docs/art/art-5.png', title:'Q版小人', cap:'圆圆的连帽衫, 连影子都画得规规矩矩。' },
       { img:'docs/art/art-6.png', title:'双马尾', cap:'笑到眯眼, 手机都拿不稳的那种开心。' }
     ] },
-  { name:'摄影作品', desc:'透过镜头看世界——天上的, 地上的, 都收进来。', kind:'img',
+  { name:'摄影作品', desc:'透过镜头看世界——天上的, 地上的, 都收进来。', kw:'风景 摄影 天空', kind:'img',
     photos:[
       { img:'docs/photo/p-1.jpg', title:'河畔小城', cap:'2010 年的俯瞰——小河绕了个弯, 蓝顶的屋顶挤在一起。' },
       { img:'docs/photo/p-2.jpg', title:'火烧云', cap:'塔吊和晚霞同框, 整座城市下班前的样子。' },
@@ -2505,7 +2567,7 @@ var ALBUMS = [
       { img:'docs/photo/p-7.jpg', title:'农家院', cap:'秋千、桃树和圆桌——标准的农家乐配置。' },
       { img:'docs/photo/p-8.jpg', title:'有云的天', cap:'什么也没干, 就拍了拍天上的云。' }
     ] },
-  { name:'生活碎片', desc:'边角料也是日子——猫、墙、玩偶、卷子和随手一拍。', kind:'img',
+  { name:'生活碎片', desc:'边角料也是日子——猫、墙、玩偶、卷子和随手一拍。', kw:'日常 玩偶 街头', kind:'img',
     photos:[
       { img:'docs/life/l-1.jpg', title:'电动车上的猫', cap:'橘白猫蜷在脚踏垫上——它睡它的, 谁也不服。' },
       { img:'docs/life/l-2.jpg', title:'WHAT?', cap:'墙上一个巨大的问号——问得好, 我也想知道。' },
@@ -2520,7 +2582,7 @@ var ALBUMS = [
       { img:'docs/life/l-11.jpg', title:'卷子山', cap:'卷子和书在床上安了家, 被子被挤到墙角——备考那阵子, 床位就是仓位。' },
       { img:'docs/life/l-12.jpg', title:'桌面考古现场', cap:'梵高贴纸糊的杯子、三色鸽酸奶、压在杯里的一块钱——这张桌子什么都装得下, 就是装不下整齐。' }
     ] },
-  { name:'九小回忆', desc:'第九小学的回忆——2023 年夏天, 我们毕业了。', kind:'img',
+  { name:'九小回忆', desc:'第九小学的回忆——2023 年夏天, 我们毕业了。', kw:'毕业 小学 同学', kind:'img',
     photos:[
       { img:'docs/jx/j-1.jpg', title:'楼梯间', cap:'毕业那天的楼梯间, 星空书包走出了画面。' },
       { img:'docs/jx/j-2.jpg', title:'最后一个夏天', cap:'教学楼前, 白校服们跑过六月的风。' },
@@ -2530,7 +2592,7 @@ var ALBUMS = [
       { img:'docs/jx/j-6.jpg', title:'笑作一团', cap:'谁讲的笑话已经不记得了, 笑是真的。' },
       { img:'docs/jx/j-7.jpg', title:'拿相机的人', cap:'她举着相机——这张照片之外, 还有很多张回忆。' }
     ] },
-  { name:'神秘一高', desc:'一所不肯透露姓名的学校 · 2026 年 9 月，高一。', kind:'img',
+  { name:'神秘一高', desc:'一所不肯透露姓名的学校 · 2026 年 9 月，高一。', kw:'高中 学校 上课 高一', kind:'img',
     photos:[
       { img:'docs/yigao/y-1.jpg', title:'小车与纸带', cap:'物理实验室的上午，小车拖着纸带跑完全程——打出来的点比我的作业整齐多了。' },
       { img:'docs/yigao/y-2.jpg', title:'晚自习前的食堂', cap:'六点三十九的食堂，钢桌钢凳蓝校服，抢座位是比吃饭更紧急的事。' },
@@ -2540,7 +2602,7 @@ var ALBUMS = [
       { img:'docs/yigao/y-6.jpg', title:'早读前十分钟', cap:'七点五十三的广场空无一人，树站得笔直——大概它们也要早读。' },
       { img:'docs/yigao/y-7.jpg', title:'天刚亮', cap:'五点五十八，篮球场还没醒，先醒的人替它看了一会儿日出。' }
     ] },
-  { name:'出去玩', desc:'假期出去晃悠的实拍——雪王、商场、大笑的雕像，和一条很敬业的狗。', kind:'img',
+  { name:'出去玩', desc:'假期出去晃悠的实拍——雪王、商场、大笑的雕像，和一条很敬业的狗。', kw:'假期 出游 街拍', kind:'img',
     photos:[
       { img:'docs/trip/t-1.jpg', title:'雪王站岗', cap:'上午十点的蜜雪冰城，雪王举着冰淇淋权杖站在招牌上——去哪儿玩不重要，先来一口甜的。' },
       { img:'docs/trip/t-2.jpg', title:'车窗外的校门', cap:'隔着车窗路过一所学校，树和栏杆都不给面子，校名糊得刚刚好——又是所不肯透露姓名的学校。' },
@@ -4180,7 +4242,8 @@ window.addEventListener('resize', function(){
 var BSOD_APPS = [
   ['#term', termToggle, '终端'], ['#helpWin', helpToggle, '帮助.chm'], ['#calcWin', calcToggle, '计算器'],
   ['#mineWin', mineToggle, '扫雷'], ['#diaryWin', diaryAppToggle, '日记.EXE'], ['#browserWin', brToggle, '小站浏览器'],
-  ['#hgWin', hgToggle, '沙漏'], ['#paintWin', ptPaintToggle, '画板'], ['#solarWin', solarToggle, '太阳系']
+  ['#hgWin', hgToggle, '沙漏'], ['#paintWin', ptPaintToggle, '画板'], ['#solarWin', solarToggle, '太阳系'],
+  ['#imgSearchWin', imgSearchToggle, '图片搜索']
 ];
 var bsodArmed = true;
 function bsodOpenCount(){
@@ -4512,6 +4575,101 @@ $('#ddList').addEventListener('click', function(e){
   }
 });
 ddRender();
+
+/* ---------- 图片搜索.EXE: 按内容和标签找图 ---------- */
+/* 每张图的检索文本 = 相册名 + 相册简介 + 标题 + 配文; 关键词全命中才算找到 */
+var IMG_INDEX = [];
+ALBUMS.forEach(function(a, ai){
+  if(a.kind === 'sprite'){
+    PHOTOS.forEach(function(p, pi){
+      IMG_INDEX.push({ album:ai, idx:pi, sprite:p.s, title:p.title, cap:p.cap,
+        text:(a.name + ' 像素画 手绘 ' + p.title + ' ' + p.cap).toLowerCase() });
+    });
+  } else if(a.photos){
+    a.photos.forEach(function(p, pi){
+      IMG_INDEX.push({ album:ai, idx:pi, sprite:null, title:p.title, cap:p.cap,
+        text:(a.name + ' ' + (a.kw || '') + ' ' + p.title + ' ' + p.cap).toLowerCase() });
+    });
+  }
+});
+var IS_TAGS = ['猫', '狗', '鲸鱼', '云', '操场', '教室', '毕业', '雨', '玩偶', '雪王', 'token', '灯笼'];
+function isMark(s, kws){
+  var out = s;
+  kws.forEach(function(k){
+    if(!k) return;
+    var safe = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    out = out.replace(new RegExp('(' + safe + ')', 'gi'), '<mark>$1</mark>');
+  });
+  return out;
+}
+function isSearch(q){
+  var kws = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  var box = $('#isResults');
+  if(!kws.length){
+    $('#isHint').textContent = '共 ' + IMG_INDEX.length + ' 张图待检——输入关键词, 或点上面的标签。';
+    box.innerHTML = '';
+    return;
+  }
+  var hits = IMG_INDEX.filter(function(it){
+    return kws.every(function(k){ return it.text.indexOf(k) >= 0; });
+  });
+  $('#isHint').textContent = '「' + q.trim() + '」命中 ' + hits.length + ' / ' + IMG_INDEX.length + ' 张。';
+  if(!hits.length){
+    box.innerHTML = '<div class="is-empty">没翻到——换个词试试, 比如 ' + IS_TAGS[Math.floor(Math.random() * IS_TAGS.length)] + '。</div>';
+    return;
+  }
+  box.innerHTML = '';
+  hits.forEach(function(it){
+    var a = ALBUMS[it.album];
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'is-item';
+    var media = it.sprite
+      ? '<canvas class="is-thumb" width="96" height="96" data-is-sprite="' + it.sprite + '"></canvas>'
+      : '<img class="is-thumb" src="' + a.photos[it.idx].img + '" alt="' + it.title + '" loading="lazy">';
+    b.innerHTML = media +
+      '<b>' + isMark(it.title, kws) + '</b>' +
+      '<span class="is-from">' + a.name + ' · 第 ' + (it.idx + 1) + ' 张</span>' +
+      '<span class="is-cap">' + isMark(it.cap, kws) + '</span>';
+    b.addEventListener('click', function(){ isRun(it); });
+    box.appendChild(b);
+  });
+  $$('#isResults canvas[data-is-sprite]').forEach(function(cv){ drawSprite(cv, cv.dataset.isSprite, 6); });
+}
+function isRun(it){
+  albumSel = it.album;
+  renderAlbums();
+  updateAlbumBar();
+  albumWinToggle(true);   /* 内部会 renderAlbumContent, curPhotos 就位 */
+  lbShow(it.idx);         /* 直接把那张图打到大灯箱 */
+  $('#lightbox').classList.add('open');
+}
+function imgSearchToggle(open){
+  var w = $('#imgSearchWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    if(!$('#isTags').children.length){
+      IS_TAGS.forEach(function(t){
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'is-tag';
+        b.textContent = '#' + t;
+        b.addEventListener('click', function(){ $('#isInput').value = t; isSearch(t); });
+        $('#isTags').appendChild(b);
+      });
+    }
+    $('#isHint').textContent = '共 ' + IMG_INDEX.length + ' 张图待检——输入关键词, 或点标签。';
+    if(window.innerWidth > 760) $('#isInput').focus();
+  }
+}
+$('#tbImg').addEventListener('click', function(){ imgSearchToggle(true); });
+$('#imgSearchClose').addEventListener('click', function(){ imgSearchToggle(false); });
+$('#isGo').addEventListener('click', function(){ isSearch($('#isInput').value); });
+$('#isInput').addEventListener('keydown', function(e){ if(e.key === 'Enter') isSearch(this.value); });
+$('#isInput').addEventListener('input', function(){ isSearch(this.value); });
+makeDraggable($('#imgSearchWin'), $('#imgSearchWin .titlebar'));
 
 /* ---------- 左下角双黑盒 · 甲板音乐 ---------- */
 /* 加歌: 音频文件放进 docs/music/, 再往 SONGS 里加一行 { name:'歌名', src:'docs/music/文件.mp3' } */
