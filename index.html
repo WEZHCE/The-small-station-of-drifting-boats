@@ -306,9 +306,9 @@
   #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
   #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
   /* 快捷启动区: 统一银色凸起底, 徽标统一任务栏灰(夜航整条任务栏换深色) */
-  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg{height:26px; display:flex; align-items:center; justify-content:center;
+  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade{height:26px; display:flex; align-items:center; justify-content:center;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0 4px}
-  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active, #tbCount:active, #tbImg:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active, #tbCount:active, #tbImg:active, #tbGrade:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .tb-badge{min-width:22px; height:16px; display:flex; align-items:center; justify-content:center;
     font:bold 10px/14px Consolas,monospace; color:#333}
 
@@ -402,9 +402,9 @@
   body.night #taskbar{background:#1a2338; border-top-color:#3a4763}
   body.night #startBtn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night #startBtn:active{border-color:#101828 #3a4763 #3a4763 #101828}
-  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar, body.night #tbCount, body.night #tbImg{
+  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar, body.night #tbCount, body.night #tbImg, body.night #tbGrade{
     background:#243050; border-color:#3a4763 #101828 #101828 #3a4763}
-  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active, body.night #tbCount:active, body.night #tbImg:active{
+  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active, body.night #tbCount:active, body.night #tbImg:active, body.night #tbGrade:active{
     border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .tb-badge{color:#c8cfdd}
   body.night #tray{background:#243050; border-color:#101828 #3a4763 #3a4763 #101828; color:#c8cfdd}
@@ -953,6 +953,72 @@
   body.night .is-item mark{background:#3d4f7d; color:#fff}
   body.night .is-empty{color:#7d8cab}
 
+  /* ---------- 成绩监控.EXE: 加密成绩档案 ---------- */
+  #gradeWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(520px,94vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #gradeWin.open{display:block}
+  #gradeWin .titlebar{cursor:move}
+  .gd-body{padding:10px; max-height:62vh; overflow-y:auto; background:#ece5d0}
+  .gd-lock{text-align:center; padding:16px 6px 12px}
+  .gd-locktitle{font-family:"KaiTi","楷体",serif; font-size:19px; color:#4a3f2c; margin-bottom:6px}
+  .gd-lock p{margin:0 0 12px; font-size:13px; color:#8a7d5f; line-height:1.6}
+  .gd-lockrow{display:flex; gap:6px; justify-content:center}
+  .gd-lockrow input{width:190px; font-family:Consolas,monospace; font-size:14px; letter-spacing:2px; padding:5px 8px;
+    background:#fbf7ec; color:#2e2a22; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f}
+  .gd-lockrow button{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; padding:5px 16px;
+    font-family:"SimHei","黑体",sans-serif; font-size:13px; cursor:pointer; color:#222}
+  .gd-lockrow button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .gd-note{margin-top:10px; font-size:11px; color:#a09375}
+  .gd-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px}
+  .gd-top b{font-family:"KaiTi","楷体",serif; font-size:14px; color:#4a3f2c}
+  .gd-top button{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; padding:3px 12px;
+    font-family:"SimHei","黑体",sans-serif; font-size:12px; cursor:pointer; color:#222}
+  .gd-top button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .gd-card{background:#fbf7ec; border:1px solid #d9d2c0; padding:9px 10px 7px; margin-bottom:10px; box-shadow:2px 2px 0 rgba(43,38,28,.1)}
+  .gd-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px}
+  .gd-head b{font-family:"KaiTi","楷体",serif; font-size:16.5px; color:#3f5c33}
+  .gd-head span{font-size:11.5px; color:#8a7d5f}
+  .gd-motto{margin:0 0 6px; font-size:12px; color:#8a7d5f}
+  .gd-totals{display:flex; gap:8px; margin:6px 0 8px}
+  .gd-total{flex:1; min-width:0; background:#f7f2e3; border:1px solid #e0d8c2; padding:6px 4px 5px; text-align:center}
+  .gd-total em{display:block; font-style:normal; font-size:11px; color:#8a7d5f}
+  .gd-total b{font-size:18px; font-family:Consolas,monospace; color:#4a3f2c}
+  .gd-total i{font-style:normal; font-size:10.5px; display:block; margin-top:1px}
+  .gd-total i.up{color:#3f7d3f}
+  .gd-total i.down{color:#b0453a}
+  .gd-total i.flat{color:#98999c}
+  .gd-table{width:100%; border-collapse:collapse; font-size:12.5px}
+  .gd-table th{font-weight:normal; color:#8a7d5f; text-align:left; padding:3px 6px; border-bottom:1px solid #d9d2c0; font-size:11.5px}
+  .gd-table td{padding:4px 6px; border-bottom:1px dotted #e0d8c2; color:#4a4335}
+  .gd-table td.gd-up{color:#3f7d3f}
+  .gd-table td.gd-down{color:#b0453a}
+  .gd-foot{margin:4px 2px 2px; font-size:11px; color:#a09375; line-height:1.5}
+  body.night #gradeWin{background:#1a2338; border-color:#3a4763}
+  body.night .gd-body{background:#101828}
+  body.night .gd-locktitle{color:#c8cfdd}
+  body.night .gd-lock p{color:#7d8cab}
+  body.night .gd-lockrow input{background:#0d1322; color:#c8cfdd; border-color:#3a4763 #101828 #101828 #3a4763}
+  body.night .gd-lockrow button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .gd-lockrow button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .gd-note{color:#55618a}
+  body.night .gd-top b{color:#c8cfdd}
+  body.night .gd-top button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .gd-top button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .gd-card{background:#16203a; border-color:#2c3854}
+  body.night .gd-head b{color:#8fbf8f}
+  body.night .gd-head span{color:#7d8cab}
+  body.night .gd-motto{color:#7d8cab}
+  body.night .gd-total{background:#101828; border-color:#1c2740}
+  body.night .gd-total em{color:#7d8cab}
+  body.night .gd-total b{color:#c8cfdd}
+  body.night .gd-total i.up{color:#39d353}
+  body.night .gd-total i.down{color:#ff6b5a}
+  body.night .gd-table th{color:#55618a; border-bottom-color:#2c3854}
+  body.night .gd-table td{color:#c8cfdd; border-bottom-color:#1c2740}
+  body.night .gd-table td.gd-up{color:#39d353}
+  body.night .gd-table td.gd-down{color:#ff6b5a}
+  body.night .gd-foot{color:#55618a}
+
   /* ---------- 小站浏览器 ---------- */
   #browserWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(760px,94vw);
     display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
@@ -1158,9 +1224,9 @@
     .album-covers{grid-template-columns:repeat(3,1fr); gap:10px}
     .album-cover{min-width:0}
     /* 手机上弹窗靠上放, 给输入法键盘留地方; 里程牌缩小; 任务栏紧凑排布 */
-    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin, #imgSearchWin{top:6vh; transform:translate(-50%,0)}
+    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin, #imgSearchWin, #gradeWin{top:6vh; transform:translate(-50%,0)}
     #taskbar{gap:4px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg{padding:0 2px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade{padding:0 2px}
     #tray{padding:0 6px}
     .help-body{max-height:56vh}
     #boatOdo{font-size:10.5px}
@@ -1171,7 +1237,7 @@
   @media (max-width:480px){
     #trayClock{display:none}
     #taskbar{flex-wrap:wrap; height:auto; padding:3px 4px calc(3px + env(safe-area-inset-bottom)); row-gap:3px; gap:3px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg{padding:0 5px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade{padding:0 5px}
     body.on{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
     #deckDock{bottom:calc(78px + env(safe-area-inset-bottom))}
     #deckMusic, #capState, #dynIsland{width:158px}
@@ -1388,6 +1454,7 @@
   <button id="tbSolar" type="button" title="太阳系.EXE — 真实比例"><span class="tb-badge">阳</span></button>
   <button id="tbCount" type="button" title="倒数日.EXE — 数着日子等什么"><span class="tb-badge">倒</span></button>
   <button id="tbImg" type="button" title="图片搜索.EXE — 按内容和标签找图"><span class="tb-badge">搜</span></button>
+  <button id="tbGrade" type="button" title="成绩监控.EXE — 加密成绩档案"><span class="tb-badge">绩</span></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
@@ -1448,6 +1515,7 @@
       <li><b>阳 太阳系.EXE</b> — 真实比例+真实周期: 左侧星球列表点谁去谁, 拖动平移, 滚轮缩放, 点行星看资料; 找不到地球? 先缩小看全家福, 再凑近</li>
       <li><b>倒 倒数日.EXE</b> — 内置节日倒数(含农历) + 自定义事件可写详细说明, 谁的日子近谁排前面</li>
       <li><b>搜 图片搜索.EXE</b> — 按内容和标签找图: 输入"猫/操场/云/毕业"这类关键词, 或直接点标签; 点结果原图大图看</li>
+      <li><b>绩 成绩监控.EXE</b> — 船长的加密成绩档案: 口令解锁才能翻(提示: 生日), 源码里连明文都没有, 关窗即重新上锁</li>
     </ul>
 
     <div class="help-sec">🌙 这台电脑也会累</div>
@@ -1647,6 +1715,14 @@
     <div class="is-hint" id="isHint"></div>
     <div class="is-results" id="isResults"></div>
   </div>
+</div>
+
+<!-- ================= 成绩监控.EXE: 加密成绩档案 ================= -->
+<div id="gradeWin">
+  <div class="titlebar"><span class="tb-title">成绩监控.EXE — 加密成绩档案</span>
+    <button class="tb-btn" id="gradeClose" title="关闭">✕</button>
+  </div>
+  <div class="gd-body" id="gradeBody"></div>
 </div>
 
 <!-- ================= 小站浏览器 ================= -->
@@ -4249,7 +4325,7 @@ var BSOD_APPS = [
   ['#term', termToggle, '终端'], ['#helpWin', helpToggle, '帮助.chm'], ['#calcWin', calcToggle, '计算器'],
   ['#mineWin', mineToggle, '扫雷'], ['#diaryWin', diaryAppToggle, '日记.EXE'], ['#browserWin', brToggle, '小站浏览器'],
   ['#hgWin', hgToggle, '沙漏'], ['#paintWin', ptPaintToggle, '画板'], ['#solarWin', solarToggle, '太阳系'],
-  ['#imgSearchWin', imgSearchToggle, '图片搜索']
+  ['#imgSearchWin', imgSearchToggle, '图片搜索'], ['#gradeWin', gradeToggle, '成绩监控']
 ];
 var bsodArmed = true;
 function bsodOpenCount(){
@@ -4676,6 +4752,156 @@ $('#isGo').addEventListener('click', function(){ isSearch($('#isInput').value); 
 $('#isInput').addEventListener('keydown', function(e){ if(e.key === 'Enter') isSearch(this.value); });
 $('#isInput').addEventListener('input', function(){ isSearch(this.value); });
 makeDraggable($('#imgSearchWin'), $('#imgSearchWin .titlebar'));
+
+/* ---------- 成绩监控.EXE: 加密成绩档案 ---------- */
+/* 成绩以密文形式存在下面(GD_BLOB), 口令不落源码——输对口令在本地解密渲染, 解不出就是口令不对 */
+/* 纯 JS SHA-256 (FIPS 180-4): 口令派生和密钥流都用它, 不碰 WebCrypto, file:// 本地预览也能解锁 */
+function sha256Bytes(bytes){
+  var K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  var H = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19];
+  function rotr(x, n){ return ((x >>> n) | (x << (32 - n))) >>> 0; }
+  var l = bytes.length;
+  var hi = Math.floor(l / 536870912), lo = (l * 8) >>> 0;
+  var total = Math.ceil((l + 9) / 64) * 64;
+  var msg = new Array(total); for (var z = 0; z < total; z++) msg[z] = 0;
+  for (var i = 0; i < l; i++) msg[i] = bytes[i] & 255;
+  msg[l] = 0x80;
+  msg[total-8] = (hi>>>24)&255; msg[total-7] = (hi>>>16)&255; msg[total-6] = (hi>>>8)&255; msg[total-5] = hi&255;
+  msg[total-4] = (lo>>>24)&255; msg[total-3] = (lo>>>16)&255; msg[total-2] = (lo>>>8)&255; msg[total-1] = lo&255;
+  var w = new Array(64);
+  for (var off = 0; off < total; off += 64){
+    for (var t = 0; t < 16; t++){
+      w[t] = ((msg[off+t*4]<<24) | (msg[off+t*4+1]<<16) | (msg[off+t*4+2]<<8) | msg[off+t*4+3]) >>> 0;
+    }
+    for (var t2 = 16; t2 < 64; t2++){
+      var s0 = rotr(w[t2-15], 7) ^ rotr(w[t2-15], 18) ^ (w[t2-15] >>> 3);
+      var s1 = rotr(w[t2-2], 17) ^ rotr(w[t2-2], 19) ^ (w[t2-2] >>> 10);
+      w[t2] = (w[t2-16] + s0 + w[t2-7] + s1) >>> 0;
+    }
+    var a = H[0], b = H[1], c = H[2], d = H[3], e = H[4], f = H[5], g = H[6], h = H[7];
+    for (var t3 = 0; t3 < 64; t3++){
+      var S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
+      var ch = (e & f) ^ (~e & g);
+      var t1 = (h + S1 + ch + K[t3] + w[t3]) >>> 0;
+      var S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
+      var mj = (a & b) ^ (a & c) ^ (b & c);
+      var t2v = (S0 + mj) >>> 0;
+      h = g; g = f; f = e; e = (d + t1) >>> 0; d = c; c = b; b = a; a = (t1 + t2v) >>> 0;
+    }
+    H[0] = (H[0]+a)>>>0; H[1] = (H[1]+b)>>>0; H[2] = (H[2]+c)>>>0; H[3] = (H[3]+d)>>>0;
+    H[4] = (H[4]+e)>>>0; H[5] = (H[5]+f)>>>0; H[6] = (H[6]+g)>>>0; H[7] = (H[7]+h)>>>0;
+  }
+  var out = [];
+  H.forEach(function(x){ out.push((x>>>24)&255, (x>>>16)&255, (x>>>8)&255, x&255); });
+  return out;
+}
+var GD_SALT = 'gd-2609::v1';
+function gdKeyBytes(pass){
+  return sha256Bytes(Array.from(new TextEncoder().encode(GD_SALT + pass)));
+}
+function gdXor(data, key){
+  var out = new Array(data.length), ks = null, ctr = 0;
+  for (var i = 0; i < data.length; i++){
+    if (i % 32 === 0){
+      ks = sha256Bytes(key.concat([(ctr>>>24)&255, (ctr>>>16)&255, (ctr>>>8)&255, ctr&255]));
+      ctr++;
+    }
+    out[i] = data[i] ^ ks[i % 32];
+  }
+  return out;
+}
+function gdDecrypt(pass){
+  var raw = atob(GD_BLOB), data = [];
+  for (var i = 0; i < raw.length; i++) data.push(raw.charCodeAt(i) & 255);
+  var out = gdXor(data, gdKeyBytes(pass));
+  try {
+    var obj = JSON.parse(new TextDecoder().decode(new Uint8Array(out)));
+    return (obj && obj.v === 1 && Array.isArray(obj.exams)) ? obj : null;
+  } catch(e){ return null; }
+}
+/* 密文: {开学考 + 第一次月考} 的成绩 JSON, 用口令派生密钥 XOR 加密——明文不落源码 */
+var GD_BLOB = 'UUkA2WYqMg8wa/zwpZJNS/4eqvgrbCPfmEH9yorObhAHknyph8dRjuwpcsOiPsI352FCawfH6U2JVQ0TELxnSAGH3GOIzh6nG7TJ6ZY9qLwKPXNiI4JZTdSRZs/ubUsrkpVuwIpxRRqW1MqdpX14c5j5lfhaIdS6xm/NIi8gaT0EmoB9cHIHPnhKr7VALGzfJxG3TqKfl0TcWMCAQLJRsyRW9iLZkwDWD2Tgei5i+QlYdmdm0IMyAXkZ/syeRS8A8Tk7OUUvamiJ24rgNGYohwB/fTq3pzSlyAJOJwIGSjTsb9pm9u1t1CtBEgVJVlT5N/bi5V2+0oOLh+flAY/3LbxyeEgwxG78lYbYO0j8lRjOC96ZEx4Z1dVqqbRQSz40oYV5rW+Y1AsMtB5UKNbF5NbkEiZeneiaJAyTKjHA5YTTJefKCycs63z+Fi310DXlM8zxNQiBm71XrRfKue9698qnv1wIrVIHxHDmo2YH1O1FfKiMJAu4NSG0DyOqx+C9ynMA3542NLhAgh9TjSKd+3rrL9S68IHLZodT4enDmN05Bm1vu2z3I7Ayjns4xUY1blt4HXunvDmhXo9oZSP2D4zQa27CKlEpVnLLHake9UeYMgtsY+34D2SOpwAUZyakz/FSUShn4R9qhfUmbQoOcY8mNpsnx7j4lCk7LOshQxEhS+7jkxfkVFAb45fwiMh2RJJs7Rz7kfBJPTXsy1F2UR2AsxuPOz3hh2NZIcF7BcsUurHJ';
+function gdRankDelta(prev, now){
+  if (prev == null || now == null) return null;
+  return prev - now;   /* 名次变小 = 进步(正数) */
+}
+function gdDeltaHtml(d){
+  if (d === null) return '<i class="flat">—</i>';
+  if (d > 0) return '<i class="up">↑' + d + '</i>';
+  if (d < 0) return '<i class="down">↓' + (-d) + '</i>';
+  return '<i class="flat">持平</i>';
+}
+function gdRenderCard(ex, prev){
+  var subjRows = ex.subs.map(function(s){
+    var p = prev ? (prev.subs.find(function(x){ return x[0] === s[0]; }) || [null, null, null]) : [null, null, null];
+    var d = gdRankDelta(p[2], s[2]);
+    var dCls = d === null ? '' : (d > 0 ? ' class="gd-up"' : (d < 0 ? ' class="gd-down"' : ''));
+    return '<tr><td>' + s[0] + '</td><td>' + s[1] + '</td><td>' + (s[2] == null ? '—' : s[2]) +
+      '</td><td' + dCls + '>' + (d === null ? '—' : gdDeltaHtml(d).replace(/<[^>]+>/g, '')) + '</td></tr>';
+  }).join('');
+  var clsD = gdRankDelta(prev ? prev.cls : null, ex.cls), schD = gdRankDelta(prev ? prev.sch : null, ex.sch);
+  return '<div class="gd-card">' +
+    '<div class="gd-head"><b>' + ex.name + '</b><span>' + ex.date + '</span></div>' +
+    '<p class="gd-motto">' + (ex.note || '') + '</p>' +
+    '<div class="gd-totals">' +
+      '<div class="gd-total"><em>总分</em><b>' + ex.total + '</b><i class="flat">—</i></div>' +
+      '<div class="gd-total"><em>班名</em><b>' + ex.cls + '</b>' + gdDeltaHtml(clsD) + '</div>' +
+      '<div class="gd-total"><em>校名</em><b>' + ex.sch + '</b>' + gdDeltaHtml(schD) + '</div>' +
+    '</div>' +
+    '<table class="gd-table"><tr><th>科目</th><th>分数</th><th>校名次</th><th>较上次</th></tr>' + subjRows + '</table>' +
+  '</div>';
+}
+function gdRenderGrades(data){
+  var cards = data.exams.map(function(ex, i){
+    return gdRenderCard(ex, i > 0 ? data.exams[i - 1] : null);
+  }).join('');
+  $('#gradeBody').innerHTML =
+    '<div class="gd-top"><b>船长加密档案 · ' + data.exams.length + ' 场考试</b><button id="gdLock" type="button">锁定</button></div>' +
+    cards +
+    '<p class="gd-foot">两次卷子不一样, 分数不直接可比——名次才是硬通货。档案在源码里是密文, 这页关掉就重新上锁。</p>';
+  $('#gdLock').addEventListener('click', function(){ gdRenderLock(); });
+}
+function gdRenderLock(){
+  $('#gradeBody').innerHTML =
+    '<div class="gd-lock">' +
+      '<div class="gd-locktitle">成绩加密档案</div>' +
+      '<p>这里的东西只给船长本人看。<br>输入口令解锁——提示: 那串生日。</p>' +
+      '<div class="gd-lockrow"><input id="gdPass" type="password" inputmode="numeric" autocomplete="off" placeholder="口令">' +
+      '<button id="gdUnlock" type="button">解锁</button></div>' +
+      '<div class="gd-note">档案在源码里只有密文; 口令不对, 解出来的就是乱码。</div>' +
+    '</div>';
+  $('#gdUnlock').addEventListener('click', gdTryUnlock);
+  $('#gdPass').addEventListener('keydown', function(e){ if(e.key === 'Enter') gdTryUnlock(); });
+}
+function gdTryUnlock(){
+  var pass = $('#gdPass').value;
+  if (!pass) { toast('口令总得填一个。'); return; }
+  var data = gdDecrypt(pass);
+  if (!data) { toast('口令不对——再想想那个日子。'); $('#gdPass').select(); return; }
+  toast('解锁成功, 欢迎回来。');
+  gdRenderGrades(data);
+}
+function gradeToggle(open){
+  var w = $('#gradeWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if (will){
+    frontWindow(w);
+    if (!$('#gradeBody').innerHTML) gdRenderLock();
+  } else {
+    gdRenderLock();   /* 关窗即重新上锁: 解密内容不留 DOM */
+  }
+}
+$('#tbGrade').addEventListener('click', function(){ gradeToggle(true); });
+$('#gradeClose').addEventListener('click', function(){ gradeToggle(false); });
+makeDraggable($('#gradeWin'), $('#gradeWin .titlebar'));
 
 /* ---------- 左下角双黑盒 · 甲板音乐 ---------- */
 /* 加歌: 音频文件放进 docs/music/, 再往 SONGS 里加一行 { name:'歌名', src:'docs/music/文件.mp3' } */
