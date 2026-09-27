@@ -306,9 +306,9 @@
   #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
   #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
   /* 快捷启动区: 统一银色凸起底, 徽标统一任务栏灰(夜航整条任务栏换深色) */
-  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade{height:26px; display:flex; align-items:center; justify-content:center;
+  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube{height:26px; display:flex; align-items:center; justify-content:center;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0 4px}
-  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active, #tbCount:active, #tbImg:active, #tbGrade:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active, #tbCount:active, #tbImg:active, #tbGrade:active, #tbCube:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .tb-badge{min-width:22px; height:16px; display:flex; align-items:center; justify-content:center;
     font:bold 10px/14px Consolas,monospace; color:#333}
 
@@ -402,9 +402,9 @@
   body.night #taskbar{background:#1a2338; border-top-color:#3a4763}
   body.night #startBtn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night #startBtn:active{border-color:#101828 #3a4763 #3a4763 #101828}
-  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar, body.night #tbCount, body.night #tbImg, body.night #tbGrade{
+  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar, body.night #tbCount, body.night #tbImg, body.night #tbGrade, body.night #tbCube{
     background:#243050; border-color:#3a4763 #101828 #101828 #3a4763}
-  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active, body.night #tbCount:active, body.night #tbImg:active, body.night #tbGrade:active{
+  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active, body.night #tbCount:active, body.night #tbImg:active, body.night #tbGrade:active, body.night #tbCube:active{
     border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .tb-badge{color:#c8cfdd}
   body.night #tray{background:#243050; border-color:#101828 #3a4763 #3a4763 #101828; color:#c8cfdd}
@@ -1019,6 +1019,39 @@
   body.night .gd-table td.gd-down{color:#ff6b5a}
   body.night .gd-foot{color:#55618a}
 
+  /* ---------- 魔方.EXE: 三阶/四阶 建模还原 ---------- */
+  #cubeWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(500px,94vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #cubeWin.open{display:block}
+  #cubeWin .titlebar{cursor:move}
+  .cb-body{padding:8px}
+  #cbCanvas{display:block; width:100%; height:280px; background:#141824; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; cursor:grab}
+  #cbCanvas:active{cursor:grabbing}
+  .cb-row{display:flex; align-items:center; gap:6px; margin-top:7px; flex-wrap:wrap}
+  .cb-row button, .cb-mv button{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    padding:4px 10px; font-family:"SimHei","黑体",sans-serif; font-size:12px; cursor:pointer; color:#222}
+  .cb-row button:active, .cb-mv button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .cb-row button.on{background:#f2d97c; border-color:#a89d84 #fff #fff #a89d84}
+  .cb-row button:disabled{color:#999; cursor:default}
+  .cb-timer{font-family:Consolas,monospace; font-size:16px; color:#3f5c33; font-weight:bold; margin-left:auto; min-width:80px; text-align:right}
+  .cb-mv{display:grid; grid-template-columns:repeat(6,1fr); gap:3px; margin-top:6px}
+  .cb-mv button{padding:5px 2px; font-family:Consolas,monospace; font-size:11px; text-align:center}
+  .cb-best{font-size:11px; color:#8a7d5f; margin-top:6px}
+  .cb-best b{color:#3f5c33; font-family:Consolas,monospace}
+  .cb-spd{display:flex; align-items:center; gap:4px; margin-left:auto}
+  .cb-spd input{width:80px}
+  .cb-spd span{font-size:11px; font-family:Consolas,monospace; color:#5c5340; min-width:36px}
+  .cb-hist{font-size:10.5px; font-family:Consolas,monospace; color:#6b5f45; margin-top:5px; max-height:36px; overflow-y:auto; word-break:break-all; line-height:1.5}
+  body.night #cubeWin{background:#1a2338; border-color:#3a4763}
+  body.night .cb-row button, body.night .cb-mv button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .cb-row button:active, body.night .cb-mv button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .cb-row button.on{background:#3d4f7d; color:#fff}
+  body.night .cb-timer{color:#8fbf8f}
+  body.night .cb-best{color:#7d8cab}
+  body.night .cb-best b{color:#8fbf8f}
+  body.night .cb-hist{color:#7d8cab}
+  body.night #cbCanvas{border-color:#101828 #3a4763 #3a4763 #101828; background:#0d1322}
+
   /* ---------- 小站浏览器 ---------- */
   #browserWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(760px,94vw);
     display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
@@ -1224,9 +1257,9 @@
     .album-covers{grid-template-columns:repeat(3,1fr); gap:10px}
     .album-cover{min-width:0}
     /* 手机上弹窗靠上放, 给输入法键盘留地方; 里程牌缩小; 任务栏紧凑排布 */
-    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin, #imgSearchWin, #gradeWin{top:6vh; transform:translate(-50%,0)}
+    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin, #imgSearchWin, #gradeWin, #cubeWin{top:6vh; transform:translate(-50%,0)}
     #taskbar{gap:4px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade{padding:0 2px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube{padding:0 2px}
     #tray{padding:0 6px}
     .help-body{max-height:56vh}
     #boatOdo{font-size:10.5px}
@@ -1237,7 +1270,7 @@
   @media (max-width:480px){
     #trayClock{display:none}
     #taskbar{flex-wrap:wrap; height:auto; padding:3px 4px calc(3px + env(safe-area-inset-bottom)); row-gap:3px; gap:3px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade{padding:0 5px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube{padding:0 5px}
     body.on{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
     #deckDock{bottom:calc(78px + env(safe-area-inset-bottom))}
     #deckMusic, #capState, #dynIsland{width:158px}
@@ -1307,6 +1340,7 @@
             <tr><th>昵称</th><td>船只悠悠</td></tr>
             <tr><th>生日</th><td>11月13日</td></tr>
             <tr><th>常出没</th><td><a href="https://github.com/WEZHCE" target="_blank" rel="noopener">GitHub</a> · <a href="https://space.bilibili.com/1309420497" target="_blank" rel="noopener">B站空间</a></td></tr>
+            <tr><th>仓库</th><td><a href="https://github.com/WEZHCE/The-small-station-of-drifting-boats" target="_blank" rel="noopener">本站源码直达</a> · <a href="https://github.com/WEZHCE/snake_game_web" target="_blank" rel="noopener">贪吃蛇网页版</a></td></tr>
             <tr><th>爱好</th><td>小网页 / 小游戏 / 城市宣传页</td></tr>
             <tr><th>技能</th><td>HTML · CSS · JS, 一点 Python</td></tr>
             <tr><th>代表作</th><td>贪吃蛇 v7.10 · 国际象棋棋盘 · 城市宣传页系列</td></tr>
@@ -1386,8 +1420,10 @@
         <a href="https://wezhce.github.io/City-Promotion-Page/" target="_blank" rel="noopener" title="城市宣传页系列">城市宣传页</a>
         <a href="https://wezhce.github.io/chessboard/" target="_blank" rel="noopener" title="井字棋 / 五子棋 / 围棋 / 象棋, 都能下">棋艺对弈</a>
         <a href="https://wezhce.github.io/voxel-temple/" target="_blank" rel="noopener" title="体素堆的中国古典建筑群">体素古建</a>
+        <a href="https://github.com/WEZHCE/snake_game_web" target="_blank" rel="noopener" title="船长的新项目——贪吃蛇网页版">贪吃蛇网页</a>
       </div>
       <div class="footer-links">
+        <a href="https://github.com/WEZHCE/The-small-station-of-drifting-boats" target="_blank" rel="noopener" title="本站源码仓库">仓库直达</a>
         <a href="https://github.com/WEZHCE" target="_blank" rel="noopener">GitHub</a>
         <a href="https://space.bilibili.com/1309420497" target="_blank" rel="noopener">B站空间</a>
         <a href="#top">回顶部</a>
@@ -1455,6 +1491,7 @@
   <button id="tbCount" type="button" title="倒数日.EXE — 数着日子等什么"><span class="tb-badge">倒</span></button>
   <button id="tbImg" type="button" title="图片搜索.EXE — 按内容和标签找图"><span class="tb-badge">搜</span></button>
   <button id="tbGrade" type="button" title="成绩监控.EXE — 加密成绩档案"><span class="tb-badge">绩</span></button>
+  <button id="tbCube" type="button" title="魔方.EXE — 三阶/四阶 建模还原"><span class="tb-badge">魔</span></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
@@ -1723,6 +1760,32 @@
     <button class="tb-btn" id="gradeClose" title="关闭">✕</button>
   </div>
   <div class="gd-body" id="gradeBody"></div>
+</div>
+
+<!-- ================= 魔方.EXE: 三阶/四阶 建模还原 ================= -->
+<div id="cubeWin">
+  <div class="titlebar"><span class="tb-title">魔方.EXE — 三阶 / 四阶</span>
+    <button class="tb-btn" id="cubeClose" title="关闭">✕</button>
+  </div>
+  <div class="cb-body">
+    <canvas id="cbCanvas" width="460" height="280"></canvas>
+    <div class="cb-row">
+      <button id="cbB3" class="on">三阶</button>
+      <button id="cbB4">四阶</button>
+      <span class="cb-timer" id="cbTimer">--:--.--</span>
+    </div>
+    <div class="cb-row">
+      <button id="cbScramble">打乱</button>
+      <button id="cbSolve">还原</button>
+      <button id="cbReset">重置</button>
+      <button id="cbPlay">▶</button>
+      <button id="cbStep">⏭</button>
+      <div class="cb-spd"><span>速度</span><input type="range" id="cbSpeed" min="1" max="10" value="5"><span id="cbSpdVal">5x</span></div>
+    </div>
+    <div class="cb-mv" id="cbMoves"></div>
+    <div class="cb-best" id="cbBest"></div>
+    <div class="cb-hist" id="cbHist"></div>
+  </div>
 </div>
 
 <!-- ================= 小站浏览器 ================= -->
@@ -2692,7 +2755,7 @@ var ALBUMS = [
       { img:'docs/trip/t-4.jpg', title:'大笑雕像', cap:'吾悦广场门口一排金属人，笑得前仰后合——路过的人多多少少都会跟着笑一下，这也算公共设施的服务范围。' },
       { img:'docs/trip/t-5.jpg', title:'看门狗一家', cap:'小院里的狗一家：大的负责喊，小的负责睡，狗碗比脸都干净——敬业，respect。' }
     ] },
-  { name:'好吃的', desc:'食堂五日食记——牛肉面、胡辣汤、拌面、肉松面包和鸡蛋饼，干饭人的证据链。', kw:'食堂 干饭 面条 早餐 米线', kind:'img',
+  { name:'好吃的', desc:'食堂半月食记——面是主角，肉松面包和老冰棍是彩蛋，干饭人的证据链越拉越长。', kw:'食堂 干饭 面条 早餐 米线', kind:'img',
     photos:[
       { img:'docs/food/f-1.jpg', title:'牛肉面', cap:'九月十三号的晚饭，牛肉面配两片牛肉和小青菜——汤比面先见底。' },
       { img:'docs/food/f-2.jpg', title:'胡辣汤配油条', cap:'早上七点四十六的胡辣汤，油条掰进去泡着吃——河南早餐的灵魂搭配。' },
@@ -2701,7 +2764,14 @@ var ALBUMS = [
       { img:'docs/food/f-5.jpg', title:'米线加酥肉', cap:'晚上的米线加了现炸酥肉，花生米打底——一碗下去，晚自习都有劲了。' },
       { img:'docs/food/f-6.jpg', title:'青椒肉丝盖饭', cap:'青椒肉丝盖饭，蘑菇是隐藏嘉宾——阿姨的手一点都不抖，给得很实在。' },
       { img:'docs/food/f-7.jpg', title:'拌饭进行时', cap:'筷子翻飞，饭菜合一——干饭的最高境界是搅拌均匀再开动。' },
-      { img:'docs/food/f-8.jpg', title:'鸡蛋饼早餐', cap:'早上七点四十八的餐盘：黑芝麻鸡蛋饼配土豆丝——一天的能量从这里出发。' }
+      { img:'docs/food/f-8.jpg', title:'鸡蛋饼早餐', cap:'早上七点四十八的餐盘：黑芝麻鸡蛋饼配土豆丝——一天的能量从这里出发。' },
+      { img:'docs/food/f-9.jpg', title:'咖喱土豆鸡', cap:'九月底的午餐换口味，咖喱土豆鸡浇饭——两碗分工明确，一碗装饭一碗装菜。' },
+      { img:'docs/food/f-10.jpg', title:'麦多馅饼配豆浆', cap:'馅饼店的袋子比饼还抢镜——豆浆一碗，早餐齐活。' },
+      { img:'docs/food/f-11.jpg', title:'加辣牛肉面', cap:'晚上的牛肉面自己加了一勺辣子，牛肉和小青菜都在——水壶照例陪读。' },
+      { img:'docs/food/f-12.jpg', title:'刀削面配红烧肉', cap:'刀削面厚实，红烧肉管够，红椒是点睛——这碗面吃得很有安全感。' },
+      { img:'docs/food/f-13.jpg', title:'土豆烧肉盖饭', cap:'土豆炖得比肉还抢手，胡萝卜出来点缀——盖饭界的黄金搭档。' },
+      { img:'docs/food/f-14.jpg', title:'老冰棍', cap:'傍晚的老冰棍，一块钱的快乐——咬第一口的那声脆响，是夏天的尾巴。' },
+      { img:'docs/food/f-15.jpg', title:'油泼刀削面', cap:'宽面拌红油，肉块藏在底下——拌开之前，谁也不知道这碗有多深。' }
     ] },
   { name:'相册 · 拾壹', desc:'', filled:false },
   { name:'相册 · 拾贰', desc:'', filled:false },
@@ -4335,7 +4405,7 @@ var BSOD_APPS = [
   ['#term', termToggle, '终端'], ['#helpWin', helpToggle, '帮助.chm'], ['#calcWin', calcToggle, '计算器'],
   ['#mineWin', mineToggle, '扫雷'], ['#diaryWin', diaryAppToggle, '日记.EXE'], ['#browserWin', brToggle, '小站浏览器'],
   ['#hgWin', hgToggle, '沙漏'], ['#paintWin', ptPaintToggle, '画板'], ['#solarWin', solarToggle, '太阳系'],
-  ['#imgSearchWin', imgSearchToggle, '图片搜索'], ['#gradeWin', gradeToggle, '成绩监控']
+  ['#imgSearchWin', imgSearchToggle, '图片搜索'], ['#gradeWin', gradeToggle, '成绩监控'], ['#cubeWin', cubeToggle, '魔方']
 ];
 var bsodArmed = true;
 function bsodOpenCount(){
@@ -5192,7 +5262,8 @@ dynUpdate();
 var CS_WEEK = [];
 /* 周日: 在家的最后一天, 从补觉一路排到返校 */
 CS_WEEK.push(
-  [0, 0, 420, '家', '补觉', '周五熬的债周日还', 'rest'],
+  [0, 0, 60, '家', '熬夜冠军赛', '周六夜的保留节目还在续', 'owl'],
+  [0, 60, 420, '家', '睡着了', '梦里也在赶作业', 'sleep'],
   [0, 420, 540, '家', '睡懒觉', '再五分钟', 'rest'],
   [0, 540, 600, '家', '慢悠悠早饭', '周日的粥都不着急', 'eat'],
   [0, 600, 720, '家', '赶周末作业', 'deadline 是第一生产力', 'busy'],
@@ -5250,7 +5321,8 @@ CS_WEEK.push(
 );
 /* 周六: 作业、游戏和躺平的修罗场 */
 CS_WEEK.push(
-  [6, 0, 420, '家', '补觉', '周五熬的债周六还', 'rest'],
+  [6, 0, 60, '家', '熬夜冠军赛', '周五夜的仪式感还在烧', 'owl'],
+  [6, 60, 420, '家', '睡着了', '梦里也在打排位', 'sleep'],
   [6, 420, 540, '家', '睡懒觉', '再五分钟', 'rest'],
   [6, 540, 600, '家', '慢悠悠早饭', '周六的粥允许加蛋', 'eat'],
   [6, 600, 720, '家', '写作业', '周六上午留给作业', 'busy'],
@@ -5264,7 +5336,9 @@ CS_WEEK.push(
 );
 /* 假期通用课表(法定节假日/寒暑假用): day=null 匹配任意一天 */
 var CS_OFF = [
-  [null, 0, 540, '家', '自然醒', '闹钟是假期最大的谎言', 'rest'],
+  [null, 0, 60, '家', '熬夜冠军赛', '假期不熬夜等于白放', 'owl'],
+  [null, 60, 480, '家', '睡着了', '梦里也在赶作业', 'sleep'],
+  [null, 480, 540, '家', '自然醒', '闹钟是假期最大的谎言', 'rest'],
   [null, 540, 600, '家', '慢吞吞早饭', '早饭吃出下午茶的架势', 'eat'],
   [null, 600, 720, '家', '写假期作业', '作业不会消失, 只会转移', 'busy'],
   [null, 720, 840, '家', '午饭午休', '太阳最大的时候适合装死', 'rest'],

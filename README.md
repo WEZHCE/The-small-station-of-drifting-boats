@@ -5,6 +5,8 @@
 
 **在线访问**：[wezhce.github.io/The-small-station-of-drifting-boats](https://wezhce.github.io/The-small-station-of-drifting-boats/)
 
+**仓库直达**：[github.com/WEZHCE/The-small-station-of-drifting-boats](https://github.com/WEZHCE/The-small-station-of-drifting-boats)
+
 | 白天 | 夜航模式（19:00~6:00 自动开启） |
 |---|---|
 | ![](docs/preview-day.png) | ![](docs/preview-night.png) |
@@ -13,7 +15,7 @@
 
 - 纯 `HTML + CSS + JS` 单文件手写，**没有框架、没有后端、没有构建**，全部代码在一个 `index.html` 里
 - 复古 Win98 视觉：记事本窗口、凹凸按钮、手绘像素画、CRT 开机
-- 页脚挂着友情链接：城市宣传页 / 棋艺对弈 / 体素古建 — 都是船长的手笔
+- 页脚挂着友情链接：城市宣传页 / 棋艺对弈 / 体素古建 / 贪吃蛇网页（船长的新项目）— 还有仓库直达的超链接
 - 留言板基于 GitHub Discussions（[giscus](https://giscus.app/zh-CN)），留言永久保存在本仓库里，全世界可见
 
 ## 🖥 这台"电脑"有什么
