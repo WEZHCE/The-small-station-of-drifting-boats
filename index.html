@@ -2647,7 +2647,7 @@ var PHOTOS = [
   { s:'whale',      title:'鲸鱼',   cap:'喷潮的水柱是鲸鱼的问好, 肚皮比海面还亮。' },
   { s:'lighthouse', title:'灯塔',   cap:'光束扫过去, 夜里的船就知道岸在哪。' }
 ];
-/* ================= 相册: 十五本——九本开馆, 六本虚位以待 ================= */
+/* ================= 相册: 十五本——十一本开馆, 四本虚位以待 ================= */
 var ALBUMS = [
   { name:'像素画集', desc:'一格一格画出来的六个小家伙。', kind:'sprite' },
   { name:'捣鼓token', desc:'AI 船员的燃料账本——配置、额度、账单, 和一些吓人的数字。', kw:'AI 模型 账单 代码', kind:'img',
@@ -2772,8 +2772,18 @@ var ALBUMS = [
       { img:'docs/food/f-13.jpg', title:'土豆烧肉盖饭', cap:'土豆炖得比肉还抢手，胡萝卜出来点缀——盖饭界的黄金搭档。' },
       { img:'docs/food/f-14.jpg', title:'老冰棍', cap:'傍晚的老冰棍，一块钱的快乐——咬第一口的那声脆响，是夏天的尾巴。' },
       { img:'docs/food/f-15.jpg', title:'油泼刀削面', cap:'宽面拌红油，肉块藏在底下——拌开之前，谁也不知道这碗有多深。' }
+     ] },
+  { name:'小东西', desc:'桌面和书包边上的小东西——魔方、沙漏、玩具、相机、羽毛，都是日子留下的零件。', kw:'小东西 小物 桌面 魔方 沙漏 玩具 相机 羽毛 文具', kind:'img',
+    photos:[
+      { img:'docs/small/s-1.jpg', title:'桌边的魔方', cap:'拧到一半的魔方和一张存储卡——桌面上总有几件东西，彼此也不认识。' },
+      { img:'docs/small/s-2.jpg', title:'三十分钟', cap:'薄荷色沙漏写着 30 分钟，旁边的作业和杂物各忙各的。' },
+      { img:'docs/small/s-3.jpg', title:'小车玩具', cap:'一只彩色小车挤在收纳盒边上，轮子和奖牌都没打算排队。' },
+      { img:'docs/small/s-4.jpg', title:'白色小机器', cap:'床边那台白色小机器，按键不多，显示屏却很认真。' },
+      { img:'docs/small/s-5.jpg', title:'小相机', cap:'DJI Action 4 架在桌面上，镜头朝外，随时准备把小事收进去。' },
+      { img:'docs/small/s-6.jpg', title:'白羽毛', cap:'几根白羽毛落在练习册上，题目没做完，临时展览先开了。' },
+      { img:'docs/small/s-7.jpg', title:'笔与羽毛', cap:'黑笔、羽毛和演算纸凑在一起，都是桌面上顺手拿到的东西。' },
+      { img:'docs/small/s-8.jpg', title:'纸模与小摆件', cap:'纸模型、笔和小摆件铺在桌上，手工课延长到了课间以后。' }
     ] },
-  { name:'相册 · 拾壹', desc:'', filled:false },
   { name:'相册 · 拾贰', desc:'', filled:false },
   { name:'相册 · 拾叁', desc:'', filled:false },
   { name:'相册 · 拾肆', desc:'', filled:false },
@@ -4771,7 +4781,7 @@ ALBUMS.forEach(function(a, ai){
     });
   }
 });
-var IS_TAGS = ['猫', '狗', '鲸鱼', '云', '操场', '教室', '毕业', '雨', '玩偶', '雪王', 'token', '灯笼'];
+var IS_TAGS = ['猫', '狗', '鲸鱼', '云', '操场', '教室', '毕业', '雨', '玩偶', '雪王', 'token', '灯笼', '魔方', '沙漏', '羽毛'];
 function isMark(s, kws){
   var out = s;
   kws.forEach(function(k){
