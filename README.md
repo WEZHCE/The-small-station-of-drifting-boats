@@ -78,10 +78,10 @@
 
 **AI 船员**
 
-| [DeepSeek](https://github.com/deepseek-ai) | [GLM](https://github.com/zai-org) |
-|:---:|:---:|
-| <a href="https://github.com/deepseek-ai"><img src="docs/deepseek.png" width="88" alt="DeepSeek"></a> | <a href="https://github.com/zai-org"><img src="docs/glm.png" width="88" alt="GLM"></a> |
-| AI 助手 | AI 助手 |
+| [DeepSeek](https://github.com/deepseek-ai) | [GLM](https://github.com/zai-org) | [ChatGPT](https://chatgpt.com/) |
+|:---:|:---:|:---:|
+| <a href="https://github.com/deepseek-ai"><img src="docs/deepseek.png" width="88" alt="DeepSeek"></a> | <a href="https://github.com/zai-org"><img src="docs/glm.png" width="88" alt="GLM"></a> | <a href="https://chatgpt.com/"><img src="docs/chatgpt.png" width="88" alt="ChatGPT"></a> |
+| AI 助手 | AI 助手 | AI 助手 |
 
 
 ## 📄 其他
