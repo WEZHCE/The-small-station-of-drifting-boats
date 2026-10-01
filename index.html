@@ -1133,13 +1133,14 @@
     cursor:pointer; color:#222; font-family:Consolas,monospace; font-size:13px; line-height:1; padding:0 2px}
   .br-btn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .br-btn[disabled]{color:#9a9a9a; cursor:default}
-  .br-addr{flex:1; min-width:0; display:flex; align-items:center; gap:4px; background:#fff;
+  .br-addr{flex:1; min-width:0; position:relative; display:flex; align-items:center; gap:4px; background:#fff;
     border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; padding:2px 6px}
   #brUrl{flex:1; min-width:0; border:none; outline:none; background:transparent;
     font-family:Consolas,monospace; font-size:13px; color:#222}
   .br-go{border:none; background:transparent; color:#2038a8; font-weight:bold; font-size:12px;
     cursor:pointer; font-family:inherit; padding:0}
-  .br-sug{position:absolute; left:104px; right:8px; top:calc(100% - 2px); background:#fff;
+  /* 联想框挂在地址栏自己身上, 跟着地址栏走(挂 toolbar 上按按钮宽度猜偏移, 会歪) */
+  .br-sug{position:absolute; left:-2px; right:-2px; top:calc(100% + 3px); background:#fff;
     border:1px solid #9a9a9a; z-index:5; display:none}
   .br-sug.open{display:block}
   .br-sug button{display:block; width:100%; text-align:left; background:#fff; border:none;
@@ -1152,6 +1153,8 @@
   .br-status{display:flex; justify-content:space-between; align-items:center; gap:8px;
     border-top:1px solid #9a9a9a; padding:3px 8px; font-family:Consolas,monospace; font-size:11px;
     color:#333; background:#c9c9c9}
+  #brStatus{flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .br-status > span:last-child{flex:none; max-width:44%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
   .br-note{padding:2px 8px 3px; font-size:10.5px; color:#8a7d5f; background:#c9c9c9;
     border-top:1px solid #b5b5b5; text-align:center}
   .br-progress{width:120px; height:5px; background:#e8e0cc; border:1px solid #9a9a9a}
@@ -1191,6 +1194,60 @@
   .site-deepsea{min-height:100%; background:#000; color:#3a6ea8; font-family:Consolas,monospace;
     padding:34px; text-align:center; font-size:14px; line-height:2.4}
   .site-deepsea .dp-big{font-size:22px; color:#6fa8dc; letter-spacing:6px}
+  /* —— 舰载电视台: 黑屏显像管 —— */
+  .site-tv{min-height:100%; background:#0b0f14; color:#c8d2e0; font-family:Consolas,monospace; padding:14px 16px}
+  .tv-head{font-size:20px; color:#ffd166; letter-spacing:4px; overflow:hidden}
+  .tv-onair{float:right; font-size:11px; color:#55618a; letter-spacing:1px; padding-top:7px}
+  .tv-onair.live{color:#ff6b5a}
+  .tv-sub{font-size:11px; color:#7d8cab; margin:2px 0 10px}
+  .tv-row{display:flex; align-items:center; gap:10px; padding:6px 8px; border-bottom:1px solid #1c2740; cursor:pointer; font-size:12.5px}
+  .tv-row:hover{background:#141b2c}
+  .tv-row.on{background:#1c2740; color:#fff}
+  .tv-no{color:#55618a; flex:none}
+  .tv-row.on .tv-no{color:#ffd166}
+  .tv-name{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .tv-st{font-size:10.5px; color:#55618a; flex:none}
+  .tv-row.on .tv-st{color:#ff6b5a}
+  .tv-note{margin-top:10px; font-size:10.5px; color:#55618a}
+  /* —— 海妖软件站: 上古下载站 —— */
+  .site-soft{min-height:100%; background:#f4f0e4; font-family:"SimSun",serif; color:#333; padding:14px 16px}
+  .sf-head{background:#0a6e3c; color:#fff; font-family:"SimHei","黑体",sans-serif; padding:7px 12px; font-size:16px; letter-spacing:2px}
+  .sf-notice{font-size:11.5px; color:#8a7d5f; border:1px dashed #b8ab8a; padding:5px 8px; margin:8px 0}
+  .sf-row{display:flex; align-items:center; gap:10px; padding:7px 4px; border-bottom:1px dotted #d9d2c0; font-size:13px}
+  .sf-name{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .sf-star{color:#e8a33d; font-size:11px; flex:none}
+  .sf-size{color:#999; font-size:11px; flex:none; width:56px; text-align:right}
+  .sf-btn{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; font-family:"SimHei","黑体",sans-serif;
+    font-size:11.5px; padding:2px 10px; cursor:pointer; color:#222; flex:none; text-decoration:none; display:inline-block}
+  .sf-btn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .sf-real{color:#2038a8}
+  .sf-foot{margin-top:10px; font-size:10.5px; color:#a09375; text-align:center}
+  /* —— 船际相簿馆 —— */
+  .site-album{min-height:100%; background:#fbf7ec; font-family:"SimSun",serif; color:#333; padding:14px 16px}
+  .ab-head{font-family:"KaiTi","楷体",serif; font-size:20px; letter-spacing:4px; border-bottom:2px solid #4a3f2c; padding-bottom:4px}
+  .ab-sub{font-size:11px; color:#8a7d5f; margin:2px 0 8px}
+  .ab-row{display:flex; align-items:baseline; gap:8px; padding:6px 4px; border-bottom:1px dotted #e0d8c2; cursor:pointer}
+  .ab-row:hover{background:#f2ecd9}
+  .ab-row.empty{cursor:default; color:#a09375}
+  .ab-row.empty:hover{background:transparent}
+  .ab-name{font-weight:bold; font-family:"SimHei","黑体",sans-serif; font-size:13.5px; flex:none}
+  .ab-count{font-family:Consolas,monospace; font-size:11px; color:#3f5c33; flex:none}
+  .ab-row.empty .ab-count{color:#a09375}
+  .ab-desc{flex:1; min-width:0; font-size:11.5px; color:#8a7d5f; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .ab-note{margin-top:8px; font-size:10.5px; color:#a09375}
+  /* —— 漂流瓶邮局 / 夜航电台 —— */
+  .site-bottle{min-height:100%; background:#eef3f6; font-family:"SimSun",serif; color:#2e3a45; padding:26px 18px; text-align:center}
+  .bt-big{font-size:20px; letter-spacing:6px; color:#3d6fd0; margin-bottom:8px}
+  .site-bottle p{font-size:13px; line-height:2; margin:6px 0}
+  .bt-btn{background:#3d6fd0; color:#fff; border:2px solid; border-color:#6f95e0 #1c3a75 #1c3a75 #6f95e0;
+    font-family:"SimHei","黑体",sans-serif; font-size:13px; padding:6px 18px; cursor:pointer; margin:6px 4px}
+  .bt-btn:active{border-color:#1c3a75 #6f95e0 #6f95e0 #1c3a75}
+  .bt-link{color:#2038a8; cursor:pointer; text-decoration:underline; font-size:12.5px}
+  .bt-foot{margin-top:12px; font-size:10.5px; color:#8ca0ae}
+  .site-nightfm{min-height:100%; background:#05070f; color:#6f7fa8; font-family:Consolas,monospace;
+    padding:34px; text-align:center; font-size:13px; line-height:2.2}
+  .nf-big{font-size:22px; color:#9fb4e8; letter-spacing:6px; margin-bottom:8px}
+  .nf-note{margin-top:12px; font-size:10.5px; color:#3a4763}
   /* 浏览器外壳夜航(站点保留自己的主题, 它们是"别的网站") */
   body.night #browserWin{background:#1a2338; border-color:#3a4763}
   body.night .br-toolbar, body.night .br-status{background:#243050; border-color:#101828}
@@ -1617,7 +1674,7 @@
       <li><b>= 计算器</b> — 支持键盘输入, ÷0 会被严肃拒绝</li>
       <li><b>雷 扫雷.EXE</b> — 首点必安全; 右键或长按插旗, 点笑脸再来一局</li>
       <li><b>日 日记.EXE</b> — 按日期快速翻船舱日记, 和主页日历联动</li>
-      <li><b>e 小站浏览器</b> — 只能访问船际网络认证站点; 乱输网址有老式 404, 输 deepsea 有惊喜</li>
+      <li><b>e 小站浏览器</b> — 船际网络认证站点: 复古主页 / 船舱BBS / 气象台 / 灯塔日报 / 舰载电视台(点谁谁开唱) / 海妖软件站(安装即打开) / 船际相簿馆(点一本相册.EXE替你翻) / 漂流瓶邮局; 乱输网址有老式 404, 输 deepsea 有惊喜, 夜里还有一台电台不播节目单</li>
       <li><b>漏 沙漏.EXE</b> — 像素沙漏倒计时, 沙粒真实掉落; 1/3/5/10/25 分钟, 写作业开 25 分钟正好</li>
       <li><b>画 画板.EXE</b> — 24×24 像素画板: 画笔/油漆桶/橡皮/撤销, 画完点"下载 PNG"打包带走</li>
       <li><b>阳 太阳系.EXE</b> — 真实比例+真实周期: 左侧星球列表点谁去谁, 拖动平移, 滚轮缩放, 点行星看资料; 找不到地球? 先缩小看全家福, 再凑近</li>
@@ -1915,8 +1972,8 @@
     <div class="br-addr">
       <input id="brUrl" autocomplete="off" spellcheck="false" placeholder="输入网址, 或点击输入框从列表选择">
       <button class="br-go" id="brGo" type="button">转到</button>
+      <div class="br-sug" id="brSug"></div>
     </div>
-    <div class="br-sug" id="brSug"></div>
   </div>
   <div class="br-view" id="brView"></div>
   <div class="br-status">
@@ -3761,12 +3818,16 @@ var BR_SITES = [
     alias:['xiaozhan', '小站', 'home', '主页', 'index'],
     html: function(){
       return '<div class="hp-banner">欢迎光临 船只悠悠的个人主页</div>' +
-        '<div class="hp-marquee"><span>★ 欢迎来到船际网络第一站 ★ 本站已安全运行 ' + days + ' 天 ★ 建议使用 IE5.0 以上版本浏览 ★ 请把分辨率调到 800×600 ★</span></div>' +
-        '<p>您是第 <span class="hp-count"><b>004826</b></span> 位访客(计数器上次断电后从这重新数的)。</p>' +
+        '<div class="hp-marquee"><span>★ 欢迎来到船际网络第一站 ★ 本站已安全运行 ' + days + ' 天 ★ 舰载电视台今日开播 ★ 建议使用 IE5.0 以上版本浏览 ★ 请把分辨率调到 800×600 ★</span></div>' +
+        '<p>您是第 <span class="hp-count"><b>' + ('000000' + visitN).slice(-6) + '</b></span> 位访客(计数器上次断电后从这重新数的——这回真记在你电脑里了)。</p>' +
         '<ul class="hp-links">' +
           '<li><a data-go="bbs.ship.cn">→ 船舱 BBS(绿屏警告)</a></li>' +
           '<li><a data-go="weather.sea.cn">→ 航海气象台(今日浪况)</a></li>' +
           '<li><a data-go="news.lighthouse.cn">→ 灯塔日报(号外号外)</a></li>' +
+          '<li><a data-go="tv.ship.cn">→ 舰载电视台(点谁谁开唱)</a></li>' +
+          '<li><a data-go="soft.ship.cn">→ 海妖软件站(拒绝全家桶)</a></li>' +
+          '<li><a data-go="album.ship.cn">→ 船际相簿馆(十五本任翻)</a></li>' +
+          '<li><a data-go="bottles.ship.cn">→ 漂流瓶邮局(捞一条陌生的话)</a></li>' +
         '</ul>' +
         '<p class="hp-fine">本站由船长手工锤炼, 转载请注明出处(虽然应该也没人转载)。本页最佳浏览效果: 800×600 · IE5.0 · 256 色。</p>';
     }
@@ -3813,10 +3874,83 @@ var BR_SITES = [
         items;
     }
   },
+  { url:'tv.ship.cn', name:'舰载电视台', cls:'site-tv',
+    alias:['tv', '电视', '电视台'],
+    html: function(){
+      var rows = SONGS.map(function(s, i){
+        var on = dm.playing && dm.idx === i;
+        return '<div class="tv-row' + (on ? ' on' : '') + '" data-tv="' + i + '">' +
+          '<span class="tv-no">' + ('0' + (i + 1)).slice(-2) + '</span>' +
+          '<span class="tv-name">' + escHtml(s.name) + '</span>' +
+          '<span class="tv-st">' + (on ? '▶ 播出中' : '点击收听') + '</span></div>';
+      }).join('');
+      return '<div class="tv-head">◈ 舰载电视台<span class="tv-onair' + (dm.playing ? ' live' : '') + '">' + (dm.playing ? '● ON AIR' : '○ 待机') + '</span></div>' +
+        '<div class="tv-sub">甲板音乐频道 · 十四个节目轮流播出 · 点谁谁开唱</div>' + rows +
+        '<div class="tv-note">节目单和左下角甲板音乐是同一批演员——那边点这边点, 都是一个海。</div>';
+    }
+  },
+  { url:'soft.ship.cn', name:'海妖软件站', cls:'site-soft',
+    alias:['soft', '软件', '下载', '软件站'],
+    html: function(){
+      var rows = [
+        ['计算器 1.0', '★★★★★', '3K', 'calc', '安装'],
+        ['扫雷.EXE', '★★★★★', '9K', 'mine', '安装'],
+        ['画板.EXE', '★★★★☆', '24K', 'paint', '安装'],
+        ['甲板音乐离线包', '★★★★★', '14 首', 'music', '播放'],
+        ['640K 内存扩容包', '★★★★★', '9999K', 'mem', '下载']
+      ].map(function(r){
+        return '<div class="sf-row"><span class="sf-name"><b>' + r[0] + '</b></span>' +
+          '<span class="sf-star">' + r[1] + '</span><span class="sf-size">' + r[2] + '</span>' +
+          '<button class="sf-btn" data-app="' + r[3] + '" type="button">' + r[4] + '</button></div>';
+      }).join('');
+      return '<div class="sf-head">◈ 海妖软件站</div>' +
+        '<div class="sf-notice">郑重声明: 本站所有软件均为船长手搓, 拒绝捆绑, 拒绝全家桶。安装即打开, 卸载请找海。</div>' +
+        rows +
+        '<div class="sf-row"><span class="sf-name"><b>本站源码.zip</b></span><span class="sf-star">★★★★★</span><span class="sf-size">一整船</span>' +
+        '<a class="sf-btn sf-real" href="https://github.com/WEZHCE/The-small-station-of-drifting-boats" target="_blank" rel="noopener">下载</a></div>' +
+        '<div class="sf-foot">船际网络 ICP 备 640048 号 · 客服在线时间: 看心情</div>';
+    }
+  },
+  { url:'album.ship.cn', name:'船际相簿馆', cls:'site-album',
+    alias:['album', '相簿', '相册馆', '照片馆'],
+    html: function(){
+      var rows = ALBUMS.map(function(a, i){
+        return '<div class="ab-row' + (a.kind ? '' : ' empty') + '" data-ab="' + i + '">' +
+          '<span class="ab-name">' + a.name + '</span>' +
+          '<span class="ab-count">' + (a.kind ? albumCount(a) + ' 张' : '虚位以待') + '</span>' +
+          '<span class="ab-desc">' + (a.kind ? a.desc : '等船长上货。') + '</span></div>';
+      }).join('');
+      return '<div class="ab-head">船际相簿馆</div>' +
+        '<div class="ab-sub">十五本相册的网上展厅 · 点开馆的那本, 相册.EXE 替你翻到第一张</div>' +
+        rows +
+        '<div class="ab-note">※ 这里只挂号, 看画在 相册.EXE 里; 空着的几本别硬点, 点了也只有海风。</div>';
+    }
+  },
+  { url:'bottles.ship.cn', name:'漂流瓶邮局', cls:'site-bottle',
+    alias:['bottle', '漂流瓶', '邮局', '瓶子'],
+    html: '<div class="bt-big">◈ 漂流瓶邮局</div>' +
+      '<p>每个瓶子都是一位真·游客塞进海里的,<br>泡了几天咸水, 话还是热的。</p>' +
+      '<p><button class="bt-btn" data-app="bottle" type="button">撒网捞一个</button>' +
+      '<span class="bt-link" data-app="guestbook">去留言板自己塞一个 »</span></p>' +
+      '<div class="bt-foot">捞到的瓶子在主页留言板展示 · 邮局不关门, 海也不休息</div>'
+  },
   { url:'deepsea.void', name:'深海', cls:'site-deepsea', hidden:true,
     alias:['deepsea', '深海', '暗网'],
     html: '<div class="dp-big">深 海 层</div>' +
       '你输入的网址, 通向了一个没有网页的地方。<br>这里没有内容, 只有鲸鱼的歌声。<br>……<br>咕噜。咕噜咕噜。<br>(能找到这里, 你挺适合当船员的。)'
+  },
+  { url:'night.fm', name:'夜航电台', cls:'site-nightfm', hidden:true,
+    alias:['night.fm', '夜航电台', '电台', 'fm'],
+    html: function(){
+      if(!nightOn){
+        return '<div class="nf-big">夜 航 电 台</div>' +
+          '现在是白天, 电台在睡觉。<br>这台风频率只在夜航出现——<br>19:00 以后再来, 或者去任务栏点一下灯。';
+      }
+      return '<div class="nf-big">夜 航 电 台</div>' +
+        '你摸黑摸到了这里——是块当船员的料。<br>频率已接通, 剩下的交给海。<br>' +
+        '<button class="bt-btn" data-app="music" type="button">▶ 随机放一首</button>' +
+        '<div class="nf-note">※ 白天来只能听到海风。</div>';
+    }
   }
 ];
 function brNormalize(u){
@@ -3824,7 +3958,8 @@ function brNormalize(u){
     .replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/+$/, '');
 }
 function brFind(u){
-  return BR_SITES.filter(function(s){ return !s.hidden; }).find(function(s){
+  /* hidden 站点不进地址栏联想, 但直接输网址/别名要能到——不然"输 deepsea 有惊喜"就是死路 */
+  return BR_SITES.find(function(s){
     var su = brNormalize(s.url);
     return su === u || su.indexOf('.' + u) >= 0 || (s.alias || []).indexOf(u) >= 0 || s.name.indexOf(u) >= 0;
   });
@@ -3852,7 +3987,7 @@ function brRender(site, u){
     $('#brTitle').textContent = '无法显示网页 — 小站浏览器';
     v.innerHTML = '<div class="br-page site-404">' +
       '<div class="s4-title">无法显示该网页</div>' +
-      '<p>您访问的 <b>' + u + '</b> 不存在, 或者已经被海浪冲走了。</p>' +
+      '<p>您访问的 <b>' + escHtml(u) + '</b> 不存在, 或者已经被海浪冲走了。</p>' +
       '<p>建议: 检查拼写 / 回小站待着 / 从地址栏下拉里挑一个认证过的站点。</p>' +
       '<p><a data-go="www.xiaozhan.com">→ 回小站主页</a></p></div>';
     return;
@@ -3863,6 +3998,11 @@ function brRender(site, u){
 }
 function brNavigate(input, fromHist){
   var u = brNormalize(input);
+  if(!u && !fromHist){   /* 空地址不导航, 把站点列表直接递到脸上 */
+    $('#brUrl').focus();
+    brSuggest('');
+    return;
+  }
   var site = brFind(u);
   var token = ++brToken;
   if(!fromHist){
@@ -3880,6 +4020,7 @@ function brNavigate(input, fromHist){
     brRender(site, u);
     $('#brUrl').value = site ? site.url : u;
     $('#brStatus').textContent = '完成';
+    setTimeout(function(){ if(token === brToken) $('#brProg').style.width = '0'; }, 450);
   }, 650);
 }
 function brUpdateBtns(){
@@ -3897,6 +4038,7 @@ $('#brHome').addEventListener('click', function(){ brNavigate('www.xiaozhan.com'
 $('#brGo').addEventListener('click', function(){ brNavigate($('#brUrl').value); });
 $('#brUrl').addEventListener('keydown', function(e){
   if(e.key === 'Enter'){ brNavigate(this.value); }
+  if(e.key === 'Escape'){ $('#brSug').classList.remove('open'); this.blur(); }
 });
 $('#brUrl').addEventListener('input', function(){ brSuggest(this.value); });
 $('#brUrl').addEventListener('focus', function(){ brSuggest(this.value); });
@@ -3919,10 +4061,70 @@ function brSuggest(q){
 document.addEventListener('click', function(e){
   if(!e.target.closest('.br-toolbar')) $('#brSug').classList.remove('open');
 });
+function brRerender(){   /* 不走假进度, 就地重画当前页(电视换节目/电台切昼夜用), 滚动位置留住 */
+  var u = brHist[brIdx];
+  var site = u == null ? null : brFind(u);
+  if(!site) return;
+  var v = $('#brView'), st = v.scrollTop;
+  brRender(site, site.url);
+  v.scrollTop = st;
+}
+function brMusicSync(){   /* dm 状态变了: 电视台/电台页正开着就跟着刷, 不然"播出中"是旧的 */
+  var u = brHist[brIdx];
+  if(u === 'tv.ship.cn' || u === 'night.fm') brRerender();
+}
+function brLaunch(app){   /* 别的网站点过来的"真动作": 装应用/放歌/捞瓶子 */
+  if(app === 'calc'){ calcToggle(true); toast('安装完成: 计算器已在运行。'); return; }
+  if(app === 'mine'){ mineToggle(true); toast('安装完成: 扫雷已在运行。'); return; }
+  if(app === 'paint'){ ptPaintToggle(true); toast('安装完成: 画板已在运行。'); return; }
+  if(app === 'music'){   /* 显式点击, 绕过开站自动播放开关——用户现在就要听 */
+    if(!SONGS.length){ toast('歌单空着, 船长还没进货。'); return; }
+    dm.idx = Math.floor(Math.random() * SONGS.length);
+    dm.loadedIdx = -1;
+    dmRender();
+    dmStart();
+    toast('随机播放已接通, 乐队在甲板就位。');
+    return;
+  }
+  if(app === 'mem'){
+    toast('正在下载 640K 内存扩容包 ……');
+    setTimeout(function(){ toast('下载失败: 1981 年的天花板, 不可逾越。'); }, 1400);
+    return;
+  }
+  if(app === 'bottle'){ lootBottle(); toast('网撒下去了——捞到的瓶子在主页留言板展示。'); return; }
+  if(app === 'guestbook'){
+    brToggle(false);
+    var gb = document.querySelector('#guestbook');
+    if(gb) gb.scrollIntoView({ behavior: 'smooth' });
+    toast('浏览器收起来了, 留言板就在下面。');
+  }
+}
 $('#brView').addEventListener('click', function(e){
   var go = e.target.closest('[data-go]');
   if(go){ brNavigate(go.getAttribute('data-go')); return; }
-  if(e.target.closest('[data-br-refresh]')) brNavigate(brHist[brIdx], true);
+  if(e.target.closest('[data-br-refresh]')){ brNavigate(brHist[brIdx], true); return; }
+  var tv = e.target.closest('[data-tv]');
+  if(tv){
+    var ti = +tv.getAttribute('data-tv');
+    if(ti === dm.idx && dm.playing){
+      dmPause();   /* 点正在放的 = 暂停; 不能走 dmPick, 异步竞态会立刻又响回去 */
+    } else {
+      dm.idx = ti;
+      dmStart();
+    }
+    return;
+  }
+  var ab = e.target.closest('[data-ab]');
+  if(ab){
+    var ai = +ab.getAttribute('data-ab');
+    if(!ALBUMS[ai].kind){ toast('这本还空着——等船长把新画搬进来。'); return; }
+    albumSel = ai;
+    renderAlbums();
+    albumWinToggle(true);
+    return;
+  }
+  var app = e.target.closest('[data-app]');
+  if(app) brLaunch(app.getAttribute('data-app'));
 });
 makeDraggable($('#browserWin'), $('#browserWin .titlebar'));
 
@@ -5448,6 +5650,7 @@ function dmStart(){
   if(dm.loadedIdx !== dm.idx){ a.src = SONGS[dm.idx].src; dm.loadedIdx = dm.idx; }
   a.play().then(function(){
     dm.playing = true; dmRender(); dmVizStart();
+    if(typeof brMusicSync === 'function') brMusicSync();   /* 电视台/电台页跟着亮"播出中" */
   }).catch(function(){ toast('这首歌没加载出来, 稍后再试。'); });
 }
 function dmPause(){
@@ -5456,6 +5659,7 @@ function dmPause(){
   if(dm.raf){ cancelAnimationFrame(dm.raf); dm.raf = null; }
   dmVizFrame(0);   /* 定格成待机的矮柱 */
   dmRender();
+  if(typeof brMusicSync === 'function') brMusicSync();
 }
 function dmToggle(){ if(dm.playing) dmPause(); else dmStart(); }
 function dmNext(){
