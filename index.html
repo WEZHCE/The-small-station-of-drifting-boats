@@ -306,9 +306,9 @@
   #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
   #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
   /* 快捷启动区: 统一银色凸起底, 徽标统一任务栏灰(夜航整条任务栏换深色) */
-  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube{height:26px; display:flex; align-items:center; justify-content:center;
+  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr{height:26px; display:flex; align-items:center; justify-content:center;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0 4px}
-  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active, #tbCount:active, #tbImg:active, #tbGrade:active, #tbCube:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active, #tbCount:active, #tbImg:active, #tbGrade:active, #tbCube:active, #tbTmgr:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .tb-badge{min-width:22px; height:16px; display:flex; align-items:center; justify-content:center;
     font:bold 10px/14px Consolas,monospace; color:#333}
 
@@ -402,9 +402,9 @@
   body.night #taskbar{background:#1a2338; border-top-color:#3a4763}
   body.night #startBtn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night #startBtn:active{border-color:#101828 #3a4763 #3a4763 #101828}
-  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar, body.night #tbCount, body.night #tbImg, body.night #tbGrade, body.night #tbCube{
+  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar, body.night #tbCount, body.night #tbImg, body.night #tbGrade, body.night #tbCube, body.night #tbTmgr{
     background:#243050; border-color:#3a4763 #101828 #101828 #3a4763}
-  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active, body.night #tbCount:active, body.night #tbImg:active, body.night #tbGrade:active, body.night #tbCube:active{
+  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active, body.night #tbCount:active, body.night #tbImg:active, body.night #tbGrade:active, body.night #tbCube:active, body.night #tbTmgr:active{
     border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .tb-badge{color:#c8cfdd}
   body.night #tray{background:#243050; border-color:#101828 #3a4763 #3a4763 #101828; color:#c8cfdd}
@@ -1052,6 +1052,76 @@
   body.night .cb-hist{color:#7d8cab}
   body.night #cbCanvas{border-color:#101828 #3a4763 #3a4763 #101828; background:#0d1322}
 
+  /* ---------- 任务管理器.EXE: 640K 都在谁手里 ---------- */
+  #tmgrWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(500px,94vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #tmgrWin.open{display:block}
+  #tmgrWin .titlebar{cursor:move}
+  .tm-tabs{display:flex; gap:2px; padding:8px 8px 0}
+  .tm-tab{padding:4px 16px; font-family:"SimHei","黑体",sans-serif; font-size:13px; color:#222; background:#c9c9c9;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; border-bottom:none; cursor:pointer; position:relative; top:2px}
+  .tm-tab:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .tm-tab.on{background:#f2d97c; top:0; padding-top:6px; font-weight:bold}
+  .tm-body{margin:0 8px; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; background:#c9c9c9; padding:8px; min-height:230px}
+  .tm-panel{display:none}
+  .tm-panel.on{display:block}
+  .tm-applist, .tm-proclist{height:34vh; max-height:252px; overflow-y:auto; background:#fbf9f0;
+    border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; padding:2px}
+  .tm-approw{display:flex; justify-content:space-between; align-items:center; gap:8px; padding:5px 8px; font-size:13px; color:#2e2a22; cursor:pointer}
+  .tm-approw:hover, .tm-prow:hover{background:#e8e0cc}
+  .tm-approw.sel, .tm-prow.sel{background:#12277e; color:#fff}
+  .tm-appname{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .tm-appstate{font-family:Consolas,monospace; font-size:11.5px; color:#8a7d5f; white-space:nowrap}
+  .tm-approw.sel .tm-appstate{color:#d8e2f5}
+  .tm-btnrow{display:flex; gap:6px; justify-content:flex-end; margin-top:8px; flex-wrap:wrap}
+  .tm-btnrow button{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; padding:4px 12px;
+    font-family:"SimHei","黑体",sans-serif; font-size:12px; cursor:pointer; color:#222}
+  .tm-btnrow button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .tm-hint{margin-top:7px; font-size:11px; color:#84775a; line-height:1.5}
+  .tm-prow{display:flex; align-items:center; gap:6px; padding:4px 8px; font-size:12.5px; color:#2e2a22; cursor:pointer}
+  .tm-phead{cursor:default; color:#8a7d5f; font-size:11.5px; border-bottom:1px solid #d9d2c0; position:sticky; top:0; background:#f1ecdd; z-index:1}
+  .tm-phead:hover{background:#f1ecdd}
+  .tm-pname{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-family:Consolas,"Courier New",monospace}
+  .tm-pname i{font-style:normal; color:#8a7d5f; font-size:11px}
+  .tm-prow.sel .tm-pname i{color:#cfd8f5}
+  .tm-prow .num{width:44px; text-align:right; font-family:Consolas,monospace; font-size:12px; flex:none}
+  .tm-perflabel{display:flex; justify-content:space-between; align-items:baseline; margin:2px 2px 5px}
+  .tm-perflabel b{font-family:"SimHei","黑体",sans-serif; font-size:13px; color:#4a3f2c}
+  .tm-perflabel span{font-family:Consolas,monospace; font-size:12px; color:#3f5c33}
+  #tmCpuCv{display:block; width:100%; height:96px; image-rendering:pixelated;
+    border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; background:#0b120d}
+  #tmMemBar{display:flex; gap:3px; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; padding:4px; background:#fbf9f0; min-width:0}
+  #tmMemBar i{flex:1; height:14px; min-width:0; background:#dcd4bd}
+  #tmMemBar i.lit{background:#3cb46e}
+  #tmMemBar i.hot{background:#e5484d}
+  .tm-status{display:flex; gap:4px; padding:6px 8px 8px}
+  .tm-status span{flex:1; min-width:0; text-align:center; font-family:Consolas,monospace; font-size:11.5px; color:#333;
+    background:#c9c9c9; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; padding:3px 2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  body.night #tmgrWin{background:#1a2338; border-color:#3a4763}
+  body.night .tm-tab{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .tm-tab:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .tm-tab.on{background:#3d4f7d; color:#c8cfdd}
+  body.night .tm-body{background:#1a2338; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .tm-applist, body.night .tm-proclist{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .tm-approw, body.night .tm-prow{color:#c8cfdd}
+  body.night .tm-approw:hover, body.night .tm-prow:hover{background:#1c2740}
+  body.night .tm-approw.sel, body.night .tm-prow.sel{background:#3d6fd0; color:#fff}
+  body.night .tm-appstate{color:#7d8cab}
+  body.night .tm-approw.sel .tm-appstate{color:#d8e2f5}
+  body.night .tm-phead{background:#16203a; color:#7d8cab; border-bottom-color:#2c3854}
+  body.night .tm-phead:hover{background:#16203a}
+  body.night .tm-pname i{color:#7d8cab}
+  body.night .tm-prow.sel .tm-pname i{color:#d8e2f5}
+  body.night .tm-btnrow button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .tm-btnrow button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .tm-hint{color:#7d8cab}
+  body.night .tm-perflabel b{color:#d8e2f5}
+  body.night .tm-perflabel span{color:#8fbf8f}
+  body.night #tmCpuCv{border-color:#101828 #3a4763 #3a4763 #101828; background:#0a1016}
+  body.night #tmMemBar{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night #tmMemBar i{background:#243050}
+  body.night .tm-status span{background:#243050; border-color:#101828 #3a4763 #3a4763 #101828; color:#c8cfdd}
+
   /* ---------- 小站浏览器 ---------- */
   #browserWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(760px,94vw);
     display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
@@ -1257,9 +1327,9 @@
     .album-covers{grid-template-columns:repeat(3,1fr); gap:10px}
     .album-cover{min-width:0}
     /* 手机上弹窗靠上放, 给输入法键盘留地方; 里程牌缩小; 任务栏紧凑排布 */
-    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin, #imgSearchWin, #gradeWin, #cubeWin{top:6vh; transform:translate(-50%,0)}
+    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin, #imgSearchWin, #gradeWin, #cubeWin, #tmgrWin{top:6vh; transform:translate(-50%,0)}
     #taskbar{gap:4px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube{padding:0 2px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr{padding:0 2px}
     #tray{padding:0 6px}
     .help-body{max-height:56vh}
     #boatOdo{font-size:10.5px}
@@ -1270,7 +1340,7 @@
   @media (max-width:480px){
     #trayClock{display:none}
     #taskbar{flex-wrap:wrap; height:auto; padding:3px 4px calc(3px + env(safe-area-inset-bottom)); row-gap:3px; gap:3px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube{padding:0 5px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr{padding:0 5px}
     body.on{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
     #deckDock{bottom:calc(78px + env(safe-area-inset-bottom))}
     #deckMusic, #capState, #dynIsland{width:158px}
@@ -1492,6 +1562,7 @@
   <button id="tbImg" type="button" title="图片搜索.EXE — 按内容和标签找图"><span class="tb-badge">搜</span></button>
   <button id="tbGrade" type="button" title="成绩监控.EXE — 加密成绩档案"><span class="tb-badge">绩</span></button>
   <button id="tbCube" type="button" title="魔方.EXE — 三阶/四阶 建模还原"><span class="tb-badge">魔</span></button>
+  <button id="tbTmgr" type="button" title="任务管理器.EXE — 640K 都在谁手里"><span class="tb-badge">任</span></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
@@ -1553,6 +1624,7 @@
       <li><b>倒 倒数日.EXE</b> — 内置节日与纪念日倒数(含农历, 还会自动追最近的周五) + 自定义事件可写详细说明, 谁的日子近谁排前面</li>
       <li><b>搜 图片搜索.EXE</b> — 按内容和标签找图: 输入"猫/操场/云/毕业"这类关键词, 或直接点标签; 点结果原图大图看</li>
       <li><b>绩 成绩监控.EXE</b> — 船长的加密成绩档案: 口令解锁才能翻(提示: 生日), 源码里连明文都没有, 关窗即重新上锁</li>
+      <li><b>任 任务管理器.EXE</b> — 三页账: 应用看谁开着, 进程看谁在跑(二十个 ChatGPT 正在挤内存), 性能看 640K 还剩多少; 任务管理器自己也占 42K, 这数字看着看着就上去了</li>
     </ul>
 
     <div class="help-sec">🌙 这台电脑也会累</div>
@@ -1560,7 +1632,7 @@
       <li>19:00~6:00 自动进入夜航模式 (托盘点灯可手动切换, 全站配色跟随)</li>
       <li>闲置 <b>两分钟</b>, 屏保自己开演: 星空 + 小船 + 像素时钟, 动一下就回来</li>
       <li>开始菜单 → 关机: CRT 坍缩收场, "电源"键重新开机, 还带 BIOS 自检</li>
-      <li>同时开 <b>4 个</b>应用会蓝屏 — 640K 内存的极限; 按任意键退出, 代价是全部窗口关闭</li>
+      <li>同时开 <b>4 个</b>应用会蓝屏 — 640K 内存的极限; 按任意键退出, 代价是全部窗口关闭。想知道 640K 都被谁吃了, 任务管理器的性能页有账</li>
     </ul>
 
     <div class="help-sec">🌊 还有些温柔的角落</div>
@@ -1760,6 +1832,48 @@
     <button class="tb-btn" id="gradeClose" title="关闭">✕</button>
   </div>
   <div class="gd-body" id="gradeBody"></div>
+</div>
+
+<!-- ================= 任务管理器.EXE: 640K 都在谁手里 ================= -->
+<div id="tmgrWin">
+  <div class="titlebar"><span class="tb-title">任务管理器.EXE — 640K 都在谁手里</span>
+    <button class="tb-btn" id="tmgrClose" title="关闭">✕</button>
+  </div>
+  <div class="tm-tabs">
+    <button class="tm-tab on" id="tmTabApp" type="button">应用</button>
+    <button class="tm-tab" id="tmTabProc" type="button">进程</button>
+    <button class="tm-tab" id="tmTabPerf" type="button">性能</button>
+  </div>
+  <div class="tm-body">
+    <div class="tm-panel on" id="tmPanelApp">
+      <div class="tm-applist" id="tmAppList"></div>
+      <div class="tm-btnrow">
+        <button id="tmEndTask" type="button">结束任务</button>
+        <button id="tmSwitch" type="button">切换至</button>
+        <button id="tmNewTask" type="button">新任务...</button>
+      </div>
+      <div class="tm-hint">※ 双击一个开着的任务, 把它拽到最前面。同时开 4 个, 这台电脑会给你好看。</div>
+    </div>
+    <div class="tm-panel" id="tmPanelProc">
+      <div class="tm-proclist" id="tmProcList"></div>
+      <div class="tm-btnrow">
+        <button id="tmKill" type="button">结束进程</button>
+      </div>
+      <div class="tm-hint" id="tmProcNote">※ 结束的进程过几秒会自己爬回来——它们都这样。svchost 别碰。</div>
+    </div>
+    <div class="tm-panel" id="tmPanelPerf">
+      <div class="tm-perflabel"><b>CPU 使用记录</b><span id="tmCpuTxt">--%</span></div>
+      <canvas id="tmCpuCv" width="440" height="96"></canvas>
+      <div class="tm-perflabel"><b>内存使用</b><span id="tmMemTxt">--</span></div>
+      <div id="tmMemBar"></div>
+      <div class="tm-hint">※ 绿线一格一秒。任务管理器自己也占 42K——这数字看着看着就上去了。</div>
+    </div>
+  </div>
+  <div class="tm-status">
+    <span id="tmStProc">进程: --</span>
+    <span id="tmStCpu">CPU 使用: --</span>
+    <span id="tmStMem">内存使用: --</span>
+  </div>
 </div>
 
 <!-- ================= 魔方.EXE: 三阶/四阶 建模还原 ================= -->
@@ -4429,7 +4543,8 @@ var BSOD_APPS = [
   ['#term', termToggle, '终端'], ['#helpWin', helpToggle, '帮助.chm'], ['#calcWin', calcToggle, '计算器'],
   ['#mineWin', mineToggle, '扫雷'], ['#diaryWin', diaryAppToggle, '日记.EXE'], ['#browserWin', brToggle, '小站浏览器'],
   ['#hgWin', hgToggle, '沙漏'], ['#paintWin', ptPaintToggle, '画板'], ['#solarWin', solarToggle, '太阳系'],
-  ['#imgSearchWin', imgSearchToggle, '图片搜索'], ['#gradeWin', gradeToggle, '成绩监控']
+  ['#imgSearchWin', imgSearchToggle, '图片搜索'], ['#gradeWin', gradeToggle, '成绩监控'],
+  ['#tmgrWin', tmgrToggle, '任务管理器']
 ];
 var bsodArmed = true;
 function bsodOpenCount(){
@@ -5025,6 +5140,194 @@ function gradeToggle(open){
 $('#tbGrade').addEventListener('click', function(){ gradeToggle(true); });
 $('#gradeClose').addEventListener('click', function(){ gradeToggle(false); });
 makeDraggable($('#gradeWin'), $('#gradeWin .titlebar'));
+
+/* ---------- 任务管理器.EXE: 640K 都在谁手里 ---------- */
+/* 进程表 mem 全部加起来 = 473K(74%); 每个开着的窗口 +42K, 第 4 个窗口 = 641K > 640K → 蓝屏, 刚好压线 */
+var TM_PROCS = [
+  { n:'System Idle Process', c:1,  mem:16, cpu:[93,98], guard:'它什么都没干, 你要惩罚一个什么都没干的人?', note:'它越闲, 这台电脑越舒服。' },
+  { n:'船只悠悠的小站.exe',  c:1,  mem:34, cpu:[2,6],   guard:'拒绝访问: 把船关了, 你站在哪看这行字?', note:'本站本体, 一行一行手写的。' },
+  { n:'explorer.exe',        c:1,  mem:21, cpu:[1,4],   guard:'关了它, 任务栏就没了, "开始"也就没了。', note:'任务栏和开始菜单的房东。' },
+  { n:'svchost.exe',         c:7,  mem:38, cpu:[0,3],   guard:'系统说: 你猜它是不是真的 svchost? 别试。', note:'七个分身, 各自在干嘛连自己都说不清。' },
+  { n:'GLM-5.3-Flash.exe',   c:1,  mem:95, cpu:[3,9],   guard:'它已经下船了, 这是留给夜班的灯——别关。', note:'干饭冠军: 全站 81% 的 token 都是它吃的。' },
+  { n:'ChatGPT.exe',         c:20, mem:84, cpu:[6,14],  note:'二十个兄弟挤在一起, 谁也不知道在算什么。' },
+  { n:'ZCode.exe',           c:4,  mem:61, cpu:[4,12],  note:'四个窗口同时开工——礼包额度, 且用且珍惜。' },
+  { n:'ClaudeCode.exe',      c:1,  mem:33, cpu:[3,10],  note:'也在凑热闹。' },
+  { n:'DeepSeek.exe',        c:1,  mem:28, cpu:[2,8],   note:'燃料常年见底的奋斗者。' },
+  { n:'LongCat.exe',         c:1,  mem:12, cpu:[1,3],   note:'第一顿猫粮花了 $0.23, 试航顺利, 喵。' },
+  { n:'甲板音乐.exe',        c:1,  mem:23, cpu:[0,1],   music:true, note:'待机中, 歌单里压着十四首。' },
+  { n:'giscus.exe',          c:1,  mem:14, cpu:[1,3],   note:'留言板看门员, 每条留言都是真的。' },
+  { n:'640K.sys',            c:1,  mem:8,  cpu:[0,0],   guard:'拆天花板属于违禁操作。', note:'内存天花板, 1981 年封顶, 至今没动过。' },
+  { n:'crtcollapse.sys',     c:1,  mem:6,  cpu:[0,1],   note:'CRT 坍缩模拟驱动, 关机那一下全靠它。' }
+];
+var TM_APP_MEM = 42;   /* 每个窗口的船票价: 473 + 42×4 = 641 > 640 */
+var tmTab = 'app', tmSelApp = -1, tmSelProc = '';
+var tmKilled = {}, tmIv = null, tmCpuHist = [], tmLastCpu = 0;
+function tmProcCount(){
+  return TM_PROCS.reduce(function(s, p){ return s + (tmKilled[p.n] ? 0 : p.c); }, 0);
+}
+function tmMemUsed(){
+  var base = TM_PROCS.reduce(function(s, p){ return s + (tmKilled[p.n] ? 0 : p.mem); }, 0);
+  return Math.min(640, base + bsodOpenCount() * TM_APP_MEM);
+}
+function tmCpuNow(){
+  var v = rand(4,10) + bsodOpenCount() * 19 + (dm.playing ? 5 : 0);
+  if(Math.random() < .06) v += rand(12,28);   /* 偶尔抽一下风 */
+  return Math.min(100, Math.round(v));
+}
+function tmProcCpu(p){
+  if(p.music) return dm.playing ? Math.round(rand(14,26)) : 0;
+  return Math.round(rand(p.cpu[0], p.cpu[1]));
+}
+function tmShow(tab){
+  tmTab = tab;
+  ['App','Proc','Perf'].forEach(function(k, i){
+    var on = ['app','proc','perf'][i] === tab;
+    $('#tmTab' + k).classList.toggle('on', on);
+    $('#tmPanel' + k).classList.toggle('on', on);
+  });
+  if(tab === 'app') tmRenderApps();
+  if(tab === 'proc') tmRenderProcs();
+  if(tab === 'perf') tmDraw();
+  tmStatus();
+}
+function tmRenderApps(){
+  var box = $('#tmAppList'), st = box.scrollTop;
+  box.innerHTML = '';
+  BSOD_APPS.forEach(function(a, i){
+    var open = $(a[0]).classList.contains('open');
+    var row = document.createElement('div');
+    row.className = 'tm-approw' + (tmSelApp === i ? ' sel' : '');
+    row.innerHTML = '<span class="tm-appname">' + a[2] + '</span><span class="tm-appstate">' + (open ? '正在运行' : '未运行') + '</span>';
+    row.addEventListener('click', function(){ tmSelApp = i; tmRenderApps(); });
+    row.addEventListener('dblclick', function(){ if(open) frontWindow($(a[0])); });
+    box.appendChild(row);
+  });
+  box.scrollTop = st;
+}
+function tmEndTask(){
+  if(tmSelApp < 0){ toast('先选一个任务, 别乱指挥。'); return; }
+  var a = BSOD_APPS[tmSelApp];
+  if(!$(a[0]).classList.contains('open')){ toast(a[2] + ' 本来就没开, 你结束了个寂寞。'); return; }
+  a[1](false);
+  tmSelApp = -1;
+  tmRenderApps(); tmStatus();
+  if(a[0] === '#tmgrWin') setTimeout(function(){ toast('任务管理器把自己也结束了——640K 松了一口气。'); }, 350);
+  else toast('已结束: ' + a[2] + '。它分到的 ' + TM_APP_MEM + 'K 回归大海。');
+}
+function tmSwitchTo(){
+  if(tmSelApp < 0){ toast('先选一个任务。'); return; }
+  var a = BSOD_APPS[tmSelApp];
+  if(!$(a[0]).classList.contains('open')){ toast(a[2] + ' 还没开——要么先把它点开, 要么换个开着的。'); return; }
+  frontWindow($(a[0]));
+}
+function tmNewTask(){
+  toast('新任务就免了——内存只剩 ' + (640 - tmMemUsed()) + 'K, 具体看"性能"那页。');
+}
+function tmRenderProcs(){
+  var box = $('#tmProcList'), st = box.scrollTop;
+  box.innerHTML = '<div class="tm-prow tm-phead"><span class="tm-pname">映像名</span><span class="num">CPU</span><span class="num">内存</span></div>';
+  TM_PROCS.forEach(function(p){
+    if(tmKilled[p.n]) return;
+    var row = document.createElement('div');
+    row.className = 'tm-prow' + (tmSelProc === p.n ? ' sel' : '');
+    row.dataset.n = p.n;
+    row.innerHTML = '<span class="tm-pname">' + escHtml(p.n) + (p.c > 1 ? ' <i>×' + p.c + '</i>' : '') + '</span>' +
+      '<span class="num">' + String(tmProcCpu(p)).padStart(2,'0') + '</span>' +
+      '<span class="num">' + p.mem + 'K</span>';
+    row.addEventListener('click', function(){ tmSelProc = (tmSelProc === p.n) ? '' : p.n; tmRenderProcs(); });
+    box.appendChild(row);
+  });
+  box.scrollTop = st;
+  $('#tmProcNote').textContent = tmSelProc
+    ? (function(){ var p = null; TM_PROCS.forEach(function(q){ if(q.n === tmSelProc) p = q; }); return p && p.note ? p.note : ' '; })()
+    : '※ 结束的进程过几秒会自己爬回来——它们都这样。svchost 别碰。';
+}
+function tmKillProc(){
+  if(!tmSelProc){ toast('先选一个进程, 下手要有对象。'); return; }
+  var p = null; TM_PROCS.forEach(function(q){ if(q.n === tmSelProc) p = q; });
+  if(!p) return;
+  if(p.guard){ toast(p.guard); return; }
+  tmKilled[p.n] = true; tmSelProc = '';
+  if(p.music && dm.playing){ dmPause(); toast('已结束: 甲板音乐.exe。演唱会散场, 甲板还给了海风。'); }
+  else toast('已结束: ' + p.n + (p.c > 1 ? ' ×' + p.c : '') + '。内存空出 ' + p.mem + 'K——别高兴太早。');
+  tmRenderProcs(); tmStatus();
+  setTimeout(function(){
+    delete tmKilled[p.n];
+    if($('#tmgrWin').classList.contains('open') && tmTab === 'proc') tmRenderProcs();
+    tmStatus();
+  }, 4000 + Math.random() * 4000);
+}
+function tmStatus(){
+  var mem = tmMemUsed(), pct = Math.round(mem / 640 * 100);
+  $('#tmStProc').textContent = '进程: ' + tmProcCount();
+  $('#tmStCpu').textContent = 'CPU 使用: ' + tmLastCpu + '%';
+  $('#tmStMem').textContent = '内存使用: ' + pct + '%';
+  $('#tmCpuTxt').textContent = tmLastCpu + '%';
+  $('#tmMemTxt').textContent = mem + 'K / 640K (' + pct + '%)';
+  var blocks = $$('#tmMemBar i');
+  var lit = Math.round(pct / 100 * blocks.length);
+  blocks.forEach(function(b, i){
+    b.className = i < lit ? (i >= blocks.length - 2 && pct >= 88 ? 'hot' : 'lit') : '';
+  });
+}
+function tmTick(){
+  tmLastCpu = tmCpuNow();
+  tmCpuHist.push(tmLastCpu);
+  if(tmCpuHist.length > 48) tmCpuHist.shift();
+  if(tmTab === 'perf') tmDraw();
+  if(tmTab === 'proc'){   /* 只改 CPU 数字, 不重建行, 点选不打架 */
+    $$('#tmProcList .tm-prow').forEach(function(row){
+      if(row.classList.contains('tm-phead')) return;
+      var p = null; TM_PROCS.forEach(function(q){ if(q.n === row.dataset.n) p = q; });
+      if(p && !tmKilled[p.n]) row.children[1].textContent = String(tmProcCpu(p)).padStart(2,'0');
+    });
+  }
+  tmStatus();
+}
+function tmDraw(){
+  var cv = $('#tmCpuCv'), ctx = cv.getContext('2d');
+  var W = cv.width, H = cv.height;
+  ctx.fillStyle = '#0b120d'; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = '#1d3320'; ctx.lineWidth = 1;
+  for(var x = 22; x < W; x += 22){ ctx.beginPath(); ctx.moveTo(x + .5, 0); ctx.lineTo(x + .5, H); ctx.stroke(); }
+  for(var y = 22; y < H; y += 22){ ctx.beginPath(); ctx.moveTo(0, y + .5); ctx.lineTo(W, y + .5); ctx.stroke(); }
+  if(tmCpuHist.length < 2) return;
+  ctx.strokeStyle = '#39d353'; ctx.lineWidth = 2;
+  ctx.beginPath();
+  for(var i = 0; i < tmCpuHist.length; i++){
+    var px = i / 47 * (W - 4) + 2;
+    var py = H - 2 - (tmCpuHist[i] / 100) * (H - 6);
+    if(i) ctx.lineTo(px, py); else ctx.moveTo(px, py);
+  }
+  ctx.stroke();
+}
+function tmgrToggle(open){
+  var w = $('#tmgrWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    if(!tmCpuHist.length){   /* 开门就给一段历史, 不让绿线从零开始画 */
+      for(var i = 0; i < 12; i++) tmCpuHist.push(tmCpuNow());
+    }
+    tmLastCpu = tmCpuNow();
+    tmShow(tmTab);
+    if(!tmIv) tmIv = setInterval(tmTick, 1000);
+  } else {
+    if(tmIv){ clearInterval(tmIv); tmIv = null; }
+  }
+}
+$('#tbTmgr').addEventListener('click', function(){ tmgrToggle(true); });
+$('#tmgrClose').addEventListener('click', function(){ tmgrToggle(false); });
+[['App','app'],['Proc','proc'],['Perf','perf']].forEach(function(t){
+  $('#tmTab' + t[0]).addEventListener('click', function(){ tmShow(t[1]); });
+});
+$('#tmEndTask').addEventListener('click', tmEndTask);
+$('#tmSwitch').addEventListener('click', tmSwitchTo);
+$('#tmNewTask').addEventListener('click', tmNewTask);
+$('#tmKill').addEventListener('click', tmKillProc);
+(function(){ for(var i = 0; i < 24; i++) $('#tmMemBar').appendChild(document.createElement('i')); })();
+makeDraggable($('#tmgrWin'), $('#tmgrWin .titlebar'));
 
 /* ---------- 左下角双黑盒 · 甲板音乐 ---------- */
 /* 加歌: 音频文件放进 docs/music/, 再往 SONGS 里加一行 { name:'歌名', src:'docs/music/文件.mp3' } */
