@@ -281,6 +281,10 @@
   .lb-prev{left:20px; top:50%; transform:translateY(-50%)}
   .lb-next{right:20px; top:50%; transform:translateY(-50%)}
   .lb-close{top:16px; right:18px}
+  .lb-dl{position:absolute; z-index:2; top:16px; left:18px; width:42px; height:42px; background:#c9c9c9;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; color:#222; font-size:17px;
+    cursor:pointer; font-family:inherit; line-height:1}
+  .lb-dl:active{border-color:#6f6f6f #fff #fff #6f6f6f}
 
   /* ---------- 任务栏 ---------- */
   /* 底部安全区: 全面屏手机不被手势条压住 */
@@ -652,9 +656,15 @@
   .ab-status{display:flex; justify-content:space-between; align-items:center; gap:8px;
     border-top:1px solid #9a9a9a; padding:3px 8px; font-family:Consolas,monospace; font-size:11px; color:#333; background:#c9c9c9}
   #albumWinInfo{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .ab-dl{flex:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    font-family:"SimHei","黑体",sans-serif; font-size:11px; padding:2px 9px; cursor:pointer; color:#222}
+  .ab-dl:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .ab-dl[disabled]{color:#999; cursor:default}
   body.night #albumWin{background:#1a2338; border-color:#3a4763}
   body.night .ab-view{background:#0d1322; border-top-color:#101828}
   body.night .ab-status{background:#243050; border-top-color:#101828; color:#8b97b0}
+  body.night .ab-dl{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .ab-dl:active{border-color:#101828 #3a4763 #3a4763 #101828}
 
   /* ---------- 蓝屏: 同时开 4 个应用, 640K 内存的极限 ---------- */
   /* 系统级界面, 不分昼夜都是这一身蓝 — #0000aa 亮度足够低, 不算夜航亮背景 */
@@ -901,6 +911,7 @@
   body.night .lb-cap{background:#161e30; border-color:#3a4763 #101828 #101828 #3a4763; color:#aeb9d0}
   body.night .lb-cap b{color:#8fbf8f}
   body.night .lb-nav, body.night .lb-close{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .lb-dl{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   /* 图片型相册: 照片与缩略图 */
   .photo img{width:100%; display:block; border:1px solid #d5ccb4; background:#ddd3ba}
   #lbImg{display:none; max-width:86vw; max-height:60vh; border:1px solid #d5ccb4; background:#ddd3ba}
@@ -1582,6 +1593,7 @@
 <!-- ================= 相册灯箱 ================= -->
 <div id="lightbox" role="dialog" aria-modal="true" aria-label="查看像素画">
   <button class="lb-close" title="关闭" type="button">✕</button>
+  <button class="lb-dl" id="lbDl" title="下载此图" type="button">⬇</button>
   <button class="lb-nav lb-prev" title="上一张" type="button">‹</button>
   <canvas id="lbCanvas"></canvas>
   <img id="lbImg" alt="">
@@ -1678,7 +1690,7 @@
       <li>开始菜单翻新了: <b>系统与设备</b> / <b>网站设置</b>(屏保时长·夜航·音效·开机动画) / <b>游客信息</b> — 你是第几次上船, 它记得</li>
       <li>左下角三块小面板: <b>甲板音乐</b>(十四首已上架——VOCALOID 加英文歌和动漫主题曲, 像素频谱跟着唱) + <b>船长状态</b>(课表+学生假期双驱动的状态灯, 法定节假日自动切放假模式, 地点/事情/心情实时更新) + <b>灵动岛</b>(实时报你此刻在干嘛, 顺便记你上船几分钟)</li>
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
-      <li>相册: 十五本板块相册(已开张十本, 其余虚位以待), 点封面选中, 双击封面或点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭</li>
+      <li>相册: 十五本板块相册(已开张十一本, 其余虚位以待), 点封面选中, 双击封面或点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭; 大图左上角可<b>单张下载</b>, 相册窗口里能<b>整本打包带走</b></li>
       <li>右下角小船: 点一下 +1 海里 — <b>10</b> 红帆 · <b>30</b> 海鸥 · <b>60</b> 金帆 · <b>100</b> 夜灯</li>
     </ul>
 
@@ -1855,6 +1867,7 @@
   <div class="ab-view" id="albumWinView"></div>
   <div class="ab-status">
     <span id="albumWinInfo"></span>
+    <span class="ab-dl-wrap"><button class="ab-dl" id="albumDl" type="button" title="把整本相册的原图按顺序下载">⬇ 打包带走</button></span>
     <span>图片可点开大图 · ← → 切换 · Esc 关闭</span>
   </div>
 </div>
@@ -2060,14 +2073,14 @@
         <canvas id="wcBoat"></canvas>
         <div>
           <div class="wc-title">欢迎登船</div>
-          <div class="wc-sub">欢迎你，小朋友。这条船泊在互联网边上, 你刚好路过。</div>
+          <div class="wc-sub">欢迎你, 小朋友。船泊在互联网边上, 你刚好路过。</div>
         </div>
       </div>
       <div class="wc-badge">你是第 <b id="wcVisitN">?</b> 次登船的旅客 · <span id="wcRank"></span></div>
       <div class="wc-text">
         <p>这是一个把自己伪装成<b>老电脑</b>的个人网站: 会开机, 会关机, 闲置太久还会自己放屏保。</p>
-        <p>任务栏里藏着九个真能玩的应用 — 终端、扫雷、画板、倒计时沙漏, 还有一台<b>真实比例的太阳系</b>。彩蛋没有提示, 但值得自己撞见; 撞不明白再去翻帮助.chm, 那是官方外挂。</p>
-        <p>站名、便利贴、右下角的小船, 挨个点过去都有回应。相册是真的校园, 日记是真的近况, 留言板等真话。</p>
+        <p>任务栏里藏着一排真能玩的应用 — 终端、扫雷、画板、倒计时沙漏、<b>真实比例的太阳系</b>, 还有刚上船的<b>任务管理器</b>: 二十个 ChatGPT 正在里面挤内存。彩蛋没有提示, 但值得自己撞见; 撞不明白再翻帮助.chm, 那是官方外挂。</p>
+        <p>站名、便利贴、右下角的小船, 挨个点过去都有回应。相册是真的校园, 喜欢的图能<b>单张下载或整本打包</b>; 日记是真的近况; 甲板音乐常年在放。留言板等真话。</p>
         <p class="wc-hint">别急着逛完 — 这条船的座右铭是: 更新了, 又好像没更新。</p>
       </div>
       <div class="wc-device" id="wcDevice"></div>
@@ -3084,6 +3097,7 @@ function renderAlbumContent(){
   var a = ALBUMS[albumSel];
   $('#albumWinTitle').textContent = '相册.EXE — 《' + a.name + '》';
   $('#albumWinInfo').textContent = '《' + a.name + '》 · 共 ' + albumCount(a) + ' 张';
+  $('#albumDl').disabled = !a.kind || !albumCount(a);
   if(!a.kind){
     curPhotos = [];
     box.innerHTML = '<div class="album-empty"><div class="ae-gray"></div>' +
@@ -3136,6 +3150,56 @@ $('.lb-close').addEventListener('click', function(){ $('#lightbox').classList.re
 $('#lightbox').addEventListener('click', function(e){ if(e.target === this) this.classList.remove('open'); });
 $('.lb-prev').addEventListener('click', function(){ lbShow(lbIndex - 1); });
 $('.lb-next').addEventListener('click', function(){ lbShow(lbIndex + 1); });
+
+/* ---------- 相册下载: 单张装袋 / 整本打包, 不依赖任何外部库 ---------- */
+function dlBlob(name, blob){
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 5000);
+}
+function dlSafeName(s){ return String(s || '').replace(/[\\/:*?"<>|\s]+/g, '_').slice(0, 40) || 'photo'; }
+function dlPhoto(p, albumName, idx){   /* 像素画现场渲染 PNG, 实图 fetch 抓原文件 */
+  var base = (albumName ? dlSafeName(albumName) + '-' : '') +
+    (idx != null ? String(idx + 1).padStart(2, '0') + '-' : '') + dlSafeName(p.title || 'photo');
+  if(p.s){
+    var cv = document.createElement('canvas');
+    drawSprite(cv, p.s, 12);
+    if(!cv.toBlob){ toast('这个浏览器画不出 PNG, 换 Chrome / Edge 试试。'); return; }
+    cv.toBlob(function(b){ if(b) dlBlob(base + '.png', b); else toast('这张没能装袋, 稍后再试。'); }, 'image/png');
+    return;
+  }
+  fetch(p.img).then(function(r){ if(!r.ok) throw 0; return r.blob(); })
+    .then(function(b){ dlBlob(base + (p.img.match(/\.\w{3,4}$/) || ['.jpg'])[0], b); })
+    .catch(function(){ toast('本地预览抓不到原图 — 部署上线后就能带了。'); });
+}
+function lbAlbumName(){   /* 灯箱当前看的是哪本相册的图 */
+  if(curPhotos === PHOTOS) return '像素画集';
+  var a = ALBUMS.filter(function(x){ return x.kind === 'img' && x.photos === curPhotos; })[0];
+  return a ? a.name : '';
+}
+$('#lbDl').addEventListener('click', function(){
+  var p = curPhotos[lbIndex];
+  if(!p) return;
+  dlPhoto(p, lbAlbumName(), lbIndex);
+  toast('装袋: ' + (lbAlbumName() ? lbAlbumName() + ' · ' : '') + (p.title || 'photo'));
+});
+function dlAlbum(){   /* 整本按顺序下载, 间隔留给浏览器消化; 首次会问"允许多个下载" */
+  var a = ALBUMS[albumSel];
+  var list = a.kind === 'sprite' ? PHOTOS : (a.photos || []);
+  if(!list.length){ toast('这本还空着, 没什么可带的。'); return; }
+  toast('开始打包《' + a.name + '》' + list.length + ' 张 — 浏览器问"允许多个下载"时记得点头。');
+  list.forEach(function(p, i){
+    setTimeout(function(){
+      dlPhoto(p, a.name, i);
+      if(i === list.length - 1) setTimeout(function(){ toast('《' + a.name + '》打包完毕, ' + list.length + ' 张都在下载列表里。'); }, 700);
+    }, i * 450);
+  });
+}
+$('#albumDl').addEventListener('click', dlAlbum);
 document.addEventListener('keydown', function(e){
   if(!$('#lightbox').classList.contains('open')) return;
   if(e.key === 'Escape') $('#lightbox').classList.remove('open');
