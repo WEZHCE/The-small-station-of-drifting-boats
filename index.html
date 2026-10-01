@@ -1088,8 +1088,18 @@
   .tm-perflabel{display:flex; justify-content:space-between; align-items:baseline; margin:2px 2px 5px}
   .tm-perflabel b{font-family:"SimHei","黑体",sans-serif; font-size:13px; color:#4a3f2c}
   .tm-perflabel span{font-family:Consolas,monospace; font-size:12px; color:#3f5c33}
-  #tmCpuCv{display:block; width:100%; height:96px; image-rendering:pixelated;
+  #tmCpuCv{display:block; width:100%; height:88px; image-rendering:pixelated;
     border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; background:#0b120d}
+  #tmHeapCv{display:block; width:100%; height:64px; image-rendering:pixelated;
+    border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; background:#0b120d}
+  .tm-perfrow{display:flex; gap:4px; margin:2px 0 8px}
+  .tm-perfbox{flex:1; min-width:0; background:#f1ecdd; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    padding:4px 2px 3px; text-align:center; overflow:hidden}
+  .tm-perfbox em{display:block; font-style:normal; font-size:10px; color:#8a7d5f}
+  .tm-perfbox b{font-family:Consolas,monospace; font-size:15px; color:#3f5c33; white-space:nowrap}
+  .tm-pbarhead{width:44px; flex:none; text-align:center}
+  .tm-pbar{width:44px; height:10px; flex:none; box-sizing:border-box; background:#e5ddc6; border:1px solid #b8ab8a; padding:1px}
+  .tm-pbar i{display:block; height:100%; width:0; background:#3cb46e}
   #tmMemBar{display:flex; gap:3px; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; padding:4px; background:#fbf9f0; min-width:0}
   #tmMemBar i{flex:1; height:14px; min-width:0; background:#dcd4bd}
   #tmMemBar i.lit{background:#3cb46e}
@@ -1118,6 +1128,11 @@
   body.night .tm-perflabel b{color:#d8e2f5}
   body.night .tm-perflabel span{color:#8fbf8f}
   body.night #tmCpuCv{border-color:#101828 #3a4763 #3a4763 #101828; background:#0a1016}
+  body.night #tmHeapCv{border-color:#101828 #3a4763 #3a4763 #101828; background:#0a1016}
+  body.night .tm-perfbox{background:#16203a; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .tm-perfbox em{color:#7d8cab}
+  body.night .tm-perfbox b{color:#8fbf8f}
+  body.night .tm-pbar{background:#101828; border-color:#243050}
   body.night #tmMemBar{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828}
   body.night #tmMemBar i{background:#243050}
   body.night .tm-status span{background:#243050; border-color:#101828 #3a4763 #3a4763 #101828; color:#c8cfdd}
@@ -1919,11 +1934,19 @@
       <div class="tm-hint" id="tmProcNote">※ 结束的进程过几秒会自己爬回来——它们都这样。svchost 别碰。</div>
     </div>
     <div class="tm-panel" id="tmPanelPerf">
-      <div class="tm-perflabel"><b>CPU 使用记录</b><span id="tmCpuTxt">--%</span></div>
-      <canvas id="tmCpuCv" width="440" height="96"></canvas>
-      <div class="tm-perflabel"><b>内存使用</b><span id="tmMemTxt">--</span></div>
+      <div class="tm-perfrow">
+        <div class="tm-perfbox"><em>负载</em><b id="tmCpuBig">--</b></div>
+        <div class="tm-perfbox"><em>帧率</em><b id="tmFpsBig">--</b></div>
+        <div class="tm-perfbox"><em>对象</em><b id="tmDomBig">--</b></div>
+        <div class="tm-perfbox"><em>本次航行</em><b id="tmUpBig">--</b></div>
+      </div>
+      <div class="tm-perflabel"><b>负载历史(一格一秒)</b><span id="tmCpuTxt">--</span></div>
+      <canvas id="tmCpuCv" width="440" height="88"></canvas>
+      <div class="tm-perflabel"><b>系统内存 640K</b><span id="tmMemTxt">--</span></div>
       <div id="tmMemBar"></div>
-      <div class="tm-hint">※ 绿线一格一秒。任务管理器自己也占 42K——这数字看着看着就上去了。</div>
+      <div class="tm-perflabel"><b>JS 引擎实际占用</b><span id="tmHeapTxt">--</span></div>
+      <canvas id="tmHeapCv" width="440" height="64"></canvas>
+      <div class="tm-hint">※ 负载由真实帧率掉帧 + 你的输入事件算出——动动鼠标看它跳。640K 是账面, 下面蓝线是浏览器实际偷用的内存, 锯齿是垃圾回收在干活。</div>
     </div>
   </div>
   <div class="tm-status">
@@ -5363,7 +5386,37 @@ var TM_PROCS = [
 ];
 var TM_APP_MEM = 42;   /* 每个窗口的船票价: 473 + 42×4 = 641 > 640 */
 var tmTab = 'app', tmSelApp = -1, tmSelProc = '';
-var tmKilled = {}, tmIv = null, tmCpuHist = [], tmLastCpu = 0;
+var tmKilled = {}, tmIv = null, tmCpuHist = [], tmHeapHist = [], tmLastCpu = 0;
+/* 实时数据核: rAF 量真帧率, 输入事件真计数, performance.memory 拿真堆内存——账可以编, 数是真的 */
+var tmReal = { fps: 60, frames: 0, last: 0, acts: 0, raf: 0, t0: performance.now() };
+['mousemove','keydown','click','wheel','touchstart','scroll'].forEach(function(ev){
+  document.addEventListener(ev, function(){ tmReal.acts++; }, { passive: true, capture: true });
+});
+function tmFpsLoop(t){
+  tmReal.frames++;
+  if(t - tmReal.last >= 500){
+    tmReal.fps = Math.min(60, Math.round(tmReal.frames * 1000 / (t - tmReal.last)));
+    tmReal.frames = 0; tmReal.last = t;
+  }
+  tmReal.raf = requestAnimationFrame(tmFpsLoop);
+}
+function tmHeap(){
+  try{
+    var m = performance.memory;
+    if(m && isFinite(m.usedJSHeapSize) && m.usedJSHeapSize > 0) return m;   /* 有的环境是残缺桩, 只有上限没用量 */
+  }catch(e){}
+  return null;
+}
+function tmWinStat(sel){   /* 开着的应用来点真的: DOM 对象数 + 画布像素内存 */
+  var w = $(sel), nodes = 0, bytes = 0;
+  if(w){
+    nodes = w.querySelectorAll('*').length;
+    Array.prototype.forEach.call(w.querySelectorAll('canvas'), function(c){
+      bytes += (c.width || 0) * (c.height || 0) * 4;
+    });
+  }
+  return { nodes: nodes, kb: Math.max(1, Math.round(bytes / 1024)) };
+}
 function tmProcCount(){
   return TM_PROCS.reduce(function(s, p){ return s + (tmKilled[p.n] ? 0 : p.c); }, 0);
 }
@@ -5371,10 +5424,11 @@ function tmMemUsed(){
   var base = TM_PROCS.reduce(function(s, p){ return s + (tmKilled[p.n] ? 0 : p.mem); }, 0);
   return Math.min(640, base + bsodOpenCount() * TM_APP_MEM);
 }
-function tmCpuNow(){
-  var v = rand(4,10) + bsodOpenCount() * 19 + (dm.playing ? 5 : 0);
-  if(Math.random() < .06) v += rand(12,28);   /* 偶尔抽一下风 */
-  return Math.min(100, Math.round(v));
+function tmCpuNow(acts){   /* 负载 = 真掉帧 + 真输入事件 + 开窗数, 会跟着你的手跳 */
+  var fpsDrop = document.hidden ? 0 : Math.max(0, 60 - tmReal.fps);
+  var v = 3 + Math.min(acts || 0, 50) * .9 + fpsDrop * 1.3 + bsodOpenCount() * 4 + (dm.playing ? 3 : 0);
+  if(Math.random() < .05) v += rand(4, 12);
+  return Math.max(1, Math.min(99, Math.round(v)));
 }
 function tmProcCpu(p){
   if(p.music) return dm.playing ? Math.round(rand(14,26)) : 0;
@@ -5389,7 +5443,7 @@ function tmShow(tab){
   });
   if(tab === 'app') tmRenderApps();
   if(tab === 'proc') tmRenderProcs();
-  if(tab === 'perf') tmDraw();
+  if(tab === 'perf'){ tmDraw(); tmDrawHeap(); }
   tmStatus();
 }
 function tmRenderApps(){
@@ -5399,7 +5453,10 @@ function tmRenderApps(){
     var open = $(a[0]).classList.contains('open');
     var row = document.createElement('div');
     row.className = 'tm-approw' + (tmSelApp === i ? ' sel' : '');
-    row.innerHTML = '<span class="tm-appname">' + a[2] + '</span><span class="tm-appstate">' + (open ? '正在运行' : '未运行') + '</span>';
+    row.dataset.i = i;
+    var stTxt = '未运行';
+    if(open){ var ws = tmWinStat(a[0]); stTxt = '运行中 · ' + ws.nodes + ' 对象 · ' + ws.kb + 'K 画布'; }
+    row.innerHTML = '<span class="tm-appname">' + a[2] + '</span><span class="tm-appstate">' + stTxt + '</span>';
     row.addEventListener('click', function(){ tmSelApp = i; tmRenderApps(); });
     row.addEventListener('dblclick', function(){ if(open) frontWindow($(a[0])); });
     box.appendChild(row);
@@ -5427,15 +5484,18 @@ function tmNewTask(){
 }
 function tmRenderProcs(){
   var box = $('#tmProcList'), st = box.scrollTop;
-  box.innerHTML = '<div class="tm-prow tm-phead"><span class="tm-pname">映像名</span><span class="num">CPU</span><span class="num">内存</span></div>';
+  box.innerHTML = '<div class="tm-prow tm-phead"><span class="tm-pname">映像名</span><span class="num">CPU</span><span class="num">内存</span><span class="tm-pbarhead">负载</span></div>';
   TM_PROCS.forEach(function(p){
     if(tmKilled[p.n]) return;
     var row = document.createElement('div');
     row.className = 'tm-prow' + (tmSelProc === p.n ? ' sel' : '');
     row.dataset.n = p.n;
+    var cpu = tmProcCpu(p);
     row.innerHTML = '<span class="tm-pname">' + escHtml(p.n) + (p.c > 1 ? ' <i>×' + p.c + '</i>' : '') + '</span>' +
-      '<span class="num">' + String(tmProcCpu(p)).padStart(2,'0') + '</span>' +
-      '<span class="num">' + p.mem + 'K</span>';
+      '<span class="num">' + String(cpu).padStart(2,'0') + '</span>' +
+      '<span class="num">' + p.mem + 'K</span>' +
+      '<span class="tm-pbar"><i></i></span>';
+    row.lastElementChild.firstElementChild.style.width = Math.min(100, cpu / 40 * 100) + '%';
     row.addEventListener('click', function(){ tmSelProc = (tmSelProc === p.n) ? '' : p.n; tmRenderProcs(); });
     box.appendChild(row);
   });
@@ -5462,10 +5522,18 @@ function tmKillProc(){
 function tmStatus(){
   var mem = tmMemUsed(), pct = Math.round(mem / 640 * 100);
   $('#tmStProc').textContent = '进程: ' + tmProcCount();
-  $('#tmStCpu').textContent = 'CPU 使用: ' + tmLastCpu + '%';
-  $('#tmStMem').textContent = '内存使用: ' + pct + '%';
-  $('#tmCpuTxt').textContent = tmLastCpu + '%';
+  $('#tmStCpu').textContent = '负载: ' + tmLastCpu + '%';
+  $('#tmStMem').textContent = '内存: ' + pct + '%';
+  $('#tmCpuBig').textContent = tmLastCpu + '%';
+  $('#tmFpsBig').textContent = tmReal.fps + (document.hidden ? ' 后台' : '');
+  $('#tmDomBig').textContent = document.getElementsByTagName('*').length;
+  var up = Math.floor((performance.now() - tmReal.t0) / 1000);
+  $('#tmUpBig').textContent = Math.floor(up / 60) + ':' + ('0' + up % 60).slice(-2);
+  $('#tmCpuTxt').textContent = tmLastCpu + '% · ' + tmReal.fps + ' FPS';
   $('#tmMemTxt').textContent = mem + 'K / 640K (' + pct + '%)';
+  var hm = tmHeap();
+  if(hm) $('#tmHeapTxt').textContent = (hm.usedJSHeapSize / 1048576).toFixed(1) + ' MB · 上限 ' + (hm.jsHeapSizeLimit / 1073741824).toFixed(1) + ' GB';
+  else $('#tmHeapTxt').textContent = '这个浏览器不给看, 引擎保密。';
   var blocks = $$('#tmMemBar i');
   var lit = Math.round(pct / 100 * blocks.length);
   blocks.forEach(function(b, i){
@@ -5473,15 +5541,32 @@ function tmStatus(){
   });
 }
 function tmTick(){
-  tmLastCpu = tmCpuNow();
+  var acts = tmReal.acts; tmReal.acts = 0;
+  tmLastCpu = tmCpuNow(acts);
   tmCpuHist.push(tmLastCpu);
   if(tmCpuHist.length > 48) tmCpuHist.shift();
-  if(tmTab === 'perf') tmDraw();
-  if(tmTab === 'proc'){   /* 只改 CPU 数字, 不重建行, 点选不打架 */
+  var hm = tmHeap();
+  tmHeapHist.push(hm ? hm.usedJSHeapSize / 1048576 : 0);
+  if(tmHeapHist.length > 48) tmHeapHist.shift();
+  if(tmTab === 'perf'){ tmDraw(); tmDrawHeap(); }
+  if(tmTab === 'proc'){   /* 只改数字和条, 不重建行, 点选不打架 */
     $$('#tmProcList .tm-prow').forEach(function(row){
       if(row.classList.contains('tm-phead')) return;
       var p = null; TM_PROCS.forEach(function(q){ if(q.n === row.dataset.n) p = q; });
-      if(p && !tmKilled[p.n]) row.children[1].textContent = String(tmProcCpu(p)).padStart(2,'0');
+      if(p && !tmKilled[p.n]){
+        var c = tmProcCpu(p);
+        row.children[1].textContent = String(c).padStart(2,'0');
+        row.lastElementChild.firstElementChild.style.width = Math.min(100, c / 40 * 100) + '%';
+      }
+    });
+  }
+  if(tmTab === 'app'){   /* 开着的应用: 对象数/画布内存是真实的, 会跟着变 */
+    $$('#tmAppList .tm-approw').forEach(function(row){
+      var a = BSOD_APPS[+row.dataset.i];
+      if(a && $(a[0]).classList.contains('open')){
+        var ws = tmWinStat(a[0]);
+        row.lastElementChild.textContent = '运行中 · ' + ws.nodes + ' 对象 · ' + ws.kb + 'K 画布';
+      }
     });
   }
   tmStatus();
@@ -5494,14 +5579,39 @@ function tmDraw(){
   for(var x = 22; x < W; x += 22){ ctx.beginPath(); ctx.moveTo(x + .5, 0); ctx.lineTo(x + .5, H); ctx.stroke(); }
   for(var y = 22; y < H; y += 22){ ctx.beginPath(); ctx.moveTo(0, y + .5); ctx.lineTo(W, y + .5); ctx.stroke(); }
   if(tmCpuHist.length < 2) return;
-  ctx.strokeStyle = '#39d353'; ctx.lineWidth = 2;
+  var pts = tmCpuHist.map(function(v, i){
+    return [i / 47 * (W - 4) + 2, H - 2 - (v / 100) * (H - 6)];
+  });
   ctx.beginPath();
-  for(var i = 0; i < tmCpuHist.length; i++){
-    var px = i / 47 * (W - 4) + 2;
-    var py = H - 2 - (tmCpuHist[i] / 100) * (H - 6);
-    if(i) ctx.lineTo(px, py); else ctx.moveTo(px, py);
+  pts.forEach(function(p, i){ if(i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); });
+  ctx.strokeStyle = '#39d353'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.lineTo(pts[pts.length - 1][0], H - 1);
+  ctx.lineTo(pts[0][0], H - 1);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(60,180,110,.16)'; ctx.fill();
+}
+function tmDrawHeap(){   /* 真实 JS 堆曲线, 自动定标——垃圾回收一来就是锯齿 */
+  var cv = $('#tmHeapCv'), ctx = cv.getContext('2d');
+  var W = cv.width, H = cv.height;
+  ctx.fillStyle = '#0b120d'; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = '#1d3320'; ctx.lineWidth = 1;
+  for(var x = 22; x < W; x += 22){ ctx.beginPath(); ctx.moveTo(x + .5, 0); ctx.lineTo(x + .5, H); ctx.stroke(); }
+  if(!tmHeap() || tmHeapHist.length < 2){
+    ctx.fillStyle = '#55618a'; ctx.font = '12px Consolas,monospace';
+    ctx.fillText('此浏览器不给看——引擎保密。', 12, H / 2 + 4);
+    return;
   }
-  ctx.stroke();
+  var max = Math.max(4, Math.max.apply(null, tmHeapHist) * 1.15);
+  var pts = tmHeapHist.map(function(v, i){
+    return [i / 47 * (W - 4) + 2, H - 2 - (v / max) * (H - 6)];
+  });
+  ctx.beginPath();
+  pts.forEach(function(p, i){ if(i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); });
+  ctx.strokeStyle = '#6fa8dc'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.lineTo(pts[pts.length - 1][0], H - 1);
+  ctx.lineTo(pts[0][0], H - 1);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(111,168,220,.16)'; ctx.fill();
 }
 function tmgrToggle(open){
   var w = $('#tmgrWin');
@@ -5509,14 +5619,20 @@ function tmgrToggle(open){
   w.classList.toggle('open', will);
   if(will){
     frontWindow(w);
-    if(!tmCpuHist.length){   /* 开门就给一段历史, 不让绿线从零开始画 */
-      for(var i = 0; i < 12; i++) tmCpuHist.push(tmCpuNow());
+    if(!tmReal.raf) tmReal.raf = requestAnimationFrame(tmFpsLoop);
+    if(!tmCpuHist.length){   /* 开门就给一段历史, 不让线从零开始画 */
+      for(var i = 0; i < 12; i++){
+        tmCpuHist.push(tmCpuNow(0));
+        var hm = tmHeap();
+        tmHeapHist.push(hm ? hm.usedJSHeapSize / 1048576 : 0);
+      }
     }
-    tmLastCpu = tmCpuNow();
+    tmLastCpu = tmCpuNow(0);
     tmShow(tmTab);
     if(!tmIv) tmIv = setInterval(tmTick, 1000);
   } else {
     if(tmIv){ clearInterval(tmIv); tmIv = null; }
+    if(tmReal.raf){ cancelAnimationFrame(tmReal.raf); tmReal.raf = 0; }
   }
 }
 $('#tbTmgr').addEventListener('click', function(){ tmgrToggle(true); });
