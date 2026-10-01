@@ -2650,7 +2650,7 @@ var PHOTOS = [
 /* ================= 相册: 十五本——十一本开馆, 四本虚位以待 ================= */
 var ALBUMS = [
   { name:'像素画集', desc:'一格一格画出来的六个小家伙。', kind:'sprite' },
-  { name:'捣鼓token', desc:'AI 船员的燃料账本——配置、额度、账单, 和一些吓人的数字。', kw:'AI 模型 账单 代码', kind:'img',
+  { name:'捣鼓token', desc:'AI 船员的燃料账本——配置、额度、账单, 和一些吓人的数字。', kw:'AI 模型 账单 代码 DeepSeek 用量 API 请求 消费 Harness 额度', kind:'img',
     photos:[
       { img:'docs/tokens/zcode-model.png', title:'模型军火库',
         cap:'ZCode 的模型军火库: BigModel 领衔, longcat、deepseek、note、ikuncode 列队——周末礼包只剩 14%, 且用且珍惜。' },
@@ -2667,7 +2667,11 @@ var ALBUMS = [
       { img:'docs/tokens/ccswitch.png', title:'总账吓人版',
         cap:'CC Switch 总账: 22.17 亿 Token、10973 次请求、$128.78。缓存命中率 96.9%——这数字看着就治愈。' },
       { img:'docs/tokens/usage.png', title:'干饭排行榜',
-        cap:'模型用量环形图: 8.5 亿 tokens 下肚——GLM-5.3-Flash 独吞 81%, DeepSeek 两兄弟合起来约 14%, gpt-5.5 只舔到 2.1%。谁在船上干活, 饼图最诚实。' }
+        cap:'模型用量环形图: 8.5 亿 tokens 下肚——GLM-5.3-Flash 独吞 81%, DeepSeek 两兄弟合起来约 14%, gpt-5.5 只舔到 2.1%。谁在船上干活, 饼图最诚实。' },
+      { img:'docs/tokens/deepseek-usage.png', title:'DeepSeek 用量面板',
+        cap:'近 30 天的 DeepSeek 用量: ¥6.20、623 次 API 请求、204,512,854 Tokens——数字一大, 账单就开始有气势。' },
+      { img:'docs/tokens/deepseek-harness.png', title:'额度见底现场',
+        cap:'DeepSeek Harness 的任务现场: 代码改完了, 红色的额度提示也准时出现——船员还在, 燃料先告急。' }
     ] },
   { name:'校园时光', desc:'南阳市第三中学紫竹林校区 · 2026 年 5 月 24 日～6 月 24 日，从雨天到毕业。', kw:'初中 中考 学校 三中', kind:'img',
     photos:[
@@ -4784,7 +4788,7 @@ ALBUMS.forEach(function(a, ai){
     });
   }
 });
-var IS_TAGS = ['猫', '狗', '鲸鱼', '云', '操场', '教室', '毕业', '雨', '玩偶', '雪王', 'token', '灯笼', '魔方', '沙漏', '羽毛'];
+var IS_TAGS = ['猫', '狗', '鲸鱼', '云', '操场', '教室', '毕业', '雨', '玩偶', '雪王', 'token', '灯笼', '魔方', '沙漏', '羽毛', 'DeepSeek', '额度'];
 function isMark(s, kws){
   var out = s;
   kws.forEach(function(k){
