@@ -1844,6 +1844,9 @@
         <label class="set-check"><input type="checkbox" id="setSfx"> 系统音效 <span class="set-note" style="display:inline">(蜂鸣器是认真的)</span></label>
       </div>
       <div class="set-row">
+        <label class="set-check"><input type="checkbox" id="setMusic" checked> 开站播放音乐</label>
+      </div>
+      <div class="set-row">
         <label class="set-check"><input type="checkbox" id="setBoot"> 播放开机动画 <span class="set-note" style="display:inline">(每会话一次; 关掉则刷新直接进站)</span></label>
       </div>
     </div>
@@ -1875,7 +1878,7 @@
       </div>
       <div class="wc-device" id="wcDevice"></div>
       <div class="wc-btns">
-        <button id="welcomeStart" type="button">开始探索</button>
+        <button id="welcomeStart" type="button">进入系统</button>
       </div>
     </div>
   </div>
@@ -2547,7 +2550,7 @@ try{ bootPlayed = sessionStorage.getItem('bootPlayed') === '1'; }catch(e){}
 var bootSkipPref = false;
 try{ bootSkipPref = localStorage.getItem('skipBoot') === 'on'; }catch(e){}   /* 系统属性里可关开机动画 */
 /* 欢迎信挂起标记要赶在 finishBoot 可能被提前调用(减动效/跳过)之前就位 */
-try{ window.welcomePending = localStorage.getItem('welcomed') !== '1'; }catch(e){ window.welcomePending = true; }
+window.welcomePending = true;  /* 每次打开都出现 */
 if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
   finishBoot(); /* 尊重系统减动效设置, 直接进场 */
 } else if(bootSkipPref || bootPlayed){
@@ -4566,6 +4569,8 @@ function sysSyncSettings(){
   }catch(e){}
   $('#setSfx').checked = sfxOnPref;
   $('#setBoot').checked = !skipBootPref2;
+  var musicPref=true;try{musicPref=localStorage.getItem('autoplayMusic')!=='off';}catch(e){}
+  var setMusicEl=document.getElementById('setMusic');if(setMusicEl)setMusicEl.checked=musicPref;
   $('#setNight').checked = nightOn;
 }
 $$('#setSaver input').forEach(function(r){
@@ -4597,7 +4602,7 @@ function showWelcome(){
     : '设备建议: 大屏 + 鼠标, 你现在的装备就很对味。浏览器认最新版 Chrome / Edge, 别用祖传 IE, 它连船票都买不了。';
   drawSprite($('#wcBoat'), 'boat', 4);
   $('#welcomeWrap').classList.add('open');
-  try{ localStorage.setItem('welcomed', '1'); }catch(e){}
+  
 }
 function hideWelcome(){ $('#welcomeWrap').classList.remove('open'); }
 $('#welcomeClose').addEventListener('click', hideWelcome);
@@ -5206,6 +5211,7 @@ dmRender();
 dmVizFrame(0);
 /* 开站随机播放: 被浏览器自动播放策略拦下时, 第一次交互接着播 */
 function dmShuffleStart(){
+  try{ if(localStorage.getItem('autoplayMusic')==='off')return; }catch(e){}
   if(!SONGS.length) return;
   dm.idx = Math.floor(Math.random() * SONGS.length);
   dm.loadedIdx = -1;
