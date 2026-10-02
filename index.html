@@ -310,9 +310,9 @@
   #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
   #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
   /* 快捷启动区: 统一银色凸起底, 徽标统一任务栏灰(夜航整条任务栏换深色) */
-  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr{height:26px; display:flex; align-items:center; justify-content:center;
+  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{height:26px; display:flex; align-items:center; justify-content:center;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0 4px}
-  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active, #tbCount:active, #tbImg:active, #tbGrade:active, #tbCube:active, #tbTmgr:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active, #tbCount:active, #tbImg:active, #tbGrade:active, #tbCube:active, #tbTmgr:active, #tbNote:active, #tbMypc:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .tb-badge{min-width:22px; height:16px; display:flex; align-items:center; justify-content:center;
     font:bold 10px/14px Consolas,monospace; color:#333}
 
@@ -406,9 +406,9 @@
   body.night #taskbar{background:#1a2338; border-top-color:#3a4763}
   body.night #startBtn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night #startBtn:active{border-color:#101828 #3a4763 #3a4763 #101828}
-  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar, body.night #tbCount, body.night #tbImg, body.night #tbGrade, body.night #tbCube, body.night #tbTmgr{
+  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar, body.night #tbCount, body.night #tbImg, body.night #tbGrade, body.night #tbCube, body.night #tbTmgr, body.night #tbNote, body.night #tbMypc{
     background:#243050; border-color:#3a4763 #101828 #101828 #3a4763}
-  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active, body.night #tbCount:active, body.night #tbImg:active, body.night #tbGrade:active, body.night #tbCube:active, body.night #tbTmgr:active{
+  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active, body.night #tbCount:active, body.night #tbImg:active, body.night #tbGrade:active, body.night #tbCube:active, body.night #tbTmgr:active, body.night #tbNote:active, body.night #tbMypc:active{
     border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .tb-badge{color:#c8cfdd}
   body.night #tray{background:#243050; border-color:#101828 #3a4763 #3a4763 #101828; color:#c8cfdd}
@@ -714,6 +714,78 @@
   body.night .set-opts label, body.night .set-check{color:#c8cfdd}
   body.night .set-note{color:#7d8cab}
   body.night .sys-foot{color:#7d8cab; border-color:#243050}
+
+  /* ---------- 记事本.EXE: 自动保存的草稿纸 ---------- */
+  #noteWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(500px,94vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #noteWin.open{display:block}
+  #noteWin .titlebar{cursor:move}
+  #noteText{display:block; width:100%; height:38vh; min-height:210px; box-sizing:border-box; resize:none;
+    border:none; outline:none; background:#fbf7ec; padding:12px 14px;
+    font-family:Consolas,"Courier New",monospace; font-size:13.5px; line-height:1.8; color:#2e2a22}
+  .note-status{display:flex; justify-content:space-between; gap:8px; border-top:1px solid #9a9a9a;
+    padding:3px 10px; font-family:Consolas,monospace; font-size:11px; color:#333; background:#c9c9c9}
+  body.night #noteWin{background:#1a2338; border-color:#3a4763}
+  body.night #noteText{background:#0d1322; color:#c8cfdd}
+  body.night .note-status{background:#243050; border-top-color:#101828; color:#8b97b0}
+
+  /* ---------- 我的电脑: C:\ 小站 ---------- */
+  #mypcWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(560px,94vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #mypcWin.open{display:block}
+  #mypcWin .titlebar{cursor:move}
+  .mp-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px 6px; padding:14px 12px 10px;
+    background:#fbf7ec; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; margin:8px}
+  .mp-item{display:flex; flex-direction:column; align-items:center; gap:5px; padding:8px 4px 6px;
+    cursor:pointer; border:2px solid transparent; background:transparent}
+  .mp-item:hover{background:#e8e0cc}
+  .mp-item.sel{background:#12277e; border-color:#12277e}
+  .mp-item.sel .mp-label{color:#fff}
+  .mp-item.sel .mp-glyph{background:#3d6fd0; border-color:#6f95e0 #1c3a75 #1c3a75 #6f95e0; color:#fff}
+  .mp-glyph{width:44px; height:34px; display:flex; align-items:center; justify-content:center;
+    background:#ece2c8; border:2px solid; border-color:#fff #a89d84 #a89d84 #fff;
+    font-family:Consolas,monospace; font-size:10.5px; font-weight:bold; color:#6b5f45}
+  .mp-label{font-size:12px; color:#2e2a22; text-align:center; line-height:1.3; word-break:break-all}
+  .mp-preview{margin:0 8px 8px; min-height:64px; max-height:20vh; overflow-y:auto; background:#f2ecdd;
+    border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; padding:8px 11px;
+    font-size:12.5px; line-height:1.8; color:#4a4335; white-space:pre-wrap}
+  .mp-status{display:flex; justify-content:space-between; gap:8px; border-top:1px solid #9a9a9a;
+    padding:3px 10px; font-family:Consolas,monospace; font-size:11px; color:#333; background:#c9c9c9}
+  body.night #mypcWin{background:#1a2338; border-color:#3a4763}
+  body.night .mp-grid{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .mp-item:hover{background:#1c2740}
+  body.night .mp-item.sel{background:#3d6fd0}
+  body.night .mp-item.sel .mp-label{color:#fff}
+  body.night .mp-item.sel .mp-glyph{background:#3d6fd0}
+  body.night .mp-glyph{background:#16203a; border-color:#3a4763 #101828 #101828 #3a4763; color:#8fb4e8}
+  body.night .mp-label{color:#c8cfdd}
+  body.night .mp-preview{background:#101828; border-color:#101828 #3a4763 #3a4763 #101828; color:#c8cfdd}
+  body.night .mp-status{background:#243050; border-top-color:#101828; color:#8b97b0}
+
+  /* ---------- 像素船票 ---------- */
+  #ticketWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(520px,94vw);
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #ticketWin.open{display:block}
+  #ticketWin .titlebar{cursor:move}
+  .tk-body{padding:10px}
+  #tkCv{display:block; width:100%; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; background:#fbf7ec}
+  .tk-btns{display:flex; gap:8px; justify-content:flex-end; margin-top:8px}
+  .tk-btns button{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    font-family:"SimHei","黑体",sans-serif; font-size:12.5px; padding:5px 14px; cursor:pointer; color:#222}
+  .tk-btns button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .tk-note{margin-top:7px; font-size:11px; color:#84775a; text-align:center}
+  body.night #ticketWin{background:#1a2338; border-color:#3a4763}
+  body.night .tk-btns button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .tk-btns button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .tk-note{color:#7d8cab}
+  body.night #tkCv{border-color:#101828 #3a4763 #3a4763 #101828}
+
+  /* ---------- 夜班频道: 只在夜航出现 ---------- */
+  .night-channel{display:none; margin:14px auto 0; max-width:560px; text-align:center;
+    font-family:Consolas,"Courier New",monospace; font-size:12px; color:#5c6a8c; cursor:pointer;
+    border:1px dashed #2c3854; padding:6px 12px}
+  .night-channel:hover{color:#8fb4e8; border-color:#3a4763}
+  body.night .night-channel{display:block}
 
   /* ---------- 欢迎登船: 第一次打开网站的欢迎信 ---------- */
   #welcomeWrap{position:fixed; inset:0; z-index:350; background:rgba(32,26,15,.55); display:none;
@@ -1410,9 +1482,9 @@
     .album-covers{grid-template-columns:repeat(3,1fr); gap:10px}
     .album-cover{min-width:0}
     /* 手机上弹窗靠上放, 给输入法键盘留地方; 里程牌缩小; 任务栏紧凑排布 */
-    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin, #imgSearchWin, #gradeWin, #cubeWin, #tmgrWin{top:6vh; transform:translate(-50%,0)}
+    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin, #imgSearchWin, #gradeWin, #cubeWin, #tmgrWin, #noteWin, #mypcWin, #ticketWin{top:6vh; transform:translate(-50%,0)}
     #taskbar{gap:4px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr{padding:0 2px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{padding:0 2px}
     #tray{padding:0 6px}
     .help-body{max-height:56vh}
     #boatOdo{font-size:10.5px}
@@ -1423,7 +1495,7 @@
   @media (max-width:480px){
     #trayClock{display:none}
     #taskbar{flex-wrap:wrap; height:auto; padding:3px 4px calc(3px + env(safe-area-inset-bottom)); row-gap:3px; gap:3px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr{padding:0 5px}
+    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{padding:0 5px}
     body.on{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
     #deckDock{bottom:calc(78px + env(safe-area-inset-bottom))}
     #deckMusic, #capState, #dynIsland{width:158px}
@@ -1475,6 +1547,8 @@
         <div class="site-sub hand" id="siteSub" title="点一下换一句">一条慢悠悠的船, 泊在互联网边上。</div>
       </div>
     </header>
+
+    <div class="night-channel" id="nightChannel" title="点一下, 有一台只在夜航出现的电台">✦ 夜班频道 — 全船都睡了, 你没睡。这里有一台不播节目单的电台: night.fm</div>
 
     <nav class="menu">
       <a href="#about">关于我</a>
@@ -1647,6 +1721,8 @@
   <button id="tbGrade" type="button" title="成绩监控.EXE — 加密成绩档案"><span class="tb-badge">绩</span></button>
   <button id="tbCube" type="button" title="魔方.EXE — 三阶/四阶 建模还原"><span class="tb-badge">魔</span></button>
   <button id="tbTmgr" type="button" title="任务管理器.EXE — 640K 都在谁手里"><span class="tb-badge">任</span></button>
+  <button id="tbNote" type="button" title="记事本.EXE — 自动保存的草稿纸"><span class="tb-badge">记</span></button>
+  <button id="tbMypc" type="button" title="我的电脑 — C:\ 小站"><span class="tb-badge">脑</span></button>
   <div id="tray">
     <button id="nightBtn" type="button" title="夜航灯: 点我开关(19:00~6:00 自动点)">点灯</button>
     <span id="trayClock" title="点一下看宜忌">--:--</span>
@@ -1656,6 +1732,7 @@
   <button id="smSys" type="button">系统与设备(I)</button>
   <button id="smSettings" type="button">网站设置(S)</button>
   <button id="smVisitor" type="button">游客信息(V)</button>
+  <button id="smCheckin" type="button">每日签到(D)</button>
   <div class="sm-sep"></div>
   <button id="startShutdown" type="button">关机(U)</button>
 </div>
@@ -1690,6 +1767,7 @@
       <li>开始菜单翻新了: <b>系统与设备</b> / <b>网站设置</b>(屏保时长·夜航·音效·开机动画) / <b>游客信息</b> — 你是第几次上船, 它记得</li>
       <li>左下角三块小面板: <b>甲板音乐</b>(十四首已上架——VOCALOID 加英文歌和动漫主题曲, 像素频谱跟着唱) + <b>船长状态</b>(课表+学生假期双驱动的状态灯, 法定节假日自动切放假模式, 地点/事情/心情实时更新) + <b>灵动岛</b>(实时报你此刻在干嘛, 顺便记你上船几分钟)</li>
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
+      <li>开始菜单里有<b>每日签到</b>: +5 海里, 连签 7 天翻倍; 游客信息里能领<b>像素船票</b>(可下载), 还有<b>秘密清单</b> — 全站藏着 18 个秘密, 撞到一个记一个</li>
       <li>相册: 十五本板块相册(已开张十一本, 其余虚位以待), 点封面选中, 双击封面或点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭; 大图左上角可<b>单张下载</b>, 相册窗口里能<b>整本打包带走</b></li>
       <li>右下角小船: 点一下 +1 海里 — <b>10</b> 红帆 · <b>30</b> 海鸥 · <b>60</b> 金帆 · <b>100</b> 夜灯</li>
     </ul>
@@ -1709,12 +1787,14 @@
       <li><b>搜 图片搜索.EXE</b> — 按内容和标签找图: 输入"猫/操场/云/毕业"这类关键词, 或直接点标签; 点结果原图大图看</li>
       <li><b>绩 成绩监控.EXE</b> — 船长的加密成绩档案: 口令解锁才能翻(提示: 生日), 源码里连明文都没有, 关窗即重新上锁</li>
       <li><b>任 任务管理器.EXE</b> — 三页账: 应用看谁开着, 进程看谁在跑(二十个 ChatGPT 正在挤内存), 性能看 640K 还剩多少; 任务管理器自己也占 42K, 这数字看着看着就上去了</li>
+      <li><b>记 记事本.EXE</b> — 船长留的草稿纸: 写什么都行, 自动存本机, 下次打开还在</li>
+      <li><b>脑 我的电脑</b> — C:\ 小站的文件浏览器: 单击看说明, 双击打开; 目录是假的, 回忆是真的</li>
     </ul>
 
     <div class="help-sec">🌙 这台电脑也会累</div>
     <ul>
       <li>19:00~6:00 自动进入夜航模式 (托盘点灯可手动切换, 全站配色跟随)</li>
-      <li>闲置 <b>两分钟</b>, 屏保自己开演: 星空 + 小船 + 像素时钟, 动一下就回来</li>
+      <li>闲置 <b>两分钟</b>, 屏保自己开演: 星空 + 小船 + 像素时钟; 屏保里<b>按任意键</b>变成躲避陨石的小游戏(←→/AD 移动, 最高分本机保留), 动鼠标回甲板</li>
       <li>开始菜单 → 关机: CRT 坍缩收场, "电源"键重新开机, 还带 BIOS 自检</li>
       <li>同时开 <b>4 个</b>应用会蓝屏 — 640K 内存的极限; 按任意键退出, 代价是全部窗口关闭。想知道 640K 都被谁吃了, 任务管理器的性能页有账</li>
     </ul>
@@ -1937,7 +2017,7 @@
         <button id="tmSwitch" type="button">切换至</button>
         <button id="tmNewTask" type="button">新任务...</button>
       </div>
-      <div class="tm-hint">※ 双击一个开着的任务, 把它拽到最前面。同时开 4 个, 这台电脑会给你好看。</div>
+      <div class="tm-hint" id="tmAppHint">※ 双击一个开着的任务, 把它拽到最前面。同时开 4 个, 这台电脑会给你好看。</div>
     </div>
     <div class="tm-panel" id="tmPanelProc">
       <div class="tm-proclist" id="tmProcList"></div>
@@ -2062,6 +2142,37 @@
   <div class="sys-foot">改动即时生效, 资料只存在你这台电脑上, 船上不装监控。</div>
 </div>
 
+<!-- ================= 记事本.EXE: 自动保存的草稿纸 ================= -->
+<div id="noteWin">
+  <div class="titlebar"><span class="tb-title">记事本.EXE — 船长留的草稿纸</span>
+    <button class="tb-btn" id="noteClose" title="关闭">✕</button>
+  </div>
+  <textarea id="noteText" spellcheck="false" placeholder="想写什么写什么 — 自动存在这台电脑里, 只有你自己看得到。"></textarea>
+  <div class="note-status"><span id="noteStat">未动笔</span><span>自动保存 · 不上传</span></div>
+</div>
+
+<!-- ================= 我的电脑: C:\ 小站 ================= -->
+<div id="mypcWin">
+  <div class="titlebar"><span class="tb-title">我的电脑 — C:\ 小站</span>
+    <button class="tb-btn" id="mypcClose" title="关闭">✕</button>
+  </div>
+  <div class="mp-grid" id="mpGrid"></div>
+  <div class="mp-preview" id="mpPreview">单击选中看说明, 双击打开。</div>
+  <div class="mp-status"><span id="mpStat">8 个对象</span><span>目录是假的, 回忆是真的</span></div>
+</div>
+
+<!-- ================= 像素船票 ================= -->
+<div id="ticketWin">
+  <div class="titlebar"><span class="tb-title">像素船票 — 登船凭证</span>
+    <button class="tb-btn" id="tkClose" title="关闭">✕</button>
+  </div>
+  <div class="tk-body">
+    <canvas id="tkCv" width="920" height="420"></canvas>
+    <div class="tk-btns"><button id="tkDl" type="button">⬇ 下载船票</button><button id="tkHide" type="button">收好</button></div>
+    <div class="tk-note">票是真的, 船也是真的, 检票员不存在。</div>
+  </div>
+</div>
+
 <!-- ================= 欢迎登船: 首次到访的欢迎信 ================= -->
 <div id="welcomeWrap">
   <div id="welcome">
@@ -2114,7 +2225,7 @@
 
 <div id="saver">
   <canvas id="saverFx"></canvas>
-  <div class="saver-hint">· 屏保: 船在夜里自己开 · 动一动鼠标回来 ·</div>
+  <div class="saver-hint">· 屏保: 船在夜里自己开 · 按任意键玩躲避陨石 · 动鼠标回甲板 ·</div>
 </div>
 
 <!-- ================= 蓝屏: 640K 的极限 ================= -->
@@ -3394,6 +3505,27 @@ function toast(msg){
 /* ================= 小彩蛋们 ================= */
 
 /* 右下角的小船: 点它溅水花, 顺便积累航程(存 localStorage, 里程碑解锁皮肤) */
+/* ---------- 秘密清单: 全站 18 个彩蛋, 撞到就记, 游客信息里看账 ---------- */
+var SECRETS = [
+  ['term', '深夜终端'], ['konami', '上上下下的约定'], ['wave', '呼风唤雨'],
+  ['logo', '双击的彩带'], ['name', '点歪的招牌'], ['sub', '副标题抽奖机'],
+  ['sticky', '便利贴黄历'], ['clock', '时钟里的宜忌'], ['boat', '一船之主'],
+  ['bsod', '640K 幸存者'], ['deepsea', '深海来电'], ['nightfm', '夜班电台听众'],
+  ['bottle', '捞瓶人'], ['checkin', '忠实旅客'], ['game', '星际船长'],
+  ['ticket', '持票乘客'], ['notepad', '留言的船长'], ['mypc', '舱内探员']
+];
+function secretFound(){
+  try{ return JSON.parse(localStorage.getItem('secretsFound') || '[]'); }catch(e){ return []; }
+}
+function foundSecret(id){
+  var arr = secretFound();
+  if(arr.indexOf(id) >= 0) return;
+  arr.push(id);
+  try{ localStorage.setItem('secretsFound', JSON.stringify(arr)); }catch(e){}
+  var s = null; SECRETS.forEach(function(x){ if(x[0] === id) s = x; });
+  setTimeout(function(){ toast('发现秘密 ' + arr.length + '/' + SECRETS.length + ': ' + (s ? s[1] : id) + ' — 清单在游客信息里。'); }, 600);
+}
+
 function getMiles(){ var v = 0; try{ v = parseInt(localStorage.getItem('boatMiles'), 10) || 0; }catch(e){} return v; }
 var BOAT_ROWS = SPRITES.boat.rows;
 (function(){
@@ -3442,9 +3574,40 @@ $('#boatPet').addEventListener('click', function(){
   else if(m === 100){ unlocked = '航程 100 海里! 夜里也点起灯了。'; confetti(); }
   refreshPet();
   toast(unlocked || '扑通! +1 海里');
+  foundSecret('boat');
   setTimeout(function(){ boatBusy = false; }, 600);
 });
 refreshPet();
+
+/* ---------- 每日签到: +5 海里, 连签 7 天有加成 ---------- */
+function checkin(){
+  var last = '', streak = 0, total = 0;
+  try{
+    last = localStorage.getItem('checkinLast') || '';
+    streak = parseInt(localStorage.getItem('checkinStreak'), 10) || 0;
+    total = parseInt(localStorage.getItem('checkinTotal'), 10) || 0;
+  }catch(e){}
+  var d = new Date(), pad = function(n){ return ('0' + n).slice(-2); };
+  var today = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  if(last === today){ toast('今天签过了 — 连续 ' + streak + ' 天, 累计 ' + total + ' 次。明天再来。'); return; }
+  var y = new Date(Date.now() - 86400000);
+  var yStr = y.getFullYear() + '-' + pad(y.getMonth() + 1) + '-' + pad(y.getDate());
+  streak = (last === yStr) ? streak + 1 : 1;
+  total++;
+  var gain = 5;
+  var bonus = '';
+  if(streak % 7 === 0){ gain = 10; bonus = ' 连签满 ' + streak + ' 天, 船长翻倍给!'; }
+  try{
+    localStorage.setItem('checkinLast', today);
+    localStorage.setItem('checkinStreak', String(streak));
+    localStorage.setItem('checkinTotal', String(total));
+    localStorage.setItem('boatMiles', String(getMiles() + gain));
+  }catch(e){}
+  refreshPet();
+  toast('签到成功! +' + gain + ' 海里 — 连续 ' + streak + ' 天 · 累计 ' + total + ' 次。' + bonus);
+  foundSecret('checkin');
+}
+$('#smCheckin').addEventListener('click', function(){ smClose(); checkin(); });
 
 /* 单击站标, 船会晃两下; 双击才是彩带 */
 var logoClickT = null;
@@ -3460,6 +3623,7 @@ $('#logo').addEventListener('dblclick', function(){
   clearTimeout(logoClickT); logoClickT = null;
   confetti();
   toast('彩带伺候! 节日快乐!');
+  foundSecret('logo');
 });
 
 /* 连按方向键 / WASD, 页面像船一样摇晃 */
@@ -3468,6 +3632,7 @@ var KEY_SET = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W
 document.addEventListener('keydown', function(e){
   var tag = (e.target && e.target.tagName) || '';
   if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+  if(saverOn) return;   /* 屏保小游戏期间, 键盘归游戏 */
   if(KEY_SET.indexOf(e.key) < 0) return;
   var now = Date.now();
   if(now - lastKeyT > 1400) keyStrokes = 0;
@@ -3478,6 +3643,7 @@ document.addEventListener('keydown', function(e){
     var win = $('#top');
     win.classList.remove('rocking'); void win.offsetWidth; win.classList.add('rocking');
     toast('风浪有点大, 扶稳了。');
+    foundSecret('wave');
   }
 });
 
@@ -3496,6 +3662,7 @@ $('#nowTime').addEventListener('click', function(){
   var yi = pick(['宜: 摸鱼','宜: 写代码','宜: 睡觉','宜: 发呆','宜: 吃泡面','宜: 存档']);
   var ji = pick(['忌: 加班','忌: 熬夜','忌: 改需求','忌: 删库','忌: 内卷','忌: 手滑']);
   toast(yi + ' · ' + ji + ' (黄历由本站友情编造)');
+  foundSecret('clock');
 });
 
 /* 点站名: 招牌被你点歪了, 整个窗口跟着晃 */
@@ -3504,6 +3671,7 @@ $('.site-name').addEventListener('click', function(){
   var win = $('#top');
   win.classList.remove('rocking'); void win.offsetWidth; win.classList.add('rocking');
   toast(pick(NAME_LINES));
+  foundSecret('name');
 });
 
 /* 点副标题: 手动换一句, 不用等明天 */
@@ -3511,6 +3679,7 @@ $('#siteSub').addEventListener('click', function(){
   var cur = $('#siteSub').textContent, next = cur, guard = 0;
   while(next === cur && guard++ < 10) next = pick(SUBS);
   $('#siteSub').textContent = next;
+  foundSecret('sub');
 });
 
 /* 点运行天数: 报个数 */
@@ -3541,6 +3710,7 @@ $('.sticky-note').addEventListener('click', function(){
   var n = $('.sticky-note');
   n.classList.remove('wiggle'); void n.offsetWidth; n.classList.add('wiggle');
   $('#snYiJi').textContent = '宜: ' + pick(YI) + ' · 忌: ' + pick(JI) + ' (黄历友情编造)';
+  foundSecret('sticky');
 });
 
 function confetti(){
@@ -3683,6 +3853,7 @@ $('#trayClock').addEventListener('click', function(){
   var yi = pick(['宜: 摸鱼','宜: 写代码','宜: 睡觉','宜: 发呆','宜: 吃泡面','宜: 存档']);
   var ji = pick(['忌: 加班','忌: 熬夜','忌: 改需求','忌: 删库','忌: 内卷','忌: 手滑']);
   toast(yi + ' · ' + ji + ' (黄历由本站友情编造)');
+  foundSecret('clock');
 });
 
 /* ================= 隐藏终端: 按 ~ 或点标题栏文字 ================= */
@@ -3692,6 +3863,7 @@ function termToggle(open){
   term.classList.toggle('open', will);
   if(will){
     frontWindow(term);
+    foundSecret('term');
     /* 真 cmd 每次启动都打 banner */
     termPrint('Microsoft Windows [版本 10.0.19045.3155]');
     termPrint('(c) 船只悠悠。保留所有权利。');
@@ -3704,6 +3876,7 @@ $('#termClose').addEventListener('click', function(){ termToggle(false); });
 document.addEventListener('keydown', function(e){
   var tag = (e.target && e.target.tagName) || '';
   if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+  if(saverOn) return;   /* 屏保小游戏期间, 键盘归游戏 */
   if(e.key === '`' || e.key === '~') termToggle();
 });
 function termPrint(s){
@@ -4105,6 +4278,8 @@ function brNavigate(input, fromHist){
   setTimeout(function(){
     if(token !== brToken) return;
     brRender(site, u);
+    if(site && site.url === 'deepsea.void') foundSecret('deepsea');
+    if(site && site.url === 'night.fm') foundSecret('nightfm');
     $('#brUrl').value = site ? site.url : u;
     $('#brStatus').textContent = '完成';
     setTimeout(function(){ if(token === brToken) $('#brProg').style.width = '0'; }, 450);
@@ -4833,7 +5008,7 @@ var BSOD_APPS = [
   ['#mineWin', mineToggle, '扫雷'], ['#diaryWin', diaryAppToggle, '日记.EXE'], ['#browserWin', brToggle, '小站浏览器'],
   ['#hgWin', hgToggle, '沙漏'], ['#paintWin', ptPaintToggle, '画板'], ['#solarWin', solarToggle, '太阳系'],
   ['#imgSearchWin', imgSearchToggle, '图片搜索'], ['#gradeWin', gradeToggle, '成绩监控'],
-  ['#tmgrWin', tmgrToggle, '任务管理器']
+  ['#tmgrWin', tmgrToggle, '任务管理器'], ['#noteWin', noteToggle, '记事本'], ['#mypcWin', mypcToggle, '我的电脑']
 ];
 var bsodArmed = true;
 function bsodOpenCount(){
@@ -4853,6 +5028,8 @@ function bsodCrash(){
   document.documentElement.style.overflow = 'hidden';   /* 蓝屏要盖住整屏, 滚动条也得收敛 */
   $('#bsod').classList.add('show');
   sdBeep(160, .4);
+  try{ localStorage.setItem('bsodCount', String((parseInt(localStorage.getItem('bsodCount'), 10) || 0) + 1)); }catch(e){}
+  foundSecret('bsod');
 }
 function bsodExit(){
   if(!$('#bsod').classList.contains('show')) return;
@@ -4961,9 +5138,19 @@ function sysFill(){
     sysRow('视野', window.innerWidth + '×' + window.innerHeight + '(浏览器视口)') +
     sysRow('来路', from) +
     sysRow('网络', navigator.onLine ? '在线' : '离线') +
+    sysRow('秘密清单', secretFound().length + ' / ' + SECRETS.length + ' 已发现') +
     '</table>' +
+    (function(){
+      var names = secretFound().map(function(id){
+        var s = null; SECRETS.forEach(function(x){ if(x[0] === id) s = x; });
+        return s ? s[1] : id;
+      });
+      return names.length
+        ? '<p class="set-note">已发现: ' + names.join(' · ') + ' — 剩下的在站里自己撞。</p>'
+        : '<p class="set-note">一个秘密都还没撞到 — 这站里藏着 ' + SECRETS.length + ' 个, 挨个点过去总会有。</p>';
+    })() +
     '<p class="set-note">以上资料只存在你这台电脑的 localStorage 里, 不上传任何地方 — 船上不装监控。</p>' +
-    '<div class="wc-again"><button id="wcAgain" type="button">再看一遍欢迎信 »</button></div>';
+    '<div class="wc-again"><button id="tkOpen" type="button">领取像素船票 »</button> <button id="wcAgain" type="button">再看一遍欢迎信 »</button></div>';
 }
 function sysSyncSettings(){
   var sw = 2;
@@ -5022,6 +5209,174 @@ $('#welcomeStart').addEventListener('click', function(){
 $('#welcomeWrap').addEventListener('click', function(e){ if(e.target === this) hideWelcome(); });
 $('#sysPanelVisit').addEventListener('click', function(e){
   if(e.target.closest('#wcAgain')){ smClose(); sysToggle(false); showWelcome(); }
+  if(e.target.closest('#tkOpen')){ smClose(); sysToggle(false); openTicket(); }
+});
+
+/* ---------- 记事本.EXE: 自动保存的草稿纸 ---------- */
+function noteToggle(open){
+  var w = $('#noteWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    try{ $('#noteText').value = localStorage.getItem('notepadText') || ''; }catch(e){}
+    noteStat();
+    if(window.innerWidth > 760) $('#noteText').focus();
+  }
+}
+var noteSaveT = null;
+function noteStat(){
+  var len = $('#noteText').value.length;
+  $('#noteStat').textContent = len ? (len + ' 字 · 已自动保存') : '未动笔';
+}
+$('#noteText').addEventListener('input', function(){
+  foundSecret('notepad');
+  clearTimeout(noteSaveT);
+  var v = this.value;
+  noteSaveT = setTimeout(function(){
+    try{ localStorage.setItem('notepadText', v); }catch(e){}
+    noteStat();
+  }, 400);
+});
+$('#tbNote').addEventListener('click', function(){ noteToggle(true); });
+$('#noteClose').addEventListener('click', function(){ noteToggle(false); });
+makeDraggable($('#noteWin'), $('#noteWin .titlebar'));
+
+/* ---------- 我的电脑: C:\ 小站 ---------- */
+var MYPC_ITEMS = [
+  { n:'船票.TXT', g:'TXT', act:'ticket', prev:function(){ return '一张船票的存根:\n第 ' + visitN + ' 次登船 · 航程 ' + getMiles() + ' 海里。\n(想要正式的? 游客信息里能领一张像素船票。)'; } },
+  { n:'宜忌黄历.DB', g:'DB', act:'', prev:'宜: 点右下角的时钟\n忌: 全信\n(黄历由本站友情编造, 时钟那里每天两签。)' },
+  { n:'相册', g:'DIR', act:'gallery', prev:'十五本相册, 十一本开馆。\n校门、操场、像素猫和船长的画, 都在里面。\n大图能单张下载, 整本也能打包带走。' },
+  { n:'日记', g:'DIR', act:'diary', prev:'船舱日记 — 近况和日记记在同一本账上,\n红点标过的日子, 船都出过海。' },
+  { n:'甲板音乐', g:'DIR', act:'', prev:'十四首常年在放: VOCALOID、英文歌、动漫主题曲。\n左下角那块黑盒就是机房。' },
+  { n:'帮助.chm', g:'CHM', act:'help', prev:'全站彩蛋的官方外挂。\n翻开前有一道剧透门帘 — 自己撞见的和看答案的, 差一条海峡。' },
+  { n:'系统盘', g:'SYS', act:'sys', prev:'Windows 98 · 船只悠悠版, 内核 v7.10。\n640K 内存 — 同时开 4 个应用除外。' },
+  { n:'回收站', g:'BIN', act:'', prev:'空的。\n这条船什么都不丢, 连坏心情都捞去当燃料了。' }
+];
+var mpSel = -1;
+function mypcToggle(open){
+  var w = $('#mypcWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    foundSecret('mypc');
+    mpRender();
+  }
+}
+function mpRender(){
+  var box = $('#mpGrid');
+  box.innerHTML = '';
+  MYPC_ITEMS.forEach(function(it, i){
+    var el = document.createElement('div');
+    el.className = 'mp-item' + (mpSel === i ? ' sel' : '');
+    el.innerHTML = '<span class="mp-glyph">' + it.g + '</span><span class="mp-label">' + it.n + '</span>';
+    el.addEventListener('click', function(){
+      mpSel = i;
+      mpRender();
+      $('#mpPreview').textContent = typeof it.prev === 'function' ? it.prev() : it.prev;
+    });
+    el.addEventListener('dblclick', function(){ mpAct(it.act); });
+    box.appendChild(el);
+  });
+  $('#mpStat').textContent = MYPC_ITEMS.length + ' 个对象';
+}
+function mpAct(act){
+  if(act === 'ticket'){ mypcToggle(false); openTicket(); return; }
+  if(act === 'gallery'){ mypcToggle(false); var g = document.querySelector('#gallery'); if(g) g.scrollIntoView({ behavior: 'smooth' }); return; }
+  if(act === 'diary'){ mypcToggle(false); diaryAppToggle(true); return; }
+  if(act === 'help'){ mypcToggle(false); helpToggle(true); return; }
+  if(act === 'sys'){ mypcToggle(false); sysToggle(true, 'sys'); return; }
+}
+$('#tbMypc').addEventListener('click', function(){ mypcToggle(true); });
+$('#mypcClose').addEventListener('click', function(){ mypcToggle(false); });
+makeDraggable($('#mypcWin'), $('#mypcWin .titlebar'));
+
+/* ---------- 像素船票: canvas 手绘, 可下载 ---------- */
+function ticketNo(){
+  var s = (visitFirst || '') + ':' + visitN, h = 5381;
+  for(var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
+  return ('000000' + (h % 1000000)).slice(-6);
+}
+function openTicket(){
+  var w = $('#ticketWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    drawTicket();
+  }
+}
+function drawTicket(){
+  var cv = $('#tkCv'), ctx = cv.getContext('2d');
+  var W = cv.width, H = cv.height;   /* 2x 绘制, 下载的 PNG 更清楚 */
+  ctx.fillStyle = '#fbf7ec'; ctx.fillRect(0, 0, W, H);
+  /* 双线蓝框 */
+  ctx.strokeStyle = '#2038a8'; ctx.lineWidth = 6; ctx.strokeRect(9, 9, W - 18, H - 18);
+  ctx.lineWidth = 2; ctx.strokeRect(22, 22, W - 44, H - 44);
+  /* 小船 */
+  var tmp = document.createElement('canvas');
+  drawSprite(tmp, boatSkinName(), 6);
+  ctx.drawImage(tmp, 52, 58);
+  /* 票头 */
+  ctx.fillStyle = '#3f5c33';
+  ctx.font = 'bold 44px "KaiTi","楷体",serif';
+  ctx.fillText('船 票', 200, 92);
+  ctx.fillStyle = '#8a7d5f';
+  ctx.font = '20px Consolas,monospace';
+  ctx.fillText('BOAT TICKET · 船只悠悠的小站', 200, 126);
+  /* 虚线分隔 */
+  ctx.strokeStyle = '#b3a88c'; ctx.lineWidth = 2; ctx.setLineDash([8, 8]);
+  ctx.beginPath(); ctx.moveTo(52, 156); ctx.lineTo(W - 52, 156); ctx.stroke();
+  ctx.setLineDash([]);
+  /* 票面信息 */
+  var rank = visitRank(visitN);
+  var miles = getMiles();
+  var cabin = miles >= 100 ? '头等舱(带夜灯)' : miles >= 60 ? '二等舱(金帆)' : miles >= 10 ? '三等舱(红帆)' : '经济舱(硬座)';
+  ctx.fillStyle = '#2e2a22'; ctx.font = '24px "SimSun","宋体",serif';
+  ctx.fillText('旅客: 第 ' + visitN + ' 次登船 · ' + rank, 52, 208);
+  ctx.fillText('航程: ' + miles + ' 海里 · ' + cabin, 52, 250);
+  ctx.fillText('登船于: ' + (visitFirst || '记不清了'), 52, 292);
+  ctx.fillText('检票: 无需 — 这条船只认脸熟', 52, 334);
+  /* 票号 + 存根区 */
+  ctx.fillStyle = '#2038a8'; ctx.font = 'bold 30px Consolas,monospace';
+  ctx.fillText('NO.' + ticketNo(), 52, 384);
+  ctx.strokeStyle = '#b3a88c'; ctx.setLineDash([6, 8]);
+  ctx.beginPath(); ctx.moveTo(W - 150, 40); ctx.lineTo(W - 150, H - 40); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#8a7d5f'; ctx.font = '20px Consolas,monospace';
+  ctx.save();
+  ctx.translate(W - 96, H / 2); ctx.rotate(-Math.PI / 2);
+  ctx.fillText('KEEP · 存根', -52, 6);
+  ctx.restore();
+  /* 打孔 */
+  ctx.fillStyle = '#fbf7ec';
+  ctx.beginPath(); ctx.arc(W - 150, 30, 12, 0, 6.29); ctx.fill();
+  ctx.beginPath(); ctx.arc(W - 150, H - 30, 12, 0, 6.29); ctx.fill();
+  ctx.strokeStyle = '#d5ccb4'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(W - 150, 30, 12, 0, 6.29); ctx.stroke();
+  ctx.beginPath(); ctx.arc(W - 150, H - 30, 12, 0, 6.29); ctx.stroke();
+}
+$('#tkDl').addEventListener('click', function(){
+  var cv = $('#tkCv');
+  if(!cv.toBlob){ toast('这个浏览器导不出 PNG, 换 Chrome / Edge 试试。'); return; }
+  cv.toBlob(function(b){ if(b) dlBlob('船只悠悠的小站-船票-NO' + ticketNo() + '.png', b); }, 'image/png');
+  foundSecret('ticket');
+  toast('船票已装袋 — 检票员含泪放行。');
+});
+$('#tkHide').addEventListener('click', function(){ openTicket(false); });
+$('#tkClose').addEventListener('click', function(){ openTicket(false); });
+makeDraggable($('#ticketWin'), $('#ticketWin .titlebar'));
+
+/* ---------- 夜班频道: 只在夜航出现 ---------- */
+$('#nightChannel').addEventListener('click', function(){
+  brToggle(true);
+  brNavigate('night.fm');
+});
+
+/* ---------- 魔方按钮: 还没造好, 先别让它是死的 ---------- */
+$('#tbCube').addEventListener('click', function(){
+  toast('魔方还在拧 — 零件都到齐了, 就差最后一把劲。');
 });
 
 /* ---------- 倒数日.EXE: 内置节日 + 自定义倒数(localStorage) ---------- */
@@ -5505,7 +5860,7 @@ function tmShow(tab){
     $('#tmTab' + k).classList.toggle('on', on);
     $('#tmPanel' + k).classList.toggle('on', on);
   });
-  if(tab === 'app') tmRenderApps();
+  if(tab === 'app'){ tmRenderApps(); $('#tmAppHint').textContent = '※ 双击一个开着的任务, 把它拽到最前面。蓝屏纪念册: 本机已蓝屏 ' + ((function(){ try{ return parseInt(localStorage.getItem('bsodCount'), 10) || 0; }catch(e){ return 0; } })()) + ' 次。'; }
   if(tab === 'proc') tmRenderProcs();
   if(tab === 'perf'){ tmDraw(); tmDrawHeap(); }
   tmStatus();
@@ -6358,6 +6713,7 @@ var konBuf = [];
 document.addEventListener('keydown', function(e){
   var tag = (e.target && e.target.tagName) || '';
   if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+  if(saverOn) return;   /* 屏保/小游戏期间键盘不归它管 */
   konBuf.push((e.key || '').toLowerCase());
   if(konBuf.length > KONAMI.length) konBuf.shift();
   if(konBuf.join(',') === KONAMI.join(',')){
@@ -6371,6 +6727,7 @@ document.addEventListener('keydown', function(e){
     b.classList.remove('konami'); void b.offsetWidth; b.classList.add('konami');
     confetti();
     toast('↑↑↓↓←→←→BA — 老玩家, 鉴定完毕。彩虹模式开启, 再输一遍收起来。');
+    foundSecret('konami');
   }
 });
 
@@ -6456,6 +6813,8 @@ if(!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').
   }
   function stopSaver(){
     saverOn = false;
+    sgOn = false;
+    if(sgRAF){ cancelAnimationFrame(sgRAF); sgRAF = null; }
     if(saverRAF) cancelAnimationFrame(saverRAF);
     saver.classList.remove('show');
   }
@@ -6471,8 +6830,118 @@ if(!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').
     var ms = saverWaitMs();
     if(ms > 0) saverTimer = setTimeout(startSaver, ms);
   }
-  ['mousemove','keydown','click','scroll','touchstart'].forEach(function(ev){
+  /* --- 屏保小游戏: 按任意键开局, ←→/AD 躲陨石, 动鼠标回甲板 --- */
+  var sgOn = false, sgRAF = null, sgBoatX = 0, sgMeteors = [], sgStart = 0, sgOver = 0, sgLast = 0, sgSpawn = 0, sgRecord = false;
+  var sgKeys = { left: false, right: false };
+  var sgBoatCv = document.createElement('canvas');
+  drawSprite(sgBoatCv, boatSkinName(), 3);
+  function sgHi(){ try{ return parseInt(localStorage.getItem('saverHi'), 10) || 0; }catch(e){ return 0; } }
+  function startSaverGame(){
+    if(sgOn) return;
+    sgOn = true;
+    if(saverRAF){ cancelAnimationFrame(saverRAF); saverRAF = null; }
+    sizeSaver();   /* 保险: 没经过 startSaver 直接开局时画布别是默认 300x150 */
+    sgBoatX = saverCv.width / 2;
+    sgMeteors = []; sgStart = performance.now(); sgLast = sgStart; sgSpawn = 0; sgOver = 0; sgRecord = false;
+    foundSecret('game');
+    sgRAF = requestAnimationFrame(sgLoop);
+  }
+  function sgDrawSky(t){
+    var W = saverCv.width, H = saverCv.height;
+    saverCtx.fillStyle = '#050505';
+    saverCtx.fillRect(0, 0, W, H);
+    for(var i = 0; i < saverStars.length; i++){
+      var s = saverStars[i];
+      saverCtx.globalAlpha = .2 + .6 * Math.abs(Math.sin(t / 1000 * s.s + s.p));
+      saverCtx.fillStyle = '#cfe0ff';
+      saverCtx.fillRect(s.x, s.y, s.r, s.r);
+    }
+    saverCtx.globalAlpha = 1;
+  }
+  function sgLoop(t){
+    if(!sgOn) return;
+    var W = saverCv.width, H = saverCv.height;
+    var dt = Math.min(50, t - sgLast); sgLast = t;
+    sgDrawSky(t);
+    var by = H - 96;
+    if(!sgOver){
+      if(t - sgSpawn > Math.max(240, 600 - (t - sgStart) / 70)){
+        sgSpawn = t;
+        sgMeteors.push({ x: rand(20, W - 20), y: -16, v: rand(.13, .2) + (t - sgStart) / 80000, r: rand(5, 11) });
+      }
+      if(sgKeys.left) sgBoatX -= .26 * dt;
+      if(sgKeys.right) sgBoatX += .26 * dt;
+      sgBoatX = Math.max(26, Math.min(W - 26, sgBoatX));
+      for(var i = sgMeteors.length - 1; i >= 0; i--){
+        var m = sgMeteors[i];
+        m.y += m.v * dt;
+        if(m.y > H + 20) sgMeteors.splice(i, 1);
+      }
+    }
+    for(var k = 0; k < sgMeteors.length; k++){   /* 陨石: 三叠灰方块, 像素岩 */
+      var m2 = sgMeteors[k];
+      saverCtx.fillStyle = '#8a8f9a';
+      saverCtx.fillRect(m2.x - m2.r, m2.y - m2.r, m2.r * 2, m2.r * 2);
+      saverCtx.fillStyle = '#6b7078';
+      saverCtx.fillRect(m2.x - m2.r + 3, m2.y, m2.r * 2 - 6, m2.r);
+      saverCtx.fillStyle = '#c8ccd4';
+      saverCtx.fillRect(m2.x - m2.r + 3, m2.y - m2.r + 3, Math.max(2, m2.r - 2), Math.max(2, m2.r - 2));
+    }
+    saverCtx.drawImage(sgBoatCv, sgBoatX - sgBoatCv.width / 2, by - sgBoatCv.height / 2);
+    if(!sgOver){
+      for(var c = 0; c < sgMeteors.length; c++){
+        var mc = sgMeteors[c];
+        if(mc.y > by - 20 && mc.y < by + 26 && Math.abs(mc.x - sgBoatX) < 22){
+          sgOver = t;
+          var s0 = Math.floor((t - sgStart) / 1000), h0 = sgHi();
+          if(s0 > h0){ sgRecord = true; try{ localStorage.setItem('saverHi', String(s0)); }catch(e){} }
+          break;
+        }
+      }
+    }
+    var sec = Math.floor(((sgOver || t) - sgStart) / 1000);
+    saverCtx.fillStyle = '#39d353';
+    saverCtx.font = '16px Consolas,monospace';
+    if(sgOver){
+      saverCtx.textAlign = 'center';
+      saverCtx.fillText('游戏结束 — 存活 ' + sec + ' 秒' + (sgRecord ? ' · 新纪录!' : ' · 最高 ' + sgHi() + ' 秒'), W / 2, H / 2 - 12);
+      saverCtx.fillText('按任意键再来 · 动一动鼠标回甲板', W / 2, H / 2 + 16);
+      saverCtx.textAlign = 'left';
+      if(t - sgOver > 5000){   /* 挂机五秒, 交还给普通屏保 */
+        sgOn = false;
+        sgRAF = null;
+        saverRAF = requestAnimationFrame(saverLoop);
+        return;
+      }
+    } else {
+      saverCtx.fillText('存活 ' + sec + 's · 最高 ' + sgHi() + 's', 18, 30);
+    }
+    sgRAF = requestAnimationFrame(sgLoop);
+  }
+  ['mousemove','click','scroll','touchstart'].forEach(function(ev){
     document.addEventListener(ev, poke, {passive:true});
+  });
+  document.addEventListener('keydown', function(e){
+    var tag = (e.target && e.target.tagName) || '';
+    if(tag === 'INPUT' || tag === 'TEXTAREA'){ poke(); return; }
+    if(saverOn){
+      e.preventDefault();
+      if(sgOn){
+        if(e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') sgKeys.left = true;
+        if(e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') sgKeys.right = true;
+        if(sgOver){   /* 任意键再来一局 */
+          sgMeteors = []; sgStart = performance.now(); sgLast = sgStart; sgSpawn = 0; sgOver = 0; sgRecord = false;
+        }
+        return;
+      }
+      startSaverGame();
+      return;
+    }
+    poke();
+  }, { passive: false });
+  document.addEventListener('keyup', function(e){
+    if(e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') sgKeys.left = false;
+    if(e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') sgKeys.right = false;
   });
   window.addEventListener('resize', function(){ if(saverOn) sizeSaver(); });
   window.saverRefresh = poke;   /* 设置改完时长, 叫一声就生效 */
@@ -6485,6 +6954,7 @@ function lootBottle(){
   var out = $('#bottleResult');
   if(bottleBusy) return;
   bottleBusy = true;
+  foundSecret('bottle');
   out.innerHTML = '<div class="gb-empty">正在海里撒网……</div>';
   var req = gbCache.length ? Promise.resolve(gbCache) : gbFetchAll();
   req.then(function(all){
