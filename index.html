@@ -310,9 +310,9 @@
   #nightBtn{cursor:pointer; background:transparent; border:none; font-size:13px; font-family:inherit; color:#222; padding:0}
   #trayClock{font-family:Consolas,"Courier New",monospace; font-size:12px; cursor:pointer}
   /* 快捷启动区: 统一银色凸起底, 徽标统一任务栏灰(夜航整条任务栏换深色) */
-  #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{height:26px; display:flex; align-items:center; justify-content:center;
+  #tbCmd, #tbHelp, #tbCalc, #tbGame, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{height:26px; display:flex; align-items:center; justify-content:center;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0 4px}
-  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbMine:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active, #tbCount:active, #tbImg:active, #tbGrade:active, #tbCube:active, #tbTmgr:active, #tbNote:active, #tbMypc:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  #tbCmd:active, #tbHelp:active, #tbCalc:active, #tbGame:active, #tbDiary:active, #tbBr:active, #tbHg:active, #tbPaint:active, #tbSolar:active, #tbCount:active, #tbImg:active, #tbGrade:active, #tbCube:active, #tbTmgr:active, #tbNote:active, #tbMypc:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .tb-badge{min-width:22px; height:16px; display:flex; align-items:center; justify-content:center;
     font:bold 10px/14px Consolas,monospace; color:#333}
 
@@ -402,13 +402,50 @@
   body.night .mine-foot #mineFlagMode.on{background:#3d4f7d}
   body.night .mine-best{color:#8b97b0}
 
+  /* 游戏厅夜航配色: 窗口/卡片/棋盘整条换深夜色, 格子数字提亮 */
+  body.night #gameWin, body.night #g2048Win, body.night #ttWin, body.night #snakeWin{background:#1a2338; border-color:#3a4763}
+  body.night .gm-head{color:#c8cfdd}
+  body.night .gm-card{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .gm-card:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .gm-ico{background:#1c2740; border-color:#3a4763 #101828 #101828 #3a4763; color:#7fb0f0}
+  body.night .gm-name{color:#e8ecf5}
+  body.night .gm-desc{color:#8b97b0}
+  body.night .gm-best{color:#e8bd5e}
+  body.night .gm-foot{color:#8b97b0; border-top-color:#2c3854}
+  body.night .g2-score, body.night .sn-score{color:#e8ecf5}
+  body.night .g2-btn, body.night .tt-btn, body.night .sn-btn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .g2-btn:active, body.night .tt-btn:active, body.night .sn-btn:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .g2-grid{background:#141b2c; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .g2-cell{border-color:#3a4763 #101828 #101828 #3a4763; color:#e8ecf5}
+  body.night .g2-cell.v0{background:#1c2740; border-color:#3a4763 #101828 #101828 #3a4763}
+  body.night .g2-cell.v2{background:#2b3a5e}
+  body.night .g2-cell.v4{background:#33456e}
+  body.night .g2-cell.v8{background:#3d6fd0}
+  body.night .g2-cell.v16{background:#4a7ad8}
+  body.night .g2-cell.v32{background:#5b86dd}
+  body.night .g2-cell.v64{background:#6f95e0}
+  body.night .g2-cell.v128{background:#8a6fc4}
+  body.night .g2-cell.v256{background:#9a6fc0}
+  body.night .g2-cell.v512{background:#ad6fb8}
+  body.night .g2-cell.v1024{background:#c07aae}
+  body.night .g2-cell.v2048{background:#d98a9e}
+  body.night .g2-foot{color:#8b97b0}
+  body.night .tt-box{background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .tt-k{color:#8b97b0}
+  body.night .tt-v{color:#7fb0f0}
+  body.night .tt-keys button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .tt-keys button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .tt-tip, body.night .sn-foot{color:#8b97b0}
+  body.night .sn-pad button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .sn-pad button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+
   /* 任务栏夜航主题: 整条换深夜色, 徽标文字变亮 */
   body.night #taskbar{background:#1a2338; border-top-color:#3a4763}
   body.night #startBtn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night #startBtn:active{border-color:#101828 #3a4763 #3a4763 #101828}
-  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbMine, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar, body.night #tbCount, body.night #tbImg, body.night #tbGrade, body.night #tbCube, body.night #tbTmgr, body.night #tbNote, body.night #tbMypc{
+  body.night #tbCmd, body.night #tbHelp, body.night #tbCalc, body.night #tbGame, body.night #tbDiary, body.night #tbBr, body.night #tbHg, body.night #tbPaint, body.night #tbSolar, body.night #tbCount, body.night #tbImg, body.night #tbGrade, body.night #tbCube, body.night #tbTmgr, body.night #tbNote, body.night #tbMypc{
     background:#243050; border-color:#3a4763 #101828 #101828 #3a4763}
-  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbMine:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active, body.night #tbCount:active, body.night #tbImg:active, body.night #tbGrade:active, body.night #tbCube:active, body.night #tbTmgr:active, body.night #tbNote:active, body.night #tbMypc:active{
+  body.night #tbCmd:active, body.night #tbHelp:active, body.night #tbCalc:active, body.night #tbGame:active, body.night #tbDiary:active, body.night #tbBr:active, body.night #tbHg:active, body.night #tbPaint:active, body.night #tbSolar:active, body.night #tbCount:active, body.night #tbImg:active, body.night #tbGrade:active, body.night #tbCube:active, body.night #tbTmgr:active, body.night #tbNote:active, body.night #tbMypc:active{
     border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .tb-badge{color:#c8cfdd}
   body.night #tray{background:#243050; border-color:#101828 #3a4763 #3a4763 #101828; color:#c8cfdd}
@@ -522,6 +559,78 @@
     border-color:#fff #6f6f6f #6f6f6f #fff; padding:3px 8px; cursor:pointer; color:#222}
   #mineFlagMode.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
   .mine-best{font-size:11.5px; color:#555}
+
+  /* ---------- 游戏厅 + 2048 / 俄罗斯方块 / 贪吃蛇 ---------- */
+  #gameWin, #g2048Win, #ttWin, #snakeWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260;
+    display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
+  #gameWin.open, #g2048Win.open, #ttWin.open, #snakeWin.open{display:block}
+  #gameWin .titlebar, #g2048Win .titlebar, #ttWin .titlebar, #snakeWin .titlebar{cursor:move}
+  #gameWin{width:min(360px,92vw)}
+  #g2048Win{width:min(300px,92vw)}
+  #ttWin{width:min(330px,92vw)}
+  #snakeWin{width:min(330px,92vw)}
+  .gm-body{padding:10px}
+  .gm-head{font-family:SimHei,"Microsoft YaHei",sans-serif; font-size:13px; color:#4a3f2c; margin-bottom:8px}
+  .gm-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:8px}
+  .gm-card{display:flex; align-items:center; gap:8px; padding:8px; cursor:pointer; text-align:left; font-family:inherit;
+    background:#d9d9d9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; color:#222}
+  .gm-card:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .gm-ico{min-width:30px; height:30px; display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+    background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    font:bold 11px/1 Consolas,monospace; color:#2038a8}
+  .gm-txt{min-width:0}
+  .gm-name{display:block; font:bold 12.5px/1.3 SimHei,"Microsoft YaHei",sans-serif; color:#222}
+  .gm-desc{display:block; font-size:11px; color:#555; margin-top:2px; line-height:1.35}
+  .gm-best{display:block; font-size:11px; color:#8a5a1a; margin-top:2px}
+  .gm-foot{margin-top:9px; font-size:11px; color:#666; line-height:1.6; border-top:1px dotted #a8a8a8; padding-top:7px}
+  .g2-body, .tt-body, .sn-body{padding:8px}
+  .g2-top, .sn-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; gap:8px}
+  .g2-score, .sn-score{font:bold 13px/1 Consolas,monospace; color:#222}
+  .g2-btn, .tt-btn, .sn-btn{font-family:inherit; font-size:12px; background:#c9c9c9; border:2px solid;
+    border-color:#fff #6f6f6f #6f6f6f #fff; padding:4px 10px; cursor:pointer; color:#222}
+  .g2-btn:active, .tt-btn:active, .sn-btn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .g2-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; padding:6px; background:#9a9a9a;
+    border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; touch-action:none; user-select:none}
+  .g2-cell{aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+    font:bold 17px/1 Consolas,monospace; color:#776e65; background:#cdc1b4;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff}
+  .g2-cell.sm{font-size:12px}
+  .g2-cell.v0{background:#bdb3a7; border-color:#d8d0c6 #8f877c #8f877c #d8d0c6}
+  .g2-cell.v2{background:#eee4da}
+  .g2-cell.v4{background:#ede0c8}
+  .g2-cell.v8{background:#f2b179; color:#fff}
+  .g2-cell.v16{background:#f59563; color:#fff}
+  .g2-cell.v32{background:#f67c5f; color:#fff}
+  .g2-cell.v64{background:#f65e3b; color:#fff}
+  .g2-cell.v128{background:#edcf72; color:#fff}
+  .g2-cell.v256{background:#edcc61; color:#fff}
+  .g2-cell.v512{background:#edc850; color:#fff}
+  .g2-cell.v1024{background:#edc53f; color:#fff}
+  .g2-cell.v2048{background:#edc22e; color:#fff}
+  .g2-cell.pop{animation:g2pop .12s steps(2) 1}
+  @keyframes g2pop{0%{transform:scale(.82)} 100%{transform:scale(1)}}
+  .g2-foot{margin-top:8px; font-size:11.5px; color:#555; line-height:1.6}
+  .tt-main{display:flex; gap:8px; align-items:flex-start}
+  .tt-canvas{background:#0d0d0d; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; display:block; touch-action:none}
+  .tt-side{flex:1; min-width:0; display:flex; flex-direction:column; gap:6px}
+  .tt-box{border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; background:#f2ecd9; padding:4px 6px}
+  .tt-k{display:block; color:#7a6a4a; font-size:10.5px}
+  .tt-v{display:block; font:bold 14px/1.25 Consolas,monospace; color:#2038a8}
+  .tt-next{background:#0d0d0d; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; display:block; margin:0 auto; max-width:100%}
+  .tt-keys{display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin-top:8px}
+  .tt-keys button{height:30px; font:bold 14px/1 Consolas,monospace; background:#d9d9d9; border:2px solid;
+    border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222}
+  .tt-keys button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .tt-tip{margin-top:6px; font-size:11px; color:#666; line-height:1.6}
+  .sn-canvas{background:#0d0d0d; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f;
+    display:block; margin:0 auto; width:min(300px,100%); height:auto; touch-action:none}
+  .sn-pad{display:grid; grid-template-columns:repeat(3,46px); grid-template-rows:repeat(2,32px); gap:4px;
+    justify-content:center; margin-top:8px}
+  .sn-pad button{font:bold 15px/1 Consolas,monospace; background:#d9d9d9; border:2px solid;
+    border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222}
+  .sn-pad button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .sn-pad .sn-up{grid-column:2}
+  .sn-foot{margin-top:8px; font-size:11.5px; color:#555; text-align:center; line-height:1.6}
   /* ---------- 日记.EXE ---------- */
   #diaryWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(420px,92vw);
     display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
@@ -1484,7 +1593,7 @@
     /* 手机上弹窗靠上放, 给输入法键盘留地方; 里程牌缩小; 任务栏紧凑排布 */
     #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin, #imgSearchWin, #gradeWin, #cubeWin, #tmgrWin, #noteWin, #mypcWin, #ticketWin{top:6vh; transform:translate(-50%,0)}
     #taskbar{gap:4px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{padding:0 2px}
+    #tbCmd, #tbHelp, #tbCalc, #tbGame, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{padding:0 2px}
     #tray{padding:0 6px}
     .help-body{max-height:56vh}
     #boatOdo{font-size:10.5px}
@@ -1495,7 +1604,7 @@
   @media (max-width:480px){
     #trayClock{display:none}
     #taskbar{flex-wrap:wrap; height:auto; padding:3px 4px calc(3px + env(safe-area-inset-bottom)); row-gap:3px; gap:3px}
-    #tbCmd, #tbHelp, #tbCalc, #tbMine, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{padding:0 5px}
+    #tbCmd, #tbHelp, #tbCalc, #tbGame, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{padding:0 5px}
     body.on{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
     #deckDock{bottom:calc(78px + env(safe-area-inset-bottom))}
     #deckMusic, #capState, #dynIsland{width:158px}
@@ -1710,7 +1819,7 @@
   <button id="tbCmd" type="button" title="cmd.exe — 命令提示符 (按 ~ 也行)"><span class="tb-badge">C:\_</span></button>
   <button id="tbHelp" type="button" title="帮助.chm — 全站彩蛋使用手册"><span class="tb-badge">?</span></button>
   <button id="tbCalc" type="button" title="计算器"><span class="tb-badge">=</span></button>
-  <button id="tbMine" type="button" title="扫雷.EXE — 复古扫雷"><span class="tb-badge">雷</span></button>
+  <button id="tbGame" type="button" title="游戏厅.EXE — 扫雷 · 2048 · 俄罗斯方块 · 贪吃蛇"><span class="tb-badge">玩</span></button>
   <button id="tbDiary" type="button" title="日记.EXE — 快速翻船舱日记"><span class="tb-badge">日</span></button>
   <button id="tbBr" type="button" title="小站浏览器 — 船际网络"><span class="tb-badge">e</span></button>
   <button id="tbHg" type="button" title="沙漏.EXE — 倒计时"><span class="tb-badge">漏</span></button>
@@ -1777,7 +1886,7 @@
       <li><b>C:\ 终端</b> — 仿真命令行, help 看命令; 试试 ship / tree / sudo / start help.chm</li>
       <li><b>? 帮助.chm</b> — 就是你现在看的这个(翻开前会先过一道剧透确认, 你已经过了)</li>
       <li><b>= 计算器</b> — 支持键盘输入, ÷0 会被严肃拒绝</li>
-      <li><b>雷 扫雷.EXE</b> — 首点必安全; 右键或长按插旗, 点笑脸再来一局</li>
+      <li><b>玩 游戏厅.EXE</b> — 一个门里四台机器: 扫雷(首点必安全, 右键或长按插旗) / 2048(方向键推格子) / 俄罗斯方块(← → 移动, ↑ 旋转, 空格落底) / 贪吃蛇(吃果子, 别咬自己); 关掉一台自己走回厅里换机</li>
       <li><b>日 日记.EXE</b> — 按日期快速翻船舱日记, 和主页日历联动</li>
       <li><b>e 小站浏览器</b> — 船际网络认证站点: 复古主页 / 船舱BBS / 气象台 / 灯塔日报 / 舰载电视台(点谁谁开唱) / 海妖软件站(安装即打开) / 船际相簿馆(点一本相册.EXE替你翻) / 漂流瓶邮局; 乱输网址有老式 404, 输 deepsea 有惊喜, 夜里还有一台电台不播节目单</li>
       <li><b>漏 沙漏.EXE</b> — 像素沙漏倒计时, 沙粒真实掉落; 1/3/5/10/25 分钟, 写作业开 25 分钟正好</li>
@@ -1859,6 +1968,98 @@
       <button id="mineFlagMode" type="button">⚑ 插旗: 关</button>
       <span class="mine-best" id="mineBest"></span>
     </div>
+  </div>
+</div>
+
+<!-- ================= 游戏厅: 一个门里四台机器 ================= -->
+<div id="gameWin">
+  <div class="titlebar"><span class="tb-title">游戏厅.EXE</span>
+    <button class="tb-btn" id="gameClose" title="关闭">✕</button>
+  </div>
+  <div class="gm-body">
+    <div class="gm-head">挑一台机器坐下, 都不用投币。</div>
+    <div class="gm-grid">
+      <button class="gm-card" type="button" data-game="mine">
+        <span class="gm-ico">雷</span>
+        <span class="gm-txt"><span class="gm-name">扫雷</span><span class="gm-desc">首点必安全, 右键插旗</span><span class="gm-best" id="gmBestMine"></span></span>
+      </button>
+      <button class="gm-card" type="button" data-game="2048">
+        <span class="gm-ico">2048</span>
+        <span class="gm-txt"><span class="gm-name">2048</span><span class="gm-desc">方向键推格子, 合到 2048</span><span class="gm-best" id="gmBest2048"></span></span>
+      </button>
+      <button class="gm-card" type="button" data-game="tt">
+        <span class="gm-ico">▤</span>
+        <span class="gm-txt"><span class="gm-name">俄罗斯方块</span><span class="gm-desc">←→移动, ↑旋转, 空格硬降</span><span class="gm-best" id="gmBestTt"></span></span>
+      </button>
+      <button class="gm-card" type="button" data-game="snake">
+        <span class="gm-ico">蛇</span>
+        <span class="gm-txt"><span class="gm-name">贪吃蛇</span><span class="gm-desc">吃果子变长, 别咬自己</span><span class="gm-best" id="gmBestSnake"></span></span>
+      </button>
+    </div>
+    <div class="gm-foot">高分都存在这台电脑上。四台机器加起来, 刚好还塞得进 640K。</div>
+  </div>
+</div>
+
+<!-- ================= 2048 ================= -->
+<div id="g2048Win">
+  <div class="titlebar"><span class="tb-title">2048.EXE</span>
+    <button class="tb-btn" id="g2Close" title="关闭">✕</button>
+  </div>
+  <div class="g2-body">
+    <div class="g2-top">
+      <span class="g2-score" id="g2Score">得分 0</span>
+      <button class="g2-btn" id="g2New" type="button">重开</button>
+    </div>
+    <div class="g2-grid" id="g2Grid"></div>
+    <div class="g2-foot" id="g2Foot">方向键或 WASD 推; 也可以在棋盘上往四个方向拖。</div>
+  </div>
+</div>
+
+<!-- ================= 俄罗斯方块 ================= -->
+<div id="ttWin">
+  <div class="titlebar"><span class="tb-title">俄罗斯方块.EXE</span>
+    <button class="tb-btn" id="ttClose" title="关闭">✕</button>
+  </div>
+  <div class="tt-body">
+    <div class="tt-main">
+      <canvas class="tt-canvas" id="ttCanvas" width="200" height="400"></canvas>
+      <div class="tt-side">
+        <div class="tt-box"><span class="tt-k">分数</span><span class="tt-v" id="ttScore">0</span></div>
+        <div class="tt-box"><span class="tt-k">消行</span><span class="tt-v" id="ttLines">0</span></div>
+        <div class="tt-box"><span class="tt-k">等级</span><span class="tt-v" id="ttLevel">1</span></div>
+        <div class="tt-box"><span class="tt-k">下一个</span></div>
+        <canvas class="tt-next" id="ttNext" width="96" height="72"></canvas>
+        <button class="tt-btn" id="ttNew" type="button">重开</button>
+      </div>
+    </div>
+    <div class="tt-keys">
+      <button id="ttKL" type="button" title="左移">←</button>
+      <button id="ttKR" type="button" title="旋转">↻</button>
+      <button id="ttKD" type="button" title="加速下落">↓</button>
+      <button id="ttKS" type="button" title="直接落底">⇓</button>
+    </div>
+    <div class="tt-tip" id="ttTip">← → 移动 · ↑ 旋转 · ↓ 加速 · 空格 直接落底 · P 暂停</div>
+  </div>
+</div>
+
+<!-- ================= 贪吃蛇 ================= -->
+<div id="snakeWin">
+  <div class="titlebar"><span class="tb-title">贪吃蛇.EXE</span>
+    <button class="tb-btn" id="snClose" title="关闭">✕</button>
+  </div>
+  <div class="sn-body">
+    <div class="sn-top">
+      <span class="sn-score" id="snScore">得分 0</span>
+      <button class="sn-btn" id="snNew" type="button">重开</button>
+    </div>
+    <canvas class="sn-canvas" id="snCanvas" width="360" height="360"></canvas>
+    <div class="sn-pad">
+      <button class="sn-up" data-dir="up" type="button" title="上">↑</button>
+      <button data-dir="left" type="button" title="左">←</button>
+      <button data-dir="down" type="button" title="下">↓</button>
+      <button data-dir="right" type="button" title="右">→</button>
+    </div>
+    <div class="sn-foot" id="snFoot">方向键或 WASD 转向, 空格暂停。</div>
   </div>
 </div>
 
@@ -2190,7 +2391,7 @@
       <div class="wc-badge">你是第 <b id="wcVisitN">?</b> 次登船的旅客 · <span id="wcRank"></span></div>
       <div class="wc-text">
         <p>这是一个把自己伪装成<b>老电脑</b>的个人网站: 会开机, 会关机, 闲置太久还会自己放屏保。</p>
-        <p>任务栏里藏着一排真能玩的应用 — 终端、扫雷、画板、倒计时沙漏、<b>真实比例的太阳系</b>, 还有刚上船的<b>任务管理器</b>: 二十个 ChatGPT 正在里面挤内存。彩蛋没有提示, 但值得自己撞见; 撞不明白再翻帮助.chm, 那是官方外挂。</p>
+        <p>任务栏里藏着一排真能玩的应用 — 终端、<b>游戏厅</b>(扫雷 / 2048 / 俄罗斯方块 / 贪吃蛇)、画板、倒计时沙漏、<b>真实比例的太阳系</b>, 还有刚上船的<b>任务管理器</b>: 二十个 ChatGPT 正在里面挤内存。彩蛋没有提示, 但值得自己撞见; 撞不明白再翻帮助.chm, 那是官方外挂。</p>
         <p>站名、便利贴、右下角的小船, 挨个点过去都有回应。相册是真的校园, 喜欢的图能<b>单张下载或整本打包</b>; 日记是真的近况; 甲板音乐常年在放。留言板等真话。</p>
         <p class="wc-hint">别急着逛完 — 这条船的座右铭是: 更新了, 又好像没更新。</p>
       </div>
@@ -2485,7 +2686,7 @@ var SPRITES = {
       '........................'
     ]
   },
-  /* 扫雷的小地雷: 已由任务栏文字徽标"雷"替代, 图标退役 (8×7) */
+  /* 扫雷的小地雷: 已由任务栏文字徽标"玩"替代, 图标退役 (8×7) */
   mine: {
     out: null,
     shadow: null,
@@ -3633,6 +3834,7 @@ document.addEventListener('keydown', function(e){
   var tag = (e.target && e.target.tagName) || '';
   if(tag === 'INPUT' || tag === 'TEXTAREA') return;
   if(saverOn) return;   /* 屏保小游戏期间, 键盘归游戏 */
+  if(gameAnyOpen()) return;   /* 游戏厅里的机器开着时, 方向键归机器, 别晃船 */
   if(KEY_SET.indexOf(e.key) < 0) return;
   var now = Date.now();
   if(now - lastKeyT > 1400) keyStrokes = 0;
@@ -4154,7 +4356,7 @@ var BR_SITES = [
     html: function(){
       var rows = [
         ['计算器 1.0', '★★★★★', '3K', 'calc', '安装'],
-        ['扫雷.EXE', '★★★★★', '9K', 'mine', '安装'],
+        ['游戏厅.EXE 四合一', '★★★★★', '42K', 'game', '安装'],
         ['画板.EXE', '★★★★☆', '24K', 'paint', '安装'],
         ['甲板音乐离线包', '★★★★★', '14 首', 'music', '播放'],
         ['640K 内存扩容包', '★★★★★', '9999K', 'mem', '下载']
@@ -4337,7 +4539,7 @@ function brMusicSync(){   /* dm 状态变了: 电视台/电台页正开着就跟
 }
 function brLaunch(app){   /* 别的网站点过来的"真动作": 装应用/放歌/捞瓶子 */
   if(app === 'calc'){ calcToggle(true); toast('安装完成: 计算器已在运行。'); return; }
-  if(app === 'mine'){ mineToggle(true); toast('安装完成: 扫雷已在运行。'); return; }
+  if(app === 'game'){ gameToggle(true); toast('安装完成: 游戏厅已在运行, 四台机器随便挑。'); return; }
   if(app === 'paint'){ ptPaintToggle(true); toast('安装完成: 画板已在运行。'); return; }
   if(app === 'music'){   /* 显式点击, 绕过开站自动播放开关——用户现在就要听 */
     if(!SONGS.length){ toast('歌单空着, 船长还没进货。'); return; }
@@ -5008,7 +5210,9 @@ var BSOD_APPS = [
   ['#mineWin', mineToggle, '扫雷'], ['#diaryWin', diaryAppToggle, '日记.EXE'], ['#browserWin', brToggle, '小站浏览器'],
   ['#hgWin', hgToggle, '沙漏'], ['#paintWin', ptPaintToggle, '画板'], ['#solarWin', solarToggle, '太阳系'],
   ['#imgSearchWin', imgSearchToggle, '图片搜索'], ['#gradeWin', gradeToggle, '成绩监控'],
-  ['#tmgrWin', tmgrToggle, '任务管理器'], ['#noteWin', noteToggle, '记事本'], ['#mypcWin', mypcToggle, '我的电脑']
+  ['#tmgrWin', tmgrToggle, '任务管理器'], ['#noteWin', noteToggle, '记事本'], ['#mypcWin', mypcToggle, '我的电脑'],
+  ['#gameWin', gameToggle, '游戏厅'], ['#g2048Win', g2Toggle, '2048'], ['#ttWin', ttToggle, '俄罗斯方块'],
+  ['#snakeWin', snToggle, '贪吃蛇']
 ];
 var bsodArmed = true;
 function bsodOpenCount(){
@@ -5186,6 +5390,9 @@ $('#setSfx').addEventListener('change', function(){
 });
 $('#setBoot').addEventListener('change', function(){
   try{ localStorage.setItem('skipBoot', this.checked ? 'off' : 'on'); }catch(e){}
+});
+$('#setMusic').addEventListener('change', function(){   /* 之前漏了这环: 勾选状态从不落盘, 一刷新就被默认值勾回去 */
+  try{ localStorage.setItem('autoplayMusic', this.checked ? 'on' : 'off'); }catch(e){}
 });
 
 /* ---------- 欢迎登船: 首次到访的欢迎信 ---------- */
@@ -6276,8 +6483,12 @@ function dmArmGesture(){
   });
 }
 if(SONGS.length){
-  dmShuffleStart();
-  if(!dm.playing) dmArmGesture();
+  var musicOnPref = true;
+  try{ musicOnPref = localStorage.getItem('autoplayMusic') !== 'off'; }catch(e){}
+  if(musicOnPref){   /* 关了开站音乐就别再用手势兜底拉起来 — 那兜底只伺候"想放被浏览器拦了"的情况 */
+    dmShuffleStart();
+    if(!dm.playing) dmArmGesture();
+  }
 }
 /* ---------- 左下角双黑盒 · 灵动岛: 游客此刻在干嘛 ---------- */
 var dynLastText = '', dynT0 = Date.now(), dynLastActive = Date.now();
@@ -6559,7 +6770,7 @@ function mineToggle(open){
   w.classList.toggle('open', will);
   if(will) frontWindow(w);
 }
-$('#tbMine').addEventListener('click', function(){ mineToggle(true); });
+$('#tbGame').addEventListener('click', function(){ gameToggle(true); });
 $('#mineClose').addEventListener('click', function(){ mineToggle(false); });
 var M_SIZE = 9, M_MINES = 10;
 var mCells = [], mState = 'idle', mFlags = 0, mSec = 0, mTimer = null, mFirst = true, mFlagMode = false;
@@ -6706,6 +6917,574 @@ $('#mineFlagMode').addEventListener('click', function(){
   this.classList.toggle('on', mFlagMode);
 });
 mineReset();
+
+/* ================= 游戏厅: 一个门里四台机器 ================= */
+/* 任务栏的「玩」开这扇门; 门里四台机器各自一个窗口, 高分全部存本机 */
+function gameAnyOpen(){
+  return $('#g2048Win').classList.contains('open') || $('#ttWin').classList.contains('open') || $('#snakeWin').classList.contains('open');
+}
+function gmBest(key){ try{ return parseInt(localStorage.getItem(key), 10) || 0; }catch(e){ return 0; } }
+function gmRefresh(){
+  var m = gmBest('mineBest');
+  $('#gmBestMine').textContent = m ? '★ 最快 ' + m + ' 秒' : '';
+  var a = gmBest('g2048Best');
+  $('#gmBest2048').textContent = a ? '★ 最高 ' + a + ' 分' : '';
+  var t = gmBest('ttBest');
+  $('#gmBestTt').textContent = t ? '★ 最高 ' + t + ' 分' : '';
+  var s = gmBest('snakeBest');
+  $('#gmBestSnake').textContent = s ? '★ 最高 ' + s + ' 分' : '';
+}
+function gameToggle(open){
+  var w = $('#gameWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){ frontWindow(w); gmRefresh(); }
+}
+$('#gameClose').addEventListener('click', function(){ gameToggle(false); });
+makeDraggable($('#gameWin'), $('#gameWin .titlebar'));
+$$('#gameWin .gm-card').forEach(function(b){
+  b.addEventListener('click', function(){
+    var g = b.dataset.game;
+    gameToggle(false);
+    if(g === 'mine') mineToggle(true);
+    else if(g === '2048') g2Toggle(true);
+    else if(g === 'tt') ttToggle(true);
+    else if(g === 'snake') snToggle(true);
+  });
+});
+function gmBack(){ gameToggle(true); }   /* 从机器上起身, 回厅里换一台 */
+
+/* ---------- 2048: 方向键推格子 ---------- */
+var g2Board = [], g2Score = 0, g2Over = false, g2Won = false, g2Els = [], g2Built = false;
+function g2Toggle(open){
+  var w = $('#g2048Win');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    if(!g2Built){ g2Build(); g2Reset(); }
+    else g2Render();
+  }
+}
+$('#g2Close').addEventListener('click', function(){ g2Toggle(false); gmBack(); });
+$('#g2New').addEventListener('click', function(){ g2Reset(); });
+makeDraggable($('#g2048Win'), $('#g2048Win .titlebar'));
+function g2Build(){
+  var grid = $('#g2Grid');
+  grid.innerHTML = '';
+  g2Els = [];
+  for(var i = 0; i < 16; i++){
+    var d = document.createElement('div');
+    d.className = 'g2-cell v0';
+    grid.appendChild(d);
+    g2Els.push(d);
+  }
+  g2Built = true;
+}
+function g2Render(){
+  for(var i = 0; i < 16; i++){
+    var v = g2Board[i], el = g2Els[i];
+    el.textContent = v ? String(v) : '';
+    el.className = 'g2-cell' + (v ? ' v' + v : ' v0') + (v >= 1024 ? ' sm' : '');
+  }
+  $('#g2Score').textContent = '得分 ' + g2Score;
+}
+function g2Spawn(){
+  var empty = [], i;
+  for(i = 0; i < 16; i++) if(!g2Board[i]) empty.push(i);
+  if(!empty.length) return -1;
+  var idx = empty[Math.floor(Math.random() * empty.length)];
+  g2Board[idx] = Math.random() < 0.9 ? 2 : 4;
+  return idx;
+}
+function g2Reset(){
+  g2Board = [];
+  for(var i = 0; i < 16; i++) g2Board.push(0);
+  g2Score = 0; g2Over = false; g2Won = false;
+  g2Spawn(); g2Spawn();
+  g2Render();
+  $('#g2Foot').textContent = '方向键或 WASD 推; 也可以在棋盘上往四个方向拖。';
+}
+function g2CanMove(){
+  for(var i = 0; i < 16; i++){
+    if(!g2Board[i]) return true;
+    var r = Math.floor(i / 4), c = i % 4;
+    if(c < 3 && g2Board[i] === g2Board[i + 1]) return true;
+    if(r < 3 && g2Board[i] === g2Board[i + 4]) return true;
+  }
+  return false;
+}
+function g2Move(dir){   /* 0=上 1=右 2=下 3=左 */
+  if(g2Over) return;
+  var before = g2Board.join(','), gained = 0, line, k, i;
+  for(line = 0; line < 4; line++){
+    var seq = [], r, c;
+    for(k = 0; k < 4; k++){
+      if(dir === 0){ r = k; c = line; }
+      else if(dir === 2){ r = 3 - k; c = line; }
+      else if(dir === 3){ r = line; c = k; }
+      else { r = line; c = 3 - k; }
+      seq.push(g2Board[r * 4 + c]);
+    }
+    var packed = [];
+    for(i = 0; i < 4; i++) if(seq[i]) packed.push(seq[i]);
+    var merged = [];
+    for(i = 0; i < packed.length; i++){
+      if(i + 1 < packed.length && packed[i] === packed[i + 1]){
+        merged.push(packed[i] * 2);
+        gained += packed[i] * 2;
+        i++;
+      } else merged.push(packed[i]);
+    }
+    while(merged.length < 4) merged.push(0);
+    for(i = 0; i < 4; i++){
+      var r2, c2;
+      if(dir === 0){ r2 = i; c2 = line; }
+      else if(dir === 2){ r2 = 3 - i; c2 = line; }
+      else if(dir === 3){ r2 = line; c2 = i; }
+      else { r2 = line; c2 = 3 - i; }
+      g2Board[r2 * 4 + c2] = merged[i];
+    }
+  }
+  if(g2Board.join(',') === before) return;   /* 推不动就别凭空长新格子 */
+  g2Score += gained;
+  var nw = g2Spawn();
+  g2Render();
+  if(nw >= 0){
+    g2Els[nw].classList.add('pop');
+    setTimeout(function(){ if(g2Els[nw]) g2Els[nw].classList.remove('pop'); }, 140);
+  }
+  var top = 0;
+  for(i = 0; i < 16; i++) if(g2Board[i] > top) top = g2Board[i];
+  if(top >= 2048 && !g2Won){
+    g2Won = true;
+    confetti();
+    toast('2048 到了! 还能接着往上推。');
+  }
+  if(!g2CanMove()){
+    g2Over = true;
+    if(g2Score > gmBest('g2048Best')){
+      try{ localStorage.setItem('g2048Best', String(g2Score)); }catch(e){}
+      gmRefresh();
+      toast('2048 新纪录: ' + g2Score + ' 分!');
+    } else toast('格子满了, 这局 ' + g2Score + ' 分。');
+    $('#g2Foot').textContent = '这局结束: ' + g2Score + ' 分。点「重开」再来一局。';
+  }
+}
+document.addEventListener('keydown', function(e){
+  if(!$('#g2048Win').classList.contains('open')) return;
+  var tag = (e.target && e.target.tagName) || '';
+  if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+  if(typeof saverOn !== 'undefined' && saverOn) return;
+  var k = e.key, d = -1;
+  if(k === 'ArrowUp' || k === 'w' || k === 'W') d = 0;
+  else if(k === 'ArrowRight' || k === 'd' || k === 'D') d = 1;
+  else if(k === 'ArrowDown' || k === 's' || k === 'S') d = 2;
+  else if(k === 'ArrowLeft' || k === 'a' || k === 'A') d = 3;
+  if(d < 0) return;
+  e.preventDefault();
+  g2Move(d);
+});
+var g2Sx = 0, g2Sy = 0, g2Swiping = false;
+$('#g2Grid').addEventListener('pointerdown', function(e){ g2Swiping = true; g2Sx = e.clientX; g2Sy = e.clientY; });
+$('#g2Grid').addEventListener('pointerup', function(e){
+  if(!g2Swiping) return;
+  g2Swiping = false;
+  var dx = e.clientX - g2Sx, dy = e.clientY - g2Sy;
+  if(Math.abs(dx) < 24 && Math.abs(dy) < 24) return;
+  if(Math.abs(dx) > Math.abs(dy)) g2Move(dx > 0 ? 1 : 3);
+  else g2Move(dy > 0 ? 2 : 0);
+});
+
+/* ---------- 俄罗斯方块: 7 种方块, 消一行少一行 ---------- */
+var TT_COLS = 10, TT_ROWS = 20, TT_CELL = 20;
+var TT_COLOR = { I:'#4dc3c9', J:'#5b86dd', L:'#e8a13c', O:'#edcf72', S:'#6fbf73', T:'#ad6fb8', Z:'#e46b5a' };
+var TT_SHAPE = {
+  I:[[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+  J:[[1,0,0],[1,1,1],[0,0,0]],
+  L:[[0,0,1],[1,1,1],[0,0,0]],
+  O:[[1,1],[1,1]],
+  S:[[0,1,1],[1,1,0],[0,0,0]],
+  T:[[0,1,0],[1,1,1],[0,0,0]],
+  Z:[[1,1,0],[0,1,1],[0,0,0]]
+};
+var ttCv = $('#ttCanvas'), ttCtx = ttCv.getContext('2d');
+var ttNx = $('#ttNext'), ttNxCtx = ttNx.getContext('2d');
+var ttBoard = [], ttCur = null, ttNextKey = 'T', ttBag = [], ttTimer = null;
+var ttScore = 0, ttLines = 0, ttLevel = 1, ttOver = false, ttPaused = false, ttBuilt = false;
+function ttToggle(open){
+  var w = $('#ttWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    if(!ttBuilt){ ttBuild(); ttReset(); }
+    else { ttDraw(); ttNextDraw(); ttStartLoop(); }
+  } else {
+    clearInterval(ttTimer);
+    ttTimer = null;
+  }
+}
+$('#ttClose').addEventListener('click', function(){ ttToggle(false); gmBack(); });
+$('#ttNew').addEventListener('click', function(){ ttReset(); });
+makeDraggable($('#ttWin'), $('#ttWin .titlebar'));
+function ttBuild(){
+  ttBoard = [];
+  for(var r = 0; r < TT_ROWS; r++){
+    var row = [];
+    for(var c = 0; c < TT_COLS; c++) row.push('');
+    ttBoard.push(row);
+  }
+  ttBuilt = true;
+}
+function ttShuffle(){
+  ttBag = ['I','J','L','O','S','T','Z'];
+  for(var i = ttBag.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1)), t = ttBag[i];
+    ttBag[i] = ttBag[j]; ttBag[j] = t;
+  }
+}
+function ttDrawKey(){
+  if(!ttBag.length) ttShuffle();
+  return ttBag.pop();
+}
+function ttNewPiece(){
+  var k = ttNextKey;
+  ttNextKey = ttDrawKey();
+  var m = TT_SHAPE[k].map(function(row){ return row.slice(); });
+  ttCur = { k:k, m:m, r:0, c:Math.floor((TT_COLS - m.length) / 2) };
+  if(ttHit(ttCur.m, ttCur.r, ttCur.c)){ ttCur = null; ttGameOver(); }
+}
+function ttReset(){
+  ttBuild();
+  ttShuffle();
+  ttNextKey = ttDrawKey();
+  ttScore = 0; ttLines = 0; ttLevel = 1; ttOver = false; ttPaused = false;
+  ttNewPiece();
+  $('#ttTip').textContent = '← → 移动 · ↑ 旋转 · ↓ 加速 · 空格 直接落底 · P 暂停';
+  ttDraw(); ttNextDraw(); ttHud();
+  ttStartLoop();
+}
+function ttHud(){
+  $('#ttScore').textContent = String(ttScore);
+  $('#ttLines').textContent = String(ttLines);
+  $('#ttLevel').textContent = String(ttLevel);
+}
+function ttStartLoop(){
+  clearInterval(ttTimer);
+  if(ttOver) return;
+  var delay = Math.max(90, 800 - (ttLevel - 1) * 70);
+  ttTimer = setInterval(function(){
+    if(ttPaused || ttOver) return;
+    ttStep();
+  }, delay);
+}
+function ttHit(m, r0, c0){
+  for(var i = 0; i < m.length; i++){
+    for(var j = 0; j < m[i].length; j++){
+      if(!m[i][j]) continue;
+      var r = r0 + i, c = c0 + j;
+      if(c < 0 || c >= TT_COLS || r >= TT_ROWS) return true;
+      if(r >= 0 && ttBoard[r][c]) return true;
+    }
+  }
+  return false;
+}
+function ttStep(){
+  if(!ttCur) return;
+  if(!ttHit(ttCur.m, ttCur.r + 1, ttCur.c)){ ttCur.r++; ttDraw(); }
+  else { ttLock(); }
+}
+function ttLock(){
+  var i, j, over = false;
+  for(i = 0; i < ttCur.m.length; i++){
+    for(j = 0; j < ttCur.m[i].length; j++){
+      if(!ttCur.m[i][j]) continue;
+      var r = ttCur.r + i, c = ttCur.c + j;
+      if(r < 0){ over = true; continue; }
+      ttBoard[r][c] = ttCur.k;
+    }
+  }
+  var cleared = 0, r2;
+  for(r2 = TT_ROWS - 1; r2 >= 0; r2--){
+    var full = true;
+    for(var c2 = 0; c2 < TT_COLS; c2++) if(!ttBoard[r2][c2]){ full = false; break; }
+    if(full){
+      ttBoard.splice(r2, 1);
+      var blank = [];
+      for(var c3 = 0; c3 < TT_COLS; c3++) blank.push('');
+      ttBoard.unshift(blank);
+      cleared++;
+      r2++;   /* 上面那行掉下来了, 这一格得重看 */
+    }
+  }
+  if(cleared){
+    ttLines += cleared;
+    ttScore += [0, 100, 300, 500, 800][cleared] * ttLevel;
+    var lv = Math.floor(ttLines / 10) + 1;
+    if(lv !== ttLevel){ ttLevel = lv; toast('俄罗斯方块 提速到第 ' + lv + ' 级。'); }
+    ttHud();
+    ttStartLoop();
+  }
+  if(over){ ttCur = null; ttGameOver(); return; }
+  ttNewPiece();
+  if(!ttOver){ ttDraw(); ttNextDraw(); }
+}
+function ttGameOver(){
+  ttOver = true;
+  clearInterval(ttTimer);
+  ttTimer = null;
+  if(ttScore > gmBest('ttBest')){
+    try{ localStorage.setItem('ttBest', String(ttScore)); }catch(e){}
+    gmRefresh();
+    toast('俄罗斯方块 新纪录: ' + ttScore + ' 分!');
+  } else toast('方块堆到顶了 — ' + ttScore + ' 分。');
+  $('#ttTip').textContent = '这局结束: ' + ttScore + ' 分 · 消了 ' + ttLines + ' 行。点「重开」再来。';
+}
+function ttBlock(ctx, c, r, key){
+  var x = c * TT_CELL, y = r * TT_CELL;
+  ctx.fillStyle = TT_COLOR[key] || '#888';
+  ctx.fillRect(x + 1, y + 1, TT_CELL - 2, TT_CELL - 2);
+  ctx.fillStyle = 'rgba(255,255,255,.4)';
+  ctx.fillRect(x + 1, y + 1, TT_CELL - 2, 3);
+  ctx.fillStyle = 'rgba(0,0,0,.3)';
+  ctx.fillRect(x + 1, y + TT_CELL - 4, TT_CELL - 2, 3);
+}
+function ttDraw(){
+  ttCtx.fillStyle = '#0d0d0d';
+  ttCtx.fillRect(0, 0, ttCv.width, ttCv.height);
+  ttCtx.strokeStyle = 'rgba(160,190,240,.10)';
+  var x, y;
+  for(x = 1; x < TT_COLS; x++){
+    ttCtx.beginPath(); ttCtx.moveTo(x * TT_CELL + .5, 0); ttCtx.lineTo(x * TT_CELL + .5, ttCv.height); ttCtx.stroke();
+  }
+  for(y = 1; y < TT_ROWS; y++){
+    ttCtx.beginPath(); ttCtx.moveTo(0, y * TT_CELL + .5); ttCtx.lineTo(ttCv.width, y * TT_CELL + .5); ttCtx.stroke();
+  }
+  for(var r = 0; r < TT_ROWS; r++)
+    for(var c = 0; c < TT_COLS; c++)
+      if(ttBoard[r][c]) ttBlock(ttCtx, c, r, ttBoard[r][c]);
+  if(ttCur){
+    for(var i = 0; i < ttCur.m.length; i++)
+      for(var j = 0; j < ttCur.m[i].length; j++)
+        if(ttCur.m[i][j] && ttCur.r + i >= 0) ttBlock(ttCtx, ttCur.c + j, ttCur.r + i, ttCur.k);
+  }
+}
+function ttNextDraw(){
+  ttNxCtx.fillStyle = '#0d0d0d';
+  ttNxCtx.fillRect(0, 0, ttNx.width, ttNx.height);
+  var m = TT_SHAPE[ttNextKey], cell = 16;
+  var n = m.length;
+  var ox = Math.floor((ttNx.width - n * cell) / 2), oy = Math.floor((ttNx.height - n * cell) / 2);
+  ttNxCtx.fillStyle = TT_COLOR[ttNextKey];
+  for(var i = 0; i < n; i++)
+    for(var j = 0; j < n; j++)
+      if(m[i][j]) ttNxCtx.fillRect(ox + j * cell + 1, oy + i * cell + 1, cell - 2, cell - 2);
+}
+function ttMove(dc){
+  if(!ttCur || ttPaused || ttOver) return;
+  if(!ttHit(ttCur.m, ttCur.r, ttCur.c + dc)){ ttCur.c += dc; ttDraw(); }
+}
+function ttRotate(){
+  if(!ttCur || ttPaused || ttOver) return;
+  var m = ttCur.m, n = m.length, out = [], i, j;
+  for(i = 0; i < n; i++){
+    out.push([]);
+    for(j = 0; j < n; j++) out[i].push(m[n - 1 - j][i]);
+  }
+  if(!ttHit(out, ttCur.r, ttCur.c)) ttCur.m = out;
+  else if(!ttHit(out, ttCur.r, ttCur.c + 1)){ ttCur.m = out; ttCur.c += 1; }
+  else if(!ttHit(out, ttCur.r, ttCur.c - 1)){ ttCur.m = out; ttCur.c -= 1; }
+  else return;
+  ttDraw();
+}
+function ttSoftDrop(){
+  if(!ttCur || ttPaused || ttOver) return;
+  if(!ttHit(ttCur.m, ttCur.r + 1, ttCur.c)){ ttCur.r++; ttScore += 1; ttHud(); ttDraw(); }
+  else ttLock();
+}
+function ttHardDrop(){
+  if(!ttCur || ttPaused || ttOver) return;
+  var n = 0;
+  while(!ttHit(ttCur.m, ttCur.r + 1, ttCur.c)){ ttCur.r++; n++; }
+  ttScore += n * 2;
+  ttHud();
+  ttLock();
+}
+document.addEventListener('keydown', function(e){
+  if(!$('#ttWin').classList.contains('open')) return;
+  var tag = (e.target && e.target.tagName) || '';
+  if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+  if(typeof saverOn !== 'undefined' && saverOn) return;
+  var k = e.key;
+  if(k === 'ArrowLeft' || k === 'a' || k === 'A'){ e.preventDefault(); ttMove(-1); }
+  else if(k === 'ArrowRight' || k === 'd' || k === 'D'){ e.preventDefault(); ttMove(1); }
+  else if(k === 'ArrowDown' || k === 's' || k === 'S'){ e.preventDefault(); ttSoftDrop(); }
+  else if(k === 'ArrowUp' || k === 'w' || k === 'W'){ e.preventDefault(); ttRotate(); }
+  else if(k === ' '){ e.preventDefault(); ttHardDrop(); }
+  else if(k === 'p' || k === 'P'){
+    e.preventDefault();
+    if(ttOver) return;
+    ttPaused = !ttPaused;
+    $('#ttTip').textContent = ttPaused ? '暂停中 — 按 P 继续。' : '← → 移动 · ↑ 旋转 · ↓ 加速 · 空格 直接落底 · P 暂停';
+    if(!ttPaused) ttDraw();
+  }
+});
+$('#ttKL').addEventListener('click', function(){ ttMove(-1); });
+$('#ttKR').addEventListener('click', function(){ ttRotate(); });
+$('#ttKD').addEventListener('click', function(){ ttSoftDrop(); });
+$('#ttKS').addEventListener('click', function(){ ttHardDrop(); });
+
+/* ---------- 贪吃蛇: 吃果子变长, 别咬自己 ---------- */
+var SN_N = 18, SN_CELL = 20;
+var snCv = $('#snCanvas'), snCtx = snCv.getContext('2d');
+var snSnake = [], snDir = 'right', snWant = 'right', snFood = null, snScore = 0;
+var snOver = false, snPaused = false, snTimer = null, snSpeed = 150, snBuilt = false;
+function snToggle(open){
+  var w = $('#snakeWin');
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if(will){
+    frontWindow(w);
+    if(!snBuilt){ snReset(); }
+    else if(!snOver){ snStartLoop(); snDraw(); }
+    else snDraw();
+  } else {
+    clearInterval(snTimer);
+    snTimer = null;
+  }
+}
+$('#snClose').addEventListener('click', function(){ snToggle(false); gmBack(); });
+$('#snNew').addEventListener('click', function(){ snReset(); });
+makeDraggable($('#snakeWin'), $('#snakeWin .titlebar'));
+function snPlaceFood(){
+  var free = [];
+  for(var x = 0; x < SN_N; x++){
+    for(var y = 0; y < SN_N; y++){
+      var hit = false;
+      for(var i = 0; i < snSnake.length; i++) if(snSnake[i].x === x && snSnake[i].y === y){ hit = true; break; }
+      if(!hit) free.push({ x:x, y:y });
+    }
+  }
+  if(!free.length) return null;
+  return free[Math.floor(Math.random() * free.length)];
+}
+function snReset(){
+  snBuilt = true;
+  snSnake = [{ x:8, y:9 }, { x:7, y:9 }, { x:6, y:9 }];
+  snDir = 'right'; snWant = 'right';
+  snScore = 0; snOver = false; snPaused = false; snSpeed = 150;
+  snFood = snPlaceFood();
+  $('#snScore').textContent = '得分 0';
+  $('#snFoot').textContent = '方向键或 WASD 转向, 空格暂停。';
+  snDraw();
+  snStartLoop();
+}
+function snStartLoop(){
+  clearInterval(snTimer);
+  if(snOver) return;
+  snTimer = setInterval(function(){
+    if(snPaused || snOver) return;
+    snStep();
+  }, snSpeed);
+}
+function snDie(){
+  snOver = true;
+  clearInterval(snTimer);
+  snTimer = null;
+  if(snScore > gmBest('snakeBest')){
+    try{ localStorage.setItem('snakeBest', String(snScore)); }catch(e){}
+    gmRefresh();
+    toast('贪吃蛇 新纪录: ' + snScore + ' 分!');
+  } else toast('咬到自己了 — ' + snScore + ' 分。');
+  $('#snFoot').textContent = '这局结束: ' + snScore + ' 分。点「重开」再来一条。';
+  snDraw();
+}
+function snStep(){
+  snDir = snWant;
+  var head = { x:snSnake[0].x, y:snSnake[0].y };
+  if(snDir === 'up') head.y--;
+  else if(snDir === 'down') head.y++;
+  else if(snDir === 'left') head.x--;
+  else head.x++;
+  if(head.x < 0 || head.x >= SN_N || head.y < 0 || head.y >= SN_N){ snDie(); return; }
+  for(var i = 0; i < snSnake.length - 1; i++){
+    if(snSnake[i].x === head.x && snSnake[i].y === head.y){ snDie(); return; }
+  }
+  snSnake.unshift(head);
+  if(snFood && head.x === snFood.x && head.y === snFood.y){
+    snScore += 10;
+    $('#snScore').textContent = '得分 ' + snScore;
+    snFood = snPlaceFood();
+    if(snScore % 50 === 0 && snSpeed > 70){
+      snSpeed -= 10;
+      snStartLoop();
+    }
+  } else snSnake.pop();
+  snDraw();
+}
+function snBlock(x, y, fill){
+  var px = x * SN_CELL, py = y * SN_CELL;
+  snCtx.fillStyle = fill;
+  snCtx.fillRect(px + 1, py + 1, SN_CELL - 2, SN_CELL - 2);
+  snCtx.fillStyle = 'rgba(255,255,255,.32)';
+  snCtx.fillRect(px + 1, py + 1, SN_CELL - 2, 3);
+  snCtx.fillStyle = 'rgba(0,0,0,.28)';
+  snCtx.fillRect(px + 1, py + SN_CELL - 4, SN_CELL - 2, 3);
+}
+function snDraw(){
+  snCtx.fillStyle = '#0d0d0d';
+  snCtx.fillRect(0, 0, snCv.width, snCv.height);
+  snCtx.strokeStyle = 'rgba(160,190,240,.08)';
+  for(var g = 1; g < SN_N; g++){
+    snCtx.beginPath(); snCtx.moveTo(g * SN_CELL + .5, 0); snCtx.lineTo(g * SN_CELL + .5, snCv.height); snCtx.stroke();
+    snCtx.beginPath(); snCtx.moveTo(0, g * SN_CELL + .5); snCtx.lineTo(snCv.width, g * SN_CELL + .5); snCtx.stroke();
+  }
+  if(snFood) snBlock(snFood.x, snFood.y, '#e46b5a');
+  for(var i = snSnake.length - 1; i >= 0; i--) snBlock(snSnake[i].x, snSnake[i].y, i === 0 ? '#8fd694' : '#3cb46e');
+  if(snOver || snPaused){
+    snCtx.fillStyle = 'rgba(0,0,0,.62)';
+    snCtx.fillRect(0, 0, snCv.width, snCv.height);
+    snCtx.fillStyle = '#ffd166';
+    snCtx.font = 'bold 22px Consolas,monospace';
+    snCtx.textAlign = 'center';
+    snCtx.fillText(snOver ? 'GAME OVER' : 'PAUSED', snCv.width / 2, snCv.height / 2);
+    snCtx.font = '13px Consolas,monospace';
+    snCtx.fillStyle = '#c8ccd4';
+    snCtx.fillText(snOver ? '得分 ' + snScore + ' — 点「重开」' : '按空格继续', snCv.width / 2, snCv.height / 2 + 26);
+    snCtx.textAlign = 'start';
+  }
+}
+function snTurn(dir){
+  if(snOver || snPaused) return;
+  if(dir === 'up' && snDir === 'down') return;
+  if(dir === 'down' && snDir === 'up') return;
+  if(dir === 'left' && snDir === 'right') return;
+  if(dir === 'right' && snDir === 'left') return;
+  snWant = dir;
+}
+document.addEventListener('keydown', function(e){
+  if(!$('#snakeWin').classList.contains('open')) return;
+  var tag = (e.target && e.target.tagName) || '';
+  if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+  if(typeof saverOn !== 'undefined' && saverOn) return;
+  var k = e.key;
+  if(k === 'ArrowUp' || k === 'w' || k === 'W'){ e.preventDefault(); snTurn('up'); }
+  else if(k === 'ArrowDown' || k === 's' || k === 'S'){ e.preventDefault(); snTurn('down'); }
+  else if(k === 'ArrowLeft' || k === 'a' || k === 'A'){ e.preventDefault(); snTurn('left'); }
+  else if(k === 'ArrowRight' || k === 'd' || k === 'D'){ e.preventDefault(); snTurn('right'); }
+  else if(k === ' '){
+    e.preventDefault();
+    if(snOver) return;
+    snPaused = !snPaused;
+    $('#snFoot').textContent = snPaused ? '暂停中 — 按空格继续。' : '方向键或 WASD 转向, 空格暂停。';
+    snDraw();
+  }
+});
+$$('#snakeWin .sn-pad button').forEach(function(b){
+  b.addEventListener('click', function(){ snTurn(b.dataset.dir); });
+});
+gmRefresh();
 
 /* ================= Konami 彩蛋: ↑↑↓↓←→←→BA ================= */
 var KONAMI = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'];
@@ -7004,7 +7783,8 @@ var ENTRIES = [
   { d:'2026-09-12', h:'「生活碎片」开馆: 猫、WHAT 墙、佩奇和方块小狼——生活的边角料, 拼起来就是日子。' },
   { d:'2026-09-12', h:'「九小回忆」开馆: 第九小学的毕业季都在里面——楼梯间、水手服和那块校名石。原来毕业已经三年了。' },
     { d:'2026-09-27', h:'中秋最后一天, 小站一口气更新了一堆——好吃的相册攒到十五张、页脚挂了仓库直达和新项目贪吃蛇、成绩监控也上了(加密的, 别想偷看)。修了个bug: 凌晨两点显示自然醒, 睡着的人怎么自然醒。明天开学。' },
-    { d:'2026-10-01', h:'国庆假期第一天, 学校先暂停营业七天。书包获得短暂休息权, 作业没有——它只是换了个地方继续等我。' }
+    { d:'2026-10-01', h:'国庆假期第一天, 学校先暂停营业七天。书包获得短暂休息权, 作业没有——它只是换了个地方继续等我。' },
+    { d:'2026-10-16', h:'任务栏那个「雷」换成「玩」了——点进去是个游戏厅, 扫雷还在老位置, 旁边新摆了三台机器: 2048、俄罗斯方块、贪吃蛇。做完作业才准玩, 这句是写给我自己的。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
