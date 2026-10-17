@@ -533,68 +533,71 @@
   .calc-grid button.eq:active{background:#355fa8}
 
   /* ---------- 扫雷 ---------- */
-  #mineWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(340px,92vw);
+  #mineWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(420px,92vw);
     display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
   #mineWin.open{display:block}
   #mineWin .titlebar{cursor:move}
-  .mine-body{padding:8px}
+  .mine-body{padding:12px}
   .mine-top{display:flex; align-items:center; justify-content:space-between; border:2px solid;
-    border-color:#6f6f6f #fff #fff #6f6f6f; padding:4px 8px; margin-bottom:8px}
-  .led{background:#111; color:#ff3b30; font-family:Consolas,monospace; font-size:16px; padding:1px 5px; letter-spacing:2px}
-  .mine-face{width:34px; height:34px; font-family:Consolas,monospace; font-size:15px; font-weight:bold; color:#222;
+    border-color:#6f6f6f #fff #fff #6f6f6f; padding:5px 10px; margin-bottom:11px}
+  .led{background:#111; color:#ff3b30; font-family:Consolas,monospace; font-size:19px; padding:2px 7px; letter-spacing:2px}
+  .mine-face{width:40px; height:40px; font-family:Consolas,monospace; font-size:18px; font-weight:bold; color:#222;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0}
   .mine-face:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .mine-grid{display:grid; grid-template-columns:repeat(9,1fr); gap:2px; background:#9a9a9a;
     border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; padding:3px; touch-action:manipulation; user-select:none}
   .cell{aspect-ratio:1; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; background:#c9c9c9;
-    font-family:Consolas,monospace; font-weight:bold; font-size:14px; display:flex; align-items:center;
+    font-family:Consolas,monospace; font-weight:bold; font-size:17px; display:flex; align-items:center;
     justify-content:center; padding:0; cursor:pointer}
   .cell.open{border:1px solid #9a9a9a; background:#bdbdbd; cursor:default}
   .cell.boom{background:#e46b5a}
   .cell .flag{color:#c0392b}
   .n1{color:#2038a8}.n2{color:#2e7d32}.n3{color:#d33}.n4{color:#1a237e}.n5{color:#8b4513}
   .n6{color:#00838f}.n7{color:#222}.n8{color:#777}
-  .mine-foot{display:flex; align-items:center; justify-content:space-between; margin-top:8px}
-  #mineFlagMode{font-family:inherit; font-size:12px; background:#c9c9c9; border:2px solid;
-    border-color:#fff #6f6f6f #6f6f6f #fff; padding:3px 8px; cursor:pointer; color:#222}
+  .mine-foot{display:flex; align-items:center; justify-content:space-between; margin-top:11px}
+  #mineFlagMode{font-family:inherit; font-size:13px; background:#c9c9c9; border:2px solid;
+    border-color:#fff #6f6f6f #6f6f6f #fff; padding:4px 10px; cursor:pointer; color:#222}
   #mineFlagMode.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
-  .mine-best{font-size:11.5px; color:#555}
+  .mine-best{font-size:12.5px; color:#555}
 
   /* ---------- 游戏厅 + 2048 / 俄罗斯方块 / 贪吃蛇 ---------- */
   #gameWin, #g2048Win, #ttWin, #snakeWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260;
     display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
   #gameWin.open, #g2048Win.open, #ttWin.open, #snakeWin.open{display:block}
   #gameWin .titlebar, #g2048Win .titlebar, #ttWin .titlebar, #snakeWin .titlebar{cursor:move}
-  #gameWin{width:min(360px,92vw)}
-  #g2048Win{width:min(300px,92vw)}
-  #ttWin{width:min(330px,92vw)}
-  #snakeWin{width:min(330px,92vw)}
-  .gm-body{padding:10px}
-  .gm-head{font-family:SimHei,"Microsoft YaHei",sans-serif; font-size:13px; color:#4a3f2c; margin-bottom:8px}
-  .gm-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:8px}
-  .gm-card{display:flex; align-items:center; gap:8px; padding:8px; cursor:pointer; text-align:left; font-family:inherit;
+  #gameWin{width:min(480px,92vw)}
+  #g2048Win{width:min(420px,92vw)}
+  #ttWin{width:min(420px,92vw)}
+  #snakeWin{width:min(460px,92vw)}
+  /* 放大后要照顾矮屏: 内容超高就在窗口里滚, 标题栏始终留在原地能拖 */
+  #mineWin, #gameWin, #g2048Win, #ttWin, #snakeWin{max-height:94vh}
+  .mine-body, .gm-body, .g2-body, .tt-body, .sn-body{max-height:calc(94vh - 30px); overflow-y:auto}
+  .gm-body{padding:14px}
+  .gm-head{font-family:SimHei,"Microsoft YaHei",sans-serif; font-size:15px; color:#4a3f2c; margin-bottom:11px}
+  .gm-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:11px}
+  .gm-card{display:flex; align-items:center; gap:11px; padding:12px 11px; cursor:pointer; text-align:left; font-family:inherit;
     background:#d9d9d9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; color:#222}
   .gm-card:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  .gm-ico{min-width:30px; height:30px; display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+  .gm-ico{min-width:44px; height:44px; display:flex; align-items:center; justify-content:center; flex:0 0 auto;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
-    font:bold 11px/1 Consolas,monospace; color:#2038a8}
+    font:bold 14px/1 Consolas,monospace; color:#2038a8}
   .gm-txt{min-width:0}
-  .gm-name{display:block; font:bold 12.5px/1.3 SimHei,"Microsoft YaHei",sans-serif; color:#222}
-  .gm-desc{display:block; font-size:11px; color:#555; margin-top:2px; line-height:1.35}
-  .gm-best{display:block; font-size:11px; color:#8a5a1a; margin-top:2px}
-  .gm-foot{margin-top:9px; font-size:11px; color:#666; line-height:1.6; border-top:1px dotted #a8a8a8; padding-top:7px}
-  .g2-body, .tt-body, .sn-body{padding:8px}
-  .g2-top, .sn-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; gap:8px}
-  .g2-score, .sn-score{font:bold 13px/1 Consolas,monospace; color:#222}
-  .g2-btn, .tt-btn, .sn-btn{font-family:inherit; font-size:12px; background:#c9c9c9; border:2px solid;
-    border-color:#fff #6f6f6f #6f6f6f #fff; padding:4px 10px; cursor:pointer; color:#222}
+  .gm-name{display:block; font:bold 15px/1.3 SimHei,"Microsoft YaHei",sans-serif; color:#222}
+  .gm-desc{display:block; font-size:12.5px; color:#555; margin-top:3px; line-height:1.4}
+  .gm-best{display:block; font-size:12.5px; color:#8a5a1a; margin-top:3px}
+  .gm-foot{margin-top:12px; font-size:12.5px; color:#666; line-height:1.6; border-top:1px dotted #a8a8a8; padding-top:9px}
+  .g2-body, .tt-body, .sn-body{padding:12px}
+  .g2-top, .sn-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:11px; gap:8px}
+  .g2-score, .sn-score{font:bold 16px/1 Consolas,monospace; color:#222}
+  .g2-btn, .tt-btn, .sn-btn{font-family:inherit; font-size:13.5px; background:#c9c9c9; border:2px solid;
+    border-color:#fff #6f6f6f #6f6f6f #fff; padding:6px 13px; cursor:pointer; color:#222}
   .g2-btn:active, .tt-btn:active, .sn-btn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  .g2-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; padding:6px; background:#9a9a9a;
+  .g2-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:7px; padding:7px; background:#9a9a9a;
     border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; touch-action:none; user-select:none}
   .g2-cell{aspect-ratio:1; display:flex; align-items:center; justify-content:center;
-    font:bold 17px/1 Consolas,monospace; color:#776e65; background:#cdc1b4;
+    font:bold 23px/1 Consolas,monospace; color:#776e65; background:#cdc1b4;
     border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff}
-  .g2-cell.sm{font-size:12px}
+  .g2-cell.sm{font-size:16px}
   .g2-cell.v0{background:#bdb3a7; border-color:#d8d0c6 #8f877c #8f877c #d8d0c6}
   .g2-cell.v2{background:#eee4da}
   .g2-cell.v4{background:#ede0c8}
@@ -609,28 +612,29 @@
   .g2-cell.v2048{background:#edc22e; color:#fff}
   .g2-cell.pop{animation:g2pop .12s steps(2) 1}
   @keyframes g2pop{0%{transform:scale(.82)} 100%{transform:scale(1)}}
-  .g2-foot{margin-top:8px; font-size:11.5px; color:#555; line-height:1.6}
-  .tt-main{display:flex; gap:8px; align-items:flex-start}
-  .tt-canvas{background:#0d0d0d; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; display:block; touch-action:none}
-  .tt-side{flex:1; min-width:0; display:flex; flex-direction:column; gap:6px}
-  .tt-box{border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; background:#f2ecd9; padding:4px 6px}
-  .tt-k{display:block; color:#7a6a4a; font-size:10.5px}
-  .tt-v{display:block; font:bold 14px/1.25 Consolas,monospace; color:#2038a8}
+  .g2-foot{margin-top:10px; font-size:12.5px; color:#555; line-height:1.6}
+  .tt-main{display:flex; gap:10px; align-items:flex-start}
+  .tt-canvas{background:#0d0d0d; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; display:block;
+    touch-action:none; max-width:100%; height:auto}
+  .tt-side{flex:1; min-width:0; display:flex; flex-direction:column; gap:7px}
+  .tt-box{border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; background:#f2ecd9; padding:5px 7px}
+  .tt-k{display:block; color:#7a6a4a; font-size:11.5px}
+  .tt-v{display:block; font:bold 16px/1.25 Consolas,monospace; color:#2038a8}
   .tt-next{background:#0d0d0d; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; display:block; margin:0 auto; max-width:100%}
-  .tt-keys{display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin-top:8px}
-  .tt-keys button{height:30px; font:bold 14px/1 Consolas,monospace; background:#d9d9d9; border:2px solid;
+  .tt-keys{display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin-top:10px}
+  .tt-keys button{height:36px; font:bold 17px/1 Consolas,monospace; background:#d9d9d9; border:2px solid;
     border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222}
   .tt-keys button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  .tt-tip{margin-top:6px; font-size:11px; color:#666; line-height:1.6}
+  .tt-tip{margin-top:8px; font-size:12px; color:#666; line-height:1.6}
   .sn-canvas{background:#0d0d0d; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f;
-    display:block; margin:0 auto; width:min(300px,100%); height:auto; touch-action:none}
-  .sn-pad{display:grid; grid-template-columns:repeat(3,46px); grid-template-rows:repeat(2,32px); gap:4px;
-    justify-content:center; margin-top:8px}
-  .sn-pad button{font:bold 15px/1 Consolas,monospace; background:#d9d9d9; border:2px solid;
+    display:block; margin:0 auto; width:min(432px,100%); height:auto; touch-action:none}
+  .sn-pad{display:grid; grid-template-columns:repeat(3,56px); grid-template-rows:repeat(2,38px); gap:5px;
+    justify-content:center; margin-top:10px}
+  .sn-pad button{font:bold 18px/1 Consolas,monospace; background:#d9d9d9; border:2px solid;
     border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222}
   .sn-pad button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .sn-pad .sn-up{grid-column:2}
-  .sn-foot{margin-top:8px; font-size:11.5px; color:#555; text-align:center; line-height:1.6}
+  .sn-foot{margin-top:10px; font-size:12.5px; color:#555; text-align:center; line-height:1.6}
   /* ---------- 日记.EXE ---------- */
   #diaryWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(420px,92vw);
     display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
@@ -1591,7 +1595,8 @@
     .album-covers{grid-template-columns:repeat(3,1fr); gap:10px}
     .album-cover{min-width:0}
     /* 手机上弹窗靠上放, 给输入法键盘留地方; 里程牌缩小; 任务栏紧凑排布 */
-    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin, #imgSearchWin, #gradeWin, #cubeWin, #tmgrWin, #noteWin, #mypcWin, #ticketWin{top:6vh; transform:translate(-50%,0)}
+    #term, #helpWin, #diaryWin, #paintWin, #solarWin, #sysWin, #albumWin, #ddWin, #imgSearchWin, #gradeWin, #cubeWin, #tmgrWin, #noteWin, #mypcWin, #ticketWin,
+    #mineWin, #gameWin, #g2048Win, #ttWin, #snakeWin{top:6vh; transform:translate(-50%,0)}
     #taskbar{gap:4px}
     #tbCmd, #tbHelp, #tbCalc, #tbGame, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{padding:0 2px}
     #tray{padding:0 6px}
@@ -2022,13 +2027,13 @@
   </div>
   <div class="tt-body">
     <div class="tt-main">
-      <canvas class="tt-canvas" id="ttCanvas" width="200" height="400"></canvas>
+      <canvas class="tt-canvas" id="ttCanvas" width="240" height="480"></canvas>
       <div class="tt-side">
         <div class="tt-box"><span class="tt-k">分数</span><span class="tt-v" id="ttScore">0</span></div>
         <div class="tt-box"><span class="tt-k">消行</span><span class="tt-v" id="ttLines">0</span></div>
         <div class="tt-box"><span class="tt-k">等级</span><span class="tt-v" id="ttLevel">1</span></div>
         <div class="tt-box"><span class="tt-k">下一个</span></div>
-        <canvas class="tt-next" id="ttNext" width="96" height="72"></canvas>
+        <canvas class="tt-next" id="ttNext" width="120" height="96"></canvas>
         <button class="tt-btn" id="ttNew" type="button">重开</button>
       </div>
     </div>
@@ -2052,7 +2057,7 @@
       <span class="sn-score" id="snScore">得分 0</span>
       <button class="sn-btn" id="snNew" type="button">重开</button>
     </div>
-    <canvas class="sn-canvas" id="snCanvas" width="360" height="360"></canvas>
+    <canvas class="sn-canvas" id="snCanvas" width="432" height="432"></canvas>
     <div class="sn-pad">
       <button class="sn-up" data-dir="up" type="button" title="上">↑</button>
       <button data-dir="left" type="button" title="左">←</button>
@@ -4181,7 +4186,10 @@ termIn.addEventListener('keydown', function(e){
 var winTopZ = 260;
 function frontWindow(win){ win.style.zIndex = ++winTopZ; }
 function makeDraggable(win, handle){
-  handle.addEventListener('mousedown', function(e){
+  if(!win || !handle) return;
+  handle.style.touchAction = 'none';
+  handle.addEventListener('pointerdown', function(e){
+    if(e.button !== undefined && e.button !== 0) return;
     if(e.target.tagName === 'BUTTON') return;
     frontWindow(win);
     var r = win.getBoundingClientRect();
@@ -4189,25 +4197,45 @@ function makeDraggable(win, handle){
     win.style.transform = 'none';
     win.style.left = ox + 'px';
     win.style.top = oy + 'px';
+    /* 抓不到指针就退回 document 监听, 拖出窗口也不掉线 */
+    var grabbed = false;
+    try{ handle.setPointerCapture(e.pointerId); grabbed = true; }catch(err){}
     function mv(ev){
-      win.style.left = (ox + ev.clientX - sx) + 'px';
-      win.style.top = Math.max(0, oy + ev.clientY - sy) + 'px';
+      /* 四个方向都留 80px 在屏幕里, 拖飞了也能抓回来 */
+      var w = r.width, iw = window.innerWidth, ih = window.innerHeight;
+      var nx = ox + ev.clientX - sx, ny = oy + ev.clientY - sy;
+      win.style.left = Math.max(-w + 80, Math.min(iw - 80, nx)) + 'px';
+      win.style.top = Math.max(0, Math.min(ih - 28, ny)) + 'px';
     }
     function up(){
-      document.removeEventListener('mousemove', mv);
-      document.removeEventListener('mouseup', up);
+      handle.removeEventListener('pointermove', mv);
+      handle.removeEventListener('pointerup', up);
+      handle.removeEventListener('pointercancel', up);
+      document.removeEventListener('pointermove', mv);
+      document.removeEventListener('pointerup', up);
+      if(grabbed){ try{ handle.releasePointerCapture(e.pointerId); }catch(err){} }
     }
-    document.addEventListener('mousemove', mv);
-    document.addEventListener('mouseup', up);
+    if(grabbed){
+      handle.addEventListener('pointermove', mv);
+      handle.addEventListener('pointerup', up);
+      handle.addEventListener('pointercancel', up);
+    } else {
+      document.addEventListener('pointermove', mv);
+      document.addEventListener('pointerup', up);
+    }
     e.preventDefault();
   });
-  win.addEventListener('mousedown', function(){ frontWindow(win); });
+  win.addEventListener('pointerdown', function(){ frontWindow(win); });
 }
 makeDraggable(term, $('#term .titlebar'));
 makeDraggable($('#helpWin'), $('#helpWin .titlebar'));
 makeDraggable($('#calcWin'), $('#calcWin .titlebar'));
 makeDraggable($('#mineWin'), $('#mineWin .titlebar'));
 makeDraggable($('#diaryWin'), $('#diaryWin .titlebar'));
+makeDraggable($('#hgWin'), $('#hgWin .titlebar'));
+makeDraggable($('#paintWin'), $('#paintWin .titlebar'));
+makeDraggable($('#solarWin'), $('#solarWin .titlebar'));
+makeDraggable($('#cubeWin'), $('#cubeWin .titlebar'));
 
 /* ---------- 日记.EXE: 按日期快速翻船舱日记 ---------- */
 function diaryAppToggle(open){
@@ -7097,7 +7125,7 @@ $('#g2Grid').addEventListener('pointerup', function(e){
 });
 
 /* ---------- 俄罗斯方块: 7 种方块, 消一行少一行 ---------- */
-var TT_COLS = 10, TT_ROWS = 20, TT_CELL = 20;
+var TT_COLS = 10, TT_ROWS = 20, TT_CELL = 24;
 var TT_COLOR = { I:'#4dc3c9', J:'#5b86dd', L:'#e8a13c', O:'#edcf72', S:'#6fbf73', T:'#ad6fb8', Z:'#e46b5a' };
 var TT_SHAPE = {
   I:[[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
@@ -7273,7 +7301,7 @@ function ttDraw(){
 function ttNextDraw(){
   ttNxCtx.fillStyle = '#0d0d0d';
   ttNxCtx.fillRect(0, 0, ttNx.width, ttNx.height);
-  var m = TT_SHAPE[ttNextKey], cell = 16;
+  var m = TT_SHAPE[ttNextKey], cell = 22;
   var n = m.length;
   var ox = Math.floor((ttNx.width - n * cell) / 2), oy = Math.floor((ttNx.height - n * cell) / 2);
   ttNxCtx.fillStyle = TT_COLOR[ttNextKey];
@@ -7336,7 +7364,7 @@ $('#ttKD').addEventListener('click', function(){ ttSoftDrop(); });
 $('#ttKS').addEventListener('click', function(){ ttHardDrop(); });
 
 /* ---------- 贪吃蛇: 吃果子变长, 别咬自己 ---------- */
-var SN_N = 18, SN_CELL = 20;
+var SN_N = 18, SN_CELL = 24;
 var snCv = $('#snCanvas'), snCtx = snCv.getContext('2d');
 var snSnake = [], snDir = 'right', snWant = 'right', snFood = null, snScore = 0;
 var snOver = false, snPaused = false, snTimer = null, snSpeed = 150, snBuilt = false;
@@ -7784,7 +7812,8 @@ var ENTRIES = [
   { d:'2026-09-12', h:'「九小回忆」开馆: 第九小学的毕业季都在里面——楼梯间、水手服和那块校名石。原来毕业已经三年了。' },
     { d:'2026-09-27', h:'中秋最后一天, 小站一口气更新了一堆——好吃的相册攒到十五张、页脚挂了仓库直达和新项目贪吃蛇、成绩监控也上了(加密的, 别想偷看)。修了个bug: 凌晨两点显示自然醒, 睡着的人怎么自然醒。明天开学。' },
     { d:'2026-10-01', h:'国庆假期第一天, 学校先暂停营业七天。书包获得短暂休息权, 作业没有——它只是换了个地方继续等我。' },
-    { d:'2026-10-16', h:'任务栏那个「雷」换成「玩」了——点进去是个游戏厅, 扫雷还在老位置, 旁边新摆了三台机器: 2048、俄罗斯方块、贪吃蛇。做完作业才准玩, 这句是写给我自己的。' }
+    { d:'2026-10-16', h:'任务栏那个「雷」换成「玩」了——点进去是个游戏厅, 扫雷还在老位置, 旁边新摆了三台机器: 2048、俄罗斯方块、贪吃蛇。做完作业才准玩, 这句是写给我自己的。' },
+    { d:'2026-10-17', h:'船长大早上说游戏厅太小了, 还把每个窗口都拖了一遍——沙漏、画板、太阳系那几扇窗原来根本拖不动, 光标是那个样子, 手一按却没反应。今天全修好了: 窗口都放大一圈, 四台机器看着终于不憋屈; 二十二扇窗一扇一扇试过, 手机用手指也能拖, 拖到屏幕边上会自己停住, 不会把窗口弄丢。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
