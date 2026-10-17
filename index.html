@@ -570,8 +570,8 @@
   #ttWin{width:min(420px,92vw)}
   #snakeWin{width:min(460px,92vw)}
   /* 放大后要照顾矮屏: 内容超高就在窗口里滚, 标题栏始终留在原地能拖 */
-  #mineWin, #gameWin, #g2048Win, #ttWin, #snakeWin{max-height:94vh}
-  .mine-body, .gm-body, .g2-body, .tt-body, .sn-body{max-height:calc(94vh - 30px); overflow-y:auto}
+  #mineWin, #gameWin, #g2048Win, #ttWin, #snakeWin, #cubeWin{max-height:94vh}
+  .mine-body, .gm-body, .g2-body, .tt-body, .sn-body, .cb-body{max-height:calc(94vh - 30px); overflow-y:auto}
   .gm-body{padding:14px}
   .gm-head{font-family:SimHei,"Microsoft YaHei",sans-serif; font-size:15px; color:#4a3f2c; margin-bottom:11px}
   .gm-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:11px}
@@ -1899,6 +1899,7 @@
       <li><b>阳 太阳系.EXE</b> — 真实比例+真实周期: 左侧星球列表点谁去谁, 拖动平移, 滚轮缩放, 点行星看资料; 找不到地球? 先缩小看全家福, 再凑近</li>
       <li><b>倒 倒数日.EXE</b> — 内置节日与纪念日倒数(含农历, 还会自动追最近的周五) + 自定义事件可写详细说明, 谁的日子近谁排前面</li>
       <li><b>搜 图片搜索.EXE</b> — 按内容和标签找图: 输入"猫/操场/云/毕业"这类关键词, 或直接点标签; 点结果原图大图看</li>
+      <li><b>魔 魔方.EXE</b> — 三阶 / 四阶都能玩: 拖画布转视角, 点按钮或按键盘拧; 三阶走 Kociemba 两阶法, 四阶先降阶再解, 打乱、还原、重置、暂停、单步都有, 还原了自动记成绩(本机存着, 关掉再开还在)</li>
       <li><b>绩 成绩监控.EXE</b> — 船长的加密成绩档案: 口令解锁才能翻(提示: 生日), 源码里连明文都没有, 关窗即重新上锁</li>
       <li><b>任 任务管理器.EXE</b> — 三页账: 应用看谁开着, 进程看谁在跑(二十个 ChatGPT 正在挤内存), 性能看 640K 还剩多少; 任务管理器自己也占 42K, 这数字看着看着就上去了</li>
       <li><b>记 记事本.EXE</b> — 船长留的草稿纸: 写什么都行, 自动存本机, 下次打开还在</li>
@@ -2396,7 +2397,7 @@
       <div class="wc-badge">你是第 <b id="wcVisitN">?</b> 次登船的旅客 · <span id="wcRank"></span></div>
       <div class="wc-text">
         <p>这是一个把自己伪装成<b>老电脑</b>的个人网站: 会开机, 会关机, 闲置太久还会自己放屏保。</p>
-        <p>任务栏里藏着一排真能玩的应用 — 终端、<b>游戏厅</b>(扫雷 / 2048 / 俄罗斯方块 / 贪吃蛇)、画板、倒计时沙漏、<b>真实比例的太阳系</b>, 还有刚上船的<b>任务管理器</b>: 二十个 ChatGPT 正在里面挤内存。彩蛋没有提示, 但值得自己撞见; 撞不明白再翻帮助.chm, 那是官方外挂。</p>
+        <p>任务栏里藏着一排真能玩的应用 — 终端、<b>游戏厅</b>(扫雷 / 2048 / 俄罗斯方块 / 贪吃蛇)、画板、倒计时沙漏、<b>真实比例的太阳系</b>、<b>魔方.EXE</b>(三阶四阶都能拧, 还会自己解), 还有刚上船的<b>任务管理器</b>: 二十个 ChatGPT 正在里面挤内存。彩蛋没有提示, 但值得自己撞见; 撞不明白再翻帮助.chm, 那是官方外挂。</p>
         <p>站名、便利贴、右下角的小船, 挨个点过去都有回应。相册是真的校园, 喜欢的图能<b>单张下载或整本打包</b>; 日记是真的近况; 甲板音乐常年在放。留言板等真话。</p>
         <p class="wc-hint">别急着逛完 — 这条船的座右铭是: 更新了, 又好像没更新。</p>
       </div>
@@ -4385,6 +4386,7 @@ var BR_SITES = [
       var rows = [
         ['计算器 1.0', '★★★★★', '3K', 'calc', '安装'],
         ['游戏厅.EXE 四合一', '★★★★★', '42K', 'game', '安装'],
+        ['魔方.EXE 三阶/四阶', '★★★★★', '128K', 'cube', '安装'],
         ['画板.EXE', '★★★★☆', '24K', 'paint', '安装'],
         ['甲板音乐离线包', '★★★★★', '14 首', 'music', '播放'],
         ['640K 内存扩容包', '★★★★★', '9999K', 'mem', '下载']
@@ -4568,6 +4570,7 @@ function brMusicSync(){   /* dm 状态变了: 电视台/电台页正开着就跟
 function brLaunch(app){   /* 别的网站点过来的"真动作": 装应用/放歌/捞瓶子 */
   if(app === 'calc'){ calcToggle(true); toast('安装完成: 计算器已在运行。'); return; }
   if(app === 'game'){ gameToggle(true); toast('安装完成: 游戏厅已在运行, 四台机器随便挑。'); return; }
+  if(app === 'cube'){ cubeToggle(true); toast('安装完成: 魔方.EXE 已在运行, 转两把试试。'); return; }
   if(app === 'paint'){ ptPaintToggle(true); toast('安装完成: 画板已在运行。'); return; }
   if(app === 'music'){   /* 显式点击, 绕过开站自动播放开关——用户现在就要听 */
     if(!SONGS.length){ toast('歌单空着, 船长还没进货。'); return; }
@@ -5240,7 +5243,7 @@ var BSOD_APPS = [
   ['#imgSearchWin', imgSearchToggle, '图片搜索'], ['#gradeWin', gradeToggle, '成绩监控'],
   ['#tmgrWin', tmgrToggle, '任务管理器'], ['#noteWin', noteToggle, '记事本'], ['#mypcWin', mypcToggle, '我的电脑'],
   ['#gameWin', gameToggle, '游戏厅'], ['#g2048Win', g2Toggle, '2048'], ['#ttWin', ttToggle, '俄罗斯方块'],
-  ['#snakeWin', snToggle, '贪吃蛇']
+  ['#snakeWin', snToggle, '贪吃蛇'], ['#cubeWin', cubeToggle, '魔方']
 ];
 var bsodArmed = true;
 function bsodOpenCount(){
@@ -5609,9 +5612,22 @@ $('#nightChannel').addEventListener('click', function(){
   brNavigate('night.fm');
 });
 
-/* ---------- 魔方按钮: 还没造好, 先别让它是死的 ---------- */
-$('#tbCube').addEventListener('click', function(){
-  toast('魔方还在拧 — 零件都到齐了, 就差最后一把劲。');
+/* ---------- 魔方按钮 ---------- */
+$('#tbCube').addEventListener('click', function(){ cubeToggle(true); });
+$('#cubeClose').addEventListener('click', function(){ cubeToggle(false); });
+$('#cbB3').addEventListener('click', function(){ cbSetN(3); });
+$('#cbB4').addEventListener('click', function(){ cbSetN(4); });
+$('#cbScramble').addEventListener('click', cbScramble);
+$('#cbSolve').addEventListener('click', cbSolve);
+$('#cbReset').addEventListener('click', cbReset);
+$('#cbPlay').addEventListener('click', cbPlayPause);
+$('#cbStep').addEventListener('click', cbStep);
+$('#cbSpeed').addEventListener('input', function(){
+  CBS.speed = parseInt(this.value, 10) || 5;
+  var v = $('#cbSpdVal'); if(v) v.textContent = CBS.speed + 'x';
+});
+window.addEventListener('resize', function(){
+  if($('#cubeWin').classList.contains('open')) cbResize();
 });
 
 /* ---------- 倒数日.EXE: 内置节日 + 自定义倒数(localStorage) ---------- */
@@ -6946,6 +6962,2069 @@ $('#mineFlagMode').addEventListener('click', function(){
 });
 mineReset();
 
+
+/* ========================================================================
+ * 魔方.EXE —— 核心模型 + 求解器 + 渲染 + UI
+ * 三阶走 Kociemba 两阶段法(建表 ~500ms, 求解 10~80ms);
+ * 四阶走降阶(如果 reduce4 在的话)。全部 ES5, 无外部依赖。
+ * ======================================================================== */
+/* ----- 1. 核心模型 ----- */
+/* ============================================================================
+ * 魔方核心模型 —— 三阶 / 四阶
+ * 纯函数, 不碰 DOM。最终会原样内联进 index.html 的 SCRIPT-TAG 块。
+ *
+ * 坐标系(全部 ×2 取整, 避免浮点):
+ *   三阶: {-2, 0, 2}   四阶: {-3, -1, 1, 3}
+ * 面法线: U=[0,1,0] D=[0,-1,0] F=[0,0,1] B=[0,0,-1] R=[1,0,0] L=[-1,0,0]
+ * 颜色索引: 0=U白 1=D黄 2=F绿 3=B蓝 4=R红 5=L橙
+ *
+ * 块(Piece): { p:[x,y,z] 世界坐标, m:3x3 整数旋转矩阵, st:[{n:局部法线, c:颜色}] }
+ * 转动记号: R R' R2 (外层) / Rw Rw' (宽转=外层+内层) / r r' (仅内层切片) / x y z (整体转)
+ * ========================================================================== */
+'use strict';
+
+var FACES = ['U', 'D', 'F', 'B', 'R', 'L'];
+var FACEDEF = { U: [1, 1], D: [1, -1], R: [0, 1], L: [0, -1], F: [2, 1], B: [2, -1] };
+var FCOLOR = { U: 0, D: 1, F: 2, B: 3, R: 4, L: 5 };
+var COLORNAME = ['白', '黄', '绿', '蓝', '红', '橙'];
+var AXNAME = ['x', 'y', 'z'];
+
+var ID3 = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+/* 右手定则 +90° 旋转矩阵 */
+var ROT = {
+  x: [[1, 0, 0], [0, 0, -1], [0, 1, 0]],
+  y: [[0, 0, 1], [0, 1, 0], [-1, 0, 0]],
+  z: [[0, -1, 0], [1, 0, 0], [0, 0, 1]]
+};
+
+function mulMat(a, b) {
+  var r = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  for (var i = 0; i < 3; i++) {
+    for (var j = 0; j < 3; j++) {
+      r[i][j] = a[i][0] * b[0][j] + a[i][1] * b[1][j] + a[i][2] * b[2][j];
+    }
+  }
+  return r;
+}
+function applyMat(m, v) {
+  return [
+    m[0][0] * v[0] + m[0][1] * v[1] + m[0][2] * v[2],
+    m[1][0] * v[0] + m[1][1] * v[1] + m[1][2] * v[2],
+    m[2][0] * v[0] + m[2][1] * v[1] + m[2][2] * v[2]
+  ];
+}
+function powMat(m, q) {
+  q = ((q % 4) + 4) % 4;
+  var r = ID3;
+  for (var i = 0; i < q; i++) r = mulMat(m, r);
+  return r;
+}
+
+/* ---------- 建魔方 ---------- */
+function mkCube(n) {
+  var maxc = (n === 3) ? 2 : 3;
+  var coords = (n === 3) ? [-2, 0, 2] : [-3, -1, 1, 3];
+  var pieces = [];
+  for (var xi = 0; xi < n; xi++) {
+    for (var yi = 0; yi < n; yi++) {
+      for (var zi = 0; zi < n; zi++) {
+        var p = [coords[xi], coords[yi], coords[zi]];
+        var st = [];
+        for (var fi = 0; fi < 6; fi++) {
+          var f = FACES[fi], ax = FACEDEF[f][0], sg = FACEDEF[f][1];
+          if (p[ax] === sg * maxc) {
+            var nn = [0, 0, 0];
+            nn[ax] = sg;
+            st.push({ n: nn, c: FCOLOR[f] });
+          }
+        }
+        if (st.length) pieces.push({ p: p, m: ID3, st: st });
+      }
+    }
+  }
+  return { n: n, maxc: maxc, pieces: pieces };
+}
+
+function cloneCube(cu) {
+  var ps = new Array(cu.pieces.length);
+  for (var i = 0; i < cu.pieces.length; i++) {
+    var q = cu.pieces[i];
+    ps[i] = { p: [q.p[0], q.p[1], q.p[2]], m: q.m, st: q.st };
+  }
+  return { n: cu.n, maxc: cu.maxc, pieces: ps };
+}
+
+/* ---------- 转动 ---------- */
+function rotateLayer(cu, axisIdx, coord, q) {
+  q = ((q % 4) + 4) % 4;
+  if (q === 0) return;
+  var R = powMat(ROT[AXNAME[axisIdx]], q);
+  for (var i = 0; i < cu.pieces.length; i++) {
+    var pc = cu.pieces[i];
+    if (pc.p[axisIdx] === coord) {
+      pc.p = applyMat(R, pc.p);
+      pc.m = mulMat(R, pc.m);
+    }
+  }
+}
+function rotateAll(cu, axisIdx, q) {
+  q = ((q % 4) + 4) % 4;
+  if (q === 0) return;
+  var R = powMat(ROT[AXNAME[axisIdx]], q);
+  for (var i = 0; i < cu.pieces.length; i++) {
+    var pc = cu.pieces[i];
+    pc.p = applyMat(R, pc.p);
+    pc.m = mulMat(R, pc.m);
+  }
+}
+/* turns: 1=顺时针(从该面外侧看) -1=逆时针 2=180° */
+function faceTurn(cu, face, turns) {
+  var fd = FACEDEF[face];
+  var q = ((-fd[1] * turns) % 4 + 4) % 4;
+  rotateLayer(cu, fd[0], fd[1] * cu.maxc, q);
+}
+function innerTurn(cu, face, turns) {
+  var fd = FACEDEF[face];
+  var q = ((-fd[1] * turns) % 4 + 4) % 4;
+  rotateLayer(cu, fd[0], fd[1] * (cu.maxc - 2), q);
+}
+function wideTurn(cu, face, turns) {
+  faceTurn(cu, face, turns);
+  innerTurn(cu, face, turns);
+}
+/* 整体转 (x/y/z), 方向同 R/U/F */
+function wholeTurn(cu, axis, turns) {
+  var q = ((-turns) % 4 + 4) % 4;
+  rotateAll(cu, { x: 0, y: 1, z: 2 }[axis], q);
+}
+
+/* ---------- 记号 ---------- */
+function applyToken(cu, tok) {
+  var m = /^([UDLRFBudlrfbxyzXYZ])(w?)(2|')?$/.exec(tok);
+  if (!m) throw new Error('看不懂的记号: ' + tok);
+  var base = m[1], w = m[2], suf = m[3];
+  var turns = (suf === '2') ? 2 : (suf === "'" ? -1 : 1);
+  var up = base.toUpperCase();
+  if (up === 'X' || up === 'Y' || up === 'Z') {
+    wholeTurn(cu, up.toLowerCase(), turns);
+    return;
+  }
+  if (base === up) {
+    if (w) wideTurn(cu, up, turns); else faceTurn(cu, up, turns);
+  } else {
+    innerTurn(cu, up, turns);
+  }
+}
+function applyAlg(cu, alg) {
+  if (!alg) return;
+  var toks = (typeof alg === 'string') ? alg.split(/\s+/) : alg;
+  for (var i = 0; i < toks.length; i++) if (toks[i]) applyToken(cu, toks[i]);
+}
+function invToken(t) {
+  var m = /^([UDLRFBudlrfbxyzXYZ])(w?)(2|')?$/.exec(t);
+  if (!m) throw new Error('看不懂的记号: ' + t);
+  if (m[3] === '2') return t;
+  return m[1] + m[2] + (m[3] === "'" ? '' : "'");
+}
+function invAlg(alg) {
+  var toks = (typeof alg === 'string') ? alg.split(/\s+/) : alg.slice();
+  var out = [];
+  for (var i = toks.length - 1; i >= 0; i--) if (toks[i]) out.push(invToken(toks[i]));
+  return out.join(' ');
+}
+function fmtAlg(toks) { return toks.join(' '); }
+
+/* ---------- 读状态 ---------- */
+function faceOfN(nrm) {
+  for (var i = 0; i < 6; i++) {
+    var f = FACES[i], ax = FACEDEF[f][0], sg = FACEDEF[f][1];
+    if (nrm[ax] === sg && nrm[(ax + 1) % 3] === 0 && nrm[(ax + 2) % 3] === 0) return f;
+  }
+  return null;
+}
+function gridRC(face, p, maxc) {
+  switch (face) {
+    case 'U': return [(maxc - p[2]) / 2, (p[0] + maxc) / 2];
+    case 'D': return [(maxc - p[2]) / 2, (p[0] + maxc) / 2];
+    case 'F': return [(maxc - p[1]) / 2, (p[0] + maxc) / 2];
+    case 'B': return [(maxc - p[1]) / 2, (maxc - p[0]) / 2];
+    case 'R': return [(maxc - p[1]) / 2, (maxc - p[2]) / 2];
+    case 'L': return [(maxc - p[1]) / 2, (p[2] + maxc) / 2];
+  }
+  return null;
+}
+/* 返回全部贴纸: {face, r, c, color, piece} —— 贴纸所在面由 (m·n) 决定, 格位由块位置决定 */
+function allStickers(cu) {
+  var out = [];
+  for (var i = 0; i < cu.pieces.length; i++) {
+    var pc = cu.pieces[i];
+    for (var j = 0; j < pc.st.length; j++) {
+      var wn = applyMat(pc.m, pc.st[j].n);
+      var face = faceOfN(wn);
+      if (!face) continue;
+      var rc = gridRC(face, pc.p, cu.maxc);
+      out.push({ face: face, r: rc[0], c: rc[1], color: pc.st[j].c, piece: pc, wn: wn });
+    }
+  }
+  return out;
+}
+function stAt(cu, face, r, c) {
+  var all = allStickers(cu);
+  for (var i = 0; i < all.length; i++) {
+    if (all[i].face === face && all[i].r === r && all[i].c === c) return all[i];
+  }
+  return null;
+}
+function faceColors(cu, face) {
+  var all = allStickers(cu), out = [];
+  for (var i = 0; i < all.length; i++) if (all[i].face === face) out.push(all[i].color);
+  return out;
+}
+/* 某面是不是纯色 */
+function faceUniform(cu, face) {
+  var cs = faceColors(cu, face);
+  if (!cs.length) return false;
+  for (var i = 1; i < cs.length; i++) if (cs[i] !== cs[0]) return false;
+  return true;
+}
+function isSolved(cu) {
+  for (var i = 0; i < 6; i++) if (!faceUniform(cu, FACES[i])) return false;
+  return true;
+}
+/* 三阶: 面心块永远不动, 颜色即面色 */
+function centerColor(cu, face) {
+  var n = cu.n, mid = (n - 1) / 2;
+  var st = stAt(cu, face, mid, mid);
+  return st ? st.color : null;
+}
+/* 四阶: 没有单一面心, 从角块推面色。
+ * 关键: 读「局部法线」而不是世界法线 —— 打乱后那个位置的角块早换人了,
+ * 但角块自己局部坐标系里, 哪个贴纸原本属于哪一面是永远不变的。
+ * 8 个角块里正好 4 个带 +y 局部法线, 它们的颜色必然相同。 */
+function faceColorFromCorners(cu, face) {
+  var fd = FACEDEF[face], ax = fd[0], sg = fd[1];
+  var want = [0, 0, 0]; want[ax] = sg;
+  for (var i = 0; i < cu.pieces.length; i++) {
+    var pc = cu.pieces[i];
+    if (pc.st.length !== 3) continue; /* 只要角块 */
+    for (var j = 0; j < pc.st.length; j++) {
+      var n = pc.st[j].n;
+      if (n[0] === want[0] && n[1] === want[1] && n[2] === want[2]) return pc.st[j].c;
+    }
+  }
+  return null;
+}
+
+/* ---------- 查块 ---------- */
+function samePos(a, b) { return a[0] === b[0] && a[1] === b[1] && a[2] === b[2]; }
+function pieceAt(cu, pos) {
+  for (var i = 0; i < cu.pieces.length; i++) if (samePos(cu.pieces[i].p, pos)) return cu.pieces[i];
+  return null;
+}
+function colorKey(pc) {
+  var cs = pc.st.map(function (s) { return s.c; }).sort();
+  return cs.join(',');
+}
+function findPieces(cu, colors) {
+  var key = colors.slice().sort().join(','), out = [];
+  for (var i = 0; i < cu.pieces.length; i++) if (colorKey(cu.pieces[i]) === key) out.push(cu.pieces[i]);
+  return out;
+}
+function findPiece(cu, colors) { return findPieces(cu, colors)[0] || null; }
+/* 某块上指定颜色的贴纸朝向哪个面 */
+function stickerFace(pc, color) {
+  for (var i = 0; i < pc.st.length; i++) {
+    if (pc.st[i].c === color) return faceOfN(applyMat(pc.m, pc.st[i].n));
+  }
+  return null;
+}
+function pieceFace(pc, color) { return stickerFace(pc, color); }
+
+/* ---------- 打乱 ---------- */
+function scramble(cu, len, rnd) {
+  rnd = rnd || Math.random;
+  var faces = ['U', 'D', 'L', 'R', 'F', 'B'];
+  var wide = (cu.n === 4);
+  var toks = [], lastAxis = -1;
+  for (var i = 0; i < len; i++) {
+    var f, ax;
+    do { f = faces[Math.floor(rnd() * 6)]; ax = FACEDEF[f][0]; } while (ax === lastAxis);
+    lastAxis = ax;
+    var suf = ['', "'", '2'][Math.floor(rnd() * 3)];
+    var tok = f + ((wide && rnd() < 0.45) ? 'w' : '') + suf;
+    toks.push(tok);
+    applyToken(cu, tok);
+  }
+  return toks.join(' ');
+}
+
+/* ---------- 工具 ---------- */
+/* 整体 U 转 (顺时针从上往下看) 对位置和面名的映射:
+ * 位置 (x,y,z) -> (-z, y, x);  面名 F->L->B->R->F */
+var YCYCLE = ['F', 'L', 'B', 'R'];
+function yMapFace(face, k) {
+  k = ((k % 4) + 4) % 4;
+  var i = YCYCLE.indexOf(face);
+  if (i < 0) return face;
+  return YCYCLE[(i + k) % 4];
+}
+function yMapAlg(alg, k) {
+  k = ((k % 4) + 4) % 4;
+  if (!k) return alg;
+  var toks = (typeof alg === 'string') ? alg.split(/\s+/) : alg.slice();
+  var out = [];
+  for (var i = 0; i < toks.length; i++) {
+    var t = toks[i];
+    if (!t) continue;
+    var m = /^([UDLRFBudlrfb])(w?)(2|')?$/.exec(t);
+    if (!m) { out.push(t); continue; }
+    var base = m[1], up = base.toUpperCase();
+    var mapped = yMapFace(up, k);
+    out.push((base === up ? mapped : mapped.toLowerCase()) + (m[2] || '') + (m[3] || ''));
+  }
+  return out.join(' ');
+}
+/* U 转一次对位置的映射: F→L→B→R→F, 即 (x,y,z) -> (-z, y, x) */
+function rotYPos(p) { return [-p[2], p[1], p[0]]; }
+/* 把某个位置转到 FR 槽需要的 y 转次数 (0..3) */
+function yTurnsToFR(cu, pos) {
+  var cur = pos.slice();
+  for (var k = 0; k < 4; k++) {
+    if (cur[0] === cu.maxc && cur[1] === -cu.maxc && cur[2] === cu.maxc) return k;
+    cur = rotYPos(cur);
+  }
+  return -1;
+}
+/* 反向: 把 FR 槽的位置转到 pos 所在处需要的 y 转次数 */
+function yTurnsFromFR(cu, pos) {
+  var cur = [cu.maxc, -cu.maxc, cu.maxc];
+  for (var k = 0; k < 4; k++) {
+    if (samePos(cur, pos)) return k;
+    cur = rotYPos(cur);
+  }
+  return -1;
+}
+
+/* ---- 仅在 Node 里做无头测试时导出; 内联进 index.html 时 typeof module 为 undefined ---- */
+
+/* ----- 2. 三阶求解器 (Kociemba) ----- */
+/* ============================================================================
+ * 三阶求解器 —— Kociemba 两阶段法 (确定性, 可穷举验证)
+ *
+ * 为什么不用层先法: 层先法的每个阶段都会临时破坏前一阶段, 只能要求「终点正确」,
+ * 而「终点正确」的搜索空间是 24^8 级别, BFS 撑不住。两阶段法则有成熟理论:
+ *   G0 = 全体状态
+ *   G1 = <U, D, R2, L2, F2, B2>  (棱朝向归零 + 中层棱归位)
+ * 阶段一用 18 种转动把任意状态压进 G1, 阶段二只用 10 种转动还原。
+ * 每个阶段的搜索都靠「坐标 + 剪枝表」, 剪枝表用 BFS 从还原态铺开, 可穷举验证。
+ *
+ * 坐标全部从 core.cjs 的真魔方模型数值导出, 再用真魔方抽样回验,
+ * 所以抽象表和真模型必然一致。
+ *
+ * 记号: MOVE_TOKS 顺序固定 U U' U2 D D' D2 R R' R2 L L' L2 F F' F2 B B' B2
+ * ========================================================================== */
+'use strict';
+var C;
+var C = {
+  mkCube: mkCube, cloneCube: cloneCube, applyToken: applyToken,
+  pieceAt: pieceAt, colorKey: colorKey, applyMat: applyMat, isSolved: isSolved
+};
+
+var MOVE_TOKS = ['U', "U'", 'U2', 'D', "D'", 'D2', 'R', "R'", 'R2',
+  'L', "L'", 'L2', 'F', "F'", 'F2', 'B', "B'", 'B2'];
+var FACE_OF = [], TURNS_OF = [];
+MOVE_TOKS.forEach(function (t) {
+  FACE_OF.push(t.charAt(0));
+  var s = t.slice(1);
+  TURNS_OF.push(s === '2' ? 2 : (s === "'" ? 3 : 1));
+});
+/* 阶段二只许这 10 种 */
+var P2_MOVES = [0, 1, 2, 3, 4, 5, 8, 11, 14, 17];
+var P2_IS = (function () { var m = {}; P2_MOVES.forEach(function (v) { m[v] = 1; }); return m; })();
+
+/* ---------- 位置定义 (和 core 的 ×2 坐标一致, maxc = 2) */
+var CORNER_POS = [
+  [2, 2, 2], [-2, 2, 2], [-2, 2, -2], [2, 2, -2],   /* URF UFL ULB UBR */
+  [2, -2, 2], [-2, -2, 2], [-2, -2, -2], [2, -2, -2] /* DFR DLF DBL DRB */
+];
+var EDGE_POS = [
+  [2, 2, 0], [0, 2, 2], [-2, 2, 0], [0, 2, -2],      /* UR UF UL UB */
+  [2, -2, 0], [0, -2, 2], [-2, -2, 0], [0, -2, -2],  /* DR DF DL DB */
+  [2, 0, 2], [-2, 0, 2], [-2, 0, -2], [2, 0, -2]     /* FR FL BL BR */
+];
+
+/* ---------- 朝向 ----------
+/* ---------- 朝向 ----------
+ * 角朝向必须「按位置」定, 不能只看贴纸指向哪个轴 —— 否则四个角转一圈之后,
+ * 朝向和就不是 3 的倍数了 (实测 200 个打乱全挂)。这里用 Kociemba 的面片约定:
+ * 每个角位置的三个面片有一个固定顺序 (U/D 面, 然后按右手方向排另外两面),
+ * 看黄贴纸落在第几个面片上, 朝向就是几。
+ * 每个角位置三条边按顺序列出 (方向向量 -> 朝向值):
+ */
+var CORNER_ORI_TAB = [
+  { '0,1,0': 0, '1,0,0': 1, '0,0,1': 2 },    /* 0 URF: U R F */
+  { '0,1,0': 0, '0,0,1': 1, '-1,0,0': 2 },   /* 1 UFL: U F L */
+  { '0,1,0': 0, '-1,0,0': 1, '0,0,-1': 2 },  /* 2 ULB: U L B */
+  { '0,1,0': 0, '0,0,-1': 1, '1,0,0': 2 },   /* 3 UBR: U B R */
+  { '0,-1,0': 0, '0,0,1': 1, '1,0,0': 2 },   /* 4 DFR: D F R */
+  { '0,-1,0': 0, '-1,0,0': 1, '0,0,1': 2 },  /* 5 DLF: D L F */
+  { '0,-1,0': 0, '0,0,-1': 1, '-1,0,0': 2 }, /* 6 DBL: D B L */
+  { '0,-1,0': 0, '1,0,0': 1, '0,0,-1': 2 }   /* 7 DRB: D R B */
+];
+function cornerOri(pc, posIdx) {
+  for (var i = 0; i < pc.st.length; i++) {
+    var c = pc.st[i].c;
+    if (c === 0 || c === 1) {
+      var wn = C.applyMat(pc.m, pc.st[i].n);
+      var v = CORNER_ORI_TAB[posIdx][wn.join(',')];
+      return (v === undefined) ? -1 : v;
+    }
+  }
+  return -1;
+}
+/* ---------- 棱朝向 ----------
+ * 注意: 教科书那句「UD 色贴在 U/D 面就是 ori 0」在这个模型里**不成立** ——
+ * 实测它不满足「掩码与状态无关」, 直接导致 Kociemba 的 FL 转移表失真。
+ * 这里的表是用 GF(2) 线性方程组解出来的: 未知量 = 每个 (块, 旋转) 的 ori,
+ * 约束 = (a) 对每个转动, ori 的变化只取决于目标位置 (b) 同一块在同一位置的
+ * 两种合法旋转 ori 必须不同 (c) U/U'/D/D' 不翻转任何棱 (G1 保朝向)。
+ * 三组约束联立有解, 且解唯一到「每块整体取反」的规范自由度, 再锚定
+ * 「每块在家位置且单位旋转时 ori = 0」把它钉死。
+ * 表 = 每块 12 个位置, 每格一个字符: 该块在该位置的「基准旋转」ori 值。
+ * 另一旋转必相反, 用「第一张贴纸世界法线是否等于槽位第一法线」来区分。 */
+var EDGE_ORI_TAB = [
+  '101010100000',   /* UR */
+  '101010100000',   /* UF */
+  '101010100000',   /* UL */
+  '101010100000',   /* UB */
+  '101010100000',   /* DR */
+  '101010100000',   /* DF */
+  '101010100000',   /* DL */
+  '101010100000',   /* DB */
+  '010101011111',   /* FR */
+  '010101011111',   /* FL */
+  '010101011111',   /* BL */
+  '010101011111'    /* BR */
+];
+/* 棱位置的两条世界法线 (按轴 0,1,2 顺序), 用于区分同一块在同一位置的两种旋转 */
+function edgeSlotNormals(posIdx) {
+  var q = EDGE_POS[posIdx], out = [];
+  for (var a = 0; a < 3; a++) {
+    if (q[a] !== 0) { var n = [0, 0, 0]; n[a] = q[a] > 0 ? 1 : -1; out.push(n); }
+  }
+  return out;
+}
+/* pc 在 posIdx 位置的棱朝向; homeIdx = 该块的家位置下标 */
+function edgeOri(pc, posIdx, homeIdx) {
+  var ns = edgeSlotNormals(posIdx);
+  var wn = C.applyMat(pc.m, pc.st[0].n);
+  var bit = (wn.join(',') === ns[0].join(',')) ? 0 : 1;
+  var tv = EDGE_ORI_TAB[homeIdx].charAt(posIdx);
+  return tv === '0' ? bit : (1 - bit);
+}
+
+/* ---------- 家位置索引表 ---------- */
+var CORNER_HOME = {}, EDGE_HOME = {};
+(function () {
+  var cu = C.mkCube(3);
+  for (var i = 0; i < 8; i++) CORNER_HOME[C.colorKey(C.pieceAt(cu, CORNER_POS[i]))] = i;
+  for (var j = 0; j < 12; j++) EDGE_HOME[C.colorKey(C.pieceAt(cu, EDGE_POS[j]))] = j;
+})();
+
+/* ---------- 从真魔方读坐标 */
+function readCube(cu) {
+  var co = [], cp = [], eo = [], ep = [], i, pc;
+  for (i = 0; i < 8; i++) {
+    pc = C.pieceAt(cu, CORNER_POS[i]);
+    co.push(cornerOri(pc, i));
+    cp.push(CORNER_HOME[C.colorKey(pc)]);
+  }
+  for (i = 0; i < 12; i++) {
+    pc = C.pieceAt(cu, EDGE_POS[i]);
+    var eh = EDGE_HOME[C.colorKey(pc)];
+    eo.push(edgeOri(pc, i, eh));
+    ep.push(eh);
+  }
+  return { co: co, cp: cp, eo: eo, ep: ep };
+}
+
+/* ---------- 排列 rank / unrank (Lehmer, 阶乘进制) ---------- */
+var FACT = [1];
+for (var _i = 1; _i <= 12; _i++) FACT[_i] = FACT[_i - 1] * _i;
+function rankPerm(p) {
+  var n = p.length, r = 0;
+  for (var i = 0; i < n; i++) {
+    var c = 0;
+    for (var j = i + 1; j < n; j++) if (p[j] < p[i]) c++;
+    r += c * FACT[n - 1 - i];
+  }
+  return r;
+}
+function unrankPerm(r, n) {
+  var avail = [], i;
+  for (i = 0; i < n; i++) avail.push(i);
+  var p = [];
+  for (i = 0; i < n; i++) {
+    var f = FACT[n - 1 - i];
+    var c = Math.floor(r / f);
+    r -= c * f;
+    p.push(avail.splice(c, 1)[0]);
+  }
+  return p;
+}
+
+/* ---------- 中层坐标 (495 = C(12,4)) ---------- */
+var SLICE_POS = [], SLICE_IDX = {};
+(function () {
+  var arr = [];
+  for (var a = 0; a < 12; a++) for (var b = a + 1; b < 12; b++)
+    for (var c = b + 1; c < 12; c++) for (var d = c + 1; d < 12; d++)
+      arr.push([a, b, c, d]);
+  for (var i = 0; i < arr.length; i++) {
+    SLICE_POS.push(arr[i]);
+    SLICE_IDX[arr[i].join(',')] = i;
+  }
+})();
+function sliceOf(ep) {
+  var pos = [];
+  for (var i = 0; i < 12; i++) if (ep[i] >= 8) pos.push(i);
+  return SLICE_IDX[pos.join(',')];
+}
+var SLICE_GOAL = SLICE_IDX[[8, 9, 10, 11].join(',')];
+
+/* ---------- 编码 ---------- */
+function encTwist(co) { var t = 0; for (var i = 0; i < 7; i++) t = t * 3 + co[i]; return t; }
+function decTwist(t) {
+  var co = [0, 0, 0, 0, 0, 0, 0, 0], s = 0;
+  for (var i = 6; i >= 0; i--) { co[i] = t % 3; t = (t - co[i]) / 3; s += co[i]; }
+  co[7] = (3 - (s % 3)) % 3;
+  return co;
+}
+function encFlip(eo) { var f = 0; for (var i = 0; i < 11; i++) f = f * 2 + eo[i]; return f; }
+function decFlip(f) {
+  var eo = [], s = 0;
+  for (var i = 10; i >= 0; i--) { eo[i] = f % 2; f = (f - eo[i]) / 2; s += eo[i]; }
+  eo[11] = (2 - (s % 2)) % 2;
+  return eo;
+}
+
+/* ---------- 每个转动的「位置置换 + 朝向增量」 */
+/* perm[i] = 转动后占据位置 i 的块原来在哪个位置
+ * oAdd[i] = 该块转完后在位置 i 的朝向 (还原魔方上读到即增量) */
+var MOVE_PERM = [], MOVE_OADD = [], MOVE_EADD = [];
+(function () {
+  var solved = C.mkCube(3);
+  for (var m = 0; m < 18; m++) {
+    var cu = C.cloneCube(solved);
+    C.applyToken(cu, MOVE_TOKS[m]);
+    var cp = [], co = [], ep = [], eo = [], i, pc;
+    for (i = 0; i < 8; i++) {
+      pc = C.pieceAt(cu, CORNER_POS[i]);
+      cp.push(CORNER_HOME[C.colorKey(pc)]);
+      co.push(cornerOri(pc, i));
+    }
+    for (i = 0; i < 12; i++) {
+      pc = C.pieceAt(cu, EDGE_POS[i]);
+      var eh2 = EDGE_HOME[C.colorKey(pc)];
+      ep.push(eh2);
+      eo.push(edgeOri(pc, i, eh2));
+    }
+    MOVE_PERM.push(cp);
+    MOVE_OADD.push(co);
+    MOVE_EADD.push(eo);
+    /* 校验: 这确实是置换 */
+    var seen = {}, k;
+    for (k = 0; k < 8; k++) { if (seen[cp[k]]) throw new Error('角置换坏了: ' + MOVE_TOKS[m]); seen[cp[k]] = 1; }
+    seen = {};
+    for (k = 0; k < 12; k++) { if (seen[ep[k]]) throw new Error('棱置换坏了: ' + MOVE_TOKS[m]); seen[ep[k]] = 1; }
+    /* 暂存棱置换 */
+    MOVE_PERM[m] = { cp: cp, ep: ep };
+  }
+})();
+
+/* ---------- 坐标转移表 */
+var NTW = 2187, NFL = 2048, NSL = 495, NCP = 40320, NEP = 40320, NSP = 24;
+var TW, FL, SL, CP2, EP2, SP2;
+
+function buildMoveTables() {
+  if (TW) return;
+  TW = new Uint16Array(NTW * 18);
+  FL = new Uint16Array(NFL * 18);
+  SL = new Uint16Array(NSL * 18);
+  CP2 = new Uint16Array(NCP * 18);
+  EP2 = new Uint16Array(NEP * 18);
+  SP2 = new Uint8Array(NSP * 18);
+  var m, i, t, f, s;
+  /* twist */
+  for (t = 0; t < NTW; t++) {
+    var co = decTwist(t);
+    for (m = 0; m < 18; m++) {
+      var cp = MOVE_PERM[m].cp, oa = MOVE_OADD[m];
+      var nco = [];
+      for (i = 0; i < 8; i++) nco[i] = (co[cp[i]] + oa[i]) % 3;
+      TW[t * 18 + m] = encTwist(nco);
+    }
+  }
+  /* flip */
+  for (f = 0; f < NFL; f++) {
+    var eo = decFlip(f);
+    for (m = 0; m < 18; m++) {
+      var ep = MOVE_PERM[m].ep, ea = MOVE_EADD[m];
+      var neo = [];
+      for (i = 0; i < 12; i++) neo[i] = (eo[ep[i]] + ea[i]) % 2;
+      FL[f * 18 + m] = encFlip(neo);
+    }
+  }
+  /* slice */
+  for (s = 0; s < NSL; s++) {
+    var sp = SLICE_POS[s];
+    var inset = {};
+    for (i = 0; i < 4; i++) inset[sp[i]] = 1;
+    for (m = 0; m < 18; m++) {
+      var perm = MOVE_PERM[m].ep;
+      var npos = [];
+      for (i = 0; i < 12; i++) { if (inset[perm[i]]) npos.push(i); }
+      npos.sort(function (a, b) { return a - b; });
+      SL[s * 18 + m] = SLICE_IDX[npos.join(',')];
+    }
+  }
+  /* 阶段二: 角排列 / UD 棱排列 / 中层棱排列 (只用 10 种转动) */
+  for (var cpi = 0; cpi < NCP; cpi++) {
+    var cpa = unrankPerm(cpi, 8);
+    for (var mi = 0; mi < 18; mi++) {
+      if (!P2_IS[mi]) continue;
+      var pm = MOVE_PERM[mi].cp, nc = [];
+      for (i = 0; i < 8; i++) nc[i] = cpa[pm[i]];
+      CP2[cpi * 18 + mi] = rankPerm(nc);
+    }
+  }
+  for (var epi = 0; epi < NEP; epi++) {
+    var epa = unrankPerm(epi, 8);
+    for (var mj = 0; mj < 18; mj++) {
+      if (!P2_IS[mj]) continue;
+      var pe = MOVE_PERM[mj].ep, ne = [];
+      var bad = false;
+      for (i = 0; i < 8; i++) { if (pe[i] >= 8) { bad = true; break; } ne[i] = epa[pe[i]]; }
+      if (bad) continue;
+      EP2[epi * 18 + mj] = rankPerm(ne);
+    }
+  }
+  for (var spi = 0; spi < NSP; spi++) {
+    var spa = unrankPerm(spi, 4);
+    for (var mk = 0; mk < 18; mk++) {
+      if (!P2_IS[mk]) continue;
+      var pse = MOVE_PERM[mk].ep, ns = [], ok = true;
+      for (i = 0; i < 4; i++) {
+        var src = pse[8 + i];
+        if (src < 8) { ok = false; break; }
+        ns[i] = spa[src - 8];
+      }
+      if (!ok) continue;
+      SP2[spi * 18 + mk] = rankPerm(ns);
+    }
+  }
+}
+
+/* ---------- 剪枝表 (BFS 从还原态铺开) */
+var PR_TW_SL, PR_FL_SL, PR_CP_SP, PR_EP_SP;
+function bfs2(sizeA, sizeB, moves, tabA, tabB, isB) {
+  var N = sizeA * sizeB;
+  var dist = new Uint8Array(N);
+  dist.fill(255);
+  var goal = 0 * sizeB + (isB ? 0 : SLICE_GOAL);
+  dist[goal] = 0;
+  var q = new Int32Array(N);
+  var head = 0, tail = 0;
+  q[tail++] = goal;
+  while (head < tail) {
+    var cur = q[head++];
+    var a = (cur / sizeB) | 0, b = cur % sizeB, d = dist[cur] + 1;
+    for (var k = 0; k < moves.length; k++) {
+      var m = moves[k];
+      var na = tabA[a * 18 + m];
+      var nb = isB ? tabB[b * 18 + m] : tabB[b * 18 + m];
+      var nidx = na * sizeB + nb;
+      if (dist[nidx] === 255) { dist[nidx] = d; q[tail++] = nidx; }
+    }
+  }
+  return dist;
+}
+function buildPruning() {
+  if (PR_TW_SL) return;
+  var allMoves = [];
+  for (var i = 0; i < 18; i++) allMoves.push(i);
+  PR_TW_SL = bfs2(NTW, NSL, allMoves, TW, SL, false);
+  PR_FL_SL = bfs2(NFL, NSL, allMoves, FL, SL, false);
+  PR_CP_SP = bfs2(NCP, NSP, P2_MOVES, CP2, SP2, true);
+  PR_EP_SP = bfs2(NEP, NSP, P2_MOVES, EP2, SP2, true);
+}
+
+/* ---------- 阶段搜索 ---------- */
+function phase1(tw, fl, sl, maxDepth) {
+  var path = [];
+  function dfs(tw, fl, sl, depth, lastFace) {
+    var h = PR_TW_SL[tw * NSL + sl];
+    var h2 = PR_FL_SL[fl * NSL + sl];
+    if (h2 > h) h = h2;
+    if (h > depth) return false;
+    if (depth === 0) return tw === 0 && fl === 0 && sl === SLICE_GOAL;
+    for (var m = 0; m < 18; m++) {
+      if (lastFace >= 0 && FACE_OF[m] === FACE_OF[lastFace]) continue;
+      /* 相对面顺序约束, 减少重复 */
+      if (lastFace >= 0 && (FACE_OF[m] === 'D' && FACE_OF[lastFace] === 'U')) continue;
+      if (lastFace >= 0 && (FACE_OF[m] === 'L' && FACE_OF[lastFace] === 'R')) continue;
+      if (lastFace >= 0 && (FACE_OF[m] === 'B' && FACE_OF[lastFace] === 'F')) continue;
+      path.push(m);
+      if (dfs(TW[tw * 18 + m], FL[fl * 18 + m], SL[sl * 18 + m], depth - 1, m)) return true;
+      path.pop();
+    }
+    return false;
+  }
+  for (var d = 0; d <= maxDepth; d++) {
+    path.length = 0;
+    if (dfs(tw, fl, sl, d, -1)) return path.slice();
+  }
+  return null;
+}
+function phase2(cp, ep, sp, maxDepth) {
+  var path = [];
+  function dfs(cp, ep, sp, depth, lastFace) {
+    var h = PR_CP_SP[cp * NSP + sp];
+    var h2 = PR_EP_SP[ep * NSP + sp];
+    if (h2 > h) h = h2;
+    if (h > depth) return false;
+    if (depth === 0) return cp === 0 && ep === 0 && sp === 0;
+    for (var k = 0; k < P2_MOVES.length; k++) {
+      var m = P2_MOVES[k];
+      if (lastFace >= 0 && FACE_OF[m] === FACE_OF[lastFace]) continue;
+      if (lastFace >= 0 && (FACE_OF[m] === 'D' && FACE_OF[lastFace] === 'U')) continue;
+      if (lastFace >= 0 && (FACE_OF[m] === 'L' && FACE_OF[lastFace] === 'R')) continue;
+      if (lastFace >= 0 && (FACE_OF[m] === 'B' && FACE_OF[lastFace] === 'F')) continue;
+      path.push(m);
+      if (dfs(CP2[cp * 18 + m], EP2[ep * 18 + m], SP2[sp * 18 + m], depth - 1, m)) return true;
+      path.pop();
+    }
+    return false;
+  }
+  for (var d = 0; d <= maxDepth; d++) {
+    path.length = 0;
+    if (dfs(cp, ep, sp, d, -1)) return path.slice();
+  }
+  return null;
+}
+
+/* ---------- 对外: 求解 ---------- */
+var _ready = false;
+function prepare() {
+  if (_ready) return;
+  buildMoveTables();
+  buildPruning();
+  _ready = true;
+}
+/* 返回记号数组; 求解不了返回 null */
+function solveCube(cu) {
+  prepare();
+  var st = readCube(cu);
+  var tw = encTwist(st.co), fl = encFlip(st.eo), sl = sliceOf(st.ep);
+  var p1 = phase1(tw, fl, sl, 12);
+  if (!p1) return null;
+  var c2 = C.cloneCube(cu);
+  for (var i = 0; i < p1.length; i++) C.applyToken(c2, MOVE_TOKS[p1[i]]);
+  var st2 = readCube(c2);
+  /* 阶段一之后应当已在 G1 */
+  if (encTwist(st2.co) !== 0 || encFlip(st2.eo) !== 0 || sliceOf(st2.ep) !== SLICE_GOAL) return null;
+  var cp = rankPerm(st2.cp), ep = rankPerm(st2.ep.slice(0, 8));
+  var sp = rankPerm([st2.ep[8] - 8, st2.ep[9] - 8, st2.ep[10] - 8, st2.ep[11] - 8]);
+  var p2 = phase2(cp, ep, sp, 18);
+  if (!p2) return null;
+  var out = [];
+  for (var j = 0; j < p1.length; j++) out.push(MOVE_TOKS[p1[j]]);
+  for (var k = 0; k < p2.length; k++) out.push(MOVE_TOKS[p2[k]]);
+  return out;
+}
+
+/* ----- 3. 四阶降阶 + 四阶求解 ----- */
+var reduce4 = (function () {
+/*
+ * solve4-reduce.cjs —— 4x4 魔方降阶求解器 (reduce to 3x3)
+ *
+ * 纯 ES5, 零依赖, 只 require 同目录的 core.cjs (不修改它).
+ * 导出 reduce4(cu) -> { alg: [...], ok: bool }
+ *
+ * 策略:
+ *   阶段 A: 还原六面中心 (每面 4 中心同色). 用"位置置换表 + 宏库 + 贪心重启".
+ *           宏库 = 单步 / 两步 / S X S^-1 / S X S^-1 X^-1 / S^-1 X S 形式,
+ *           按中心置换去重, 共约 2500 条.
+ *           打分 = 六面中心落在本面目标色的贴纸数 (0..24).
+ *           每轮贪心只走不降分的宏 (允许侧移 maxSide 步), 卡住就重启.
+ *   阶段 B: 拼合 12 条棱 (每条棱两个翼块颜色组合相同). 同样贪心重启.
+ *           棱库只保留"中心位置完全不变"(centerExact) 的宏, 共约 1200 条,
+ *           保证拼棱过程不破坏阶段 A 的成果.
+ *           打分 = 已配对的棱数 (0..12).
+ *
+ * 置换表示: p[i] = 原来在位置 i 的块去到了位置 p[i].
+ * compose(a, b): r[i] = b[a[i]]  (先 a 后 b).
+ */
+
+/* ==================== 位置表 ==================== */
+
+var COORDS = [-3, -1, 1, 3];
+
+/* 轴: 1=Y(U/D) 2=Z(F/B) 0=X(R/L)  ->  面索引 0..5 */
+function faceIdx(axis, sign) {
+  if (axis === 1) return sign > 0 ? 0 : 1;
+  if (axis === 2) return sign > 0 ? 2 : 3;
+  return sign > 0 ? 4 : 5;
+}
+
+var FACE_LETTER = ['U', 'D', 'F', 'B', 'R', 'L'];
+
+/* 建位置表: CEN(24 中心位) / CENFACE(6x4) / CENFACEOF(24) / WING(24 翼位) / WINGPAIR(12x2) / WINGEDGE(24) */
+function buildPositions() {
+  var CEN = [], CENFACE = [[], [], [], [], [], []], CENFACEOF = [];
+  var WING = [], WINGPAIR = [], WINGEDGE = [], pmap = {};
+  var xi, yi, zi, k;
+  for (xi = 0; xi < 4; xi++) {
+    for (yi = 0; yi < 4; yi++) {
+      for (zi = 0; zi < 4; zi++) {
+        var p = [COORDS[xi], COORDS[yi], COORDS[zi]];
+        var big = [];
+        for (k = 0; k < 3; k++) if (Math.abs(p[k]) === 3) big.push(k);
+        if (big.length === 1) {
+          var f = faceIdx(big[0], p[big[0]] > 0 ? 1 : -1);
+          CENFACE[f].push(CEN.length);
+          CENFACEOF.push(f);
+          CEN.push(p);
+        } else if (big.length === 2) {
+          var k1 = big[0], k2 = big[1];
+          var key = k1 + ':' + (p[k1] > 0 ? 1 : -1) + ',' + k2 + ':' + (p[k2] > 0 ? 1 : -1);
+          if (!pmap[key]) { pmap[key] = []; WINGPAIR.push(pmap[key]); }
+          pmap[key].push(WING.length);
+          WING.push(p);
+        }
+      }
+    }
+  }
+  for (var e = 0; e < 12; e++) {
+    WINGEDGE[WINGPAIR[e][0]] = e;
+    WINGEDGE[WINGPAIR[e][1]] = e;
+  }
+  return { CEN: CEN, CENFACE: CENFACE, CENFACEOF: CENFACEOF, WING: WING, WINGPAIR: WINGPAIR, WINGEDGE: WINGEDGE };
+}
+
+var POS = buildPositions();
+var CEN = POS.CEN, CENFACE = POS.CENFACE, CENFACEOF = POS.CENFACEOF;
+var WING = POS.WING, WINGPAIR = POS.WINGPAIR, WINGEDGE = POS.WINGEDGE;
+
+function samePos(a, b) {
+  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
+}
+
+/* ==================== 置换工具 ==================== */
+
+function compose(a, b) {
+  var n = a.length, r = new Array(n);
+  for (var i = 0; i < n; i++) r[i] = b[a[i]];
+  return r;
+}
+
+/* 每面 4 中心块是否都留在本面 (阶段 A 完成后阶段 B 的硬约束) */
+function centerExact(pc) {
+  for (var f = 0; f < 6; f++) {
+    var idx = CENFACE[f];
+    for (var i = 0; i < 4; i++) if (CENFACEOF[pc[idx[i]]] !== f) return false;
+  }
+  return true;
+}
+
+function movedCount(p) {
+  var n = 0;
+  for (var i = 0; i < p.length; i++) if (p[i] !== i) n++;
+  return n;
+}
+
+/* ==================== 记号工具 ==================== */
+
+function invTok(t) {
+  if (/2$/.test(t)) return t;
+  if (/'$/.test(t)) return t.slice(0, -1);
+  return t + "'";
+}
+
+/* ==================== 基础步与置换缓存 ==================== */
+
+var FACE_BASES = ['U', 'D', 'L', 'R', 'F', 'B'];
+var SUFFIXES = ['', "'", '2'];
+
+var OUTER_TOKS = [], SLICE_TOKS = [];
+var BASE_PERM = {};      /* tok -> { c: 中心置换, w: 翼置换 } */
+var ALL_BASE = [];
+
+function initBasePerms() {
+  var a, s, i;
+  for (a = 0; a < 6; a++) {
+    for (s = 0; s < 3; s++) {
+      OUTER_TOKS.push(FACE_BASES[a] + SUFFIXES[s]);
+      SLICE_TOKS.push(FACE_BASES[a].toLowerCase() + SUFFIXES[s]);
+      SLICE_TOKS.push(FACE_BASES[a] + 'w' + SUFFIXES[s]);
+    }
+  }
+  for (i = 0; i < OUTER_TOKS.length; i++) ALL_BASE.push(OUTER_TOKS[i]);
+  for (i = 0; i < SLICE_TOKS.length; i++) ALL_BASE.push(SLICE_TOKS[i]);
+  for (i = 0; i < ALL_BASE.length; i++) BASE_PERM[ALL_BASE[i]] = permOf([ALL_BASE[i]]);
+}
+
+/* 对一个干净的 4x4 施加 tokens, 返回中心/翼的位置置换 */
+function permOf(tokens) {
+  var cu = mkCube(4);
+  var i, j;
+  var cr = [], wr = [];
+  for (i = 0; i < CEN.length; i++) cr.push(pieceAt(cu, CEN[i]));
+  for (i = 0; i < WING.length; i++) wr.push(pieceAt(cu, WING[i]));
+  applyAlg(cu, tokens);
+  var pc = [], pw = [];
+  for (i = 0; i < cr.length; i++) {
+    pc.push(-1);
+    for (j = 0; j < CEN.length; j++) if (samePos(cr[i].p, CEN[j])) { pc[i] = j; break; }
+  }
+  for (i = 0; i < wr.length; i++) {
+    pw.push(-1);
+    for (j = 0; j < WING.length; j++) if (samePos(wr[i].p, WING[j])) { pw[i] = j; break; }
+  }
+  return { c: pc, w: pw };
+}
+
+/* ==================== 中心库 (阶段 A) ==================== */
+
+/* 只保留"把某面的块映射到某面"的宏, 用于 A 阶段; 全部宏都参与贪心 */
+function buildCenterLib() {
+  var lib = [], seen = {};
+  var i, j;
+
+  function add(tk, pc) {
+    if (movedCount(pc) === 0) return;
+    var k = pc.join(',');
+    if (seen[k]) return;
+    seen[k] = 1;
+    lib.push({ tk: tk, p: pc });
+  }
+
+  /* 长度 1 */
+  for (i = 0; i < ALL_BASE.length; i++) add([ALL_BASE[i]], BASE_PERM[ALL_BASE[i]].c);
+
+  /* 长度 2 */
+  for (i = 0; i < ALL_BASE.length; i++) {
+    var A = ALL_BASE[i], cA = BASE_PERM[A].c;
+    for (j = 0; j < ALL_BASE.length; j++) {
+      add([A, ALL_BASE[j]], compose(cA, BASE_PERM[ALL_BASE[j]].c));
+    }
+  }
+
+  /* S X S^-1 / S X S^-1 X^-1 / S^-1 X S */
+  for (i = 0; i < SLICE_TOKS.length; i++) {
+    var S = SLICE_TOKS[i], Si = invTok(S);
+    var cS = BASE_PERM[S].c, cSi = BASE_PERM[Si].c;
+    for (j = 0; j < OUTER_TOKS.length; j++) {
+      var X = OUTER_TOKS[j], Xi = invTok(X);
+      var cX = BASE_PERM[X].c, cXi = BASE_PERM[Xi].c;
+      var cA = compose(compose(cS, cX), cSi);
+      add([S, X, Si], cA);
+      add([S, X, Si, Xi], compose(cA, cXi));
+      add([Si, X, S], compose(compose(cSi, cX), cS));
+    }
+  }
+  return lib;
+}
+
+/* ==================== 棱库 (阶段 B) ==================== */
+
+/* X 集合: 外层步长度 1..3, 按 (中心置换, 翼置换) 去重 */
+function buildXList() {
+  var xs = [], seen = {};
+  var i, j;
+
+  function push(tk, c, w) {
+    var k = c.join(',') + '|' + w.join(',');
+    if (seen[k]) return;
+    seen[k] = 1;
+    xs.push({ tk: tk, c: c, w: w });
+  }
+
+  for (i = 0; i < OUTER_TOKS.length; i++) push([OUTER_TOKS[i]], BASE_PERM[OUTER_TOKS[i]].c, BASE_PERM[OUTER_TOKS[i]].w);
+  var n1 = xs.length;
+  for (i = 0; i < n1; i++) {
+    for (j = 0; j < OUTER_TOKS.length; j++) {
+      push(xs[i].tk.concat([OUTER_TOKS[j]]), compose(xs[i].c, BASE_PERM[OUTER_TOKS[j]].c), compose(xs[i].w, BASE_PERM[OUTER_TOKS[j]].w));
+    }
+  }
+  var n2 = xs.length;
+  for (i = 0; i < n2; i++) {
+    for (j = 0; j < OUTER_TOKS.length; j++) {
+      push(xs[i].tk.concat([OUTER_TOKS[j]]), compose(xs[i].c, BASE_PERM[OUTER_TOKS[j]].c), compose(xs[i].w, BASE_PERM[OUTER_TOKS[j]].w));
+    }
+  }
+  return xs;
+}
+
+/* 棱库: S X S^-1, 只保留 centerExact 的 */
+function buildEdgeLib() {
+  var xs = buildXList();
+  var lib = [], seen = {};
+  var i, j;
+  for (i = 0; i < SLICE_TOKS.length; i++) {
+    var S = SLICE_TOKS[i], Si = invTok(S);
+    var cS = BASE_PERM[S].c, cSi = BASE_PERM[Si].c;
+    var wS = BASE_PERM[S].w, wSi = BASE_PERM[Si].w;
+    for (j = 0; j < xs.length; j++) {
+      var c = compose(compose(cS, xs[j].c), cSi);
+      if (!centerExact(c)) continue;
+      var w = compose(compose(wS, xs[j].w), wSi);
+      if (movedCount(w) === 0) continue;
+      var k = w.join(',');
+      if (seen[k]) continue;
+      seen[k] = 1;
+      lib.push({ tk: [S].concat(xs[j].tk).concat([Si]), p: w });
+    }
+  }
+  return lib;
+}
+
+/* ==================== 随机数 ==================== */
+
+function makeRng(seed) {
+  var s = seed % 2147483647;
+  if (s <= 0) s += 2147483646;
+  return function () {
+    s = (s * 16807) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
+
+/* ==================== 读状态 ==================== */
+
+/* 24 个中心位的颜色索引 */
+function readCenters(cu) {
+  var out = [];
+  for (var i = 0; i < CEN.length; i++) out.push(pieceAt(cu, CEN[i]).st[0].c);
+  return out;
+}
+
+/* 24 个翼位的颜色组合 (a*6+b, a<=b) */
+function readWings(cu) {
+  var out = [];
+  for (var i = 0; i < WING.length; i++) {
+    var pc = pieceAt(cu, WING[i]);
+    var a = pc.st[0].c, b = pc.st[1].c;
+    if (a > b) { var t = a; a = b; b = t; }
+    out.push(a * 6 + b);
+  }
+  return out;
+}
+
+/*
+ * 六面目标中心色.
+ * 直接用 core 的 faceColorFromCorners: 它读的是贴纸的「局部法线」而不是世界法线
+ * —— 打乱后某个角块位置早换人了, 但角块自己局部坐标系里哪个贴纸原本属于哪一面
+ * 是永远不变的, 所以这是唯一可靠的取面色办法.
+ * 返回按 FACES 顺序 (U D F B R L) 的颜色索引数组.
+ */
+function faceColorsFromCorners(cu) {
+  var cols = [];
+  for (var f = 0; f < 6; f++) {
+    var c = faceColorFromCorners(cu, FACE_LETTER[f]);
+    if (c === null || c === undefined) return [-1, -1, -1, -1, -1, -1];
+    cols.push(c);
+  }
+  return cols;
+}
+
+/* ==================== 打分 ==================== */
+
+/* 生成阶段 A 的打分器: 闭包捕获 target, 供 greedyRun 单参调用 */
+function makeCenterScorer(target) {
+  var fn = function (st) {
+    var s = 0;
+    for (var f = 0; f < 6; f++) {
+      var idx = CENFACE[f], t = target[f];
+      for (var i = 0; i < 4; i++) if (st[idx[i]] === t) s++;
+    }
+    return s;
+  };
+  fn.max = 24;
+  return fn;
+}
+
+/* 阶段 B 的打分器: 已配对棱数 */
+function makeEdgeScorer() {
+  var fn = function (st) {
+    var s = 0;
+    for (var e = 0; e < 12; e++) if (st[WINGPAIR[e][0]] === st[WINGPAIR[e][1]]) s++;
+    return s;
+  };
+  fn.max = 12;
+  return fn;
+}
+
+/* 直接按状态算分的便捷版本 (导出给调试用) */
+function scoreCenters(st, target) { return makeCenterScorer(target)(st); }
+function scoreEdges(st) { return makeEdgeScorer()(st); }
+
+function applyPerm(st, perm) {
+  var n = st.length, r = new Array(n);
+  for (var i = 0; i < n; i++) r[perm[i]] = st[i];
+  return r;
+}
+
+/* ==================== 贪心搜索 ==================== */
+
+/*
+ * 通用贪心: 每步在库里找打分最高的宏; 只接受不降分的;
+ * 连续 maxSide 步没涨分就停 (允许侧移). 返回最高分及对应 plan.
+ */
+function greedyRun(lib, st0, scoreFn, maxSteps, maxSide, rng) {
+  var st = st0.slice();
+  var plan = [];
+  var cur = scoreFn(st);
+  var best = cur, bestPlan = [];
+  var side = 0;
+  if (cur >= scoreFn.max) return { score: cur, plan: [] };
+
+  for (var step = 0; step < maxSteps; step++) {
+    var bs = -1, ties = [];
+    for (var m = 0; m < lib.length; m++) {
+      var s = scoreFn(applyPerm(st, lib[m].p));
+      if (s > bs) { bs = s; ties = [m]; }
+      else if (s === bs) ties.push(m);
+    }
+    if (bs < cur) break;
+    var pick = ties[Math.floor(rng() * ties.length)];
+    st = applyPerm(st, lib[pick].p);
+    plan = plan.concat(lib[pick].tk);
+    if (bs > cur) side = 0; else side++;
+    cur = bs;
+    if (cur > best) { best = cur; bestPlan = plan.slice(); }
+    if (best >= scoreFn.max) break;
+    if (side > maxSide) break;
+  }
+  return { score: best, plan: bestPlan };
+}
+
+/* 多轮重启 */
+function greedyRestart(lib, st0, scoreFn, tries, maxSteps, maxSide, rng) {
+  var best = { score: -1, plan: [] };
+  for (var t = 0; t < tries; t++) {
+    var r = greedyRun(lib, st0, scoreFn, maxSteps, maxSide, rng);
+    if (r.score > best.score) best = r;
+    if (best.score >= scoreFn.max) break;
+  }
+  return best;
+}
+
+/*
+ * 扰动搜索 (kick search) —— 贪心卡住时的兜底.
+ *
+ * 为什么需要: 棱库里的宏每个都至少移动 8 个翼块 (4 条棱). 当 10 条棱已配对,
+ * 任何宏都会毁掉至少 2 条已配好的棱, 贪心一步也走不动 (bs < cur 直接 break).
+ * 束搜索同样卡死 (实测 w=40 d=10 仍停在 10).
+ * 破法: 先随机硬吃一个宏 (允许降分), 再从那里贪心续跑.
+ * 实测这一招在 6ms 内解掉了贪心/束搜索都解不掉的用例.
+ */
+function kickSearch(lib, st0, scoreFn, tries, maxSteps, maxSide, rng) {
+  var best = { score: -1, plan: [] };
+
+  /* 先跑一次干净的贪心 */
+  var g = greedyRun(lib, st0, scoreFn, maxSteps, maxSide, rng);
+  if (g.score > best.score) best = g;
+  if (best.score >= scoreFn.max) return best;
+
+  for (var t = 0; t < tries; t++) {
+    /* 随机吃一个宏当扰动 */
+    var m = Math.floor(rng() * lib.length);
+    var st = applyPerm(st0, lib[m].p);
+    var plan = lib[m].tk.slice();
+    var cur = scoreFn(st);
+    var bestLocal = cur, bestPlan = plan.slice();
+    var side = 0;
+
+    for (var step = 0; step < maxSteps && bestLocal < scoreFn.max; step++) {
+      var bs = -1, ties = [];
+      for (var k = 0; k < lib.length; k++) {
+        var s = scoreFn(applyPerm(st, lib[k].p));
+        if (s > bs) { bs = s; ties = [k]; }
+        else if (s === bs) ties.push(k);
+      }
+      if (bs < cur) break;
+      var pick = ties[Math.floor(rng() * ties.length)];
+      st = applyPerm(st, lib[pick].p);
+      plan = plan.concat(lib[pick].tk);
+      if (bs > cur) side = 0; else side++;
+      cur = bs;
+      if (cur > bestLocal) { bestLocal = cur; bestPlan = plan.slice(); }
+      if (side > maxSide) break;
+    }
+
+    if (bestLocal > best.score) best = { score: bestLocal, plan: bestPlan };
+    if (best.score >= scoreFn.max) break;
+  }
+  return best;
+}
+
+/* ==================== 主流程 ==================== */
+
+var CENTER_LIB = null;
+var EDGE_LIB = null;
+var INIT_DONE = false;
+
+function ensureInit() {
+  if (INIT_DONE) return;
+  initBasePerms();
+  CENTER_LIB = buildCenterLib();
+  EDGE_LIB = buildEdgeLib();
+  INIT_DONE = true;
+}
+
+/*
+ * 六面中心是否已还原.
+ * 注意: 不能用 core 的 faceUniform —— 它要求整面 16 张贴纸同色,
+ * 而 4x4 降阶阶段角块/棱块还是乱的, 只该看每面 4 个中心贴纸.
+ */
+function centersUniform(cu) {
+  var cols = faceColorsFromCorners(cu);
+  for (var i = 0; i < 6; i++) if (cols[i] < 0) return false;
+  var st = readCenters(cu);
+  for (var f = 0; f < 6; f++) {
+    var idx = CENFACE[f], t = cols[f];
+    for (var j = 0; j < 4; j++) if (st[idx[j]] !== t) return false;
+  }
+  return true;
+}
+
+function edgesPaired(cu) {
+  var w = readWings(cu);
+  for (var e = 0; e < 12; e++) if (w[WINGPAIR[e][0]] !== w[WINGPAIR[e][1]]) return false;
+  return true;
+}
+
+/*
+ * reduce4(cu)
+ *   输入: 4x4 魔方 (不会被修改)
+ *   输出: { alg: [...], ok: bool }
+ *         ok=true 表示 alg 施加后中心六面各自同色 且 12 条棱全部配对
+ *
+ * 保证: 不修改入参 / 不抛异常 / 不死循环 (所有搜索都有固定上限).
+ * 内部用固定种子, 所以同一输入永远得到同一个解 (可复现).
+ * 若某个种子下的搜索没解出来, 会换一组种子重试 (最多 SEED_TRIES 组).
+ */
+var SEED_TRIES = 4;
+var SEEDS = [20240613, 987654321, 13579, 246810];
+
+function reduce4(cu) {
+  try {
+    return reduce4Inner(cu);
+  } catch (err) {
+    /* 任何意外都退化成"降阶失败", 不把异常抛给上层 */
+    return { alg: [], ok: false };
+  }
+}
+
+function reduce4Inner(cu) {
+  ensureInit();
+
+  if (!cu || !cu.pieces) return { alg: [], ok: false };
+
+  var work = cloneCube(cu);
+  var alg = [];
+
+  /* 若本来就已降阶, 直接返回 */
+  if (centersUniform(work) && edgesPaired(work)) return { alg: [], ok: true };
+
+  var target = faceColorsFromCorners(work);
+  var i;
+  for (i = 0; i < 6; i++) if (target[i] < 0) return { alg: [], ok: false };
+
+  for (var attempt = 0; attempt < SEED_TRIES; attempt++) {
+    var rng = makeRng(SEEDS[attempt % SEEDS.length]);
+    var w = cloneCube(cu);
+    var plan = [];
+
+    /* ---- 阶段 A: 中心 ---- */
+    var stC = readCenters(w);
+    var scC = makeCenterScorer(target);
+    var resC = greedyRestart(CENTER_LIB, stC, scC, 40, 200, 4, rng);
+    if (resC.score < 24) resC = kickSearch(CENTER_LIB, stC, scC, 300, 200, 4, rng);
+    if (resC.score < 24) continue;
+
+    applyAlg(w, resC.plan);
+    plan = plan.concat(resC.plan);
+    if (!centersUniform(w)) continue;
+
+    /* ---- 阶段 B: 拼棱 ---- */
+    var stE = readWings(w);
+    var scE = makeEdgeScorer();
+    var resE = greedyRestart(EDGE_LIB, stE, scE, 40, 300, 8, rng);
+    if (resE.score < 12) resE = kickSearch(EDGE_LIB, stE, scE, 400, 300, 8, rng);
+    if (resE.score < 12) continue;
+
+    applyAlg(w, resE.plan);
+    plan = plan.concat(resE.plan);
+    if (!centersUniform(w) || !edgesPaired(w)) continue;
+
+    return { alg: plan, ok: true };
+  }
+
+  return { alg: [], ok: false };
+}
+
+  return reduce4;
+})();
+
+var solve4 = (function () {
+
+/* 4x4 求解: 降阶 + 三阶代理 + 奇偶修正
+ *
+ * 关键观察: 4x4 的「外层转」恰好就是 3x3 的一步 —— 因为 4x4 每条棱(dedge)的两个翼块
+ * 在同一个外层切片里(x=3 的两条翼都在 x=3), 而 R 面中心也在 x=3, 所以 R 转动会
+ * 把整条 UR/FR/DR/BR 棱一起转走。降阶完成后, 3x3 的 18 个转动 = 4x4 的同名外层转。
+ *
+ * 于是: 降阶 -> 从 4x4 读出 3x3 代理 -> solveCube(代理) -> 把记号原样施加回 4x4。
+ * 若代理是非法 3x3 状态, 说明有奇偶(OLL 单棱翻 / PLL 双棱换), 先修再解。
+ */
+
+
+
+/* 3x3 -> 4x4 坐标: ±2 -> ±3, 0 保持 */
+function up3(c) { return c === 2 ? 3 : (c === -2 ? -3 : c); }
+
+/* 3x3 的 8 角 / 12 棱位置 (×2 坐标, 与 kociemba.cjs 内部一致; 那边没导出, 这里本地一份) */
+var CORNER_POS = [
+  [2, 2, 2], [-2, 2, 2], [-2, 2, -2], [2, 2, -2],
+  [2, -2, 2], [-2, -2, 2], [-2, -2, -2], [2, -2, -2]
+];
+var EDGE_POS = [
+  [2, 2, 0], [0, 2, 2], [-2, 2, 0], [0, 2, -2],
+  [2, -2, 0], [0, -2, 2], [-2, -2, 0], [0, -2, -2],
+  [2, 0, 2], [-2, 0, 2], [-2, 0, -2], [2, 0, -2]
+];
+
+function pieceAt4(cu, p3) {
+  var q = [up3(p3[0]), up3(p3[1]), up3(p3[2])];
+  return pieceAt(cu, q);
+}
+
+/* 从降阶后的 4x4 建 3x3 代理。只放 8 角 + 12 棱(读状态只需要这些)。 */
+function buildProxy(cu) {
+  var pieces = [], i, pc;
+  for (i = 0; i < 8; i++) {
+    pc = pieceAt4(cu, CORNER_POS[i]);
+    if (!pc || !pc.st || pc.st.length !== 3) return null;
+    pieces.push({ p: CORNER_POS[i].slice(), m: pc.m, st: pc.st });
+  }
+  for (i = 0; i < 12; i++) {
+    var p = EDGE_POS[i];
+    var ax = -1, k;
+    for (k = 0; k < 3; k++) if (p[k] === 0) ax = k;
+    if (ax < 0) return null;
+    var q1 = p.slice(); q1[ax] = 1;
+    var q2 = p.slice(); q2[ax] = -1;
+    var a = pieceAt(cu, [up3(q1[0]), up3(q1[1]), up3(q1[2])]);
+    var b = pieceAt(cu, [up3(q2[0]), up3(q2[1]), up3(q2[2])]);
+    pc = a || b;
+    if (!pc || !pc.st || pc.st.length !== 2) return null;
+    /* 两个翼块必须同色组合, 否则棱没拼好 */
+    if (a && b && colorKey(a) !== colorKey(b)) return null;
+    pieces.push({ p: p.slice(), m: pc.m, st: pc.st });
+  }
+  return { n: 3, maxc: 2, pieces: pieces };
+}
+
+/* 排列奇偶: 逆序数 */
+function permParity(p) {
+  var n = 0, i, j;
+  for (i = 0; i < p.length; i++) for (j = i + 1; j < p.length; j++) if (p[j] < p[i]) n++;
+  return n & 1;
+}
+
+/* 读代理的合法性, 顺便告诉调用方是哪种奇偶 */
+function proxyStatus(proxy) {
+  var st = readCube(proxy);
+  var eoSum = 0, coSum = 0, i;
+  for (i = 0; i < 12; i++) eoSum += st.eo[i];
+  for (i = 0; i < 8; i++) coSum += st.co[i];
+  var oll = (eoSum % 2) !== 0;
+  var pll = permParity(st.cp) !== permParity(st.ep);
+  return { oll: oll, pll: pll, eoSum: eoSum, coSum: coSum, ok: !oll && !pll && coSum % 3 === 0 };
+}
+
+/* 奇偶修正公式 (4x4 记号, 不含 x/y/z) */
+var ALG_OLL = ['r2', 'B2', 'U2', 'l', 'U2', "r'", 'U2', 'r', 'U2', 'F2', 'r', 'F2', "l'", 'B2', 'r2'];
+var ALG_PLL = ['r2', 'U2', 'r2', 'Uw2', 'r2', 'Uw2'];
+
+/* 求解 4x4: 返回记号数组或 null */
+function solve4(cu, opts) {
+  opts = opts || {};
+  var work = cloneCube(cu);
+  var alg = [];
+
+  var red = reduce4(work);
+  if (!red || !red.ok) return null;
+  applyAlg(work, red.alg);
+  alg = alg.concat(red.alg);
+
+  /* 最多修 2 轮奇偶 (OLL 一轮, PLL 一轮) */
+  var guard = 0;
+  var proxy = null, status = null;
+  while (guard++ < 3) {
+    proxy = buildProxy(work);
+    if (!proxy) return null;
+    status = proxyStatus(proxy);
+    if (status.ok) break;
+    if (status.oll) { applyAlg(work, ALG_OLL); alg = alg.concat(ALG_OLL); continue; }
+    if (status.pll) { applyAlg(work, ALG_PLL); alg = alg.concat(ALG_PLL); continue; }
+    return null;
+  }
+  if (!status || !status.ok) return null;
+
+  var sol = solveCube(proxy);
+  if (!sol) return null;
+  applyAlg(work, sol);
+  alg = alg.concat(sol);
+
+  if (!isSolved(work)) return null;
+  if (opts.verify !== false) {
+    /* 再在原始魔方上验一遍 */
+    var chk = cloneCube(cu);
+    applyAlg(chk, alg);
+    if (!isSolved(chk)) return null;
+  }
+  return alg;
+}
+
+  return solve4;
+})();
+
+/* ----- 4. 等距渲染 ----- */
+/* ============================================================================
+ * 魔方渲染器 —— 等距投影, 纯计算 + ctx 绘制
+ * 会被内联进 index.html 的 SCRIPT-TAG 块, 所以 ES5 + 不依赖 module。
+ *
+ * 主入口: cbRender(ctx, cu, opts)
+ *   opts = {
+ *     yaw, pitch,         视图角(弧度)
+ *     w, h,               画布尺寸
+ *     night,              夜航配色
+ *     scale,              每单位像素(不传则自动)
+ *     dy,                 垂直偏移
+ *     anim: [{axis, coord, ang}]   正在转的层(可多层, 用于宽转)
+ *   }
+ * ========================================================================== */
+
+var CB_FCOLOR = ['#f2f3f5', '#f5d211', '#14a05a', '#1558c9', '#cf2b2b', '#ef7d1a'];
+var CB_FCOLOR_NIGHT = ['#dfe3ea', '#d9b71a', '#12904f', '#15489f', '#b82525', '#d06a14'];
+
+/* 绕任意单位轴转 ang 弧度的浮点矩阵 */
+function cbRotAxis(axis, ang) {
+  var c = Math.cos(ang), s = Math.sin(ang), t = 1 - c;
+  var x = axis[0], y = axis[1], z = axis[2];
+  return [
+    [t * x * x + c, t * x * y - s * z, t * x * z + s * y],
+    [t * x * y + s * z, t * y * y + c, t * y * z - s * x],
+    [t * x * z - s * y, t * y * z + s * x, t * z * z + c]
+  ];
+}
+function cbMulMV(m, v) {
+  return [
+    m[0][0] * v[0] + m[0][1] * v[1] + m[0][2] * v[2],
+    m[1][0] * v[0] + m[1][1] * v[1] + m[1][2] * v[2],
+    m[2][0] * v[0] + m[2][1] * v[1] + m[2][2] * v[2]
+  ];
+}
+function cbMulMM(a, b) {
+  return [
+    [a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0],
+     a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1],
+     a[0][0] * b[0][2] + a[0][1] * b[1][2] + a[0][2] * b[2][2]],
+    [a[1][0] * b[0][0] + a[1][1] * b[1][0] + a[1][2] * b[2][0],
+     a[1][0] * b[0][1] + a[1][1] * b[1][1] + a[1][2] * b[2][1],
+     a[1][0] * b[0][2] + a[1][1] * b[1][2] + a[1][2] * b[2][2]],
+    [a[2][0] * b[0][0] + a[2][1] * b[1][0] + a[2][2] * b[2][0],
+     a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1],
+     a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2]]
+  ];
+}
+/* 正交投影: 先绕 Y 转 yaw, 再绕 X 转 pitch */
+function cbProject(p, yaw, pitch) {
+  var cy = Math.cos(yaw), sy = Math.sin(yaw);
+  var x1 = p[0] * cy + p[2] * sy;
+  var z1 = -p[0] * sy + p[2] * cy;
+  var cp = Math.cos(pitch), sp = Math.sin(pitch);
+  return [x1, p[1] * cp - z1 * sp, p[1] * sp + z1 * cp];
+}
+/* 给法线找两个正交切向量 */
+function cbTangents(n) {
+  if (Math.abs(n[0]) > 0.5) return [[0, 1, 0], [0, 0, 1]];
+  if (Math.abs(n[1]) > 0.5) return [[0, 0, 1], [1, 0, 0]];
+  return [[1, 0, 0], [0, 1, 0]];
+}
+
+var CB_SIGNS = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
+var CB_AXVEC = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+
+function cbRender(ctx, cu, opts) {
+  var yaw = opts.yaw, pitch = opts.pitch;
+  var W = opts.w, H = opts.h;
+  var night = !!opts.night;
+  var anims = opts.anim || [];
+  var maxc = cu.maxc;
+  var scale = opts.scale || Math.min(W / ((maxc + 1.9) * 2.05), H / ((maxc + 1.9) * 2.05));
+  var cx = W / 2, cy = H / 2 + (opts.dy || 0);
+
+  /* 视线方向(指向相机): 由 cbProject 的深度分量 z2 反推
+   * z2 = -sin(yaw)cos(pitch)*x + sin(pitch)*y + cos(yaw)cos(pitch)*z */
+  var vd = [-Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), Math.cos(yaw) * Math.cos(pitch)];
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = night ? '#0d1322' : '#141824';
+  ctx.fillRect(0, 0, W, H);
+
+  /* 预先把每个动画层转成矩阵 */
+  var animM = [];
+  for (var a = 0; a < anims.length; a++) {
+    animM.push({
+      axis: anims[a].axis, coord: anims[a].coord,
+      m: cbRotAxis(CB_AXVEC[anims[a].axis], anims[a].ang)
+    });
+  }
+
+  var items = [];
+  for (var i = 0; i < cu.pieces.length; i++) {
+    var pc = cu.pieces[i];
+    var wp = [pc.p[0], pc.p[1], pc.p[2]];
+    var wm = pc.m;
+    for (var b = 0; b < animM.length; b++) {
+      if (pc.p[animM[b].axis] === animM[b].coord) {
+        wp = cbMulMV(animM[b].m, wp);
+        wm = cbMulMM(animM[b].m, wm);
+      }
+    }
+    for (var k = 0; k < pc.st.length; k++) {
+      var n = cbMulMV(wm, pc.st[k].n);
+      var sc = [wp[0] + n[0], wp[1] + n[1], wp[2] + n[2]];
+      /* 背面剔除: 贴纸朝向必须点向相机, 不能用投影深度(角落的背面贴纸深度也是正的) */
+      if (n[0] * vd[0] + n[1] * vd[1] + n[2] * vd[2] <= 0.001) continue;
+      var psc = cbProject(sc, yaw, pitch);
+      /* 切线必须从「局部」法线算, 再由 wm 变到世界系 */
+      var tg = cbTangents(pc.st[k].n);
+      var t1 = cbMulMV(wm, tg[0]);
+      var t2 = cbMulMV(wm, tg[1]);
+      var hs = 0.86;
+      var pts = [];
+      for (var q = 0; q < 4; q++) {
+        var s1 = CB_SIGNS[q][0] * hs, s2 = CB_SIGNS[q][1] * hs;
+        var pp = cbProject([
+          sc[0] + t1[0] * s1 + t2[0] * s2,
+          sc[1] + t1[1] * s1 + t2[1] * s2,
+          sc[2] + t1[2] * s1 + t2[2] * s2
+        ], yaw, pitch);
+        pts.push([cx + pp[0] * scale, cy - pp[1] * scale]);
+      }
+      items.push({ z: sc[0] * vd[0] + sc[1] * vd[1] + sc[2] * vd[2], c: pc.st[k].c, pts: pts });
+    }
+  }
+  items.sort(function (p, q) { return p.z - q.z; });
+
+  var palette = night ? CB_FCOLOR_NIGHT : CB_FCOLOR;
+  var gapColor = night ? '#070b14' : '#0a0e14';
+  ctx.lineJoin = 'round';
+  for (var it = 0; it < items.length; it++) {
+    var o = items[it];
+    ctx.beginPath();
+    ctx.moveTo(o.pts[0][0], o.pts[0][1]);
+    ctx.lineTo(o.pts[1][0], o.pts[1][1]);
+    ctx.lineTo(o.pts[2][0], o.pts[2][1]);
+    ctx.lineTo(o.pts[3][0], o.pts[3][1]);
+    ctx.closePath();
+    ctx.fillStyle = palette[o.c];
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = gapColor;
+    ctx.stroke();
+  }
+  return items.length;
+}
+
+/* 把记号翻译成动画层: 返回 [{axis, coord, ang}] (ang 是终态弧度, 中间过程由调用方乘进度) */
+function cbTokenLayers(tok, maxc) {
+  var m = /^([UDLRFBudlrfb])(w?)(2|')?$/.exec(tok);
+  if (!m) return [];
+  var base = m[1], w = m[2], suf = m[3];
+  var turns = (suf === '2') ? 2 : (suf === "'" ? -1 : 1);
+  var up = base.toUpperCase();
+  var fd = { U: [1, 1], D: [1, -1], R: [0, 1], L: [0, -1], F: [2, 1], B: [2, -1] }[up];
+  var axis = fd[0], sg = fd[1];
+  var q = ((-sg * turns) % 4 + 4) % 4;
+  var ang = q * Math.PI / 2;
+  var out = [];
+  var outer = sg * maxc;
+  if (base === up) {
+    out.push({ axis: axis, coord: outer, ang: ang });
+    if (w) out.push({ axis: axis, coord: sg * (maxc - 2), ang: ang });
+  } else {
+    out.push({ axis: axis, coord: sg * (maxc - 2), ang: ang });
+  }
+  return out;
+}
+
+/* ----- 5. UI / 交互 / 计时 ----- */
+/* ============================================================================
+ * 魔方.EXE —— UI / 交互 / 计时 / 本地记录
+ * 依赖: core.cjs 的函数 (mkCube/cloneCube/applyToken/isSolved)、
+ *       render.cjs (cbRender/cbTokenLayers)、kociemba.cjs (prepare/solveCube)
+ * 内联进 index.html 的 SCRIPT-TAG 块, ES5 写法。
+ * ========================================================================== */
+
+var CBS = {
+  n: 3,
+  cu: null,
+  yaw: -0.62,
+  pitch: 0.46,
+  dpr: 1,
+  w: 460, h: 340,
+  built: false,
+  ready: false,        /* kociemba 表建好了没 */
+  preparing: false,
+  anim: null,          /* {layers:[{axis,coord,ang}], t0, dur, tok} */
+  queue: [],           /* 待播放的记号 */
+  playing: false,
+  paused: false,
+  speed: 5,
+  hist: [],
+  /* 计时 */
+  t0: 0, elapsed: 0, timing: false,
+  /* 记录 */
+  best3: 0, best4: 0
+};
+
+function cbEl(id) { return document.getElementById(id); }
+
+/* ---------- 计时 ---------- */
+function cbFmt(ms) {
+  if (!ms) return '--:--.--';
+  var cs = Math.floor(ms / 10) % 100;
+  var s = Math.floor(ms / 1000) % 60;
+  var m = Math.floor(ms / 60000);
+  return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s + '.' + (cs < 10 ? '0' : '') + cs;
+}
+function cbTimerShow() {
+  var ms = CBS.timing ? (Date.now() - CBS.t0) : CBS.elapsed;
+  var el = cbEl('cbTimer');
+  if (el) el.textContent = cbFmt(ms);
+}
+function cbTimerStart() {
+  if (CBS.timing) return;
+  CBS.timing = true;
+  CBS.t0 = Date.now();
+  CBS.elapsed = 0;
+}
+function cbTimerStop() {
+  if (!CBS.timing) return;
+  CBS.elapsed = Date.now() - CBS.t0;
+  CBS.timing = false;
+  cbTimerShow();
+  /* 超过 3 秒才记 */
+  if (CBS.elapsed > 3000) {
+    var key = CBS.n === 4 ? 'cubeBest4' : 'cubeBest3';
+    var prev = parseInt(localStorage.getItem(key) || '0', 10) || 0;
+    if (!prev || CBS.elapsed < prev) {
+      localStorage.setItem(key, String(CBS.elapsed));
+      cbLoadBest();
+      cbBestShow();
+      if (typeof toast === 'function') toast('魔方还原! ' + cbFmt(CBS.elapsed) + ', 新纪录。');
+      return;
+    }
+    if (typeof toast === 'function') toast('魔方还原! ' + cbFmt(CBS.elapsed));
+    return;
+  }
+  if (typeof toast === 'function') toast('魔方还原! ' + cbFmt(CBS.elapsed));
+}
+function cbLoadBest() {
+  CBS.best3 = parseInt(localStorage.getItem('cubeBest3') || '0', 10) || 0;
+  CBS.best4 = parseInt(localStorage.getItem('cubeBest4') || '0', 10) || 0;
+}
+function cbBestShow() {
+  var el = cbEl('cbBest');
+  if (!el) return;
+  el.innerHTML = '最佳: 三阶 <b>' + (CBS.best3 ? cbFmt(CBS.best3) : '--:--.--') +
+    '</b> · 四阶 <b>' + (CBS.best4 ? cbFmt(CBS.best4) : '--:--.--') + '</b>' +
+    (CBS.n === 4 && !CBS.ready4 ? ' <span style="color:#a0563c">四阶自动还原还在造</span>' : '');
+}
+
+/* ---------- 历史 ---------- */
+function cbHistPush(tok) {
+  CBS.hist.push(tok);
+  if (CBS.hist.length > 80) CBS.hist.shift();
+  var el = cbEl('cbHist');
+  if (el) el.textContent = CBS.hist.join(' ');
+}
+
+/* ---------- 画布 ---------- */
+function cbResize() {
+  var cv = cbEl('cbCanvas');
+  if (!cv) return;
+  var rect = cv.getBoundingClientRect();
+  var cw = Math.max(120, Math.round(rect.width));
+  var ch = Math.max(120, Math.round(rect.height));
+  CBS.dpr = (window.devicePixelRatio || 1);
+  if (CBS.dpr > 2) CBS.dpr = 2;
+  CBS.w = cw; CBS.h = ch;
+  cv.width = Math.round(cw * CBS.dpr);
+  cv.height = Math.round(ch * CBS.dpr);
+  cbDraw();
+}
+
+function cbDraw() {
+  var cv = cbEl('cbCanvas');
+  if (!cv || !CBS.cu) return;
+  var ctx = cv.getContext('2d');
+  if (!ctx) return;
+  ctx.setTransform(CBS.dpr, 0, 0, CBS.dpr, 0, 0);
+  var anims = [];
+  if (CBS.anim) {
+    var p = (Date.now() - CBS.anim.t0) / CBS.anim.dur;
+    if (p > 1) p = 1;
+    var e = p < 0.5 ? 2 * p * p : 1 - 2 * (1 - p) * (1 - p);  /* easeInOutQuad */
+    for (var i = 0; i < CBS.anim.layers.length; i++) {
+      var L = CBS.anim.layers[i];
+      anims.push({ axis: L.axis, coord: L.coord, ang: L.ang * e });
+    }
+  }
+  cbRender(ctx, CBS.cu, {
+    yaw: CBS.yaw, pitch: CBS.pitch, w: CBS.w, h: CBS.h,
+    night: document.body.classList.contains('night'),
+    anim: anims
+  });
+}
+
+/* 主循环: 窗口开着就一直跑 */
+var cbRAF = null;
+function cbLoop() {
+  if (!cbRAF) return;
+  cbDraw();
+  cbTimerShow();
+  cbRAF = requestAnimationFrame(cbLoop);
+}
+function cbLoopStart() {
+  if (cbRAF) return;
+  cbRAF = requestAnimationFrame(cbLoop);
+}
+function cbLoopStop() {
+  if (cbRAF) cancelAnimationFrame(cbRAF);
+  cbRAF = null;
+}
+
+/* ---------- 转一步(带动画) ---------- */
+function cbApplyInstant(tok) {
+  try { applyToken(CBS.cu, tok); } catch (e) { return false; }
+  return true;
+}
+
+/* 播放队列: 每步动画结束后才施加到模型 */
+function cbTickQueue() {
+  if (CBS.anim) return;
+  if (!CBS.queue.length) {
+    if (CBS.playing) {
+      CBS.playing = false;
+      cbSyncPlayBtn();
+      if (CBS.timing && isSolved(CBS.cu)) cbTimerStop();
+    }
+    return;
+  }
+  if (CBS.paused) return;
+  var tok = CBS.queue.shift();
+  cbStartAnim(tok);
+}
+
+function cbStartAnim(tok) {
+  var layers = cbTokenLayers(tok, CBS.cu.maxc);
+  if (!layers.length) { cbApplyInstant(tok); return; }
+  /* 步数多的解法(四阶 100+ 步)播快一点, 不然要等十几秒 */
+  var base = CBS.queue.length > 40 ? 300 : 650;
+  var dur = Math.max(30, base / CBS.speed);
+  CBS.anim = { layers: layers, t0: Date.now(), dur: dur, tok: tok };
+  setTimeout(function () {
+    CBS.anim = null;
+    cbApplyInstant(tok);
+    cbHistPush(tok);
+    cbAfterMove();
+  }, dur);
+}
+
+function cbAfterMove() {
+  if (CBS.timing && isSolved(CBS.cu)) cbTimerStop();
+  cbTickQueue();
+}
+
+/* 手动转一步 */
+function cbTurn(tok) {
+  if (CBS.anim) return;            /* 动画中不接 */
+  if (CBS.queue.length) return;    /* 播放中不接 */
+  if (!CBS.timing) cbTimerStart();
+  cbStartAnim(tok);
+}
+
+/* ---------- 状态重置 ---------- */
+function cbNewCube() {
+  CBS.cu = mkCube(CBS.n);
+  CBS.hist = [];
+  var h = cbEl('cbHist'); if (h) h.textContent = '';
+  CBS.elapsed = 0; CBS.timing = false;
+  cbTimerShow();
+}
+
+function cbReset() {
+  CBS.queue = [];
+  CBS.playing = false;
+  CBS.paused = false;
+  CBS.anim = null;
+  cbSyncPlayBtn();
+  cbNewCube();
+  cbBestShow();
+}
+
+function cbScramble() {
+  cbReset();
+  var toks = [];
+  var faces = ['U', 'D', 'L', 'R', 'F', 'B'];
+  var last = '', last2 = '';
+  var count = CBS.n === 4 ? 40 : 22;
+  for (var i = 0; i < count; i++) {
+    var f;
+    var guard = 0;
+    do { f = faces[Math.floor(Math.random() * 6)]; guard++; }
+    while (guard < 50 && (f === last || (f === last2 && isOpposite(f, last))));
+    last2 = last; last = f;
+    var suf = ['', "'", '2'][Math.floor(Math.random() * 3)];
+    /* 四阶: 六成用宽转, 这样中心和棱才会真的被搅乱;
+       只用外层转的话降阶步骤是 0 步, 等于没打乱。 */
+    var wide = (CBS.n === 4 && Math.random() < 0.6) ? 'w' : '';
+    toks.push(f + wide + suf);
+  }
+  for (var j = 0; j < toks.length; j++) cbApplyInstant(toks[j]);
+  CBS.hist = toks.slice();
+  var h = cbEl('cbHist'); if (h) h.textContent = CBS.hist.join(' ');
+  cbTimerStart();
+  if (typeof toast === 'function') toast('打乱了, 计时开始。');
+}
+function isOpposite(a, b) {
+  return (a === 'U' && b === 'D') || (a === 'D' && b === 'U') ||
+         (a === 'L' && b === 'R') || (a === 'R' && b === 'L') ||
+         (a === 'F' && b === 'B') || (a === 'B' && b === 'F');
+}
+
+/* ---------- 还原 ---------- */
+var cbEngineWait = [];
+function cbEnsureEngine(fn) {
+  if (CBS.ready) { fn(); return; }
+  cbEngineWait.push(fn);
+  if (CBS.preparing) return;
+  CBS.preparing = true;
+  if (typeof toast === 'function') toast('魔方引擎正在造表, 稍等一下…');
+  setTimeout(function () {
+    try { prepare(); CBS.ready = true; }
+    catch (e) { if (typeof toast === 'function') toast('引擎造表失败: ' + e.message); }
+    CBS.preparing = false;
+    var q = cbEngineWait;
+    cbEngineWait = [];
+    for (var i = 0; i < q.length; i++) {
+      try { q[i](); } catch (err) { }
+    }
+  }, 60);
+}
+
+function cbSolve() {
+  if (CBS.n === 4) { cbSolve4(); return; }
+  if (CBS.anim || CBS.queue.length) return;
+  if (isSolved(CBS.cu)) { if (typeof toast === 'function') toast('它本来就是还原的。'); return; }
+  cbEnsureEngine(function () {
+    var t0 = Date.now();
+    var sol = null;
+    try { sol = solveCube(CBS.cu); } catch (e) { sol = null; }
+    var dt = Date.now() - t0;
+    if (!sol || !sol.length) {
+      if (typeof toast === 'function') toast('这个局面算不出解, 先重置再打乱试试。');
+      return;
+    }
+    CBS.queue = sol.slice();
+    CBS.playing = true;
+    CBS.paused = false;
+    cbSyncPlayBtn();
+    if (typeof toast === 'function') toast('解法 ' + sol.length + ' 步 (' + dt + 'ms), 开始还原。');
+    cbTickQueue();
+  });
+}
+
+function cbSolve4() {
+  if (CBS.anim || CBS.queue.length) return;
+  if (isSolved(CBS.cu)) { if (typeof toast === 'function') toast('它本来就是还原的。'); return; }
+  if (typeof solve4 !== 'function') {
+    if (typeof toast === 'function') toast('四阶的自动还原还没接上, 先用下面的按钮自己拧。');
+    return;
+  }
+  if (typeof toast === 'function') toast('四阶正在算, 要降阶再解, 稍等一下…');
+  setTimeout(function () {
+    var t0 = Date.now();
+    var sol = null;
+    try { sol = solve4(CBS.cu); } catch (e) { sol = null; }
+    var dt = Date.now() - t0;
+    if (!sol || !sol.length) {
+      if (typeof toast === 'function') toast('四阶这局没算出来, 再打乱一次试试。');
+      return;
+    }
+    CBS.queue = sol.slice();
+    CBS.playing = true;
+    CBS.paused = false;
+    cbSyncPlayBtn();
+    if (typeof toast === 'function') toast('四阶解法 ' + sol.length + ' 步 (' + dt + 'ms), 开始还原。');
+    cbTickQueue();
+  }, 30);
+}
+
+function cbSyncPlayBtn() {
+  var b = cbEl('cbPlay');
+  if (!b) return;
+  b.textContent = CBS.playing ? (CBS.paused ? '▶' : '⏸') : '▶';
+}
+
+function cbPlayPause() {
+  if (!CBS.queue.length && !CBS.playing) { cbSolve(); return; }
+  CBS.paused = !CBS.paused;
+  cbSyncPlayBtn();
+  if (!CBS.paused) cbTickQueue();
+}
+
+function cbStep() {
+  if (CBS.anim) return;
+  if (!CBS.queue.length) {
+    /* 没有队列就推进一步解法 */
+    if (CBS.n === 4) { cbSolve4(); return; }
+    cbEnsureEngine(function () {
+      var sol = null;
+      try { sol = solveCube(CBS.cu); } catch (e) { sol = null; }
+      if (!sol || !sol.length) { if (typeof toast === 'function') toast('没有可走的步。'); return; }
+      CBS.queue = sol.slice();
+      CBS.paused = true;
+      CBS.playing = true;
+      cbSyncPlayBtn();
+      cbTickQueue();
+    });
+    return;
+  }
+  CBS.paused = true;
+  cbSyncPlayBtn();
+  cbTickQueue();
+}
+
+/* ---------- 切换阶数 ---------- */
+function cbSetN(n) {
+  if (CBS.n === n) return;
+  CBS.n = n;
+  CBS.queue = [];
+  CBS.playing = false;
+  CBS.paused = false;
+  CBS.anim = null;
+  cbSyncPlayBtn();
+  cbNewCube();
+  cbBuildMoves();
+  cbBestShow();
+  var b3 = cbEl('cbB3'), b4 = cbEl('cbB4');
+  if (b3) b3.className = n === 3 ? 'on' : '';
+  if (b4) b4.className = n === 4 ? 'on' : '';
+  cbResize();
+}
+
+/* ---------- 走法按钮 ---------- */
+function cbBuildMoves() {
+  var box = cbEl('cbMoves');
+  if (!box) return;
+  var faces = CBS.n === 4 ? ['U', 'D', 'L', 'R', 'F', 'B', 'u', 'd', 'l', 'r', 'f', 'b']
+                         : ['U', 'D', 'L', 'R', 'F', 'B'];
+  var html = '';
+  for (var i = 0; i < faces.length; i++) {
+    var f = faces[i];
+    html += '<button type="button" data-mv="' + f + '">' + f + '</button>';
+    html += '<button type="button" data-mv="' + f + "&prime;" + '">' + f + "&prime;" + '</button>';
+  }
+  box.innerHTML = html;
+  var btns = box.querySelectorAll('button');
+  for (var k = 0; k < btns.length; k++) {
+    btns[k].addEventListener('click', function () {
+      var mv = this.getAttribute('data-mv');
+      cbTurn(mv);
+    });
+  }
+}
+
+/* ---------- 拖动转视角 ---------- */
+function cbBindDrag() {
+  var cv = cbEl('cbCanvas');
+  if (!cv) return;
+  var dragging = false, lx = 0, ly = 0;
+  cv.addEventListener('pointerdown', function (e) {
+    dragging = true; lx = e.clientX; ly = e.clientY;
+    cv.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  cv.addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    var dx = e.clientX - lx, dy = e.clientY - ly;
+    lx = e.clientX; ly = e.clientY;
+    CBS.yaw += dx * 0.010;
+    CBS.pitch += dy * 0.008;
+    if (CBS.pitch > 1.15) CBS.pitch = 1.15;
+    if (CBS.pitch < -1.15) CBS.pitch = -1.15;
+  });
+  function up(e) {
+    if (!dragging) return;
+    dragging = false;
+    try { cv.releasePointerCapture(e.pointerId); } catch (err) { }
+  }
+  cv.addEventListener('pointerup', up);
+  cv.addEventListener('pointercancel', up);
+  cv.addEventListener('dblclick', function () { CBS.yaw = -0.62; CBS.pitch = 0.46; });
+}
+
+/* ---------- 开关窗口 ---------- */
+function cubeToggle(open) {
+  var w = cbEl('cubeWin');
+  if (!w) return;
+  var will = (open === undefined) ? !w.classList.contains('open') : open;
+  w.classList.toggle('open', will);
+  if (will) {
+    if (typeof frontWindow === 'function') frontWindow(w);
+    if (!CBS.built) {
+      CBS.built = true;
+      cbLoadBest();
+      cbNewCube();
+      cbBuildMoves();
+      cbBindDrag();
+      cbBestShow();
+      cbResize();
+    } else {
+      cbResize();
+    }
+    cbLoopStart();
+    /* 引擎表在空闲时偷偷造好 */
+    if (!CBS.ready && !CBS.preparing) {
+      CBS.preparing = true;
+      setTimeout(function () {
+        try { prepare(); CBS.ready = true; } catch (e) { }
+        CBS.preparing = false;
+      }, 120);
+    }
+  } else {
+    cbLoopStop();
+  }
+}
+
 /* ================= 游戏厅: 一个门里四台机器 ================= */
 /* 任务栏的「玩」开这扇门; 门里四台机器各自一个窗口, 高分全部存本机 */
 function gameAnyOpen(){
@@ -7813,7 +9892,8 @@ var ENTRIES = [
     { d:'2026-09-27', h:'中秋最后一天, 小站一口气更新了一堆——好吃的相册攒到十五张、页脚挂了仓库直达和新项目贪吃蛇、成绩监控也上了(加密的, 别想偷看)。修了个bug: 凌晨两点显示自然醒, 睡着的人怎么自然醒。明天开学。' },
     { d:'2026-10-01', h:'国庆假期第一天, 学校先暂停营业七天。书包获得短暂休息权, 作业没有——它只是换了个地方继续等我。' },
     { d:'2026-10-16', h:'任务栏那个「雷」换成「玩」了——点进去是个游戏厅, 扫雷还在老位置, 旁边新摆了三台机器: 2048、俄罗斯方块、贪吃蛇。做完作业才准玩, 这句是写给我自己的。' },
-    { d:'2026-10-17', h:'船长大早上说游戏厅太小了, 还把每个窗口都拖了一遍——沙漏、画板、太阳系那几扇窗原来根本拖不动, 光标是那个样子, 手一按却没反应。今天全修好了: 窗口都放大一圈, 四台机器看着终于不憋屈; 二十二扇窗一扇一扇试过, 手机用手指也能拖, 拖到屏幕边上会自己停住, 不会把窗口弄丢。' }
+    { d:'2026-10-17', h:'船长大早上说游戏厅太小了, 还把每个窗口都拖了一遍——沙漏、画板、太阳系那几扇窗原来根本拖不动, 光标是那个样子, 手一按却没反应。今天全修好了: 窗口都放大一圈, 四台机器看着终于不憋屈; 二十二扇窗一扇一扇试过, 手机用手指也能拖, 拖到屏幕边上会自己停住, 不会把窗口弄丢。' },
+    { d:'2026-10-17', h:'魔方.EXE 终于能玩了。之前只有一扇窗和十二个按钮, 拧不动也不出解——今天补上了: 三阶是两阶段法现算的, 四阶先降阶再当三阶解, 还原了会自动记成绩。零件是我一个一个数字验过去的, 拧了三百多次都还原了才敢搬上来。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
