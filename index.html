@@ -5990,8 +5990,8 @@ function gdDecrypt(pass){
     return (obj && obj.v === 1 && Array.isArray(obj.exams)) ? obj : null;
   } catch(e){ return null; }
 }
-/* 密文: {开学考 + 第一次月考} 的成绩 JSON, 用口令派生密钥 XOR 加密——明文不落源码 */
-var GD_BLOB = 'UUkA2WYqMg8wa/zwpZJNS/4eqvgrbCPfmEH9yorObhAHknyph8dRjuwpcsOiPsI352FCawfH6U2JVQ0TELxnSAGH3GOIzh6nG7TJ6ZY9qLwKPXNiI4JZTdSRZs/ubUsrkpVuwIpxRRqW1MqdpX14c5j5lfhaIdS6xm/NIi8gaT0EmoB9cHIHPnhKr7VALGzfJxG3TqKfl0TcWMCAQLJRsyRW9iLZkwDWD2Tgei5i+QlYdmdm0IMyAXkZ/syeRS8A8Tk7OUUvamiJ24rgNGYohwB/fTq3pzSlyAJOJwIGSjTsb9pm9u1t1CtBEgVJVlT5N/bi5V2+0oOLh+flAY/3LbxyeEgwxG78lYbYO0j8lRjOC96ZEx4Z1dVqqbRQSz40oYV5rW+Y1AsMtB5UKNbF5NbkEiZeneiaJAyTKjHA5YTTJefKCycs63z+Fi310DXlM8zxNQiBm71XrRfKue9698qnv1wIrVIHxHDmo2YH1O1FfKiMJAu4NSG0DyOqx+C9ynMA3542NLhAgh9TjSKd+3rrL9S68IHLZodT4enDmN05Bm1vu2z3I7Ayjns4xUY1blt4HXunvDmhXo9oZSP2D4zQa27CKlEpVnLLHake9UeYMgtsY+34D2SOpwAUZyakz/FSUShn4R9qhfUmbQoOcY8mNpsnx7j4lCk7LOshQxEhS+7jkxfkVFAb45fwiMh2RJJs7Rz7kfBJPTXsy1F2UR2AsxuPOz3hh2NZIcF7BcsUurHJ';
+/* 密文: {开学考 + 第一次月考 + 第二次月考} 的成绩 JSON, 用口令派生密钥 XOR 加密——明文不落源码 */
+var GD_BLOB = 'UUkA2WYqMg8wa/zwpZJNS/4eqvgrbCPfmEH9yorObhAHknyph8dRjuwpcsOiPsI352FCawfH6U2JVQ0TELxnSAGH3GOIzh6nG7TJ6ZY9qLwKPXNiI4JZTdSRZs/ubUsrkpVuwIpxRRqW1MqdpX14c5j5lfhaIdS6xm/NIi8gaT0EmoB9cHIHPnhKr7VALGzfJxG3TqKfl0TcWMCAQLJRsyRW9iLZkwDWD2Tgei5i+QlYdmdm0IMyAXkZ/syeRS8A8Tk7OUUvamiJ24rgNGYohwB/fTq3pzSlyAJOJwIGSjTsb9pm9u1t1CtBEgVJVlT5N/bi5V2+0oOLh+flAY/3LbxyeEgwxG78lYbYO0j8lRjOC96ZEx4Z1dVqqbRQSz40oYV5rW+Y1AsMtB5UKNbF5NbkEiZeneiaJAyTKjHA5YTTJefKCycs63z+Fi310DXlM8zxNQiBm71XrRfKue9698qnv1wIrVIHxHDmo2YH1O1FfKiMJAu4NSG0DyOqx+C9ynMA3542NLhAgh9TjSKd+3rrL9S68IHLZodT4enDmN05Bm1vu2z3I7Ayjns4xUY1blt4HXunvDmhXo9oZSP2D4zQa27CKlEpVnLLHake9UeYMgtsY+34D2SOpwAUZyakz/FSUShn4R9qhfUmbQoOcY8mNpsnx7j4lCk7LOshQxEhS+7jkxfkVFAb45fwiMh2RJJs7Rz7kfBJPTXsy1F2UR2AsxuPOz3hh2NZIcF7BcsUusDPq3kP0aGtKt/uQ/bnDblCTBWIrsSzPqi/6JuLudtrJpkxlVcErXy5iyaxgaSgipB+aRec6cQwvTOvTvI7uBOpEZ/9M1KrMC1Hq+sOiWcVR+PwwsOggDi+9bZhlC8YGsI1+CuwkQGac1eIIQb3OiZdyuMZfti86ZZge5hCaci/qfb+e3MtIyrKQN7HeOD18uEKHTjyCtuDkP7B0DBxgFPsXycW8Qv8YRkUjCfK/5dbd8LkB/RH06NXIQ7vSLsh0XXUnEHZwRBh4sC3+QF9dUTF+PE2oLyeU5xcWpp9a5Yffbq0iUAPnPwLWaEWijmgxZYtoIHakJKtIp0WKR+s24lGJnVqWL/UmaF8ehiZ3LFkdt7d1ULPedrxrOPdpAlnrHl1/ky6d5DrrL5lzxPH7Mg7IooqzYaqnlYEdol5X/NfWdWPNIx++c3ivQcshsR2cSs6xNbfaid8snx+/Sn57CHxzEtC7qGECBCDbFsOUISfuzQtu2Cis8H0odHj4YKfHg==';
 function gdRankDelta(prev, now){
   if (prev == null || now == null) return null;
   return prev - now;   /* 名次变小 = 进步(正数) */
@@ -6029,7 +6029,7 @@ function gdRenderGrades(data){
   $('#gradeBody').innerHTML =
     '<div class="gd-top"><b>船长加密档案 · ' + data.exams.length + ' 场考试</b><button id="gdLock" type="button">锁定</button></div>' +
     cards +
-    '<p class="gd-foot">两次卷子不一样, 分数不直接可比——名次才是硬通货。档案在源码里是密文, 这页关掉就重新上锁。</p>';
+    '<p class="gd-foot">每次卷子都不一样, 分数不直接可比——名次才是硬通货。档案在源码里是密文, 这页关掉就重新上锁。</p>';
   $('#gdLock').addEventListener('click', function(){ gdRenderLock(); });
 }
 function gdRenderLock(){
@@ -9974,7 +9974,8 @@ var ENTRIES = [
     { d:'2026-10-17', h:'魔方.EXE 终于能玩了。之前只有一扇窗和十二个按钮, 拧不动也不出解——今天补上了: 三阶是两阶段法现算的, 四阶先降阶再当三阶解, 还原了会自动记成绩。零件是我一个一个数字验过去的, 拧了三百多次都还原了才敢搬上来。' },
     { d:'2026-10-17', h:'好吃的相册又长了八张, 从十八张攒到二十六张。最近这几顿基本都在食堂窗边解决的: 胡辣汤泡油饼的早上、炸鸡腿配土豆烧肉的午餐、热干面拌开之前先拍一张、红油米线和粉丝轮着来。照片拍得一般, 但每一张都能想起来当时在跟谁一起吃。' },
     { d:'2026-10-24', h:'船长说魔方那扇窗太大、魔方又看不全, 还说带撇的按钮按了没反应。查下去发现是按钮里写的是排版用的撇号, 程序只认键盘上那个——看起来一样, 机器读起来完全是两个字。另外立方体一直是按宽度撑满算的, 一转到侧面上下就被切掉了。今天改成按真实轮廓算大小, 窗口也收窄了一圈, 六个带撇的键现在都能拧动了。' },
-    { d:'2026-10-24', h:'还顺手修了个更老的毛病: 任务栏在五百来像素宽的屏上, 最后几个按钮会掉到屏幕外面去。三百九的手机上会折成两行所以没事, 电脑上更宽也放得下, 偏偏中间这一段最难受——宽也不够, 又没折行。现在窄到六百二就自己折成两行, 弹出来的提示框也不再被任务栏压住了。' }
+    { d:'2026-10-24', h:'还顺手修了个更老的毛病: 任务栏在五百来像素宽的屏上, 最后几个按钮会掉到屏幕外面去。三百九的手机上会折成两行所以没事, 电脑上更宽也放得下, 偏偏中间这一段最难受——宽也不够, 又没折行。现在窄到六百二就自己折成两行, 弹出来的提示框也不再被任务栏压住了。' },
+    { d:'2026-10-24', h:'第二次月考的成绩进档案了。这次班名和校名都往前挪了一截, 语文和英语是把总分顶上去的两根柱子; 数学是九科里唯一往后退的一门, 也是接下来最该花时间的地方。具体数字不写在这儿——想看得输口令。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
