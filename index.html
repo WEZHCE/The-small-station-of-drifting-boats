@@ -1219,12 +1219,15 @@
   body.night .gd-foot{color:#55618a}
 
   /* ---------- 魔方.EXE: 三阶/四阶 建模还原 ---------- */
-  #cubeWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(600px,94vw);
+  #cubeWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(440px,94vw);
     display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
   #cubeWin.open{display:block}
   #cubeWin .titlebar{cursor:move}
   .cb-body{padding:8px}
-  #cbCanvas{display:block; width:100%; height:clamp(300px,56vh,460px); background:#141824; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; cursor:grab}
+  /* 画布做成正方形并居中: 立方体投影本身接近正方形, 画布比它宽太多的话
+     左右会空出一大块黑边, 立方体反而显得小。 */
+  #cbCanvas{display:block; width:min(100%,384px); aspect-ratio:1/1; height:auto; margin:0 auto;
+    background:#141824; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; cursor:grab}
   #cbCanvas:active{cursor:grabbing}
   .cb-row{display:flex; align-items:center; gap:7px; margin-top:9px; flex-wrap:wrap}
   .cb-row button, .cb-mv button{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
@@ -2270,6 +2273,7 @@
       <button id="cbB3" class="on">三阶</button>
       <button id="cbB4">四阶</button>
       <span class="cb-timer" id="cbTimer">--:--.--</span>
+      <div class="cb-spd"><span>速度</span><input type="range" id="cbSpeed" min="1" max="10" value="5"><span id="cbSpdVal">5x</span></div>
     </div>
     <div class="cb-row">
       <button id="cbScramble">打乱</button>
@@ -2277,7 +2281,6 @@
       <button id="cbReset">重置</button>
       <button id="cbPlay">▶</button>
       <button id="cbStep">⏭</button>
-      <div class="cb-spd"><span>速度</span><input type="range" id="cbSpeed" min="1" max="10" value="5"><span id="cbSpdVal">5x</span></div>
     </div>
     <div class="cb-mv" id="cbMoves"></div>
     <div class="cb-best" id="cbBest"></div>
@@ -6991,6 +6994,9 @@ $('#mineFlagMode').addEventListener('click', function(){
 mineReset();
 
 
+
+
+
 /* ========================================================================
  * 魔方.EXE —— 核心模型 + 求解器 + 渲染 + UI
  * 三阶走 Kociemba 两阶段法(建表 ~500ms, 求解 10~80ms);
@@ -8497,14 +8503,55 @@ function cbTangents(n) {
 var CB_SIGNS = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
 var CB_AXVEC = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
 
+/* 按当前 yaw/pitch 算出立方体投影后的外接框, 返回 {x0,x1,y0,y1}
+ * 直接遍历所有贴纸的四个角点 —— 这样和实际画出来的范围严丝合缝,
+ * 不能偷懒用「边长 maxc+1.86 的立方体」去估: 那个盒子比真实贴纸大一圈,
+ * 会导致 scale 偏小、左右各浪费一百多像素。 */
+function cbExtent(cu, yaw, pitch) {
+  var x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+  var hs = 0.86;
+  for (var i = 0; i < cu.pieces.length; i++) {
+    var pc = cu.pieces[i];
+    for (var k = 0; k < pc.st.length; k++) {
+      var n = cbMulMV(pc.m, pc.st[k].n);
+      var sc = [pc.p[0] + n[0], pc.p[1] + n[1], pc.p[2] + n[2]];
+      var tg = cbTangents(pc.st[k].n);
+      var t1 = cbMulMV(pc.m, tg[0]);
+      var t2 = cbMulMV(pc.m, tg[1]);
+      for (var q = 0; q < 4; q++) {
+        var s1 = CB_SIGNS[q][0] * hs, s2 = CB_SIGNS[q][1] * hs;
+        var pp = cbProject([
+          sc[0] + t1[0] * s1 + t2[0] * s2,
+          sc[1] + t1[1] * s1 + t2[1] * s2,
+          sc[2] + t1[2] * s1 + t2[2] * s2
+        ], yaw, pitch);
+        if (pp[0] < x0) x0 = pp[0];
+        if (pp[0] > x1) x1 = pp[0];
+        if (pp[1] < y0) y0 = pp[1];
+        if (pp[1] > y1) y1 = pp[1];
+      }
+    }
+  }
+  return { x0: x0, x1: x1, y0: y0, y1: y1 };
+}
+
 function cbRender(ctx, cu, opts) {
   var yaw = opts.yaw, pitch = opts.pitch;
   var W = opts.w, H = opts.h;
   var night = !!opts.night;
   var anims = opts.anim || [];
   var maxc = cu.maxc;
-  var scale = opts.scale || Math.min(W / ((maxc + 1.9) * 2.05), H / ((maxc + 1.9) * 2.05));
-  var cx = W / 2, cy = H / 2 + (opts.dy || 0);
+  /* 按实际投影外接框定 scale, 留 6% 边距。
+   * 以前是写死的 Math.min(W,H)/((maxc+1.9)*2.05) —— 那个常数没考虑 pitch
+   * 会把立方体在垂直方向拉长, 结果上下两头被画布裁掉。 */
+  var ex = cbExtent(cu, yaw, pitch);
+  var spanX = Math.max(1e-6, ex.x1 - ex.x0);
+  var spanY = Math.max(1e-6, ex.y1 - ex.y0);
+  var fit = Math.min((W * 0.94) / spanX, (H * 0.94) / spanY);
+  var scale = opts.scale || fit;
+  /* 让投影外接框正好居中 */
+  var cx = W / 2 - scale * (ex.x0 + ex.x1) / 2;
+  var cy = H / 2 + scale * (ex.y0 + ex.y1) / 2 + (opts.dy || 0);
 
   /* 视线方向(指向相机): 由 cbProject 的深度分量 z2 反推
    * z2 = -sin(yaw)cos(pitch)*x + sin(pitch)*y + cos(yaw)cos(pitch)*z */
@@ -8978,8 +9025,11 @@ function cbBuildMoves() {
   var html = '';
   for (var i = 0; i < faces.length; i++) {
     var f = faces[i];
+    /* data-mv 里必须是 ASCII 单引号(39), 不能写 &prime; ——
+       那是 U+2032, 记号解析器的正则只认 ASCII, 会静默返回空动画层。 */
+    var pv = f + "'";
     html += '<button type="button" data-mv="' + f + '">' + f + '</button>';
-    html += '<button type="button" data-mv="' + f + "&prime;" + '">' + f + "&prime;" + '</button>';
+    html += '<button type="button" data-mv="' + pv + '">' + f + '&prime;</button>';
   }
   box.innerHTML = html;
   var btns = box.querySelectorAll('button');
@@ -9922,7 +9972,8 @@ var ENTRIES = [
     { d:'2026-10-16', h:'任务栏那个「雷」换成「玩」了——点进去是个游戏厅, 扫雷还在老位置, 旁边新摆了三台机器: 2048、俄罗斯方块、贪吃蛇。做完作业才准玩, 这句是写给我自己的。' },
     { d:'2026-10-17', h:'船长大早上说游戏厅太小了, 还把每个窗口都拖了一遍——沙漏、画板、太阳系那几扇窗原来根本拖不动, 光标是那个样子, 手一按却没反应。今天全修好了: 窗口都放大一圈, 四台机器看着终于不憋屈; 二十二扇窗一扇一扇试过, 手机用手指也能拖, 拖到屏幕边上会自己停住, 不会把窗口弄丢。' },
     { d:'2026-10-17', h:'魔方.EXE 终于能玩了。之前只有一扇窗和十二个按钮, 拧不动也不出解——今天补上了: 三阶是两阶段法现算的, 四阶先降阶再当三阶解, 还原了会自动记成绩。零件是我一个一个数字验过去的, 拧了三百多次都还原了才敢搬上来。' },
-    { d:'2026-10-17', h:'好吃的相册又长了八张, 从十八张攒到二十六张。最近这几顿基本都在食堂窗边解决的: 胡辣汤泡油饼的早上、炸鸡腿配土豆烧肉的午餐、热干面拌开之前先拍一张、红油米线和粉丝轮着来。照片拍得一般, 但每一张都能想起来当时在跟谁一起吃。' }
+    { d:'2026-10-17', h:'好吃的相册又长了八张, 从十八张攒到二十六张。最近这几顿基本都在食堂窗边解决的: 胡辣汤泡油饼的早上、炸鸡腿配土豆烧肉的午餐、热干面拌开之前先拍一张、红油米线和粉丝轮着来。照片拍得一般, 但每一张都能想起来当时在跟谁一起吃。' },
+    { d:'2026-10-24', h:'船长说魔方那扇窗太大、魔方又看不全, 还说带撇的按钮按了没反应。查下去发现是按钮里写的是排版用的撇号, 程序只认键盘上那个——看起来一样, 机器读起来完全是两个字。另外立方体一直是按宽度撑满算的, 一转到侧面上下就被切掉了。今天改成按真实轮廓算大小, 窗口也收窄了一圈, 六个带撇的键现在都能拧动了。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
