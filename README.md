@@ -7,6 +7,8 @@
 
 **仓库直达**：[github.com/WEZHCE/The-small-station-of-drifting-boats](https://github.com/WEZHCE/The-small-station-of-drifting-boats)
 
+**宣传视频**：[bilibili.com/video/BV1TNHK6SEhv](https://www.bilibili.com/video/BV1TNHK6SEhv/)
+
 | 白天 | 夜航模式（19:00~6:00 自动开启） |
 |---|---|
 | ![](docs/preview-day.png) | ![](docs/preview-night.png) |
