@@ -9,6 +9,9 @@
 <style>
   /* ---------- 基础 ---------- */
   *{box-sizing:border-box; margin:0; padding:0}
+  /* --tb-h: 任务栏实测高度, 由 syncTaskbarHeight() 写入。窄屏任务栏折行时它会长到 63px / 92px,
+     下面所有浮层的 bottom 都用它算, 这样不会被折行后的任务栏盖住。回退 36px = 单行任务栏。 */
+  :root{--tb-h:36px}
   html{scroll-behavior:smooth}
   body{
     background-color:#f2ecdd;
@@ -229,7 +232,7 @@
     box-shadow:inset 0 0 10px #000}
   .hits-badge{display:inline-block; vertical-align:middle; margin:0 3px}
 
-  #toast{position:fixed; left:50%; bottom:calc(46px + env(safe-area-inset-bottom)); z-index:200; max-width:78vw;
+  #toast{position:fixed; left:50%; bottom:calc(var(--tb-h) + 10px + env(safe-area-inset-bottom)); z-index:200; max-width:78vw;
     transform:translateX(-50%) translateY(24px); opacity:0; pointer-events:none;
     background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     box-shadow:5px 5px 0 rgba(0,0,0,.18); padding:13px 20px; font-size:14.5px;
@@ -288,7 +291,7 @@
 
   /* ---------- 任务栏 ---------- */
   /* 底部安全区: 全面屏手机不被手势条压住 */
-  body.on{padding-bottom:calc(44px + env(safe-area-inset-bottom))}
+  body.on{padding-bottom:calc(var(--tb-h) + 8px + env(safe-area-inset-bottom))}
   #taskbar{position:fixed; left:0; right:0; bottom:0; z-index:90;
     height:calc(36px + env(safe-area-inset-bottom));
     background:#c9c9c9; border-top:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
@@ -297,7 +300,7 @@
   #startBtn{height:26px; padding:0 12px; display:flex; align-items:center; gap:6px; font-weight:bold;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222; font-family:inherit; font-size:13px}
   #startBtn.on, #startBtn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  #startMenu{position:fixed; left:4px; bottom:calc(40px + env(safe-area-inset-bottom)); z-index:95; min-width:186px; display:none;
+  #startMenu{position:fixed; left:4px; bottom:calc(var(--tb-h) + 4px + env(safe-area-inset-bottom)); z-index:95; min-width:186px; display:none;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     box-shadow:4px 4px 0 rgba(0,0,0,.25); padding:4px}
   #startMenu.open{display:block}
@@ -974,7 +977,7 @@
   body.night .sp-go{background:#3d6fd0; color:#fff}
 
   /* ---------- 左下角面板组: 甲板音乐 + 船长状态 + 灵动岛(灰黄面板, 配整站羊皮纸) ---------- */
-  #deckDock{position:fixed; left:10px; bottom:calc(40px + env(safe-area-inset-bottom)); z-index:60;
+  #deckDock{position:fixed; left:10px; bottom:calc(var(--tb-h) + 4px + env(safe-area-inset-bottom)); z-index:60;
     display:flex; flex-direction:column; gap:6px; align-items:stretch}
   #deckMusic, #capState, #dynIsland{background:rgba(236,229,208,.72); color:#4a4335;
     font-family:Consolas,"Courier New",monospace; border:1px solid #b3a88c;
@@ -1605,16 +1608,16 @@
     footer{padding:16px 16px 20px}
     .boot-title{font-size:28px; letter-spacing:3px}
   }
-  /* 窄屏: 任务栏改两行, 应用键不再挤沙丁鱼; 双黑盒/菜单/提示跟着抬高不遮挡 */
-  @media (max-width:480px){
-    #trayClock{display:none}
+  /* 窄屏: 任务栏改两行, 应用键不再挤沙丁鱼; 双黑盒/菜单/提示跟着抬高不遮挡。
+     断点 620px 是实测出来的: 18 个应用键在 610px 时最后一个「点灯」已经被裁到屏幕外,
+     620px 才刚好一行放下, 所以提前在这里折行(原来卡在 480px, 481~615px 这段是漏网的)。 */
+  @media (max-width:620px){
     #taskbar{flex-wrap:wrap; height:auto; padding:3px 4px calc(3px + env(safe-area-inset-bottom)); row-gap:3px; gap:3px}
     #tbCmd, #tbHelp, #tbCalc, #tbGame, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{padding:0 5px}
-    body.on{padding-bottom:calc(74px + env(safe-area-inset-bottom))}
-    #deckDock{bottom:calc(78px + env(safe-area-inset-bottom))}
+  }
+  @media (max-width:480px){
+    #trayClock{display:none}
     #deckMusic, #capState, #dynIsland{width:158px}
-    #startMenu{bottom:calc(78px + env(safe-area-inset-bottom))}
-    #toast{bottom:calc(68px + env(safe-area-inset-bottom))}
     /* 音乐盒控制行四键 + 计数, 再窄也放得下 */
     .dm-btn{width:24px}
     .dm-loop{padding:0 3px}
@@ -2474,6 +2477,23 @@ var $ = function(s){ return document.querySelector(s); };
 var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
 var rand = function(a,b){ return a + Math.random()*(b-a); };
 var pick = function(arr){ return arr[Math.floor(Math.random()*arr.length)]; };
+
+/* ---------- 任务栏实测高度 → CSS 变量 --tb-h ----------
+   任务栏在窄屏会折成 2~3 行, 高度不再固定 36px。所有浮层(开始菜单 / toast /
+   音乐盒 / 灵动岛 / body 底部留白)都靠 --tb-h 定位, 这样折几行都不会被盖住。 */
+function syncTaskbarHeight(){
+  var tb = $('#taskbar');
+  if(!tb) return;
+  var h = Math.round(tb.getBoundingClientRect().height);
+  if(h > 0) document.documentElement.style.setProperty('--tb-h', h + 'px');
+}
+syncTaskbarHeight();
+window.addEventListener('resize', syncTaskbarHeight);
+window.addEventListener('load', syncTaskbarHeight);
+if(window.ResizeObserver){
+  var tbEl = $('#taskbar');
+  if(tbEl) new ResizeObserver(syncTaskbarHeight).observe(tbEl);
+}
 
 /* ================= 像素画 ================= */
 var SPRITES = {
