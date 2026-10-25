@@ -232,7 +232,9 @@
     box-shadow:inset 0 0 10px #000}
   .hits-badge{display:inline-block; vertical-align:middle; margin:0 3px}
 
-  #toast{position:fixed; left:50%; bottom:calc(var(--tb-h) + 10px + env(safe-area-inset-bottom)); z-index:200; max-width:78vw;
+  /* z-index 必须高过所有应用窗口(窗口从 260 起往上叠, 见 frontWindow / winTopZ),
+     否则提示条只露出窗口底边下面那一截, 看起来像被窗口切了一半。 */
+  #toast{position:fixed; left:50%; bottom:calc(var(--tb-h) + 10px + env(safe-area-inset-bottom)); z-index:900; max-width:78vw;
     transform:translateX(-50%) translateY(24px); opacity:0; pointer-events:none;
     background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     box-shadow:5px 5px 0 rgba(0,0,0,.18); padding:13px 20px; font-size:14.5px;
@@ -1243,6 +1245,10 @@
   .cb-spd{display:flex; align-items:center; gap:3px; margin-left:auto}
   .cb-spd input{width:74px}
   .cb-spd span{font-size:12px; font-family:Consolas,monospace; color:#5c5340; min-width:34px}
+  .cb-status{font-size:12.5px; line-height:1.5; min-height:19px; margin-top:6px;
+    color:#3f5c33; opacity:0; transition:opacity .2s; word-break:break-all}
+  .cb-status.show{opacity:1}
+  body.night .cb-status{color:#8fbf8f}
   .cb-hist{font-size:11.5px; font-family:Consolas,monospace; color:#6b5f45; margin-top:7px; max-height:46px; overflow-y:auto; word-break:break-all; line-height:1.5}
   body.night #cubeWin{background:#1a2338; border-color:#3a4763}
   body.night .cb-row button, body.night .cb-mv button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
@@ -2285,6 +2291,7 @@
     </div>
     <div class="cb-mv" id="cbMoves"></div>
     <div class="cb-best" id="cbBest"></div>
+    <div class="cb-status" id="cbStatus"></div>
     <div class="cb-hist" id="cbHist"></div>
   </div>
 </div>
@@ -4216,8 +4223,18 @@ termIn.addEventListener('keydown', function(e){
 });
 
 /* ---------- 任务栏快捷入口 + 窗口拖拽/置顶 ---------- */
-var winTopZ = 260;
-function frontWindow(win){ win.style.zIndex = ++winTopZ; }
+/* 窗口层叠序号从 260 起往上叠, 但封顶 880 —— #toast 是 900,
+   提示条永远得压在窗口上面, 不能被一路点出来的窗口顶掉。
+   只重排经 frontWindow 管过的窗口, 不碰欢迎信(350) / 灯箱(300) / 蓝屏(450) 那些自带层级的。 */
+var winTopZ = 260, winMaxZ = 880, winZOrder = [];
+function frontWindow(win){
+  if(winTopZ >= winMaxZ){
+    winTopZ = 260;
+    for(var i = 0; i < winZOrder.length; i++){ winZOrder[i].style.zIndex = ++winTopZ; }
+  }
+  if(winZOrder.indexOf(win) < 0){ winZOrder.push(win); }
+  win.style.zIndex = ++winTopZ;
+}
 function makeDraggable(win, handle){
   if(!win || !handle) return;
   handle.style.touchAction = 'none';
@@ -7002,6 +7019,8 @@ mineReset();
 
 
 
+
+
 /* ========================================================================
  * 魔方.EXE —— 核心模型 + 求解器 + 渲染 + UI
  * 三阶走 Kociemba 两阶段法(建表 ~500ms, 求解 10~80ms);
@@ -8849,6 +8868,19 @@ var CBS = {
 
 function cbEl(id) { return document.getElementById(id); }
 
+/* ---------- 窗口内状态行 ---------- */
+/* 魔方自己的消息不走全站提示条(那玩意儿固定在屏幕底部, 会压住这里的步骤历史),
+   改成在窗口里自己说一句。3.2 秒后自动淡出, 空着也不占额外高度。 */
+var cbSayTimer = null;
+function cbSay(msg) {
+  var el = cbEl('cbStatus');
+  if (!el) { if (typeof toast === 'function') toast(msg); return; }
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(cbSayTimer);
+  cbSayTimer = setTimeout(function () { el.classList.remove('show'); }, 3200);
+}
+
 /* ---------- 计时 ---------- */
 function cbFmt(ms) {
   if (!ms) return '--:--.--';
@@ -8881,13 +8913,13 @@ function cbTimerStop() {
       localStorage.setItem(key, String(CBS.elapsed));
       cbLoadBest();
       cbBestShow();
-      if (typeof toast === 'function') toast('魔方还原! ' + cbFmt(CBS.elapsed) + ', 新纪录。');
+      cbSay('魔方还原! ' + cbFmt(CBS.elapsed) + ', 新纪录。');
       return;
     }
-    if (typeof toast === 'function') toast('魔方还原! ' + cbFmt(CBS.elapsed));
+    cbSay('魔方还原! ' + cbFmt(CBS.elapsed));
     return;
   }
-  if (typeof toast === 'function') toast('魔方还原! ' + cbFmt(CBS.elapsed));
+  cbSay('魔方还原! ' + cbFmt(CBS.elapsed));
 }
 function cbLoadBest() {
   CBS.best2 = parseInt(localStorage.getItem('cubeBest2') || '0', 10) || 0;
@@ -9057,7 +9089,7 @@ function cbScramble() {
   CBS.hist = toks.slice();
   var h = cbEl('cbHist'); if (h) h.textContent = CBS.hist.join(' ');
   cbTimerStart();
-  if (typeof toast === 'function') toast('打乱了, 计时开始。');
+  cbSay('打乱了, 计时开始。');
 }
 function isOpposite(a, b) {
   return (a === 'U' && b === 'D') || (a === 'D' && b === 'U') ||
@@ -9072,10 +9104,10 @@ function cbEnsureEngine(fn) {
   cbEngineWait.push(fn);
   if (CBS.preparing) return;
   CBS.preparing = true;
-  if (typeof toast === 'function') toast('魔方引擎正在造表, 稍等一下…');
+  cbSay('魔方引擎正在造表, 稍等一下…');
   setTimeout(function () {
     try { prepare(); CBS.ready = true; }
-    catch (e) { if (typeof toast === 'function') toast('引擎造表失败: ' + e.message); }
+    catch (e) { cbSay('引擎造表失败: ' + e.message); }
     CBS.preparing = false;
     var q = cbEngineWait;
     cbEngineWait = [];
@@ -9088,7 +9120,7 @@ function cbEnsureEngine(fn) {
 function cbSolve() {
   if (CBS.n === 4) { cbSolve4(); return; }
   if (CBS.anim || CBS.queue.length) return;
-  if (isSolved(CBS.cu)) { if (typeof toast === 'function') toast('它本来就是还原的。'); return; }
+  if (isSolved(CBS.cu)) { cbSay('它本来就是还原的。'); return; }
   cbEnsureEngine(function () {
     var t0 = Date.now();
     var sol = null;
@@ -9099,40 +9131,40 @@ function cbSolve() {
     } catch (e) { sol = null; }
     var dt = Date.now() - t0;
     if (!sol || !sol.length) {
-      if (typeof toast === 'function') toast('这个局面算不出解, 先重置再打乱试试。');
+      cbSay('这个局面算不出解, 先重置再打乱试试。');
       return;
     }
     CBS.queue = sol.slice();
     CBS.playing = true;
     CBS.paused = false;
     cbSyncPlayBtn();
-    if (typeof toast === 'function') toast('解法 ' + sol.length + ' 步 (' + dt + 'ms), 开始还原。');
+    cbSay('解法 ' + sol.length + ' 步 (' + dt + 'ms), 开始还原。');
     cbTickQueue();
   });
 }
 
 function cbSolve4() {
   if (CBS.anim || CBS.queue.length) return;
-  if (isSolved(CBS.cu)) { if (typeof toast === 'function') toast('它本来就是还原的。'); return; }
+  if (isSolved(CBS.cu)) { cbSay('它本来就是还原的。'); return; }
   if (typeof solve4 !== 'function') {
-    if (typeof toast === 'function') toast('四阶的自动还原还没接上, 先用下面的按钮自己拧。');
+    cbSay('四阶的自动还原还没接上, 先用下面的按钮自己拧。');
     return;
   }
-  if (typeof toast === 'function') toast('四阶正在算, 要降阶再解, 稍等一下…');
+  cbSay('四阶正在算, 要降阶再解, 稍等一下…');
   setTimeout(function () {
     var t0 = Date.now();
     var sol = null;
     try { sol = solve4(CBS.cu); } catch (e) { sol = null; }
     var dt = Date.now() - t0;
     if (!sol || !sol.length) {
-      if (typeof toast === 'function') toast('四阶这局没算出来, 再打乱一次试试。');
+      cbSay('四阶这局没算出来, 再打乱一次试试。');
       return;
     }
     CBS.queue = sol.slice();
     CBS.playing = true;
     CBS.paused = false;
     cbSyncPlayBtn();
-    if (typeof toast === 'function') toast('四阶解法 ' + sol.length + ' 步 (' + dt + 'ms), 开始还原。');
+    cbSay('四阶解法 ' + sol.length + ' 步 (' + dt + 'ms), 开始还原。');
     cbTickQueue();
   }, 30);
 }
@@ -9158,7 +9190,7 @@ function cbStep() {
     cbEnsureEngine(function () {
       var sol = null;
       try { sol = solveCube(CBS.cu); } catch (e) { sol = null; }
-      if (!sol || !sol.length) { if (typeof toast === 'function') toast('没有可走的步。'); return; }
+      if (!sol || !sol.length) { cbSay('没有可走的步。'); return; }
       CBS.queue = sol.slice();
       CBS.paused = true;
       CBS.playing = true;
@@ -10156,7 +10188,8 @@ var ENTRIES = [
     { d:'2026-10-24', h:'把第一次月考缺的那五科名次也补齐了, 化学、生物、政治、历史、地理现在都有数, 档案里三场考试第一次是完整的。另外给这条船拍了个宣传片, 挂在 B 站, 地址也写进 README 了——第一次把攒了这么久的东西端出去给别人看, 有点不好意思, 也有点想笑。' },
     { d:'2026-10-25', h:'魔方那扇窗里添了台二乘二的。原本想给它单独写一套解法, 后来想明白一件事: 二阶没有棱也没有面心, 但那八个角块跟三阶的八个角一模一样——把二阶的角原样搬进一个「棱块全部归位」的三阶里, 交给已经验过三百多次的三阶引擎去解就行了, 解出来在二阶上照做一遍。中间只有一个坑: 二阶单个面转一次是奇置换, 三阶不许这么干, 所以得先在代理局面里偷偷换一对棱把它救回来。验了七百个随机局面, 全都解得开, 平均二十一步。' },
     { d:'2026-10-25', h:'船长说魔方转起来会变形, 不像个方的。查了半天, 画法本身没错——每块贴纸都是标准的平行四边形, 一毫米没歪; 错的是我给它挑的那个默认角度。立方体摆在 -35.5 度、仰 26.4 度这个位置, 三个露出来的面在屏幕上会变成三块大小不同的菱形, 一大一小, 眼睛就认定它被拉歪了。真正齐整的位置只有一个: 左右各 45 度、往上抬 35.26 度, 这时候三块面一样大, 才像块正经魔方。改成这个角度了, 顺手把上下能翻的范围也收窄一点, 免得拖到极端角度变成一张纸。' },
-    { d:'2026-10-25', h:'角度改完还是被说「大小会突变」。这次的问题藏得更深一点: 我为了让魔方总是尽量占满画面, 每一帧都按当时那个角度重新算一次缩放系数——转到看着扁的方向, 它就自动放大去填满, 于是拖一圈下来整个魔方忽大忽小, 最大能差到一点六八倍。现在不这么算了, 改用一个跟角度完全无关的固定半径来定大小: 魔方转, 但它的尺寸纹丝不动。代价是比原来小了一点点, 换来的是不晃。' }
+    { d:'2026-10-25', h:'角度改完还是被说「大小会突变」。这次的问题藏得更深一点: 我为了让魔方总是尽量占满画面, 每一帧都按当时那个角度重新算一次缩放系数——转到看着扁的方向, 它就自动放大去填满, 于是拖一圈下来整个魔方忽大忽小, 最大能差到一点六八倍。现在不这么算了, 改用一个跟角度完全无关的固定半径来定大小: 魔方转, 但它的尺寸纹丝不动。代价是比原来小了一点点, 换来的是不晃。' },
+    { d:'2026-10-25', h:'还有件小事: 魔方底下那行还原步骤老被一条提示挡着。不是谁写错了, 是提示条一直待在二百层, 而窗口一开就是二百六十几层, 还越点越高——所以提示其实一直在窗口屁股后面, 只从窗口底下露出一截, 看着像被切了一半。把提示条提到九百层, 顺手给窗口封了个顶不让它一直往上冲; 魔方自己的消息也搬进窗口里说了, 那句「还原了」现在写在计时器下面, 不再飘到屏幕底下压着步骤。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
