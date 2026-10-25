@@ -1229,20 +1229,20 @@
   #cbCanvas{display:block; width:min(100%,384px); aspect-ratio:1/1; height:auto; margin:0 auto;
     background:#141824; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; cursor:grab}
   #cbCanvas:active{cursor:grabbing}
-  .cb-row{display:flex; align-items:center; gap:7px; margin-top:9px; flex-wrap:wrap}
+  .cb-row{display:flex; align-items:center; gap:5px; margin-top:9px; flex-wrap:wrap}
   .cb-row button, .cb-mv button{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
-    padding:5px 12px; font-family:"SimHei","黑体",sans-serif; font-size:13px; cursor:pointer; color:#222}
+    padding:5px 9px; font-family:"SimHei","黑体",sans-serif; font-size:13px; cursor:pointer; color:#222}
   .cb-row button:active, .cb-mv button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .cb-row button.on{background:#f2d97c; border-color:#a89d84 #fff #fff #a89d84}
   .cb-row button:disabled{color:#999; cursor:default}
-  .cb-timer{font-family:Consolas,monospace; font-size:18px; color:#3f5c33; font-weight:bold; margin-left:auto; min-width:92px; text-align:right}
+  .cb-timer{font-family:Consolas,monospace; font-size:18px; color:#3f5c33; font-weight:bold; margin-left:auto; min-width:80px; text-align:right}
   .cb-mv{display:grid; grid-template-columns:repeat(6,1fr); gap:4px; margin-top:8px}
   .cb-mv button{padding:7px 2px; font-family:Consolas,monospace; font-size:12.5px; text-align:center}
   .cb-best{font-size:12px; color:#8a7d5f; margin-top:8px}
   .cb-best b{color:#3f5c33; font-family:Consolas,monospace}
-  .cb-spd{display:flex; align-items:center; gap:4px; margin-left:auto}
-  .cb-spd input{width:96px}
-  .cb-spd span{font-size:12px; font-family:Consolas,monospace; color:#5c5340; min-width:40px}
+  .cb-spd{display:flex; align-items:center; gap:3px; margin-left:auto}
+  .cb-spd input{width:74px}
+  .cb-spd span{font-size:12px; font-family:Consolas,monospace; color:#5c5340; min-width:34px}
   .cb-hist{font-size:11.5px; font-family:Consolas,monospace; color:#6b5f45; margin-top:7px; max-height:46px; overflow-y:auto; word-break:break-all; line-height:1.5}
   body.night #cubeWin{background:#1a2338; border-color:#3a4763}
   body.night .cb-row button, body.night .cb-mv button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
@@ -1839,7 +1839,7 @@
   <button id="tbCount" type="button" title="倒数日.EXE — 数着日子等什么"><span class="tb-badge">倒</span></button>
   <button id="tbImg" type="button" title="图片搜索.EXE — 按内容和标签找图"><span class="tb-badge">搜</span></button>
   <button id="tbGrade" type="button" title="成绩监控.EXE — 加密成绩档案"><span class="tb-badge">绩</span></button>
-  <button id="tbCube" type="button" title="魔方.EXE — 三阶/四阶 建模还原"><span class="tb-badge">魔</span></button>
+  <button id="tbCube" type="button" title="魔方.EXE — 二阶/三阶/四阶 建模还原"><span class="tb-badge">魔</span></button>
   <button id="tbTmgr" type="button" title="任务管理器.EXE — 640K 都在谁手里"><span class="tb-badge">任</span></button>
   <button id="tbNote" type="button" title="记事本.EXE — 自动保存的草稿纸"><span class="tb-badge">记</span></button>
   <button id="tbMypc" type="button" title="我的电脑 — C:\ 小站"><span class="tb-badge">脑</span></button>
@@ -1905,7 +1905,7 @@
       <li><b>阳 太阳系.EXE</b> — 真实比例+真实周期: 左侧星球列表点谁去谁, 拖动平移, 滚轮缩放, 点行星看资料; 找不到地球? 先缩小看全家福, 再凑近</li>
       <li><b>倒 倒数日.EXE</b> — 内置节日与纪念日倒数(含农历, 还会自动追最近的周五) + 自定义事件可写详细说明, 谁的日子近谁排前面</li>
       <li><b>搜 图片搜索.EXE</b> — 按内容和标签找图: 输入"猫/操场/云/毕业"这类关键词, 或直接点标签; 点结果原图大图看</li>
-      <li><b>魔 魔方.EXE</b> — 三阶 / 四阶都能玩: 拖画布转视角, 点按钮或按键盘拧; 三阶走 Kociemba 两阶法, 四阶先降阶再解, 打乱、还原、重置、暂停、单步都有, 还原了自动记成绩(本机存着, 关掉再开还在)</li>
+      <li><b>魔 魔方.EXE</b> — 二阶 / 三阶 / 四阶都能玩: 拖画布转视角, 点按钮或按键盘拧; 三阶走 Kociemba 两阶法, 二阶和三阶共用同一套角块算法(二阶的八个角搬进一个棱全归位的三阶局面再解), 四阶先降阶再解, 打乱、还原、重置、暂停、单步都有, 还原了自动记成绩(三种阶数各记各的, 本机存着, 关掉再开还在)</li>
       <li><b>绩 成绩监控.EXE</b> — 船长的加密成绩档案: 口令解锁才能翻(提示: 生日), 源码里连明文都没有, 关窗即重新上锁</li>
       <li><b>任 任务管理器.EXE</b> — 三页账: 应用看谁开着, 进程看谁在跑(二十个 ChatGPT 正在挤内存), 性能看 640K 还剩多少; 任务管理器自己也占 42K, 这数字看着看着就上去了</li>
       <li><b>记 记事本.EXE</b> — 船长留的草稿纸: 写什么都行, 自动存本机, 下次打开还在</li>
@@ -2262,14 +2262,15 @@
   </div>
 </div>
 
-<!-- ================= 魔方.EXE: 三阶/四阶 建模还原 ================= -->
+<!-- ================= 魔方.EXE: 二阶/三阶/四阶 建模还原 ================= -->
 <div id="cubeWin">
-  <div class="titlebar"><span class="tb-title">魔方.EXE — 三阶 / 四阶</span>
+  <div class="titlebar"><span class="tb-title">魔方.EXE — 二阶 / 三阶 / 四阶</span>
     <button class="tb-btn" id="cubeClose" title="关闭">✕</button>
   </div>
   <div class="cb-body">
     <canvas id="cbCanvas" width="600" height="400"></canvas>
     <div class="cb-row">
+      <button id="cbB2">二阶</button>
       <button id="cbB3" class="on">三阶</button>
       <button id="cbB4">四阶</button>
       <span class="cb-timer" id="cbTimer">--:--.--</span>
@@ -2403,7 +2404,7 @@
       <div class="wc-badge">你是第 <b id="wcVisitN">?</b> 次登船的旅客 · <span id="wcRank"></span></div>
       <div class="wc-text">
         <p>这是一个把自己伪装成<b>老电脑</b>的个人网站: 会开机, 会关机, 闲置太久还会自己放屏保。</p>
-        <p>任务栏里藏着一排真能玩的应用 — 终端、<b>游戏厅</b>(扫雷 / 2048 / 俄罗斯方块 / 贪吃蛇)、画板、倒计时沙漏、<b>真实比例的太阳系</b>、<b>魔方.EXE</b>(三阶四阶都能拧, 还会自己解), 还有刚上船的<b>任务管理器</b>: 二十个 ChatGPT 正在里面挤内存。彩蛋没有提示, 但值得自己撞见; 撞不明白再翻帮助.chm, 那是官方外挂。</p>
+        <p>任务栏里藏着一排真能玩的应用 — 终端、<b>游戏厅</b>(扫雷 / 2048 / 俄罗斯方块 / 贪吃蛇)、画板、倒计时沙漏、<b>真实比例的太阳系</b>、<b>魔方.EXE</b>(二阶三阶四阶都能拧, 还会自己解), 还有刚上船的<b>任务管理器</b>: 二十个 ChatGPT 正在里面挤内存。彩蛋没有提示, 但值得自己撞见; 撞不明白再翻帮助.chm, 那是官方外挂。</p>
         <p>站名、便利贴、右下角的小船, 挨个点过去都有回应。相册是真的校园, 喜欢的图能<b>单张下载或整本打包</b>; 日记是真的近况; 甲板音乐常年在放。留言板等真话。</p>
         <p class="wc-hint">别急着逛完 — 这条船的座右铭是: 更新了, 又好像没更新。</p>
       </div>
@@ -4417,7 +4418,7 @@ var BR_SITES = [
       var rows = [
         ['计算器 1.0', '★★★★★', '3K', 'calc', '安装'],
         ['游戏厅.EXE 四合一', '★★★★★', '42K', 'game', '安装'],
-        ['魔方.EXE 三阶/四阶', '★★★★★', '128K', 'cube', '安装'],
+        ['魔方.EXE 二阶/三阶/四阶', '★★★★★', '128K', 'cube', '安装'],
         ['画板.EXE', '★★★★☆', '24K', 'paint', '安装'],
         ['甲板音乐离线包', '★★★★★', '14 首', 'music', '播放'],
         ['640K 内存扩容包', '★★★★★', '9999K', 'mem', '下载']
@@ -5646,6 +5647,7 @@ $('#nightChannel').addEventListener('click', function(){
 /* ---------- 魔方按钮 ---------- */
 $('#tbCube').addEventListener('click', function(){ cubeToggle(true); });
 $('#cubeClose').addEventListener('click', function(){ cubeToggle(false); });
+$('#cbB2').addEventListener('click', function(){ cbSetN(2); });
 $('#cbB3').addEventListener('click', function(){ cbSetN(3); });
 $('#cbB4').addEventListener('click', function(){ cbSetN(4); });
 $('#cbScramble').addEventListener('click', cbScramble);
@@ -6997,6 +6999,7 @@ mineReset();
 
 
 
+
 /* ========================================================================
  * 魔方.EXE —— 核心模型 + 求解器 + 渲染 + UI
  * 三阶走 Kociemba 两阶段法(建表 ~500ms, 求解 10~80ms);
@@ -7056,8 +7059,9 @@ function powMat(m, q) {
 
 /* ---------- 建魔方 ---------- */
 function mkCube(n) {
-  var maxc = (n === 3) ? 2 : 3;
-  var coords = (n === 3) ? [-2, 0, 2] : [-3, -1, 1, 3];
+  /* 二阶 maxc=1(坐标 ±1) / 三阶 maxc=2(±2, 0) / 四阶 maxc=3(±3, ±1) */
+  var maxc = (n === 2) ? 1 : (n === 3) ? 2 : 3;
+  var coords = (n === 2) ? [-1, 1] : (n === 3) ? [-2, 0, 2] : [-3, -1, 1, 3];
   var pieces = [];
   for (var xi = 0; xi < n; xi++) {
     for (var yi = 0; yi < n; yi++) {
@@ -8436,6 +8440,133 @@ function solve4(cu, opts) {
   return solve4;
 })();
 
+/* ----- 3.5 二阶求解 (复用三阶 Kociemba) ----- */
+var solve2 = (function () {
+/* ============================================================================
+ * 二阶魔方求解器 —— 复用三阶 Kociemba
+ *
+ * 思路(不新写求解器):
+ *   二阶只有 8 个角块, 没有棱块、没有面心。它的角块群和三阶的角块群完全一样
+ *   (8 个角 × 3 种朝向, 约束都是"角朝向和 ≡ 0 mod 3")。
+ *   所以把二阶的 8 个角原样搬进一个"棱块全还原"的三阶局面, 交给已经验证过的
+ *   solveCube 去解; 解出来的记号全是合法三阶外层转, 在二阶上照做一遍就还原了。
+ *
+ * 唯一要小心的: 奇偶。
+ *   三阶要求"角置换奇偶 == 棱置换奇偶"(整体置换必须是偶的)。
+ *   二阶没有棱, 单个 90° 面转就是 4-循环(奇置换), 所以奇角置换在二阶上是合法状态。
+ *   棱块全还原时棱置换是偶的, 于是当二阶角置换为奇时, 代理态是非法的三阶状态,
+ *   必须在代理里互换一对棱(制造一次奇棱置换)把它救回来。
+ *   换棱不碰角, 解出来照样把二阶的 8 个角拧回去。
+ * ========================================================================== */
+
+
+/* 二阶的 8 个角位置(±1) —— 顺序与三阶 CORNER_POS 一致(URF UFL ULB UBR DFR DLF DBL DRB) */
+var S2_CORNER_POS = [
+  [1, 1, 1], [-1, 1, 1], [-1, 1, -1], [1, 1, -1],
+  [1, -1, 1], [-1, -1, 1], [-1, -1, -1], [1, -1, -1]
+];
+/* 代理三阶用的角位置(×2) */
+var S2_CORNER_POS3 = [
+  [2, 2, 2], [-2, 2, 2], [-2, 2, -2], [2, 2, -2],
+  [2, -2, 2], [-2, -2, 2], [-2, -2, -2], [2, -2, -2]
+];
+/* 救奇偶用的那一对棱(UF / UB), 只在角置换为奇时互换 */
+var S2_EDGE_SWAP = [[0, 2, 2], [0, 2, -2]];
+
+function s2ColorKey(pc) {
+  var cs = [];
+  for (var i = 0; i < pc.st.length; i++) cs.push(pc.st[i].c);
+  cs.sort();
+  return cs.join(',');
+}
+function s2PosIdx(pos) {
+  for (var i = 0; i < S2_CORNER_POS.length; i++) {
+    if (S2_CORNER_POS[i][0] === pos[0] && S2_CORNER_POS[i][1] === pos[1] &&
+        S2_CORNER_POS[i][2] === pos[2]) return i;
+  }
+  return -1;
+}
+
+/* 「颜色组合 -> 家位置下标」, 用还原的二阶建一次 */
+var S2_HOME = null;
+function s2Home() {
+  if (S2_HOME) return S2_HOME;
+  S2_HOME = {};
+  var base = mkCube(2);
+  for (var i = 0; i < base.pieces.length; i++) {
+    S2_HOME[s2ColorKey(base.pieces[i])] = s2PosIdx(base.pieces[i].p);
+  }
+  return S2_HOME;
+}
+
+/* 8 个角位置的置换: cp[k] = 现在待在位置 k 的块的家位置下标 */
+function s2CornerPerm(cu) {
+  var home = s2Home(), cp = [];
+  for (var k = 0; k < S2_CORNER_POS.length; k++) {
+    var pc = pieceAt(cu, S2_CORNER_POS[k]);
+    if (!pc) return null;
+    var h = home[s2ColorKey(pc)];
+    if (h === undefined || h < 0) return null;
+    cp.push(h);
+  }
+  return cp;
+}
+
+/* 置换奇偶: 数逆序对 */
+function s2Parity(p) {
+  var inv = 0;
+  for (var i = 0; i < p.length; i++) {
+    for (var j = i + 1; j < p.length; j++) if (p[i] > p[j]) inv++;
+  }
+  return inv % 2;
+}
+
+/* 二阶局面 -> 三阶代理态(棱全还原, 必要时换一对棱救奇偶) */
+function s2Proxy(cu) {
+  if (!cu || cu.n !== 2) return null;
+  var base = mkCube(3), out = [];
+  for (var i = 0; i < base.pieces.length; i++) {
+    var pc = base.pieces[i];
+    if (pc.st.length !== 2) continue;      /* 先把 12 条棱原样放好 */
+    out.push({ p: [pc.p[0], pc.p[1], pc.p[2]], m: pc.m, st: pc.st });
+  }
+  for (var k = 0; k < cu.pieces.length; k++) {
+    var p2 = cu.pieces[k];
+    if (p2.st.length !== 3) continue;      /* 二阶只有角块 */
+    out.push({
+      p: [p2.p[0] * 2, p2.p[1] * 2, p2.p[2] * 2],
+      m: p2.m,
+      st: p2.st
+    });
+  }
+  if (out.length !== 20) return null;      /* 12 棱 + 8 角 */
+
+  var proxy = { n: 3, maxc: 2, pieces: out };
+
+  var cp = s2CornerPerm(cu);
+  if (!cp) return null;
+  if (s2Parity(cp) === 1) {
+    var a = pieceAt(proxy, S2_EDGE_SWAP[0]);
+    var b = pieceAt(proxy, S2_EDGE_SWAP[1]);
+    if (!a || !b) return null;
+    var tp = a.p; a.p = b.p; b.p = tp;
+  }
+  return proxy;
+}
+
+/* 入口: 返回记号数组(只含 12 个外层转), 失败返回 null */
+function solve2(cu, opts) {
+  opts = opts || {};
+  var proxy = s2Proxy(cu);
+  if (!proxy) return null;
+  if (typeof prepare === 'function') prepare();
+  var sol = solveCube(proxy);
+  if (!sol) return null;
+  return sol;
+}
+  return solve2;
+})();
+
 /* ----- 4. 等距渲染 ----- */
 /* ============================================================================
  * 魔方渲染器 —— 等距投影, 纯计算 + ctx 绘制
@@ -8676,7 +8807,7 @@ var CBS = {
   /* 计时 */
   t0: 0, elapsed: 0, timing: false,
   /* 记录 */
-  best3: 0, best4: 0
+  best2: 0, best3: 0, best4: 0
 };
 
 function cbEl(id) { return document.getElementById(id); }
@@ -8707,7 +8838,7 @@ function cbTimerStop() {
   cbTimerShow();
   /* 超过 3 秒才记 */
   if (CBS.elapsed > 3000) {
-    var key = CBS.n === 4 ? 'cubeBest4' : 'cubeBest3';
+    var key = CBS.n === 2 ? 'cubeBest2' : (CBS.n === 4 ? 'cubeBest4' : 'cubeBest3');
     var prev = parseInt(localStorage.getItem(key) || '0', 10) || 0;
     if (!prev || CBS.elapsed < prev) {
       localStorage.setItem(key, String(CBS.elapsed));
@@ -8722,13 +8853,15 @@ function cbTimerStop() {
   if (typeof toast === 'function') toast('魔方还原! ' + cbFmt(CBS.elapsed));
 }
 function cbLoadBest() {
+  CBS.best2 = parseInt(localStorage.getItem('cubeBest2') || '0', 10) || 0;
   CBS.best3 = parseInt(localStorage.getItem('cubeBest3') || '0', 10) || 0;
   CBS.best4 = parseInt(localStorage.getItem('cubeBest4') || '0', 10) || 0;
 }
 function cbBestShow() {
   var el = cbEl('cbBest');
   if (!el) return;
-  el.innerHTML = '最佳: 三阶 <b>' + (CBS.best3 ? cbFmt(CBS.best3) : '--:--.--') +
+  el.innerHTML = '最佳: 二阶 <b>' + (CBS.best2 ? cbFmt(CBS.best2) : '--:--.--') +
+    '</b> · 三阶 <b>' + (CBS.best3 ? cbFmt(CBS.best3) : '--:--.--') +
     '</b> · 四阶 <b>' + (CBS.best4 ? cbFmt(CBS.best4) : '--:--.--') + '</b>' +
     (CBS.n === 4 && !CBS.ready4 ? ' <span style="color:#a0563c">四阶自动还原还在造</span>' : '');
 }
@@ -8870,7 +9003,7 @@ function cbScramble() {
   var toks = [];
   var faces = ['U', 'D', 'L', 'R', 'F', 'B'];
   var last = '', last2 = '';
-  var count = CBS.n === 4 ? 40 : 22;
+  var count = CBS.n === 4 ? 40 : (CBS.n === 2 ? 12 : 22);
   for (var i = 0; i < count; i++) {
     var f;
     var guard = 0;
@@ -8922,7 +9055,11 @@ function cbSolve() {
   cbEnsureEngine(function () {
     var t0 = Date.now();
     var sol = null;
-    try { sol = solveCube(CBS.cu); } catch (e) { sol = null; }
+    try {
+      /* 二阶没有棱和面心, 直接丢给三阶求解器会读不出状态 ——
+         先用 solve2 把 8 个角搬进一个"棱全还原"的三阶代理态再解。 */
+      sol = (CBS.n === 2 && typeof solve2 === 'function') ? solve2(CBS.cu) : solveCube(CBS.cu);
+    } catch (e) { sol = null; }
     var dt = Date.now() - t0;
     if (!sol || !sol.length) {
       if (typeof toast === 'function') toast('这个局面算不出解, 先重置再打乱试试。');
@@ -9010,7 +9147,8 @@ function cbSetN(n) {
   cbNewCube();
   cbBuildMoves();
   cbBestShow();
-  var b3 = cbEl('cbB3'), b4 = cbEl('cbB4');
+  var b2 = cbEl('cbB2'), b3 = cbEl('cbB3'), b4 = cbEl('cbB4');
+  if (b2) b2.className = n === 2 ? 'on' : '';
   if (b3) b3.className = n === 3 ? 'on' : '';
   if (b4) b4.className = n === 4 ? 'on' : '';
   cbResize();
@@ -9976,7 +10114,8 @@ var ENTRIES = [
     { d:'2026-10-24', h:'船长说魔方那扇窗太大、魔方又看不全, 还说带撇的按钮按了没反应。查下去发现是按钮里写的是排版用的撇号, 程序只认键盘上那个——看起来一样, 机器读起来完全是两个字。另外立方体一直是按宽度撑满算的, 一转到侧面上下就被切掉了。今天改成按真实轮廓算大小, 窗口也收窄了一圈, 六个带撇的键现在都能拧动了。' },
     { d:'2026-10-24', h:'还顺手修了个更老的毛病: 任务栏在五百来像素宽的屏上, 最后几个按钮会掉到屏幕外面去。三百九的手机上会折成两行所以没事, 电脑上更宽也放得下, 偏偏中间这一段最难受——宽也不够, 又没折行。现在窄到六百二就自己折成两行, 弹出来的提示框也不再被任务栏压住了。' },
     { d:'2026-10-24', h:'第二次月考的成绩进档案了。这次班名和校名都往前挪了一截, 语文和英语是把总分顶上去的两根柱子; 数学是九科里唯一往后退的一门, 也是接下来最该花时间的地方。具体数字不写在这儿——想看得输口令。' },
-    { d:'2026-10-24', h:'把第一次月考缺的那五科名次也补齐了, 化学、生物、政治、历史、地理现在都有数, 档案里三场考试第一次是完整的。另外给这条船拍了个宣传片, 挂在 B 站, 地址也写进 README 了——第一次把攒了这么久的东西端出去给别人看, 有点不好意思, 也有点想笑。' }
+    { d:'2026-10-24', h:'把第一次月考缺的那五科名次也补齐了, 化学、生物、政治、历史、地理现在都有数, 档案里三场考试第一次是完整的。另外给这条船拍了个宣传片, 挂在 B 站, 地址也写进 README 了——第一次把攒了这么久的东西端出去给别人看, 有点不好意思, 也有点想笑。' },
+    { d:'2026-10-25', h:'魔方那扇窗里添了台二乘二的。原本想给它单独写一套解法, 后来想明白一件事: 二阶没有棱也没有面心, 但那八个角块跟三阶的八个角一模一样——把二阶的角原样搬进一个「棱块全部归位」的三阶里, 交给已经验过三百多次的三阶引擎去解就行了, 解出来在二阶上照做一遍。中间只有一个坑: 二阶单个面转一次是奇置换, 三阶不许这么干, 所以得先在代理局面里偷偷换一对棱把它救回来。验了七百个随机局面, 全都解得开, 平均二十一步。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
