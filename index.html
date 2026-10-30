@@ -1228,8 +1228,12 @@
   .cb-body{padding:8px}
   /* 画布做成正方形并居中: 立方体投影本身接近正方形, 画布比它宽太多的话
      左右会空出一大块黑边, 立方体反而显得小。 */
+  /* touch-action:none 是手机上"跟手"的前提: 少了它, 浏览器会把拖动当成
+     要滚页面, 手指划到一半手势就被抢走(实测收到 pointercancel, 视角半路断掉)。
+     跟画板/太阳系那几张画布一个待遇。 */
   #cbCanvas{display:block; width:min(100%,384px); aspect-ratio:1/1; height:auto; margin:0 auto;
-    background:#141824; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; cursor:grab}
+    background:#141824; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; cursor:grab;
+    touch-action:none; user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent}
   #cbCanvas:active{cursor:grabbing}
   .cb-row{display:flex; align-items:center; gap:5px; margin-top:9px; flex-wrap:wrap}
   .cb-row button, .cb-mv button{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
@@ -1250,6 +1254,18 @@
   .cb-status.show{opacity:1}
   body.night .cb-status{color:#8fbf8f}
   .cb-hist{font-size:11.5px; font-family:Consolas,monospace; color:#6b5f45; margin-top:7px; max-height:46px; overflow-y:auto; word-break:break-all; line-height:1.5}
+  /* 操作提示: 手机上没人记得住手势, 得写出来。
+     手机和电脑的手势不一样(电脑双击回正, 手机长按回正), 所以写两套,
+     按有没有触摸能力切换 —— 不然电脑上会冒出"按住半秒"这种看不懂的话。 */
+  .cb-hint{font-size:11.5px; line-height:1.6; color:#6b5f45; margin-top:8px; border-top:1px solid #a9a08a; padding-top:6px}
+  .cb-hint-touch{display:none}
+  /* 有触摸能力的手势跟鼠标不一样(鼠标双击回正, 手指长按回正),
+     所以提示分成两套, 按设备挑一套显示。 */
+  @media (pointer:coarse), (hover:none){
+    .cb-hint-touch{display:inline}
+    .cb-hint-mouse{display:none}
+  }
+  body.night .cb-hint{color:#7d8cab; border-top-color:#3a4763}
   body.night #cubeWin{background:#1a2338; border-color:#3a4763}
   body.night .cb-row button, body.night .cb-mv button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night .cb-row button:active, body.night .cb-mv button:active{border-color:#101828 #3a4763 #3a4763 #101828}
@@ -1258,6 +1274,7 @@
   body.night .cb-best{color:#7d8cab}
   body.night .cb-best b{color:#8fbf8f}
   body.night .cb-hist{color:#7d8cab}
+  body.night .cb-spd span{color:#7d8cab}
   body.night #cbCanvas{border-color:#101828 #3a4763 #3a4763 #101828; background:#0d1322}
 
   /* ---------- 任务管理器.EXE: 640K 都在谁手里 ---------- */
@@ -1612,6 +1629,14 @@
     #taskbar{gap:4px}
     #tbCmd, #tbHelp, #tbCalc, #tbGame, #tbDiary, #tbBr, #tbHg, #tbPaint, #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{padding:0 2px}
     #tray{padding:0 6px}
+    /* 魔方在手机上: 手指头比鼠标粗, 按钮得留够 40px 才不会点错。
+       12 个走法按钮在窄屏上排 6 列还是 4 列, 4 列每格更宽, 好按一点。 */
+    .cb-row button{min-height:40px; padding:6px 12px; font-size:14px}
+    .cb-mv{grid-template-columns:repeat(4,1fr); gap:6px}
+    .cb-mv button{min-height:40px; padding:8px 2px; font-size:15px}
+    .cb-spd input{width:60px}
+    .cb-timer{font-size:16px; min-width:70px}
+    .cb-hist{max-height:38px}
     .help-body{max-height:56vh}
     #boatOdo{font-size:10.5px}
     footer{padding:16px 16px 20px}
@@ -1911,7 +1936,7 @@
       <li><b>阳 太阳系.EXE</b> — 真实比例+真实周期: 左侧星球列表点谁去谁, 拖动平移, 滚轮缩放, 点行星看资料; 找不到地球? 先缩小看全家福, 再凑近</li>
       <li><b>倒 倒数日.EXE</b> — 内置节日与纪念日倒数(含农历, 还会自动追最近的周五) + 自定义事件可写详细说明, 谁的日子近谁排前面</li>
       <li><b>搜 图片搜索.EXE</b> — 按内容和标签找图: 输入"猫/操场/云/毕业"这类关键词, 或直接点标签; 点结果原图大图看</li>
-      <li><b>魔 魔方.EXE</b> — 二阶 / 三阶 / 四阶都能玩: 拖画布转视角, 点按钮或按键盘拧; 三阶走 Kociemba 两阶法, 二阶和三阶共用同一套角块算法(二阶的八个角搬进一个棱全归位的三阶局面再解), 四阶先降阶再解, 打乱、还原、重置、暂停、单步都有, 还原了自动记成绩(三种阶数各记各的, 本机存着, 关掉再开还在)</li>
+      <li><b>魔 魔方.EXE</b> — 二阶 / 三阶 / 四阶都能玩: 拖画布转视角, 点面就拧一层(点右半边顺时针, 左半边逆时针), 底下十二个键也能直接拧; 手机上松手还能再滑一截, 按住不动半秒回正; 三阶走 Kociemba 两阶法, 二阶和三阶共用同一套角块算法(二阶的八个角搬进一个棱全归位的三阶局面再解), 四阶先降阶再解, 打乱、还原、重置、暂停、单步都有, 还原了自动记成绩(三种阶数各记各的, 本机存着, 关掉再开还在)</li>
       <li><b>绩 成绩监控.EXE</b> — 船长的加密成绩档案: 口令解锁才能翻(提示: 生日), 源码里连明文都没有, 关窗即重新上锁</li>
       <li><b>任 任务管理器.EXE</b> — 三页账: 应用看谁开着, 进程看谁在跑(二十个 ChatGPT 正在挤内存), 性能看 640K 还剩多少; 任务管理器自己也占 42K, 这数字看着看着就上去了</li>
       <li><b>记 记事本.EXE</b> — 船长留的草稿纸: 写什么都行, 自动存本机, 下次打开还在</li>
@@ -2286,6 +2311,7 @@
       <button id="cbScramble">打乱</button>
       <button id="cbSolve">还原</button>
       <button id="cbReset">重置</button>
+      <button id="cbView">回正</button>
       <button id="cbPlay">▶</button>
       <button id="cbStep">⏭</button>
     </div>
@@ -2293,6 +2319,10 @@
     <div class="cb-best" id="cbBest"></div>
     <div class="cb-status" id="cbStatus"></div>
     <div class="cb-hist" id="cbHist"></div>
+    <div class="cb-hint">
+      <span class="cb-hint-touch">拖动转视角, 松手还能滑一截 · 点一下面就拧一层(点右半边顺时针) · 按住不动半秒回正</span>
+      <span class="cb-hint-mouse">拖动转视角 · 底下十二个键直接拧 · 双击回正</span>
+    </div>
   </div>
 </div>
 
@@ -5670,6 +5700,7 @@ $('#cbB4').addEventListener('click', function(){ cbSetN(4); });
 $('#cbScramble').addEventListener('click', cbScramble);
 $('#cbSolve').addEventListener('click', cbSolve);
 $('#cbReset').addEventListener('click', cbReset);
+$('#cbView').addEventListener('click', cbResetView);
 $('#cbPlay').addEventListener('click', cbPlayPause);
 $('#cbStep').addEventListener('click', cbStep);
 $('#cbSpeed').addEventListener('input', function(){
@@ -7011,15 +7042,6 @@ $('#mineFlagMode').addEventListener('click', function(){
   this.classList.toggle('on', mFlagMode);
 });
 mineReset();
-
-
-
-
-
-
-
-
-
 
 /* ========================================================================
  * 魔方.EXE —— 核心模型 + 求解器 + 渲染 + UI
@@ -8716,10 +8738,16 @@ function cbExtent(cu, yaw, pitch) {
   return { x0: x0, x1: x1, y0: y0, y1: y1 };
 }
 
-function cbRender(ctx, cu, opts) {
+/* ---------- 场景: 画和"手指点到哪张贴纸"共用同一份几何 ---------- */
+/* 把立方体算成一堆带投影多边形的贴纸。
+ * 画用 cbRender, 手指点用 cbPick —— 两者必须吃同一份场景,
+ * 否则"手指点到的那张"和"眼睛看到的那张"会对不上, 点哪拧哪就变成了拧了个寂寞。
+ * 每张贴纸额外记着两样东西:
+ *   n —— 它在世界里的法线(用来认出这是 U 面还是 F 面)
+ *   p —— 所在块的世界坐标(用来认出它属于哪一层) */
+function cbScene(cu, opts) {
   var yaw = opts.yaw, pitch = opts.pitch;
   var W = opts.w, H = opts.h;
-  var night = !!opts.night;
   var anims = opts.anim || [];
   /* scale 用**包围球**定, 与视角无关 —— 这样转动时立方体大小纹丝不动。
    * 正交投影下任何角度的投影都不会超过 2R, 所以 2R 铺满画布是最保险的上限;
@@ -8736,10 +8764,6 @@ function cbRender(ctx, cu, opts) {
   /* 视线方向(指向相机): 由 cbProject 的深度分量 z2 反推
    * z2 = -sin(yaw)cos(pitch)*x + sin(pitch)*y + cos(yaw)cos(pitch)*z */
   var vd = [-Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), Math.cos(yaw) * Math.cos(pitch)];
-
-  ctx.clearRect(0, 0, W, H);
-  ctx.fillStyle = night ? '#0d1322' : '#141824';
-  ctx.fillRect(0, 0, W, H);
 
   /* 预先把每个动画层转成矩阵 */
   var animM = [];
@@ -8766,7 +8790,6 @@ function cbRender(ctx, cu, opts) {
       var sc = [wp[0] + n[0], wp[1] + n[1], wp[2] + n[2]];
       /* 背面剔除: 贴纸朝向必须点向相机, 不能用投影深度(角落的背面贴纸深度也是正的) */
       if (n[0] * vd[0] + n[1] * vd[1] + n[2] * vd[2] <= 0.001) continue;
-      var psc = cbProject(sc, yaw, pitch);
       /* 切线必须从「局部」法线算, 再由 wm 变到世界系 */
       var tg = cbTangents(pc.st[k].n);
       var t1 = cbMulMV(wm, tg[0]);
@@ -8782,14 +8805,33 @@ function cbRender(ctx, cu, opts) {
         ], yaw, pitch);
         pts.push([cx + pp[0] * scale, cy - pp[1] * scale]);
       }
-      items.push({ z: sc[0] * vd[0] + sc[1] * vd[1] + sc[2] * vd[2], c: pc.st[k].c, pts: pts });
+      items.push({
+        z: sc[0] * vd[0] + sc[1] * vd[1] + sc[2] * vd[2],
+        c: pc.st[k].c, pts: pts, n: n, p: wp
+      });
     }
   }
   items.sort(function (p, q) { return p.z - q.z; });
+  return { items: items, scale: scale, cx: cx, cy: cy, rad: rad, w: W, h: H, yaw: yaw, pitch: pitch };
+}
+
+/* 刚画完的那一帧的场景 —— 手指点哪儿要靠它来认,
+ * 所以画的时候顺手存一份, 保证"眼睛看到的"和"手指点到的是同一张贴纸"。 */
+var cbLastScene = null;
+
+function cbRender(ctx, cu, opts) {
+  var W = opts.w, H = opts.h;
+  var night = !!opts.night;
+  var sc = cbScene(cu, opts);
+  cbLastScene = sc;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = night ? '#0d1322' : '#141824';
+  ctx.fillRect(0, 0, W, H);
 
   var palette = night ? CB_FCOLOR_NIGHT : CB_FCOLOR;
   var gapColor = night ? '#070b14' : '#0a0e14';
   ctx.lineJoin = 'round';
+  var items = sc.items;
   for (var it = 0; it < items.length; it++) {
     var o = items[it];
     ctx.beginPath();
@@ -8805,6 +8847,27 @@ function cbRender(ctx, cu, opts) {
     ctx.stroke();
   }
   return items.length;
+}
+
+/* ---------- 拾取: 手指点在画布哪, 落在哪张贴纸上 ---------- */
+/* 凸四边形包含判定: 四条边的叉积必须同号 */
+function cbPolyHas(pts, x, y) {
+  var sign = 0;
+  for (var i = 0; i < pts.length; i++) {
+    var a = pts[i], b = pts[(i + 1) % pts.length];
+    var cr = (b[0] - a[0]) * (y - a[1]) - (b[1] - a[1]) * (x - a[0]);
+    if (cr > 0.0001) { if (sign < 0) return false; sign = 1; }
+    else if (cr < -0.0001) { if (sign > 0) return false; sign = -1; }
+  }
+  return true;
+}
+/* 从近到远找第一张盖住这个点的贴纸(近的盖着远的, 和画出来的顺序一致) */
+function cbPick(scene, x, y) {
+  var items = scene.items;
+  for (var i = items.length - 1; i >= 0; i--) {
+    if (cbPolyHas(items[i].pts, x, y)) return items[i];
+  }
+  return null;
 }
 
 /* 把记号翻译成动画层: 返回 [{axis, coord, ang}] (ang 是终态弧度, 中间过程由调用方乘进度) */
@@ -8985,6 +9048,7 @@ function cbDraw() {
 var cbRAF = null;
 function cbLoop() {
   if (!cbRAF) return;
+  cbStepInertia();
   cbDraw();
   cbTimerShow();
   cbRAF = requestAnimationFrame(cbLoop);
@@ -9022,7 +9086,13 @@ function cbTickQueue() {
 
 function cbStartAnim(tok) {
   var layers = cbTokenLayers(tok, CBS.cu.maxc);
-  if (!layers.length) { cbApplyInstant(tok); return; }
+  if (!layers.length) {
+    /* 没有可转的层(记号不认识): 直接落子, 免得后面的步全堵着 */
+    cbApplyInstant(tok);
+    cbHistPush(tok);
+    cbAfterMove();
+    return;
+  }
   /* 步数多的解法(四阶 100+ 步)播快一点, 不然要等十几秒 */
   var base = CBS.queue.length > 40 ? 300 : 650;
   var dur = Math.max(30, base / CBS.speed);
@@ -9037,14 +9107,24 @@ function cbStartAnim(tok) {
 
 function cbAfterMove() {
   if (CBS.timing && isSolved(CBS.cu)) cbTimerStop();
+  /* 攒着的下一步: 这一下转完了就接着转, 手指连点才有节奏。
+     最多攒 4 步 —— 再多就是"手滑连戳", 攒着反而像卡住了。 */
+  if (cbTouch.pending.length && !CBS.anim && !CBS.queue.length) {
+    cbStartAnim(cbTouch.pending.shift());
+    return;
+  }
   cbTickQueue();
 }
 
 /* 手动转一步 */
 function cbTurn(tok) {
-  if (CBS.anim) return;            /* 动画中不接 */
-  if (CBS.queue.length) return;    /* 播放中不接 */
+  if (!CBS.cu) return;
+  if (CBS.queue.length) return;   /* 正在播放解法: 不插手, 让它播完 */
   if (!CBS.timing) cbTimerStart();
+  if (CBS.anim) {                 /* 动画中: 攒着, 转完再转, 别把手感卡死 */
+    if (cbTouch.pending.length < 4) cbTouch.pending.push(tok);
+    return;
+  }
   cbStartAnim(tok);
 }
 
@@ -9062,6 +9142,7 @@ function cbReset() {
   CBS.playing = false;
   CBS.paused = false;
   CBS.anim = null;
+  cbTouch.pending.length = 0;
   cbSyncPlayBtn();
   cbNewCube();
   cbBestShow();
@@ -9212,6 +9293,7 @@ function cbSetN(n) {
   CBS.playing = false;
   CBS.paused = false;
   CBS.anim = null;
+  cbTouch.pending.length = 0;
   cbSyncPlayBtn();
   cbNewCube();
   cbBuildMoves();
@@ -9248,35 +9330,277 @@ function cbBuildMoves() {
   }
 }
 
-/* ---------- 拖动转视角 ---------- */
+/* ---------- 手势: 拖动转视角 / 轻点拧一层 ---------- */
+/* 手机上这个魔方最容易翻车的地方, 一次说清楚这几件事:
+ *
+ * 1) 拖动会被系统抢走。手指按住画布一拖, 浏览器会当成"要滚动页面",
+ *    等它反应过来手指已经抬起来了 —— 表现为"拖到一半魔方不跟手",
+ *    实测一次拖动里能收到 pointercancel, 视角只跟着走了前几格就停。
+ *    所以画布必须 touch-action:none, 明确告诉浏览器: 这一块我自己处理。
+ * 2) 甩手要带惯性。手指甩出去的角速度应该延续下去, 松手后视角继续滑一会儿再停,
+ *    这才像在拨一个实物。惯性用每帧衰减的速度积分, 不是补一段动画。
+ * 3) 轻点要能拧。手指点某个面, 就把那一面拧一层 —— 手机上没有键盘,
+ *    十二个走法按钮在屏幕小的时候是灾难, 直接戳面更顺手。
+ *    点面的哪半边决定往哪拧: 点右边 = 顺时针(从这一面看), 点左边 = 逆时针。
+ *    跟真的拧魔方一样 —— 往哪边推, 它就往哪边转。
+ * 4) 拖动和轻点要分得开: 位移小于 10 像素、时间小于 320 毫秒, 才算"点"。
+ * 5) 长按回正。按住不动半秒松手, 视角回到等轴测那个最好看的姿势
+ *    (手机没有双击, 双击那条路给鼠标留着)。
+ * 6) 转的时候再点, 要能"攒着"等这一下转完再转 —— 连续拧才有节奏, 不会一按就丢。
+ */
+var cbTouch = {
+  down: false,
+  sx: 0, sy: 0,      /* 按下的位置(画布坐标) */
+  lx: 0, ly: 0,      /* 上一次的位置 */
+  t0: 0, lastT: 0,
+  pid: -1,
+  vx: 0, vy: 0,      /* 甩手速度(弧度/毫秒) */
+  dist: 0,          /* 从按下到现在累计位移 */
+  face: null,       /* 按下时压着的那张贴纸 */
+  isTouch: false,
+  longFired: false,   /* 长按已经回正过了 */
+  longTimer: null,
+  pending: []       /* 攒着的下一步: 正在转的时候再点, 转完接着转 */
+};
+var CB_TAP_MOVE = 10;    /* 位移超过这么多像素就算拖, 不算点 */
+var CB_TAP_TIME = 320;   /* 按住超过这么久也不算轻点 */
+var CB_LONG_MS = 500;    /* 按住这么久算长按 */
+var CB_FLICK_V = 0.0035; /* 甩手速度门槛(弧度/毫秒) —— 比这慢就是"挪", 不是"甩" */
+var CB_FLICK_DIST = 24;  /* 甩之前至少得划过这么远, 原地抖一下不算甩 */
+
+/* 每个面的"右"和"上"(世界坐标)。
+ * 要求 r × u = 这一面的外法线, 这样从面外看过去 r 正好朝右、u 正好朝上,
+ * 手指往右戳就真的是往这个面的右边戳。 */
+var CB_FACE_RU = {
+  U: { r: [1, 0, 0], u: [0, 0, -1] },
+  D: { r: [1, 0, 0], u: [0, 0, 1] },
+  F: { r: [1, 0, 0], u: [0, 1, 0] },
+  B: { r: [-1, 0, 0], u: [0, 1, 0] },
+  R: { r: [0, 0, -1], u: [0, 1, 0] },
+  L: { r: [0, 0, 1], u: [0, 1, 0] }
+};
+
+function cbNow() { return (new Date()).getTime(); }
+
+/* 把手指位置换算成画布内的坐标 */
+function cbCanvasPos(e) {
+  var cv = cbEl('cbCanvas');
+  if (!cv) return null;
+  var r = cv.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top, rect: r };
+}
+
+/* 这次点落在哪张贴纸上 → 该拧哪一面 */
+function cbFaceAt(x, y) {
+  var sc = cbLastScene;
+  if (!sc || !sc.items.length) return null;
+  var hit = cbPick(sc, x, y);
+  if (!hit) return null;
+  var n = hit.n;
+  /* 法线只有一个分量非零, 那个分量就是"往哪一面看"。
+   * 贴纸的法线是跟着块一起转的, 所以它永远指向这枚贴纸现在朝着的那个面。 */
+  var ax = -1, sg = 0;
+  for (var i = 0; i < 3; i++) {
+    if (n[i] > 0.5) { ax = i; sg = 1; break; }
+    if (n[i] < -0.5) { ax = i; sg = -1; break; }
+  }
+  if (ax < 0) return null;
+  var faceName = null;
+  for (var f = 0; f < FACES.length; f++) {
+    var fd = FACEDEF[FACES[f]];
+    if (fd[0] === ax && fd[1] === sg) { faceName = FACES[f]; break; }
+  }
+  if (!faceName) return null;
+  /* 只要是看得见的贴纸, 它就在这一面的最外层那张皮上 ——
+   * 四阶的里层(r/u/l/d)转的是藏在里面的核, 屏幕上根本摸不着,
+   * 那几个按钮留给想手动玩的人。 */
+  return { face: faceName, axis: ax, sg: sg, n: n, hit: hit };
+}
+
+/* 面的"右"投到屏幕上是什么方向 */
+function cbFaceRightScreen(face) {
+  var ru = CB_FACE_RU[face];
+  if (!ru) return null;
+  var pr = cbProject(ru.r, CBS.yaw, CBS.pitch);
+  var x = pr[0], y = -pr[1];   /* 屏幕 y 往下, 取负 */
+  var len = Math.sqrt(x * x + y * y);
+  if (len < 1e-6) return null;
+  return { x: x / len, y: y / len };
+}
+/* 面中心在屏幕上的位置
+ * 注意: 要用**贴纸平面**的 maxc+1, 不是块中心的 maxc。
+ * 贴纸中心 = 块中心 + 法线*1, 所以这一面所有贴纸都在 maxc+1 那层平面上;
+ * 拿 maxc 算, 中心会顺着法线偏一格, 左右半边的分界整个歪掉。 */
+function cbFaceCenterScreen(face) {
+  var sc = cbLastScene;
+  if (!sc) return null;
+  var fd = FACEDEF[face];
+  var p = [0, 0, 0];
+  p[fd[0]] = fd[1] * (CBS.cu.maxc + 1);
+  var pp = cbProject(p, CBS.yaw, CBS.pitch);
+  return { x: sc.cx + pp[0] * sc.scale, y: sc.cy - pp[1] * sc.scale };
+}
+/* 点在面的哪半边 → 往哪拧。
+ * 往右点 = 顺时针(从面外看), 往左点 = 逆时针; 正中间算顺时针。 */
+function cbTapTurnDir(face, px, py) {
+  var rs = cbFaceRightScreen(face);
+  var c = cbFaceCenterScreen(face);
+  if (!rs || !c) return 1;
+  var off = (px - c.x) * rs.x + (py - c.y) * rs.y;
+  if (off < -6) return -1;
+  return 1;
+}
+
 function cbBindDrag() {
   var cv = cbEl('cbCanvas');
   if (!cv) return;
-  var dragging = false, lx = 0, ly = 0;
+  /* touch-action:none 是关键: 少了这一行, 手指一拖就被浏览器拿去滚页面,
+     魔方只跟着动半截就停(实测一次拖动就收到 pointercancel)。 */
+  cv.style.touchAction = 'none';
+  cv.style.userSelect = 'none';
+
   cv.addEventListener('pointerdown', function (e) {
-    dragging = true; lx = e.clientX; ly = e.clientY;
-    cv.setPointerCapture(e.pointerId);
+    if (cbTouch.down) return;            /* 只跟第一根手指 */
+    var p = cbCanvasPos(e);
+    if (!p) return;
+    cbInertia = null;                      /* 手一按, 惯性先停 */
+    cbTouch.down = true;
+    cbTouch.dist = 0;
+    cbTouch.sx = p.x; cbTouch.sy = p.y;
+    cbTouch.lx = p.x; cbTouch.ly = p.y;
+    cbTouch.t0 = cbNow();
+    cbTouch.lastT = cbTouch.t0;
+    cbTouch.vx = 0; cbTouch.vy = 0;
+    cbTouch.pid = e.pointerId;
+    cbTouch.isTouch = (e.pointerType === 'touch');
+    cbTouch.face = cbFaceAt(p.x, p.y);
+    cbTouch.longFired = false;
+    /* 长按回正: 计时器在按住不动的时候自己走完, 到点就回正。
+     * 不放在"松手时判断时长"里 —— 那样 320~500ms 之间会变成一段
+     * 按了没反应的死区, 手机上尤其让人火大。 */
+    clearTimeout(cbTouch.longTimer);
+    cbTouch.longTimer = setTimeout(function () {
+      if (!cbTouch.down) return;
+      if (cbTouch.dist > CB_TAP_MOVE) return;   /* 已经拖走了, 不算长按 */
+      cbTouch.longFired = true;
+      cbResetView();
+    }, CB_LONG_MS);
+    try { cv.setPointerCapture(e.pointerId); } catch (err) { }
     e.preventDefault();
   });
+
   cv.addEventListener('pointermove', function (e) {
-    if (!dragging) return;
-    var dx = e.clientX - lx, dy = e.clientY - ly;
-    lx = e.clientX; ly = e.clientY;
-    CBS.yaw += dx * 0.010;
-    CBS.pitch += dy * 0.008;
+    if (!cbTouch.down || e.pointerId !== cbTouch.pid) return;
+    var p = cbCanvasPos(e);
+    if (!p) return;
+    var t = cbNow();
+    var dt = t - cbTouch.lastT;
+    if (dt < 1) dt = 1;
+    var dx = p.x - cbTouch.lx, dy = p.y - cbTouch.ly;
+    cbTouch.dist = Math.sqrt((p.x - cbTouch.sx) * (p.x - cbTouch.sx) + (p.y - cbTouch.sy) * (p.y - cbTouch.sy));
+    /* 平移像素 → 弧度。屏幕上一格大约 6~7 度, 手机上手指要划得动, 别太灵敏。 */
+    var kx = 0.011, ky = 0.009;
+    CBS.yaw += dx * kx;
+    CBS.pitch += dy * ky;
     /* 俯仰限在 ±1.05 弧度(约 ±60°)。再往上/往下, 顶面或底面会被压成很细的一条
        (实测 pitch=66° 时最扁的面长宽比只剩 0.43), 看着就不像立方体了。 */
     if (CBS.pitch > 1.05) CBS.pitch = 1.05;
     if (CBS.pitch < -1.05) CBS.pitch = -1.05;
+    /* 甩手速度: 指数平滑, 免得单帧抖动把速度带飞 */
+    var ivx = dx * kx / dt, ivy = dy * ky / dt;
+    cbTouch.vx = cbTouch.vx * 0.6 + ivx * 0.4;
+    cbTouch.vy = cbTouch.vy * 0.6 + ivy * 0.4;
+    cbTouch.lx = p.x; cbTouch.ly = p.y;
+    cbTouch.lastT = t;
+    e.preventDefault();
   });
+
   function up(e) {
-    if (!dragging) return;
-    dragging = false;
+    if (!cbTouch.down || e.pointerId !== cbTouch.pid) return;
+    cbTouch.down = false;
+    cbTouch.pid = -1;
+    clearTimeout(cbTouch.longTimer);
     try { cv.releasePointerCapture(e.pointerId); } catch (err) { }
+    var dt = cbNow() - cbTouch.t0;
+    /* 用手指松开时的位置判断"点在哪半边", 别用最后一次 move 的位置 ——
+     * 手指抬起来前常常会有一个几乎不动的 move, 两者可能差几像素。 */
+    var p = cbCanvasPos(e);
+    var px = p ? p.x : cbTouch.lx, py = p ? p.y : cbTouch.ly;
+    if (cbTouch.longFired) return;        /* 长按已经回正过了, 别再拧一下 */
+    if (cbTouch.dist <= CB_TAP_MOVE) {
+      if (dt <= CB_TAP_TIME) {
+        /* 只有手指点才拧。鼠标点击保持老样子(只转视角), 免得误触。 */
+        if (cbTouch.isTouch) cbHandleTap(px, py);
+      }
+    } else if (cbTouch.dist >= CB_FLICK_DIST &&
+               (Math.abs(cbTouch.vx) > CB_FLICK_V || Math.abs(cbTouch.vy) > CB_FLICK_V)) {
+      cbStartInertia();
+    }
   }
   cv.addEventListener('pointerup', up);
-  cv.addEventListener('pointercancel', up);
-  cv.addEventListener('dblclick', function () { CBS.yaw = CB_ISO_YAW; CBS.pitch = CB_ISO_PITCH; });
+  cv.addEventListener('pointercancel', function (e) {
+    /* 系统抢走了手势(比如手指划出画布): 停手, 别甩 */
+    if (cbTouch.pid !== e.pointerId) return;
+    cbTouch.down = false;
+    cbTouch.pid = -1;
+    clearTimeout(cbTouch.longTimer);
+    cbTouch.vx = 0; cbTouch.vy = 0;
+  });
+
+  cv.addEventListener('dblclick', function () {
+    /* 手指双击在手机上会连着拧两次, 不拿它当回正; 回正用长按。 */
+    if (cbTouch.isTouch) return;
+    cbResetView();
+  });
+}
+
+/* 视角回正 */
+function cbResetView() {
+  CBS.yaw = CB_ISO_YAW; CBS.pitch = CB_ISO_PITCH;
+  cbInertia = null;
+  cbSay('视角回正了。');
+}
+/* 轻点: 点到哪个面就拧哪个面 */
+function cbHandleTap(px, py) {
+  var sw = cbTouch.face;
+  if (!sw) { cbSay('戳在魔方外面了, 点点它的面。'); return; }
+  var dir = cbTapTurnDir(sw.face, px, py);
+  cbTurn(sw.face + (dir > 0 ? '' : "'"));
+  cbSay('拧了 ' + sw.face + ' 面(' + (dir > 0 ? '顺时针' : '逆时针') + ')。');
+}
+
+/* ---------- 甩手惯性 ---------- */
+/* 手一松, 魔方还该再溜一小段 —— 但只溜"一点点"。
+ * 实测过: 按每秒衰减到 12% 算, 松手 300ms 就转了 78°, 跟甩铅球似的, 根本停不住。
+ * 现在改成: 总共滑行 250ms, 走完一条抛物线式的减速曲线(起步快, 尾巴收得软)。 */
+var cbInertia = null;
+var CB_INERTIA_MS = 250;
+function cbStartInertia() {
+  var sp = Math.sqrt(cbTouch.vx * cbTouch.vx + cbTouch.vy * cbTouch.vy);
+  if (sp < CB_FLICK_V) return;
+  /* 甩得太快就削一削, 别让魔方自己转上天 */
+  var cap = 0.006;   /* 弧度/毫秒 */
+  if (sp > cap) { cbTouch.vx *= cap / sp; cbTouch.vy *= cap / sp; }
+  /* t0 是"甩出去那一刻", last 是"上一次算的位置"。
+     两个都要: 只留一个的话, 每帧把时间戳刷新掉, "还剩多久"就永远算不对,
+     惯性会一直滑下去停不住(实测滑了 2.3 弧度还在走)。 */
+  var now = cbNow();
+  cbInertia = { vx: cbTouch.vx, vy: cbTouch.vy, t0: now, last: now, dur: CB_INERTIA_MS };
+}
+function cbStepInertia() {
+  if (!cbInertia) return;
+  var t = cbNow();
+  var dt = t - cbInertia.last;
+  if (dt <= 0) return;
+  cbInertia.last = t;
+  var left = cbInertia.dur - (t - cbInertia.t0);   /* 从甩出那刻算起的剩余时间 */
+  if (left <= 0) { cbInertia = null; return; }
+  /* 剩余时间越少, 走得越慢: 速度按 (left/dur) 的平方衰减 */
+  var k = Math.pow(left / cbInertia.dur, 2);
+  CBS.yaw += cbInertia.vx * k * dt;
+  CBS.pitch += cbInertia.vy * k * dt;
+  if (CBS.pitch > 1.05) CBS.pitch = 1.05;
+  if (CBS.pitch < -1.05) CBS.pitch = -1.05;
 }
 
 /* ---------- 开关窗口 ---------- */
@@ -10189,7 +10513,8 @@ var ENTRIES = [
     { d:'2026-10-25', h:'魔方那扇窗里添了台二乘二的。原本想给它单独写一套解法, 后来想明白一件事: 二阶没有棱也没有面心, 但那八个角块跟三阶的八个角一模一样——把二阶的角原样搬进一个「棱块全部归位」的三阶里, 交给已经验过三百多次的三阶引擎去解就行了, 解出来在二阶上照做一遍。中间只有一个坑: 二阶单个面转一次是奇置换, 三阶不许这么干, 所以得先在代理局面里偷偷换一对棱把它救回来。验了七百个随机局面, 全都解得开, 平均二十一步。' },
     { d:'2026-10-25', h:'船长说魔方转起来会变形, 不像个方的。查了半天, 画法本身没错——每块贴纸都是标准的平行四边形, 一毫米没歪; 错的是我给它挑的那个默认角度。立方体摆在 -35.5 度、仰 26.4 度这个位置, 三个露出来的面在屏幕上会变成三块大小不同的菱形, 一大一小, 眼睛就认定它被拉歪了。真正齐整的位置只有一个: 左右各 45 度、往上抬 35.26 度, 这时候三块面一样大, 才像块正经魔方。改成这个角度了, 顺手把上下能翻的范围也收窄一点, 免得拖到极端角度变成一张纸。' },
     { d:'2026-10-25', h:'角度改完还是被说「大小会突变」。这次的问题藏得更深一点: 我为了让魔方总是尽量占满画面, 每一帧都按当时那个角度重新算一次缩放系数——转到看着扁的方向, 它就自动放大去填满, 于是拖一圈下来整个魔方忽大忽小, 最大能差到一点六八倍。现在不这么算了, 改用一个跟角度完全无关的固定半径来定大小: 魔方转, 但它的尺寸纹丝不动。代价是比原来小了一点点, 换来的是不晃。' },
-    { d:'2026-10-25', h:'还有件小事: 魔方底下那行还原步骤老被一条提示挡着。不是谁写错了, 是提示条一直待在二百层, 而窗口一开就是二百六十几层, 还越点越高——所以提示其实一直在窗口屁股后面, 只从窗口底下露出一截, 看着像被切了一半。把提示条提到九百层, 顺手给窗口封了个顶不让它一直往上冲; 魔方自己的消息也搬进窗口里说了, 那句「还原了」现在写在计时器下面, 不再飘到屏幕底下压着步骤。' }
+    { d:'2026-10-25', h:'还有件小事: 魔方底下那行还原步骤老被一条提示挡着。不是谁写错了, 是提示条一直待在二百层, 而窗口一开就是二百六十几层, 还越点越高——所以提示其实一直在窗口屁股后面, 只从窗口底下露出一截, 看着像被切了一半。把提示条提到九百层, 顺手给窗口封了个顶不让它一直往上冲; 魔方自己的消息也搬进窗口里说了, 那句「还原了」现在写在计时器下面, 不再飘到屏幕底下压着步骤。' },
+    { d:'2026-10-30', h:'船长说手机上的魔方难用, 手指头拧不动。查下来毛病不在魔方本身, 在那块画布上: 浏览器一看你在上面划拉, 就以为你要滚页面, 半路把手势抢走, 于是魔方只跟着动半截就僵在那儿——跟它较劲也没用, 是它自己不听话了。现在画布明说自己要手势, 拖动全程跟手; 松手还多溜一小段, 像真的魔方被甩出去那样; 想拧就点面, 点哪半边就往哪边转; 按住不动半秒, 视角自己回正。底下那些小按钮也一律改成手指头点得下的大小, 屏幕上窄的时候排成四列。最后, 眼睛看到的和手指点到的是同一张贴纸——我把画和点用同一份几何算了两遍, 保证不会点到"看着在那儿其实点不到"的地方。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
