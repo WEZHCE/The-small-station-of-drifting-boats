@@ -290,6 +290,21 @@
     border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; color:#222; font-size:17px;
     cursor:pointer; font-family:inherit; line-height:1}
   .lb-dl:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  /* ---------- 相册灯箱: 单张照片的留言 ---------- */
+  .lb-cmtbtn{background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    color:#222; font-size:12.5px; padding:4px 10px; cursor:pointer; font-family:inherit}
+  .lb-cmtbtn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .lb-cmtbtn.on{background:#f2d97c}
+  .lb-cmt{display:none; width:min(560px,88vw); max-height:38vh; overflow-y:auto;
+    background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    box-shadow:5px 5px 0 rgba(0,0,0,.28); padding:10px 12px}
+  .lb-cmt.open{display:block}
+  .lb-cmt-bar{display:flex; justify-content:center}
+  .lb-cmt-note{font-size:12px; color:#8a7d5f; margin-bottom:8px; line-height:1.6}
+  body.night .lb-cmtbtn{background:#243050; color:#c8cfdd; border-color:#3a4763 #101828 #101828 #3a4763}
+  body.night .lb-cmtbtn.on{background:#3d4f7d}
+  body.night .lb-cmt{background:#161e30; border-color:#3a4763 #101828 #101828 #3a4763}
+  body.night .lb-cmt-note{color:#8b97b0}
 
   /* ---------- 任务栏 ---------- */
   /* 底部安全区: 全面屏手机不被手势条压住 */
@@ -1824,6 +1839,10 @@
   <img id="lbImg" alt="">
   <button class="lb-nav lb-next" title="下一张" type="button">›</button>
   <div class="lb-cap"><b id="lbTitle"></b><span id="lbCap"></span></div>
+  <div class="lb-cmt-bar">
+    <button class="lb-cmtbtn" id="lbCmtBtn" type="button" title="看看/写下别人在这张照片上留的话">💬 这张的留言</button>
+  </div>
+  <div class="lb-cmt" id="lbCmt"></div>
 </div>
 
 <!-- ================= 左下角面板组: 甲板音乐 + 船长状态 + 灵动岛 ================= -->
@@ -1919,7 +1938,7 @@
       <li>左下角三块小面板: <b>甲板音乐</b>(十四首已上架——VOCALOID 加英文歌和动漫主题曲, 像素频谱跟着唱) + <b>船长状态</b>(课表+学生假期双驱动的状态灯, 法定节假日自动切放假模式, 地点/事情/心情实时更新) + <b>灵动岛</b>(实时报你此刻在干嘛, 顺便记你上船几分钟)</li>
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
       <li>开始菜单里有<b>每日签到</b>: +5 海里, 连签 7 天翻倍; 游客信息里能领<b>像素船票</b>(可下载), 还有<b>秘密清单</b> — 全站藏着 18 个秘密, 撞到一个记一个</li>
-      <li>相册: 十五本板块相册(已开张十一本, 其余虚位以待), 点封面选中, 双击封面或点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭; 大图左上角可<b>单张下载</b>, 相册窗口里能<b>整本打包带走</b></li>
+      <li>相册: 十五本板块相册(已开张十一本, 其余虚位以待), 点封面选中, 双击封面或点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭; 大图左上角可<b>单张下载</b>, 相册窗口里能<b>整本打包带走</b>; 每张照片都能单独留言——点大图下面的「💬 这张的留言」就开一条属于它的讨论串, 登录 GitHub 就能写, 换照片会自动收起</li>
       <li>右下角小船: 点一下 +1 海里 — <b>10</b> 红帆 · <b>30</b> 海鸥 · <b>60</b> 金帆 · <b>100</b> 夜灯</li>
     </ul>
 
@@ -3515,6 +3534,7 @@ barBtn.addEventListener('click', function(){
 /* ================= 相册灯箱: 点开大图, 左右切换, Esc/点背景关闭 ================= */
 var lbIndex = 0;
 function lbShow(i){
+  lbCmtClose();   /* 换照片就把上一张的留言收起来, 免得张冠李戴 */
   lbIndex = (i + curPhotos.length) % curPhotos.length;
   var p = curPhotos[lbIndex];
   var cv = $('#lbCanvas'), im = $('#lbImg');
@@ -3535,8 +3555,74 @@ $('#albumWinView').addEventListener('click', function(e){
 });
 $('.lb-close').addEventListener('click', function(){ $('#lightbox').classList.remove('open'); });
 $('#lightbox').addEventListener('click', function(e){ if(e.target === this) this.classList.remove('open'); });
-$('.lb-prev').addEventListener('click', function(){ lbShow(lbIndex - 1); });
-$('.lb-next').addEventListener('click', function(){ lbShow(lbIndex + 1); });
+$('.lb-prev').addEventListener('click', function(){ lbCmtClose(); lbShow(lbIndex - 1); });
+$('.lb-next').addEventListener('click', function(){ lbCmtClose(); lbShow(lbIndex + 1); });
+
+/* ---------- 单张照片的留言: 一张照片一条讨论串, 存在仓库的 Discussions 里 ---------- */
+/* 为什么"点了才加载": 相册加起来好几百张, 每张都自动开一条讨论, 仓库里会凭空多出几百个空帖子。
+   这里改成谁真想说点什么, 才给那一张开——看完关掉也不留痕迹。 */
+var lbCmtOpen = false, lbCmtTerm = '';
+function lbCmtTermOf(p, i){
+  /* 只用相册名 + 图片路径当钥匙: 标题和说明以后可能会改, 一改留言就串味了 */
+  var nm = (ALBUMS[albumSel] && ALBUMS[albumSel].name) || '相册';
+  return '相册《' + nm + '》· ' + (p.img || p.s || ('第' + (i + 1) + '张'));
+}
+function lbCmtClose(){
+  lbCmtOpen = false;
+  var box = $('#lbCmt'), btn = $('#lbCmtBtn');
+  if(box){ box.classList.remove('open'); box.innerHTML = ''; }
+  if(btn) btn.classList.remove('on');
+}
+function lbCmtToggle(){
+  if(lbCmtOpen){ lbCmtClose(); return; }
+  var p = curPhotos[lbIndex];
+  if(!p) return;
+  var box = $('#lbCmt'), btn = $('#lbCmtBtn');
+  lbCmtTerm = lbCmtTermOf(p, lbIndex);
+  box.innerHTML =
+    '<div class="lb-cmt-note">这张照片的留言单独开着, 跟主页留言板上的话不混在一起。' +
+    '要登录 GitHub 才能写。<br>钥匙: ' + escHtml(lbCmtTerm) + '</div>' +
+    '<div id="lbCmtBox"></div>';
+  box.classList.add('open');
+  if(btn) btn.classList.add('on');
+  lbCmtOpen = true;
+  lbCmtMount();
+}
+function lbCmtMount(){
+  var host = $('#lbCmtBox');
+  if(!host) return;
+  host.innerHTML = '<div class="lb-cmt-note">留言加载中……</div>';
+  if(!GISCUS_CFG.repoId || !GISCUS_CFG.categoryId){
+    host.innerHTML = '<div class="lb-cmt-note">留言功能还没接上(缺 giscus 配置)。</div>';
+    return;
+  }
+  var s = document.createElement('script');
+  s.src = 'https://giscus.app/client.js';
+  s.async = true;
+  s.crossOrigin = 'anonymous';
+  s.setAttribute('data-repo', GISCUS_CFG.repo);
+  s.setAttribute('data-repo-id', GISCUS_CFG.repoId);
+  s.setAttribute('data-category', GISCUS_CFG.category);
+  s.setAttribute('data-category-id', GISCUS_CFG.categoryId);
+  s.setAttribute('data-mapping', 'specific');
+  s.setAttribute('data-term', lbCmtTerm);
+  s.setAttribute('data-reactions-enabled', '1');
+  s.setAttribute('data-emit-metadata', '0');
+  s.setAttribute('data-input-position', 'top');
+  s.setAttribute('data-theme', THEME_BASE + (nightShould() ? 'theme-night.css' : 'theme.css'));
+  s.setAttribute('data-lang', 'zh-CN');
+  s.setAttribute('data-loading', 'eager');
+  host.appendChild(s);
+  var timer = setInterval(function(){
+    if(!$('#lbCmtBox')){ clearInterval(timer); return; }
+    if(host.querySelector('iframe')){
+      var e = host.querySelector('.lb-cmt-note');
+      if(e) e.remove();
+      clearInterval(timer);
+    }
+  }, 300);
+}
+$('#lbCmtBtn').addEventListener('click', lbCmtToggle);
 
 /* ---------- 相册下载: 单张装袋 / 整本打包, 不依赖任何外部库 ---------- */
 function dlBlob(name, blob){
@@ -10556,7 +10642,8 @@ var ENTRIES = [
     { d:'2026-10-25', h:'角度改完还是被说「大小会突变」。这次的问题藏得更深一点: 我为了让魔方总是尽量占满画面, 每一帧都按当时那个角度重新算一次缩放系数——转到看着扁的方向, 它就自动放大去填满, 于是拖一圈下来整个魔方忽大忽小, 最大能差到一点六八倍。现在不这么算了, 改用一个跟角度完全无关的固定半径来定大小: 魔方转, 但它的尺寸纹丝不动。代价是比原来小了一点点, 换来的是不晃。' },
     { d:'2026-10-25', h:'还有件小事: 魔方底下那行还原步骤老被一条提示挡着。不是谁写错了, 是提示条一直待在二百层, 而窗口一开就是二百六十几层, 还越点越高——所以提示其实一直在窗口屁股后面, 只从窗口底下露出一截, 看着像被切了一半。把提示条提到九百层, 顺手给窗口封了个顶不让它一直往上冲; 魔方自己的消息也搬进窗口里说了, 那句「还原了」现在写在计时器下面, 不再飘到屏幕底下压着步骤。' },
     { d:'2026-10-30', h:'船长说手机上的魔方难用, 手指头拧不动。查下来毛病不在魔方本身, 在那块画布上: 浏览器一看你在上面划拉, 就以为你要滚页面, 半路把手势抢走, 于是魔方只跟着动半截就僵在那儿——跟它较劲也没用, 是它自己不听话了。现在画布明说自己要手势, 拖动全程跟手; 松手还多溜一小段, 像真的魔方被甩出去那样; 想拧就点面, 点哪半边就往哪边转; 按住不动半秒, 视角自己回正。底下那些小按钮也一律改成手指头点得下的大小, 屏幕上窄的时候排成四列。最后, 眼睛看到的和手指点到的是同一张贴纸——我把画和点用同一份几何算了两遍, 保证不会点到"看着在那儿其实点不到"的地方。' },
-    { d:'2026-11-01', h:'留言板上有个叫 re3back 的船员一口气丢过来七八条, 我一条一条去对。船票那扇窗原来关不掉——函数漏写了一个参数, 它就去抓了浏览器自带的 window.open, 结果每次点关闭都被当成"再开一次"; 补上参数就好了。甲板音乐也不对: 耳机上一按暂停, 歌是停了, 可按钮还挂着暂停图标在跑, 因为它压根没听音频自己发出的暂停这件事, 现在改成一切以音频元素为准。灵动岛那边, 打字的时候它老说我在挂机——手一直在敲, 只是鼠标没动而已, 现在记事本、终端、找图框各有各的说法。还有魔方: 贴纸之间的缝占了一成四, 侧面看过去一条条黑线, 被吐槽像东非大裂谷, 收到一成, 看着才像一整块。' }
+    { d:'2026-11-01', h:'留言板上有个叫 re3back 的船员一口气丢过来七八条, 我一条一条去对。船票那扇窗原来关不掉——函数漏写了一个参数, 它就去抓了浏览器自带的 window.open, 结果每次点关闭都被当成"再开一次"; 补上参数就好了。甲板音乐也不对: 耳机上一按暂停, 歌是停了, 可按钮还挂着暂停图标在跑, 因为它压根没听音频自己发出的暂停这件事, 现在改成一切以音频元素为准。灵动岛那边, 打字的时候它老说我在挂机——手一直在敲, 只是鼠标没动而已, 现在记事本、终端、找图框各有各的说法。还有魔方: 贴纸之间的缝占了一成四, 侧面看过去一条条黑线, 被吐槽像东非大裂谷, 收到一成, 看着才像一整块。' },
+    { d:'2026-11-01', h:'相册里那几百张照片, 以前只能看, 不能说话。今天给每张都留了个话筒: 点开大图, 底下有颗「这张的留言」的按钮, 按下去就给这一张单独开一条讨论串——你说的话只挂在这张照片下面, 不会跟别人在别处留的混在一起。几百张照片要是每张都先开好一个空帖子, 仓库会被撑得像塞满了没寄的信, 所以改成谁真想说话才开。换照片的时候它会自己收起来, 免得上一张的话挂到下一张头上。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
