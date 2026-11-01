@@ -5615,7 +5615,10 @@ function ticketNo(){
   for(var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
   return ('000000' + (h % 1000000)).slice(-6);
 }
-function openTicket(){
+/* 形参 open 必须写: 不写的话函数里的 open 会读到全局 window.open,
+   那是个函数而不是 undefined, 于是 will 永远走"取反"分支,
+   关窗按钮(#tkHide / #tkClose)传的 false 就被吃掉, 窗口关不掉。 */
+function openTicket(open){
   var w = $('#ticketWin');
   var will = (open === undefined) ? !w.classList.contains('open') : open;
   w.classList.toggle('open', will);
@@ -6460,6 +6463,15 @@ function dmAudioEl(){
     });
     dmAudio.addEventListener('timeupdate', function(){ dmProgSync(); });
     dmAudio.addEventListener('durationchange', function(){ dmProgSync(true); });
+    /* 耳机按键 / 系统媒体键 / 来电打断都会在页面外面把音频暂停,
+       页面自己不知道, 按钮还挂着 ❚❚、频谱还在跑 —— 所以这两个事件必须听,
+       一切以音频元素自己的 paused 为准。 */
+    dmAudio.addEventListener('play', function(){
+      if(!dm.playing){ dm.playing = true; dmRender(); dmVizStart(); }
+    });
+    dmAudio.addEventListener('pause', function(){
+      if(dm.playing){ dm.playing = false; dmRender(); if(dm.raf){ cancelAnimationFrame(dm.raf); dm.raf = null; } }
+    });
     dmAudio.addEventListener('error', function(){
       if(dm.playing){ dmPause(); toast('这首歌加载失败了, 换一首试试。'); }
     });
@@ -6616,10 +6628,25 @@ if(SONGS.length){
   }
 }
 /* ---------- 左下角双黑盒 · 灵动岛: 游客此刻在干嘛 ---------- */
-var dynLastText = '', dynT0 = Date.now(), dynLastActive = Date.now();
+var dynLastText = '', dynT0 = Date.now(), dynLastActive = Date.now(), dynLastInput = 0;
 ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(function(ev){
   document.addEventListener(ev, function(){ dynLastActive = Date.now(); }, { passive: true });
 });
+/* 打字也算"在动": 手一直在敲但鼠标不动的话, 上面那几个事件里只有 keydown 会来,
+   而 keydown 只刷新 dynLastActive, 灵动岛照样可能跳出"挂机中"。
+   所以单独记一个"最近一次敲字"的时刻, 判据是焦点真的落在输入框里。 */
+function dynTyping(){
+  var a = document.activeElement;
+  if(!a) return false;
+  var tag = a.tagName;
+  if(tag !== 'INPUT' && tag !== 'TEXTAREA') return false;
+  return Date.now() - dynLastInput < 4000;
+}
+document.addEventListener('input', function(){ dynLastInput = Date.now(); dynLastActive = Date.now(); }, { passive: true });
+document.addEventListener('keydown', function(e){
+  var a = document.activeElement, tag = a ? a.tagName : '';
+  if((tag === 'INPUT' || tag === 'TEXTAREA') && e.key && e.key.length === 1){ dynLastInput = Date.now(); }
+}, { passive: true });
 var DYN_SECTIONS = [['#about', '「关于我」'], ['#now', '「船舱日记」'], ['#gallery', '「相册」'], ['#guestbook', '「留言板」']];
 function dynSection(){
   /* 留言板在右侧栏, offsetTop 很小, 不能比谁靠上 — 以"视野中心落在谁的矩形里"为准 */
@@ -6649,6 +6676,14 @@ function dynUpdate(){
   }
   if(!txt && albumWinOpen()) txt = '正在翻《' + ALBUMS[albumSel].name + '》';
   if(!txt && $('#sysWin').classList.contains('open')) txt = '正在研究系统属性';
+  /* 正在打字的优先级要压过"挂机中": 手一直在敲, 只是鼠标没动而已 */
+  if(!txt && dynTyping()){
+    var who = document.activeElement.id || document.activeElement.name || '';
+    txt = who === 'noteText' ? '正在记事本里写东西……' :
+          who === 'termIn' ? '正在终端里敲命令……' :
+          who === 'isInput' ? '正在找图……' :
+          '正在输入……';
+  }
   if(!txt && Date.now() - dynLastActive > 45000) txt = '挂机中…… 船在替你开';
   if(!txt) txt = '正在逛 ' + dynSection();
   if(txt !== dynLastText){
@@ -8676,6 +8711,12 @@ function cbTangents(n) {
 
 var CB_SIGNS = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
 var CB_AXVEC = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+/* 贴纸半宽: 格子边长是 2, 贴纸占 2*CB_HS, 剩下的就是缝。
+ * 0.86 时缝占 14%, 侧面看过去一片黑, 被吐槽像"东非大裂谷";
+ * 提到 0.90 缝只剩 10%, 三面看着才像一整块魔方。
+ * 半径/外接框/绘制三处必须共用这一个常量 —— 各写各的会自相矛盾
+ * (包围球算大了 scale 就变小, 立方体反而缩了)。 */
+var CB_HS = 0.90;
 
 /* 包围球半径: 所有贴纸角点离原点最远的距离。
  * 立方体绕原点转, 这个半径不变(转动只把块挪到另一个同样远的槽位), 所以它是定值。
@@ -8685,7 +8726,7 @@ var CB_AXVEC = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
  * 以前是每帧按「当前投影外接框」重算 scale, 结果是转到看着扁的角度 scale 就自动放大,
  * 拖动时整个魔方忽大忽小(实测最大 1.68 倍), 船长一眼就看出"面的大小会突变"。 */
 function cbRadius(cu) {
-  var r = 0, hs = 0.86;
+  var r = 0, hs = CB_HS;
   for (var i = 0; i < cu.pieces.length; i++) {
     var pc = cu.pieces[i];
     for (var k = 0; k < pc.st.length; k++) {
@@ -8712,7 +8753,7 @@ function cbRadius(cu) {
  * 注意: 它只用来量尺寸/做测试, **不再用来定 scale**(那会让尺寸随角度变)。 */
 function cbExtent(cu, yaw, pitch) {
   var x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
-  var hs = 0.86;
+  var hs = CB_HS;
   for (var i = 0; i < cu.pieces.length; i++) {
     var pc = cu.pieces[i];
     for (var k = 0; k < pc.st.length; k++) {
@@ -8794,7 +8835,7 @@ function cbScene(cu, opts) {
       var tg = cbTangents(pc.st[k].n);
       var t1 = cbMulMV(wm, tg[0]);
       var t2 = cbMulMV(wm, tg[1]);
-      var hs = 0.86;
+      var hs = CB_HS;
       var pts = [];
       for (var q = 0; q < 4; q++) {
         var s1 = CB_SIGNS[q][0] * hs, s2 = CB_SIGNS[q][1] * hs;
@@ -10514,7 +10555,8 @@ var ENTRIES = [
     { d:'2026-10-25', h:'船长说魔方转起来会变形, 不像个方的。查了半天, 画法本身没错——每块贴纸都是标准的平行四边形, 一毫米没歪; 错的是我给它挑的那个默认角度。立方体摆在 -35.5 度、仰 26.4 度这个位置, 三个露出来的面在屏幕上会变成三块大小不同的菱形, 一大一小, 眼睛就认定它被拉歪了。真正齐整的位置只有一个: 左右各 45 度、往上抬 35.26 度, 这时候三块面一样大, 才像块正经魔方。改成这个角度了, 顺手把上下能翻的范围也收窄一点, 免得拖到极端角度变成一张纸。' },
     { d:'2026-10-25', h:'角度改完还是被说「大小会突变」。这次的问题藏得更深一点: 我为了让魔方总是尽量占满画面, 每一帧都按当时那个角度重新算一次缩放系数——转到看着扁的方向, 它就自动放大去填满, 于是拖一圈下来整个魔方忽大忽小, 最大能差到一点六八倍。现在不这么算了, 改用一个跟角度完全无关的固定半径来定大小: 魔方转, 但它的尺寸纹丝不动。代价是比原来小了一点点, 换来的是不晃。' },
     { d:'2026-10-25', h:'还有件小事: 魔方底下那行还原步骤老被一条提示挡着。不是谁写错了, 是提示条一直待在二百层, 而窗口一开就是二百六十几层, 还越点越高——所以提示其实一直在窗口屁股后面, 只从窗口底下露出一截, 看着像被切了一半。把提示条提到九百层, 顺手给窗口封了个顶不让它一直往上冲; 魔方自己的消息也搬进窗口里说了, 那句「还原了」现在写在计时器下面, 不再飘到屏幕底下压着步骤。' },
-    { d:'2026-10-30', h:'船长说手机上的魔方难用, 手指头拧不动。查下来毛病不在魔方本身, 在那块画布上: 浏览器一看你在上面划拉, 就以为你要滚页面, 半路把手势抢走, 于是魔方只跟着动半截就僵在那儿——跟它较劲也没用, 是它自己不听话了。现在画布明说自己要手势, 拖动全程跟手; 松手还多溜一小段, 像真的魔方被甩出去那样; 想拧就点面, 点哪半边就往哪边转; 按住不动半秒, 视角自己回正。底下那些小按钮也一律改成手指头点得下的大小, 屏幕上窄的时候排成四列。最后, 眼睛看到的和手指点到的是同一张贴纸——我把画和点用同一份几何算了两遍, 保证不会点到"看着在那儿其实点不到"的地方。' }
+    { d:'2026-10-30', h:'船长说手机上的魔方难用, 手指头拧不动。查下来毛病不在魔方本身, 在那块画布上: 浏览器一看你在上面划拉, 就以为你要滚页面, 半路把手势抢走, 于是魔方只跟着动半截就僵在那儿——跟它较劲也没用, 是它自己不听话了。现在画布明说自己要手势, 拖动全程跟手; 松手还多溜一小段, 像真的魔方被甩出去那样; 想拧就点面, 点哪半边就往哪边转; 按住不动半秒, 视角自己回正。底下那些小按钮也一律改成手指头点得下的大小, 屏幕上窄的时候排成四列。最后, 眼睛看到的和手指点到的是同一张贴纸——我把画和点用同一份几何算了两遍, 保证不会点到"看着在那儿其实点不到"的地方。' },
+    { d:'2026-11-01', h:'留言板上有个叫 re3back 的船员一口气丢过来七八条, 我一条一条去对。船票那扇窗原来关不掉——函数漏写了一个参数, 它就去抓了浏览器自带的 window.open, 结果每次点关闭都被当成"再开一次"; 补上参数就好了。甲板音乐也不对: 耳机上一按暂停, 歌是停了, 可按钮还挂着暂停图标在跑, 因为它压根没听音频自己发出的暂停这件事, 现在改成一切以音频元素为准。灵动岛那边, 打字的时候它老说我在挂机——手一直在敲, 只是鼠标没动而已, 现在记事本、终端、找图框各有各的说法。还有魔方: 贴纸之间的缝占了一成四, 侧面看过去一条条黑线, 被吐槽像东非大裂谷, 收到一成, 看着才像一整块。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
