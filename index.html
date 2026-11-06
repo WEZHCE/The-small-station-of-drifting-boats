@@ -272,9 +272,12 @@
   /* ---------- 相册灯箱 ---------- */
   #lightbox{position:fixed; inset:0; z-index:300; display:none; flex-direction:column;
     align-items:center; justify-content:center; gap:16px; background:rgba(32,26,15,.8)}
-  #lightbox.open{display:flex}
+  #lightbox.open{display:flex; overflow-y:auto; padding:12px 0}
+  /* 留言展开时整块内容会变高, 这时改成从头排、允许上下滚, 别再把内容往中间挤 ——
+     不然图片会把说明/按钮/留言区顶到屏幕外面, 看着就像"下面没展开"。 */
+  #lightbox.cmt-open{justify-content:flex-start}
   #lbCanvas{background:#fbf7ec; border:1px solid #9a927e; box-shadow:8px 8px 0 rgba(0,0,0,.35);
-    image-rendering:pixelated; max-width:86vw; max-height:60vh}
+    image-rendering:pixelated; max-width:86vw; max-height:60vh; object-fit:contain}
   .lb-cap{background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     box-shadow:5px 5px 0 rgba(0,0,0,.28); padding:10px 20px; max-width:78vw;
     text-align:center; font-size:14px; color:#4a4335; line-height:1.6}
@@ -295,11 +298,13 @@
     color:#222; font-size:12.5px; padding:4px 10px; cursor:pointer; font-family:inherit}
   .lb-cmtbtn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .lb-cmtbtn.on{background:#f2d97c}
-  .lb-cmt{display:none; width:min(560px,88vw); max-height:38vh; overflow-y:auto;
+  .lb-cmt{display:none; width:min(560px,88vw); max-height:38vh; overflow-y:auto; flex-shrink:0;
     background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     box-shadow:5px 5px 0 rgba(0,0,0,.28); padding:10px 12px}
   .lb-cmt.open{display:block}
-  .lb-cmt-bar{display:flex; justify-content:center}
+  /* 展开留言时把大图让小一点, 给下面那块腾地方; 收起时恢复原尺寸 */
+  #lightbox.cmt-open #lbCanvas, #lightbox.cmt-open #lbImg{max-height:36vh}
+  .lb-cmt-bar{display:flex; justify-content:center; flex-shrink:0}
   .lb-cmt-note{font-size:12px; color:#8a7d5f; margin-bottom:8px; line-height:1.6}
   body.night .lb-cmtbtn{background:#243050; color:#c8cfdd; border-color:#3a4763 #101828 #101828 #3a4763}
   body.night .lb-cmtbtn.on{background:#3d4f7d}
@@ -1673,6 +1678,563 @@
     .dm-ctrl{gap:3px}
     .dm-count{font-size:10px}
   }
+/* >>> 手机壳 CSS (mobile/inject.cjs 自动插入, 别手改) >>> */
+/* ========================================================================
+ * 手机壳 · 远古 iPhone  +  触摸适配 (2026-11-06)
+ *
+ * 两件事混在这一份里, 因为它们都跟"手指头点不点得准"有关:
+ *   1) 手机壳: 窄屏上另起一套界面(黑条状态栏 + 弹簧板 + 底栏 + 全屏应用)。
+ *      桌面上它是一台摆出来的小手机, 想看就开 —— 旧界面一直都在。
+ *      开关在 系统属性 → 设置 → 「手机壳界面」, 记在 localStorage['phoneShell']。
+ *   2) 触摸适配: 手指点不准就等于没有。手机上可点的东西一律 >= 40px,
+ *      字号一律 >= 13px; 桌面上鼠标好点, 门槛降到 28px / 12px。
+ *
+ * 为什么用宽度而不是 pointer 类型分档:
+ *   体检脚本是按视口宽度判的(宽度 < 760 = 手机档), 而 headless 模拟手机
+ *   并不会把 pointer 变成 coarse。所以规矩写成"宽度 < 760px, 或者确实是
+ *   触摸设备(pointer:coarse)" —— 真手机横屏时也照样管用。
+ *
+ * 规矩照旧: 纯像素硬边, 每个表面都有 body.night 变体, 不用大圆角渐变。
+ * ======================================================================== */
+
+/* ========================================================================
+ * 一、触摸适配 · 手机档 (手指头)
+ * ======================================================================== */
+@media (max-width:760px), (pointer:coarse){
+
+  /* --- 窗口标题栏: 手机上按钮得能用 --- */
+  .titlebar{height:44px; font-size:14px; gap:6px}
+  .tb-btn{width:40px; height:40px; font-size:16px}
+  .tb-title{font-size:14px}
+
+  /* --- 任务栏(旧界面模式) --- */
+  #startBtn{min-width:56px; min-height:40px; font-size:14px}
+  #tray #nightBtn{min-width:44px; min-height:40px; font-size:13px}
+  #trayClock{font-size:13px}
+  #tbCmd, #tbHelp, #tbCalc, #tbGame, #tbDiary, #tbBr, #tbHg, #tbPaint,
+  #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{
+    min-width:44px; min-height:40px; padding:0 6px}
+  .tb-badge{font:bold 13px/18px Consolas,monospace; min-width:26px; height:20px}
+  #startMenu button{min-height:40px; font-size:14px}
+
+  /* --- 正文里的链接: 点不到就白给了 --- */
+  #site .info-table a{display:inline-flex; align-items:center; min-height:40px; padding:0 3px}
+  #site .footer-links a{display:inline-flex; align-items:center; min-height:40px; padding:0 6px}
+  #site .menu a{min-height:40px; display:flex; align-items:center; justify-content:center; font-size:13.5px}
+
+  /* --- 日历 / 日记 --- */
+  #calPrev, #calNext{width:44px; height:40px; font-size:16px}
+  .cal-d{min-height:40px; font-size:13px}
+  .cal-w{font-size:13px}
+  #diaryPrev, #diaryNext{width:44px; height:40px; font-size:16px}
+  .diary-head .diary-date{font-size:13px}
+
+  /* --- 相册 / 留言板 --- */
+  .album-open{min-height:40px; font-size:14px; padding:0 14px}
+  #bottleBtn{min-height:40px; font-size:14px; padding:0 14px}
+  #gbSearchInput{min-height:40px; font-size:14px}
+  #gbSearchBtn{min-width:44px; min-height:40px; font-size:14px}
+
+  /* --- 甲板音乐 --- */
+  .dm-item{min-height:40px; font-size:13px; padding:6px 8px}
+  .dm-item i{font-size:13px}
+  .dm-btn{width:40px; height:40px; font-size:13px}
+  .dm-time{font-size:13px}
+  .dm-count{font-size:13px}
+  .dm-head{font-size:13px}
+  .dm-head b, .dm-head span{font-size:13px}
+
+  /* --- 魔方提示: 手指的手势跟鼠标不一样, 手机上得说手指那套 --- */
+  /* 原来只按 (pointer:coarse) 切, 但模拟器不翻 pointer, 而且真机上
+     宽度这条线本来就更准。窄屏一律给触摸版提示。 */
+  .cb-hint{font-size:13px}
+  .cb-hint-touch{display:inline}
+  .cb-hint-mouse{display:none}
+
+  /* --- 其它小字 --- */
+  #capState{font-size:13px}
+  #csText b, #csText em{font-size:13px}
+  #dynIsland{font-size:13px}
+  #dynText, #dynMin{font-size:13px}
+  #boatOdo{font-size:13px}
+  .album-name, .album-desc{font-size:13px}
+  .side-col .section-note{font-size:13px}
+  #nightChannel{font-size:13px}
+  .help-foot{font-size:13px}
+  .wc-device{font-size:13px}
+  .wc-again button{font-size:13px}
+  .boot-skip{min-height:40px; padding:0 12px; font-size:13px}
+  .set-opts label, .set-check{font-size:13.5px}
+  .set-opts input, .set-check input{width:18px; height:18px}
+}
+
+/* ========================================================================
+ * 二、触摸适配 · 桌面档 (鼠标)
+ * 桌面上没有手指头, 但 19x16 的按钮和 42x14 的链接还是偏小, 顺手垫一点。
+ * ======================================================================== */
+@media (min-width:761px) and (pointer:fine){
+  .titlebar{height:30px}
+  .tb-btn{width:28px; height:28px; font-size:12px}
+  /* 任务栏那排应用键: 26px 高还是偏矮, 垫到 28px */
+  #tbCmd, #tbHelp, #tbCalc, #tbGame, #tbDiary, #tbBr, #tbHg, #tbPaint,
+  #tbSolar, #tbCount, #tbImg, #tbGrade, #tbCube, #tbTmgr, #tbNote, #tbMypc{
+    min-height:28px}
+  #calPrev, #calNext{width:30px; height:28px; font-size:13px}
+  #diaryPrev, #diaryNext{width:30px; height:28px; font-size:13px}
+  .cal-d{min-height:28px; font-size:12px}
+  .cal-w{font-size:12px}
+  .diary-head .diary-date{font-size:12.5px}
+  .album-open{min-height:28px}
+  #bottleBtn{min-height:28px}
+  #gbSearchBtn{min-width:28px; min-height:28px}
+  #gbSearchInput{min-height:28px}
+  #startBtn{min-height:28px}
+  #nightBtn{min-width:28px; min-height:28px}
+  #tray{height:30px}
+  #trayClock{font-size:12px}
+  .tb-badge{font:bold 12px/16px Consolas,monospace}
+  .dm-item{min-height:28px; font-size:12px}
+  .dm-item i{font-size:12px}
+  .dm-btn{width:28px; height:28px; font-size:12px}
+  .dm-time, .dm-count, .dm-head{font-size:12px}
+  .dm-head b, .dm-head span{font-size:12px}
+  #capState{font-size:12px}
+  #csText b, #csText em{font-size:12px}
+  #dynIsland{font-size:12px}
+  #dynText, #dynMin{font-size:12px}
+  #boatOdo{font-size:12px}
+  #site .info-table a{display:inline-flex; align-items:center; min-height:28px; padding:0 2px}
+  #site .footer-links a{display:inline-flex; align-items:center; min-height:28px; padding:0 4px}
+}
+
+/* ========================================================================
+ * 三、手机壳本体
+ * 状态靠 body 上的 class:
+ *   body.phone-shell  手机壳开着(窄屏=接管整屏, 桌面=摆一台小手机)
+ *   body.phone-app    正待在某个全屏应用里(主屏藏起来)
+ * ======================================================================== */
+#phoneShell{display:none}
+body.phone-shell #phoneShell{display:block}
+
+/* ---------- 壳本体: 窄屏铺满, 桌面摆一台 ---------- */
+@media (max-width:760px){
+  body.phone-shell #phoneShell{
+    position:fixed; inset:0; z-index:95;
+    background-color:#f2ecdd;
+    background-image:
+      linear-gradient(rgba(90,80,60,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(90,80,60,.05) 1px, transparent 1px);
+    background-size:22px 22px;
+    color:#2e2a22; font-family:"SimSun","宋体",serif;
+    -webkit-tap-highlight-color:transparent}
+  body.night.phone-shell #phoneShell{
+    background-color:#0d1322;
+    background-image:
+      linear-gradient(rgba(140,170,230,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(140,170,230,.05) 1px, transparent 1px);
+    color:#c8cfdd}
+}
+@media (min-width:761px){
+  body.phone-shell #phoneShell{
+    position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:390px; height:min(844px, calc(100vh - 40px));
+    z-index:95; overflow:hidden;
+    background-color:#f2ecdd;
+    background-image:
+      linear-gradient(rgba(90,80,60,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(90,80,60,.05) 1px, transparent 1px);
+    background-size:22px 22px;
+    border:8px solid #2b2b2b; border-radius:0;
+    box-shadow:8px 8px 0 rgba(43,38,28,.32);
+    color:#2e2a22; font-family:"SimSun","宋体",serif;
+    -webkit-tap-highlight-color:transparent}
+  body.night.phone-shell #phoneShell{
+    background-color:#0d1322;
+    background-image:
+      linear-gradient(rgba(140,170,230,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(140,170,230,.05) 1px, transparent 1px);
+    border-color:#101828;
+    box-shadow:8px 8px 0 rgba(0,0,0,.6);
+    color:#c8cfdd}
+}
+
+/* ---------- 状态栏(远古 iPhone 的黑条) ---------- */
+#phoneStatus{position:absolute; left:0; right:0; top:0; height:34px; z-index:6;
+  display:flex; align-items:center; gap:8px; padding:0 8px;
+  background:#2b2b2b; border-bottom:2px solid #000; color:#f2ecdd;
+  font-family:Consolas,"Courier New",monospace; font-size:13px}
+body.night #phoneStatus{background:#0b1020; border-bottom-color:#1c2740; color:#c8cfdd}
+.pb-time{font-weight:bold; letter-spacing:1px; flex:none; font-size:13px}
+.pb-island{flex:1; min-width:0; display:flex; justify-content:center; overflow:hidden}
+.pb-island #dynIsland{width:auto; max-width:100%; height:24px; padding:0 8px; font-size:13px;
+  background:rgba(0,0,0,.35); border:1px solid #4a4a4a; box-shadow:none; display:flex; align-items:center}
+body.night .pb-island #dynIsland{background:rgba(0,0,0,.5); border-color:#2c3854}
+.pb-island #dynDot, .pb-island #dynText, .pb-island #dynMin{font-size:13px}
+.pb-right{flex:none; display:flex; align-items:center; gap:6px}
+.pb-right canvas{display:block; image-rendering:pixelated}
+
+/* ---------- 弹簧板主屏 ---------- */
+#phoneHome{position:absolute; left:0; right:0; top:34px; bottom:172px; z-index:2;
+  overflow-y:auto; -webkit-overflow-scrolling:touch; padding:8px 4px 12px}
+body.phone-app #phoneHome{display:none}
+.pb-banner{display:flex; align-items:center; gap:10px; margin:0 4px 8px; padding:6px 10px;
+  background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+  box-shadow:3px 3px 0 rgba(43,38,28,.16)}
+body.night .pb-banner{background:#161e30; border-color:#3a4763; box-shadow:3px 3px 0 rgba(0,0,0,.5)}
+.pb-banner canvas{flex:none; image-rendering:pixelated}
+/* 小船 16x12, 画的时候留了 2px 边 -> scale 2 时正好 40x32 */
+#pbLogo{width:40px; height:32px}
+#pbSignal{width:16px; height:12px}
+#pbBattery{width:11px; height:16px}
+.pb-txt{flex:1; min-width:0}
+.pb-name{font-size:17px; font-weight:bold; letter-spacing:2px; color:#3f5c33; line-height:1.3}
+body.night .pb-name{color:#9fc3ef}
+.pb-sub{font-size:13px; color:#8a7f68; line-height:1.45; margin-top:2px}
+body.night .pb-sub{color:#8b97b0}
+
+/* 船长状态: 桌面版那块小面板搬过来 */
+.pb-cap{margin:0 4px 8px}
+.pb-cap #capState{width:auto; min-height:30px; font-size:13px; padding:2px 9px;
+  background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+  box-shadow:3px 3px 0 rgba(43,38,28,.16)}
+body.night .pb-cap #capState{background:#161e30; border-color:#3a4763; box-shadow:3px 3px 0 rgba(0,0,0,.5)}
+.pb-cap #csText b, .pb-cap #csText em{font-size:13px}
+
+.pb-quick{display:flex; gap:8px; margin:0 4px 8px}
+.pb-quick .pb-btn{flex:1; min-width:0}
+.pb-btn{min-height:40px; padding:0 10px; background:#c9c9c9; color:#222; cursor:pointer;
+  font-family:inherit; font-size:13.5px; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff}
+.pb-btn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+body.night .pb-btn{background:#243050; color:#c8cfdd; border-color:#3a4763 #101828 #101828 #3a4763}
+body.night .pb-btn:active{border-color:#101828 #3a4763 #3a4763 #101828}
+
+/* 弹簧板: 五列, 17 个应用分四行, 窄屏也不必多滚 */
+.pb-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:6px 2px; padding:0 2px}
+.pb-icon{display:flex; flex-direction:column; align-items:center; gap:1px;
+  background:transparent; border:none; padding:2px 0; margin:0; cursor:pointer;
+  font-family:inherit; min-height:60px; min-width:44px; -webkit-tap-highlight-color:transparent}
+.pb-icon canvas{display:block; image-rendering:pixelated}
+.pb-grid .pb-icon canvas{width:40px; height:40px}
+.pb-icon span{font-size:13px; line-height:1.2; color:#4a4335; max-width:100%;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:center}
+body.night .pb-icon span{color:#c8cfdd}
+.pb-icon:active{opacity:.6}
+
+/* ---------- 甲板音乐(从桌面那块面板搬进来, 压成一条) ---------- */
+#pbMusic{position:absolute; left:0; right:0; bottom:116px; height:56px; z-index:3;
+  padding:0 8px; display:flex; align-items:center}
+body.phone-app #pbMusic{display:none}
+#pbMusic #deckMusic{position:relative; width:auto; flex:1 1 0%; min-width:0; padding:5px 8px;
+  display:flex; align-items:center; gap:6px;
+  background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+  box-shadow:3px 3px 0 rgba(43,38,28,.16)}
+body.night #pbMusic #deckMusic{background:#161e30; border-color:#3a4763; box-shadow:3px 3px 0 rgba(0,0,0,.5)}
+#pbMusic #deckMusic .dm-head, #pbMusic #deckMusic #dmViz,
+#pbMusic #deckMusic .dm-time, #pbMusic #deckMusic .dm-count{display:none}
+/* 曲名那条不许把整条音乐条撑宽: 歌名长一点就把控制键顶出屏幕了。
+   flex 项默认 min-width:auto, 会被内容顶开 —— 必须显式 min-width:0 + 省略号。 */
+#pbMusic #deckMusic .dm-list{flex:1 1 0%; min-width:0; margin:0; max-height:none; overflow:hidden;
+  background:transparent; border:none; display:block}
+#pbMusic #deckMusic .dm-item{display:none}
+#pbMusic #deckMusic .dm-item.on{display:flex; align-items:center; font-size:13px; padding:0;
+  width:100%; max-width:100%; min-width:0;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:40px}
+#pbMusic #deckMusic .dm-item.on i{font-size:13px; flex:none}
+#pbMusic #deckMusic .dm-ctrl{margin:0; flex:none; gap:4px}
+#pbMusic #deckMusic .dm-btn{width:40px; height:40px; font-size:13px}
+#pbMusic #deckMusic .dm-loop{width:auto; padding:0 8px}
+#pbMusic #deckMusic .dm-prog{position:absolute; left:0; right:0; top:0; height:4px; margin:0;
+  border:none; background:rgba(90,80,60,.2)}
+#pbMusic #deckMusic .dm-prog i{background:#7c9c66}
+body.night #pbMusic #deckMusic .dm-prog{background:rgba(0,0,0,.4)}
+body.night #pbMusic #deckMusic .dm-prog i{background:#39d353}
+
+/* ---------- 底栏(dock) ---------- */
+#phoneDock{position:absolute; left:0; right:0; bottom:40px; height:76px; z-index:4;
+  display:grid; grid-template-columns:repeat(4,1fr); align-items:start; gap:2px;
+  padding:6px 8px;
+  background:#c9c9c9; border-top:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff}
+body.night #phoneDock{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763}
+body.phone-app #phoneDock{display:none}
+#phoneDock .pb-icon{min-height:60px}
+#phoneDock .pb-icon canvas{width:40px; height:40px}
+#phoneDock .pb-icon span{font-size:13px}
+body.night #phoneDock .pb-icon span{color:#c8cfdd}
+
+/* ---------- 全屏应用视图 ---------- */
+#phoneView{position:absolute; left:0; right:0; top:34px; bottom:40px; z-index:5;
+  display:none; overflow:hidden}
+body.phone-app #phoneView{display:block}
+body.phone-app #phoneView > *{position:absolute !important; left:0 !important; right:0 !important;
+  top:0 !important; bottom:0 !important; width:auto !important; max-width:none !important;
+  max-height:none !important; height:auto !important; transform:none !important; margin:0 !important;
+  border-radius:0; box-shadow:none; overflow-y:auto; -webkit-overflow-scrolling:touch}
+/* 窗口自己的标题栏: 变成手机上的应用标题, 吸顶 */
+body.phone-app #phoneView .window > .titlebar{position:sticky !important; top:0; z-index:3;
+  height:46px; font-size:15px; cursor:default; display:flex; align-items:center; gap:6px}
+body.phone-app #phoneView .window > .titlebar .tb-title{flex:1; min-width:0; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap; font-size:15px}
+body.phone-app #phoneView .window > .titlebar .tb-btn{width:40px; height:40px; font-size:16px}
+/* 站名页面搬进壳里: 别再叠入场动画, 也不该是透明的 */
+body.phone-app #phoneView #site{max-width:100%; margin:0; padding:12px 8px 24px;
+  opacity:1 !important; animation:none !important}
+/* 站名页面自带一条"窗口标题栏"(那三个假按钮最小化/最大化/关闭),
+   在手机壳里那是没有的壳, 留着只会让人以为能关页面 —— 收起来 */
+body.phone-app #phoneView #site > .window > .titlebar{display:none !important}
+/* 内部本来就自己滚的块, 手机上让整页滚, 免得套娃 */
+body.phone-app #phoneView .help-body, body.phone-app #phoneView .cb-body,
+body.phone-app #phoneView .cb-hist, body.phone-app #phoneView #termOut,
+body.phone-app #phoneView .dw-list, body.phone-app #phoneView .dw-entries,
+body.phone-app #phoneView .ab-view, body.phone-app #phoneView .is-results,
+body.phone-app #phoneView .gd-body, body.phone-app #phoneView .tm-applist,
+body.phone-app #phoneView .tm-proclist, body.phone-app #phoneView .dd-list,
+body.phone-app #phoneView .br-view, body.phone-app #phoneView .mp-preview,
+body.phone-app #phoneView #giscusBox, body.phone-app #phoneView .dd-info,
+body.phone-app #phoneView .mp-status, body.phone-app #phoneView .sys-body{
+  max-height:none !important; height:auto !important; overflow:visible !important}
+/* 终端要留一行输入在底下 */
+body.phone-app #phoneView > #term{display:flex !important; flex-direction:column; overflow:hidden}
+body.phone-app #phoneView > #term > #termOut{flex:1 1 auto; min-height:0;
+  max-height:none !important; height:auto !important}
+body.phone-app #phoneView > #term > #termRow{flex:none}
+/* 记事本要把纸铺满 */
+body.phone-app #phoneView > #noteWin{display:flex !important; flex-direction:column}
+body.phone-app #phoneView > #noteWin > #noteText{flex:1 1 auto; min-height:200px}
+/* 魔方画布在窄屏上不能被压扁 */
+body.phone-app #phoneView #cbCanvas{max-width:100%}
+/* 魔方在手机壳里: 画布别占满整屏, 不然底下那些走法键和提示行要滚出去才看得到。
+   300px 的立方体在 390 宽的屏上刚好, 360 宽的屏上整页也塞得下。 */
+body.phone-app #phoneView #cbCanvas{max-width:min(100%, 300px); margin:0 auto; display:block}
+
+/* ---------- 回主屏的那条横杠 ---------- */
+#phoneHomeBar{position:absolute; left:0; right:0; bottom:0; height:40px; z-index:7;
+  background:transparent; border:none; padding:0; cursor:pointer}
+#phoneHomeBar::after{content:''; position:absolute; left:50%; bottom:8px; transform:translateX(-50%);
+  width:132px; height:5px; background:#8a7d5f; border:1px solid #6f6047}
+body.night #phoneHomeBar::after{background:#55618a; border-color:#3a4763}
+
+/* ---------- 窄屏上, 手机壳开着就让桌面那套让位 ---------- */
+@media (max-width:760px){
+  body.phone-shell #taskbar, body.phone-shell #startMenu, body.phone-shell #deckDock,
+  body.phone-shell #boatPet, body.phone-shell #gullPet,
+  body.phone-shell #boatOdo{display:none !important}
+  body.phone-shell{--tb-h:0px}
+  /* 主屏状态下正文先收起来 —— 站着的是壳, 不是页面。
+     进了应用(phone-app)正文要露出来, 所以这一条要排除 phone-app。
+     注意 #capState 不在让位名单里: 壳开着的时候它已经被搬进 #pbCap 了,
+     再藏一次就等于船长状态永远不出现。 */
+  body.phone-shell:not(.phone-app) #site{display:none !important}
+  body.phone-shell #toast{bottom:calc(48px + env(safe-area-inset-bottom)); max-width:86vw}
+}
+/* <<< 手机壳 CSS <<< */
+/* >>> 旧界面窄屏补丁 CSS (mobile/inject.cjs 自动插入, 别手改) >>> */
+/* ========================================================================
+ * 旧版桌面界面 · 窄屏补丁 (2026-11-06)
+ *
+ * 手机壳接管时这套规则不生效 (body.phone-shell 会被手机壳接管);
+ * 只有在系统设置里把「手机壳界面」关掉、或者窄屏但船长表过态用旧界面时,
+ * 这套补丁才管事 —— 也就是"旧界面在窄屏上别太惨"。
+ *
+ * 注意: 下面所有规则都锁在 @media (max-width:760px) 里。
+ *   桌面档(>=761px)一点都别动 —— 桌面上任务栏本来就该是 36px 一行,
+ *   桌面档的尺寸由 phone-shell.css 里那套 28px/12px 规则管。
+ *
+ * 判据跟体检脚本一致 (mobile/mobile-check.cjs):
+ *   - 触摸目标 >= 40px (取 min 边, 宽高都得够)
+ *   - 字号 >= 13px
+ *   - 底栏 <= 64px 且不折行
+ *   - 浮层不压正文 (正文取文本行矩形, 判"滚到底还被盖住"的那些)
+ *   - 无横向溢出
+ * ======================================================================== */
+
+@media (max-width:760px){
+
+  /* ---------- 1. 任务栏: 单行 + 横着划 ----------
+   * 16 个应用键 min-width 44px, 加起来 700px 出头, 窄屏一行放不下。
+   * 原来的做法是折行 (390px 上折成 3~4 行, 高 134px, 吃掉半个屏),
+   * 现在改成一行 + 横向滚动: 手指横划就能划到最后一个键, 高度恒定。
+   * (这些键在横向滚动容器里, 不算页面横向溢出 —— 页面真溢出由
+   *  documentElement.scrollWidth 兜底。) */
+  body:not(.phone-shell) #taskbar{
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    overflow-y:hidden;
+    height:48px;
+    padding:3px 4px calc(3px + env(safe-area-inset-bottom));
+    gap:3px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  body:not(.phone-shell) #taskbar::-webkit-scrollbar{height:0; display:none}
+  /* 应用键: 手指点得下, 但不许被 flex 压扁 */
+  body:not(.phone-shell) #taskbar > button{
+    flex:0 0 auto;
+    min-width:44px;
+    min-height:40px;
+    padding:0 6px;
+  }
+  body:not(.phone-shell) #startBtn{
+    flex:0 0 auto;
+    min-width:56px;
+    min-height:40px;
+    font-size:14px;
+  }
+  /* 托盘: 跟着任务栏一起横着划, 不许自己撑出一屏 */
+  body:not(.phone-shell) #tray{
+    flex:0 0 auto;
+    margin-left:auto;
+    height:40px;
+    gap:6px;
+    padding:0 6px;
+  }
+  body:not(.phone-shell) #tray #nightBtn{
+    min-width:44px;
+    min-height:40px;
+    font-size:13px;
+  }
+  /* 时钟在窄屏上占地方又没大用, 让位给应用键 */
+  body:not(.phone-shell) #trayClock{display:none}
+  body:not(.phone-shell) .tb-badge{font:bold 13px/18px Consolas,monospace; min-width:26px; height:20px}
+
+  /* 窄屏把正文底部留够任务栏 + 音乐条的位置 */
+  body:not(.phone-shell).on{padding-bottom:calc(48px + 52px + 8px + env(safe-area-inset-bottom))}
+
+  /* ---------- 2. 甲板音乐: 压成一条, 贴底横着 ----------
+   * 原来那三块 (甲板音乐 192px 宽 / 船长状态 / 灵动岛) 是 fixed 浮层,
+   * 在 390px 上直接压住正文十几行。窄屏上只留一条音乐, 别的收起来。 */
+  body:not(.phone-shell) #deckDock{
+    left:0; right:0;
+    bottom:calc(48px + env(safe-area-inset-bottom));
+    z-index:60;
+    gap:0;
+  }
+  body:not(.phone-shell) #deckMusic{
+    width:auto;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:4px 8px;
+  }
+  body:not(.phone-shell) #deckMusic .dm-head,
+  body:not(.phone-shell) #deckMusic #dmViz,
+  body:not(.phone-shell) #deckMusic .dm-time,
+  body:not(.phone-shell) #deckMusic .dm-count,
+  body:not(.phone-shell) #deckMusic #dmList > *:not(.on){display:none}
+  body:not(.phone-shell) #deckMusic .dm-list{
+    flex:1 1 0%;
+    min-width:0;
+    max-height:none;
+    overflow:hidden;
+    border:none;
+    background:transparent;
+  }
+  body:not(.phone-shell) #deckMusic .dm-item.on{
+    display:flex;
+    align-items:center;
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    min-height:40px;
+    padding:0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:13px;
+  }
+  body:not(.phone-shell) #deckMusic .dm-item.on i{font-size:13px; flex:none}
+  body:not(.phone-shell) #deckMusic .dm-ctrl{margin:0; flex:none; gap:4px}
+  body:not(.phone-shell) #deckMusic .dm-prog{position:absolute; left:0; right:0; top:0; height:4px; margin:0}
+  /* 船长状态 / 灵动岛 / 小船 / 里程牌: 窄屏上它们都是压正文的浮层, 收掉 */
+  body:not(.phone-shell) #capState,
+  body:not(.phone-shell) #dynIsland,
+  body:not(.phone-shell) #boatOdo,
+  body:not(.phone-shell) #boatPet,
+  body:not(.phone-shell) #gullPet{display:none !important}
+
+  /* ---------- 3. 触摸目标补齐 ----------
+   * 体检取 min 边: 宽高都得 >= 40px, 窄一点都算不过。 */
+  /* 日历: 七列, 每格至少 40px 宽, 放不下就横着划 */
+  body:not(.phone-shell) .cal{overflow-x:auto; padding:6px}
+  body:not(.phone-shell) .cal-grid{grid-template-columns:repeat(7, minmax(40px, 1fr))}
+  body:not(.phone-shell) .cal-d{min-width:40px; min-height:40px; font-size:13px}
+  body:not(.phone-shell) .cal-w{font-size:13px; min-height:28px; display:flex; align-items:center; justify-content:center}
+  body:not(.phone-shell) .cal-head button{width:44px; height:40px; font-size:15px}
+  /* 音乐控制键: flex 压扁过, 得写死不许缩 */
+  body:not(.phone-shell) .dm-btn{flex:none; width:40px; height:40px; font-size:13px}
+  body:not(.phone-shell) .dm-loop{flex:none; width:auto; min-width:40px; padding:0 8px; font-size:13px}
+  body:not(.phone-shell) .dm-item{min-height:40px; font-size:13px}
+  body:not(.phone-shell) .dm-time, body:not(.phone-shell) .dm-count{font-size:13px}
+  body:not(.phone-shell) .dm-head, body:not(.phone-shell) .dm-head b, body:not(.phone-shell) .dm-head span{font-size:13px}
+  /* 日记翻页 / 相册打开 / 漂流瓶 / 留言搜索 */
+  body:not(.phone-shell) .diary-head button{width:44px; height:40px; font-size:15px}
+  body:not(.phone-shell) .diary-date{font-size:13px}
+  body:not(.phone-shell) #albumOpenBtn,
+  body:not(.phone-shell) #bottleBtn,
+  body:not(.phone-shell) #gbSearchBtn{min-height:40px; font-size:14px}
+  body:not(.phone-shell) #gbSearchInput{min-height:40px; font-size:14px}
+  /* 标题栏那三个假按钮 */
+  body:not(.phone-shell) .tb-btn{width:40px; height:40px; font-size:16px}
+  /* 小字统统抬到 13px */
+  body:not(.phone-shell) .album-name,
+  body:not(.phone-shell) .album-desc,
+  body:not(.phone-shell) .section-note,
+  body:not(.phone-shell) #nightChannel{font-size:13px}
+
+  /* ---------- 4. 正文链接: 手指点得准 ---------- */
+  body:not(.phone-shell) #site .info-table a,
+  body:not(.phone-shell) #site .footer-links a{
+    display:inline-flex;
+    align-items:center;
+    min-height:40px;
+    padding:0 2px;
+  }
+  body:not(.phone-shell) #site .menu a{min-height:40px; display:flex; align-items:center; justify-content:center}
+}
+
+/* ========================================================================
+ * 二、760 这一格: 窄屏补丁吃到了, 但体检脚本把 760 当桌面档
+ *
+ * 体检脚本的分档是 isDesktop(w) { return w >= 760; } —— 760 整算桌面,
+ * 底栏上限 40px; 而上面这套补丁写的是 (max-width:760px), 760 也被吃进去,
+ * 任务栏 48px 就超了上限。
+ *
+ * 两条路: 把补丁锁到 (max-width:759px), 或者在 760 这一格把任务栏
+ * 换回桌面尺寸。这里选后者 —— 760 整仍然是窄屏版式(40px 触摸目标、
+ * 13px 字都在), 只有底栏高度回到桌面那一档, 不算两头的便宜。
+ * ======================================================================== */
+@media (min-width:760px) and (max-width:760px){
+  body:not(.phone-shell) #taskbar{
+    height:calc(36px + env(safe-area-inset-bottom));
+    padding:0 6px env(safe-area-inset-bottom);
+    gap:4px;
+  }
+  body:not(.phone-shell) #taskbar > button{min-height:28px}
+  body:not(.phone-shell) #startBtn{min-height:28px}
+  body:not(.phone-shell) #tray{height:28px; padding:0 6px}
+  body:not(.phone-shell) #tray #nightBtn{min-height:28px}
+  body:not(.phone-shell) #deckDock{bottom:calc(36px + env(safe-area-inset-bottom))}
+  body:not(.phone-shell).on{padding-bottom:calc(36px + 52px + 8px + env(safe-area-inset-bottom))}
+}
+
+/* ========================================================================
+ * 三、桌面档 761~795px: 一排放不下就别硬挤
+ *
+ * 16 个应用键加托盘自然宽约 796px, 在 761~795px 这一段会把 #tray 顶出
+ * 屏幕右边(拿注入前的备份跑同样的宽度也一样, 是既有问题)。
+ * 办法是让任务栏自己横着划, 手指横划就能划到最后一个键。
+ * ======================================================================== */
+@media (min-width:761px){
+  body:not(.phone-shell) #taskbar{
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:none;
+  }
+  body:not(.phone-shell) #taskbar::-webkit-scrollbar{height:0; display:none}
+  body:not(.phone-shell) #taskbar > button{flex:0 0 auto}
+  body:not(.phone-shell) #startBtn{flex:0 0 auto}
+  body:not(.phone-shell) #tray{flex:0 0 auto}
+}
+/* <<< 旧界面窄屏补丁 CSS <<< */
 </style>
 </head>
 <body>
@@ -2406,6 +2968,12 @@
       <div class="set-row">
         <label class="set-check"><input type="checkbox" id="setBoot"> 播放开机动画 <span class="set-note" style="display:inline">(每会话一次; 关掉则刷新直接进站)</span></label>
       </div>
+<!-- >>> 手机壳开关 (mobile/inject.cjs 自动插入, 别手改) >>> -->
+      <div class="set-row">
+        <label class="set-check"><input type="checkbox" id="setPhoneShell"> 手机壳界面 <span class="set-note" style="display:inline">(窄屏上另起一套: 状态栏、弹簧板、底栏; 关掉就是老样子。)</span></label>
+      </div>
+<!-- <<< 手机壳开关 <<< -->
+
     </div>
     <div class="sys-panel" id="sysPanelVisit"></div>
   </div>
@@ -3553,8 +4121,8 @@ $('#albumWinView').addEventListener('click', function(e){
   lbShow(+f.dataset.idx);
   $('#lightbox').classList.add('open');
 });
-$('.lb-close').addEventListener('click', function(){ $('#lightbox').classList.remove('open'); });
-$('#lightbox').addEventListener('click', function(e){ if(e.target === this) this.classList.remove('open'); });
+$('.lb-close').addEventListener('click', function(){ lbCmtClose(); $('#lightbox').classList.remove('open'); });
+$('#lightbox').addEventListener('click', function(e){ if(e.target === this){ lbCmtClose(); this.classList.remove('open'); } });
 $('.lb-prev').addEventListener('click', function(){ lbCmtClose(); lbShow(lbIndex - 1); });
 $('.lb-next').addEventListener('click', function(){ lbCmtClose(); lbShow(lbIndex + 1); });
 
@@ -3569,9 +4137,10 @@ function lbCmtTermOf(p, i){
 }
 function lbCmtClose(){
   lbCmtOpen = false;
-  var box = $('#lbCmt'), btn = $('#lbCmtBtn');
+  var box = $('#lbCmt'), btn = $('#lbCmtBtn'), lb = $('#lightbox');
   if(box){ box.classList.remove('open'); box.innerHTML = ''; }
   if(btn) btn.classList.remove('on');
+  if(lb) lb.classList.remove('cmt-open');
 }
 function lbCmtToggle(){
   if(lbCmtOpen){ lbCmtClose(); return; }
@@ -3585,6 +4154,8 @@ function lbCmtToggle(){
     '<div id="lbCmtBox"></div>';
   box.classList.add('open');
   if(btn) btn.classList.add('on');
+  var lb = $('#lightbox');
+  if(lb) lb.classList.add('cmt-open');
   lbCmtOpen = true;
   lbCmtMount();
 }
@@ -3675,7 +4246,7 @@ function dlAlbum(){   /* 整本按顺序下载, 间隔留给浏览器消化; 首
 $('#albumDl').addEventListener('click', dlAlbum);
 document.addEventListener('keydown', function(e){
   if(!$('#lightbox').classList.contains('open')) return;
-  if(e.key === 'Escape') $('#lightbox').classList.remove('open');
+  if(e.key === 'Escape'){ lbCmtClose(); $('#lightbox').classList.remove('open'); }
   else if(e.key === 'ArrowLeft') lbShow(lbIndex - 1);
   else if(e.key === 'ArrowRight') lbShow(lbIndex + 1);
 });
@@ -5567,6 +6138,9 @@ function sysSyncSettings(){
   var musicPref=true;try{musicPref=localStorage.getItem('autoplayMusic')!=='off';}catch(e){}
   var setMusicEl=document.getElementById('setMusic');if(setMusicEl)setMusicEl.checked=musicPref;
   $('#setNight').checked = nightOn;
+  /* 手机壳开关: 船长没表态(没存过)时, 勾选框显示"当前实际生效"的那一档 */
+  var setPhoneEl=document.getElementById('setPhoneShell');
+  if(setPhoneEl) setPhoneEl.checked = !!(window.PHONE_SHELL && window.PHONE_SHELL.on && window.PHONE_SHELL.on());
 }
 $$('#setSaver input').forEach(function(r){
   r.addEventListener('change', function(){
@@ -6670,7 +7244,7 @@ function dmVizFrame(t){
     else if(dm.playing) v = 0.3 + 0.55 * Math.abs(Math.sin(t / 160 + i * 0.9));   /* 假舞: 等真数据 */
     else v = 0.08;
     var bh = Math.max(2, Math.round(v * (h - 6)));
-    c.fillStyle = '#39d353';
+    c.fillStyle = nightOn ? '#174a22' : '#39d353';   /* 夜航把柱子压暗, 夜里不刺眼 */
     c.fillRect(2 + i * (bw + 2), h - 3 - bh, bw, bh);
   }
   dmProgSync();   /* 进度条搭频谱的车刷新 */
@@ -10643,7 +11217,8 @@ var ENTRIES = [
     { d:'2026-10-25', h:'还有件小事: 魔方底下那行还原步骤老被一条提示挡着。不是谁写错了, 是提示条一直待在二百层, 而窗口一开就是二百六十几层, 还越点越高——所以提示其实一直在窗口屁股后面, 只从窗口底下露出一截, 看着像被切了一半。把提示条提到九百层, 顺手给窗口封了个顶不让它一直往上冲; 魔方自己的消息也搬进窗口里说了, 那句「还原了」现在写在计时器下面, 不再飘到屏幕底下压着步骤。' },
     { d:'2026-10-30', h:'船长说手机上的魔方难用, 手指头拧不动。查下来毛病不在魔方本身, 在那块画布上: 浏览器一看你在上面划拉, 就以为你要滚页面, 半路把手势抢走, 于是魔方只跟着动半截就僵在那儿——跟它较劲也没用, 是它自己不听话了。现在画布明说自己要手势, 拖动全程跟手; 松手还多溜一小段, 像真的魔方被甩出去那样; 想拧就点面, 点哪半边就往哪边转; 按住不动半秒, 视角自己回正。底下那些小按钮也一律改成手指头点得下的大小, 屏幕上窄的时候排成四列。最后, 眼睛看到的和手指点到的是同一张贴纸——我把画和点用同一份几何算了两遍, 保证不会点到"看着在那儿其实点不到"的地方。' },
     { d:'2026-11-01', h:'留言板上有个叫 re3back 的船员一口气丢过来七八条, 我一条一条去对。船票那扇窗原来关不掉——函数漏写了一个参数, 它就去抓了浏览器自带的 window.open, 结果每次点关闭都被当成"再开一次"; 补上参数就好了。甲板音乐也不对: 耳机上一按暂停, 歌是停了, 可按钮还挂着暂停图标在跑, 因为它压根没听音频自己发出的暂停这件事, 现在改成一切以音频元素为准。灵动岛那边, 打字的时候它老说我在挂机——手一直在敲, 只是鼠标没动而已, 现在记事本、终端、找图框各有各的说法。还有魔方: 贴纸之间的缝占了一成四, 侧面看过去一条条黑线, 被吐槽像东非大裂谷, 收到一成, 看着才像一整块。' },
-    { d:'2026-11-01', h:'相册里那几百张照片, 以前只能看, 不能说话。今天给每张都留了个话筒: 点开大图, 底下有颗「这张的留言」的按钮, 按下去就给这一张单独开一条讨论串——你说的话只挂在这张照片下面, 不会跟别人在别处留的混在一起。几百张照片要是每张都先开好一个空帖子, 仓库会被撑得像塞满了没寄的信, 所以改成谁真想说话才开。换照片的时候它会自己收起来, 免得上一张的话挂到下一张头上。' }
+    { d:'2026-11-01', h:'相册里那几百张照片, 以前只能看, 不能说话。今天给每张都留了个话筒: 点开大图, 底下有颗「这张的留言」的按钮, 按下去就给这一张单独开一条讨论串——你说的话只挂在这张照片下面, 不会跟别人在别处留的混在一起。几百张照片要是每张都先开好一个空帖子, 仓库会被撑得像塞满了没寄的信, 所以改成谁真想说话才开。换照片的时候它会自己收起来, 免得上一张的话挂到下一张头上。' },
+    { d:'2026-11-06', h:'船长翻出手机, 皱起眉: 「适配太烂了。」我拿量角器量了一遍, 确实烂——三百九宽的屏上任务栏折成三行占了一百三十四像素, 左下角那块甲板音乐整个压在正文上, 表格里的链接只有十四像素高, 手指头根本点不准。于是干脆给手机端另造了一台机器: 一台像素风的远古 iPhone, 黑条状态栏、五个一列的弹簧板、底下四个常驻。二十来个应用都搬了进去, 图标全是手画的十六像素方块, 打开就是全屏, 退出来回到主屏。旧版的桌面样子一点没动, 系统设置里加了个开关, 想看哪个看哪个。顺手把旧界面在窄屏上的毛病也补了: 任务栏改成单行能横着划, 甲板音乐收成一条, 小字统统放大到十三像素。船长还没点头, 先放着。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
@@ -10712,6 +11287,972 @@ $('#calNext').addEventListener('click', function(){
 $('#diaryPrev').addEventListener('click', function(){ showEntry(entryIdx - 1); });
 $('#diaryNext').addEventListener('click', function(){ showEntry(entryIdx + 1); });
 showEntry(entryIdx);
+/* >>> 手机壳 JS (mobile/inject.cjs 自动插入, 别手改) >>> */
+/* ========================================================================
+ * 手机壳 —— 远古 iPhone 风格的一套手机界面 + 22 个像素图标
+ * 索引: 系统属性 → 设置 → 「手机壳界面」。旧界面一直都在, 随时切回来。
+ * ======================================================================== */
+var PHONE_SPRITES = {
+  phAppSite: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { N:'#6b4a2a', W:'#fff3cf', R:'#d96a48', B:'#3c79c9' },
+    rows: [
+      '........NRR.....',
+      '.......WN.......',
+      '......WWN.......',
+      '.....WWWN.......',
+      '....WWWWN.......',
+      '...WWWWWN.......',
+      '...WWWWWN.......',
+      '.NNNNNNNNNNNNN..',
+      '..RRRRRRRR..N...',
+      '...RRRRRR...N...',
+      '....RRRR....N...',
+      '.....NN....NNN..',
+      'BBBB..BBBB.BBBB.',
+      '..BBB..BBB...BBB',
+      'BBB..BBB..BBB...',
+      '...BBB..BBB..BBB',
+    ]
+  },
+  phAppTerm: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { N:'#6b4a2a', K:'#26201a', G:'#8fce63', D:'#4e6b3c' },
+    rows: [
+      'NNNNNNNNNNNNNNNN',
+      'NKKKKKKKKKKKKKKN',
+      'NKKDDDDKKKKKKKKN',
+      'NKKKKKKKKKKKKKKN',
+      'NKKKKGKKKKKKKKKN',
+      'NKKKGKKKDDDKKKKN',
+      'NKKGKKKKDDKKKKKN',
+      'NKKKGKKKKKKKKKKN',
+      'NKKKKGKKKKKKKKKN',
+      'NKKKKKKKKKKKKKKN',
+      'NKKDKDKDKKKKKKKN',
+      'NKKKKKKKKKKKKKKN',
+      'NKKGGGKKKKKKKKKN',
+      'NKKGGGKKKKKKKKKN',
+      'NKKKKKKKKKKKKKKN',
+      'NNNNNNNNNNNNNNNN',
+    ]
+  },
+  phAppHelp: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { W:'#fff3cf', Y:'#f0dfb4', K:'#3a2f22' },
+    rows: [
+      '................',
+      '..WWWWWWWWWWWW..',
+      '.WWWWWWWWWWWWWW.',
+      '.WWWWWWKKKWWWWW.',
+      '.WWWWWWWWKKWWWW.',
+      '.WWWWWWWWWKWWWW.',
+      '.WWWWWWWWKWWWWW.',
+      '.WWWWWWWKWWWWWW.',
+      '.WWWWWWKWWWWWWW.',
+      '.WWWWWWWWWWWWWW.',
+      '.WWWWWWKWWWWWWW.',
+      '.WWWWWWWWWWWWWW.',
+      '..YYYYYYYYYYYY..',
+      '...WW...........',
+      '..WW............',
+      '................',
+    ]
+  },
+  phAppCalc: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { C:'#c9c9c9', K:'#33302a', G:'#8fce63', Y:'#f7c85f', R:'#d96a48', B:'#3c79c9' },
+    rows: [
+      '................',
+      '...CCCCCCCCCC...',
+      '..CKKKKKKKKKKC..',
+      '..CKKKKKKGKGKC..',
+      '..CKKKKKKGGGKC..',
+      '..CKKKKKKKKKKC..',
+      '..CCCCCCCCCCCC..',
+      '..CCYYYCCRRRCC..',
+      '..CCYYYCCRRRCC..',
+      '..CCYYYCCRRRCC..',
+      '..CCCCCCCCCCCC..',
+      '..CCGGGCCBBBCC..',
+      '..CCGGGCCBBBCC..',
+      '..CCGGGCCBBBCC..',
+      '...CCCCCCCCCC...',
+      '................',
+    ]
+  },
+  phAppGame: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { C:'#c9c9c9', K:'#33302a', R:'#d96a48', Y:'#f7c85f' },
+    rows: [
+      '................',
+      '................',
+      '................',
+      '................',
+      '....CCCCCCCC....',
+      '..CCCCCCCCCCCC..',
+      '.CCCKCCCCCCRRCC.',
+      '.CCCKCCCCCCRRCC.',
+      '.CKKKKKCCCCCCCC.',
+      '.CCCKCCCCCYYCCC.',
+      '.CCCKCCCCCYYCCC.',
+      '..CCCCCCCCCCCC..',
+      '....CCCCCCCC....',
+      '................',
+      '................',
+      '................',
+    ]
+  },
+  phAppDiary: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { R:'#c9563f', W:'#fff3cf', Y:'#e3d0a6', K:'#3a2f22', M:'#8f3a28' },
+    rows: [
+      '................',
+      '.RRRRRRRRRRRRRR.',
+      '.RWWWWWKKYYYYYR.',
+      '.RWWWWWKKYYYYYR.',
+      '.RWKKKWKKYKKKYR.',
+      '.RWWWWWKKYYYYYR.',
+      '.RWKKKWKKYKKKYR.',
+      '.RWWWWWKKYYYYYR.',
+      '.RWKKKWKKYKKKYR.',
+      '.RWWWWWKKYYYYYR.',
+      '.RWKKKWKKYYYYYR.',
+      '.RWWWWWKKYYYYYR.',
+      '.RWWWWWKKYYYYYR.',
+      '.RRRRRRRRRRMMRR.',
+      '.RRRRRRRRRRMMRR.',
+      '...........MM...',
+    ]
+  },
+  phAppBrowser: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { N:'#6b4a2a', B:'#3c79c9', R:'#c9563f', W:'#fff3cf', K:'#3a2f22' },
+    rows: [
+      '................',
+      '.NNNNNNNNNNNNNN.',
+      '.NBBBBBBBBBRRBN.',
+      '.NBBBBBBBBBRRBN.',
+      '.NWWWWWWWWWWWWN.',
+      '.NWBWKKKKKKWWWN.',
+      '.NWWWWWWWWWWWWN.',
+      '.NNNNNNNNNNNNNN.',
+      '.NWWWWWWWWWWWWN.',
+      '.NWBBBBBBWWWWWN.',
+      '.NWWWWWWWWWWWWN.',
+      '.NWBBBBWWWWWWWN.',
+      '.NWWWWWWWWWWWWN.',
+      '.NWWWWWWWWWWWWN.',
+      '.NNNNNNNNNNNNNN.',
+      '................',
+    ]
+  },
+  phAppAlbum: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { N:'#6b4a2a', B:'#3c79c9', Y:'#f7c85f', G:'#88ad68' },
+    rows: [
+      '................',
+      '.NNNNNNNN.......',
+      '.NBBBBYYN.......',
+      '.NBBBBYYN.......',
+      '.NBBBBBBN.......',
+      '.NGGGGGGN.......',
+      '.NGGGGNNNNNNNNN.',
+      '.NNNNNNBBBBYYBN.',
+      '......NBBBBYYBN.',
+      '......NBBNBBBBN.',
+      '......NBNNNBBBN.',
+      '......NGGGGGGGN.',
+      '......NGGGGGGGN.',
+      '......NNNNNNNNN.',
+      '................',
+      '................',
+    ]
+  },
+  phAppPaint: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { P:'#d3b98c', D:'#8b5a3c', K:'#3a2f22', R:'#d96a48', Y:'#f7c85f', B:'#3c79c9', G:'#88ad68' },
+    rows: [
+      '..............DD',
+      '.............DD.',
+      '............DD..',
+      '...........KK...',
+      '..........KK....',
+      '.........RR.....',
+      '........RR......',
+      '..PPPPPPPPPPP...',
+      '.PPPPPPPPPPPPP..',
+      '.PPYYPRRPPPPPP..',
+      '.PPYYPRRPP...P..',
+      '.PPPPPPPPP...P..',
+      '.PPBBPGGPP...P..',
+      '.PPBBPGGPPPPPP..',
+      '..PPPPPPPPPPP...',
+      '................',
+    ]
+  },
+  phAppSolar: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { B:'#3c79c9', D:'#25549a', L:'#d0e1ec', Y:'#f7c85f' },
+    rows: [
+      '................',
+      '................',
+      '................',
+      '................',
+      '................',
+      '.....BLBBBB.....',
+      '...YYLBBBBBYY...',
+      '.YYYBBBDDDDBYYY.',
+      '.YY.BBDDDDDD.YY.',
+      '.YYYYYYYYYYYYYY.',
+      '...YYYYYYYYYY...',
+      '.....BBDDDD.....',
+      '................',
+      '................',
+      '................',
+      '................',
+    ]
+  },
+  phAppTimer: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { K:'#3a2f22', Y:'#f7c85f', W:'#d0e1ec' },
+    rows: [
+      '................',
+      '..KKKKKKKKKKKK..',
+      '..K..........K..',
+      '..K.KKKKKKKK.K..',
+      '..K.K......K.K..',
+      '...K.K....K.K...',
+      '....K.K..K.K....',
+      '.....K.KK.K.....',
+      '.....K.KK.K.....',
+      '....K.KKKK.K....',
+      '...K.KYYYYK.K...',
+      '..K.KKKKKKKK.K..',
+      '..K.KKKKKKKK.K..',
+      '..K..........K..',
+      '..KKKKKKKKKKKK..',
+      '................',
+    ]
+  },
+  phAppCount: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { N:'#6b4a2a', R:'#c9563f', W:'#fff3cf', C:'#b0aa9c' },
+    rows: [
+      '....NN...NN.....',
+      '....NN...NN.....',
+      '....NN...NN.....',
+      '.RRRNNRRRNNRRRR.',
+      '.RRRRRRRRRRRRRR.',
+      '.WWWWCWWWWCWWWW.',
+      '.WWWWCWWWWCWWWW.',
+      '.WWWWCWWWWCWWWW.',
+      '.CCCCCCCCCCCCCC.',
+      '.WWWWCWWWWCWWWW.',
+      '.WWWWCWWWWCWWWW.',
+      '.CCCCCCCCCCRRRC.',
+      '.WWWWCWWWWCRRRW.',
+      '.WWWWCWWWWCWWWW.',
+      '.NNNNNNNNNNNNNN.',
+      '................',
+    ]
+  },
+  phAppImg: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { N:'#6b4a2a', B:'#3c79c9', G:'#88ad68', Y:'#f7c85f' },
+    rows: [
+      '................',
+      '......N.........',
+      '...NNNNNNN......',
+      '..NNNNBNNNN.....',
+      '..NNYYBBBNN.....',
+      '..NNYYBBBNN.....',
+      '.NNBBBBBBBNN....',
+      '..NGGNGGGGN.....',
+      '..NGNNNGGGN.....',
+      '..NGGGGGGGN.....',
+      '...NNNNNNNNN....',
+      '......N....NN...',
+      '............NN..',
+      '.............NN.',
+      '..............NN',
+      '...............N',
+    ]
+  },
+  phAppGrade: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { W:'#fff3cf', K:'#3a2f22', C:'#b0aa9c', G:'#88ad68', Y:'#f7c85f' },
+    rows: [
+      '................',
+      '.WWWWWWWWWWWWWW.',
+      '.WKKWWWWWWWWWWW.',
+      '.WKKWWWWWWWYYYW.',
+      '.WKKWCCCCCCYYYW.',
+      '.WKKWWWWWWWYYWW.',
+      '.WKKWWWWWWYYWWW.',
+      '.WKKWCCCGGYCCWW.',
+      '.WKKWWWGGGWWWWW.',
+      '.WKKWGGGWWWWWWW.',
+      '.WKKGGGWWWWWWWW.',
+      '.WKKGKKKKKKKKKW.',
+      '.WKKKKKKKKKKKKW.',
+      '.WWWWWWWWWWWWWW.',
+      '................',
+      '................',
+    ]
+  },
+  phAppCube: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { Y:'#f7c85f', R:'#d96a48', G:'#88ad68', K:'#3a2f22' },
+    rows: [
+      '................',
+      '........K.......',
+      '......KKYKK.....',
+      '....KKYYYYYKK...',
+      '...KYYYYYYYYYK..',
+      '...KKKYYYYYKKK..',
+      '...KRRKKYKKGGK..',
+      '...KRRRRKGGGGK..',
+      '...KRRRRKGGGGK..',
+      '...KRRRRKGGGGK..',
+      '...KRRRRKGGGGK..',
+      '....KKRRKGGKK...',
+      '......KKKKK.....',
+      '........K.......',
+      '................',
+      '................',
+    ]
+  },
+  phAppTask: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { N:'#6b4a2a', K:'#3a2f22', Y:'#f7c85f', R:'#d96a48', G:'#88ad68' },
+    rows: [
+      '................',
+      '.NNNNNNNNNNNNNN.',
+      '.NYY..KKKKKKK.N.',
+      '.NYY..KKKK....N.',
+      '.NNNNNNNNNNNNNN.',
+      '................',
+      '.NNNNNNNNNNNNNN.',
+      '.NRR..KKKKKKK.N.',
+      '.NRR..KKKK....N.',
+      '.NNNNNNNNNNNNNN.',
+      '................',
+      '.NNNNNNNNNNNNNN.',
+      '.NGG..KKKKKKK.N.',
+      '.NGG..KKKK....N.',
+      '.NNNNNNNNNNNNNN.',
+      '................',
+    ]
+  },
+  phAppNote: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { Y:'#f7c85f', W:'#fff3cf', K:'#3a2f22' },
+    rows: [
+      '................',
+      '..YYYYYYYYYYYY..',
+      '..YYYYYYYYYYYY..',
+      '..YKKKKKKKKKKY..',
+      '..YYYYYYYYYYYY..',
+      '..YKKKKKKKYYYY..',
+      '..YYYYYYYYYYYY..',
+      '..YKKKKKKKKKKY..',
+      '..YYYYYYYYYYYY..',
+      '..YKKKKKKKKYYY..',
+      '..YYYYYYYYYYYY..',
+      '..YKKKKKKYYYYW..',
+      '..YYYYYYYYYYWW..',
+      '..YYYYYYYYYWWW..',
+      '................',
+      '................',
+    ]
+  },
+  phAppPc: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { C:'#c9c9c9', K:'#33302a', G:'#8fce63', R:'#d96a48' },
+    rows: [
+      '................',
+      '................',
+      '.CCCCCCCCC......',
+      '.CKKKKKKKC......',
+      '.CKGGGKKKCCCCCC.',
+      '.CKGKGKKKCCKKCC.',
+      '.CKGGGKKKCCKKCC.',
+      '.CKKKKGGKCCCCRC.',
+      '.CKKKKKKKCCCCCC.',
+      '.C......RCCCCCC.',
+      '.CCCCCCCCCCCCCC.',
+      '....CCC...CCCCC.',
+      '....CCC...CCCCC.',
+      '..CCCCCCC.CCCCC.',
+      '................',
+      '................',
+    ]
+  },
+  phAppSys: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { C:'#c9c9c9', K:'#33302a', Y:'#f7c85f', G:'#8fce63' },
+    rows: [
+      'CCCCCCCCC.......',
+      'CKKKKKKKC.......',
+      'CKGGKGKKC.......',
+      'CKGKKKKKC.......',
+      'CKGGGKKKC.......',
+      'CKKKKKKKCYY.....',
+      'CKKKKKKKCYY.....',
+      'C.......YYYYYY..',
+      'CCCCCCCCYYYYYY..',
+      '......YYYYKKYYYY',
+      '......YYYYKKYYYY',
+      '........YYYYYY..',
+      '........YYYYYY..',
+      '.........YY.....',
+      '.........YY.....',
+      '................',
+    ]
+  },
+  phAppSign: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { N:'#6b4a2a', R:'#c9563f', W:'#fff3cf', C:'#b0aa9c', G:'#88ad68' },
+    rows: [
+      '..NN..NN........',
+      'RRNNRRNNR.......',
+      'RRNNRRNNR.......',
+      'WWWWCWWWW.......',
+      'WWWWCWWWW....GGG',
+      'CCCCCCCCC.....G.',
+      'WWWWCWWWW....GG.',
+      'WWWWCWWWW...GGG.',
+      'CCCCCCCCC...G...',
+      'WWWWGWWWW..GG...',
+      'WWWWGGWWW.GG....',
+      'NNNNNGGNNGG.....',
+      '......GG.G......',
+      '.......GGG......',
+      '........G.......',
+      '................',
+    ]
+  },
+  phAppPower: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { R:'#d96a48' },
+    rows: [
+      '.......RR.......',
+      '.......RR.......',
+      '.......RR.......',
+      '.....R.RR.R.....',
+      '...RRR.RR.RRR...',
+      '...RR..RR..RR...',
+      '..RR...RR...RR..',
+      '..RR........RR..',
+      '..RR........RR..',
+      '..RR........RR..',
+      '..RR........RR..',
+      '..RR........RR..',
+      '...RR......RR...',
+      '...RRRRRRRRRR...',
+      '.....RRRRRR.....',
+      '................',
+    ]
+  },
+  phSignal: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { G:'#88ad68', D:'#5d7d47' },
+    /* 夜航的绿要压暗: 体检看的就是画布角落像素, 亮绿会算成"夜里还亮着" */
+    nightPal: { G:'#254220', D:'#1b3218', K:'#1c2740' },
+    rows: [
+      '......GD',
+      '......GD',
+      '......GD',
+      '....GDGD',
+      '....GDGD',
+      '....GDGD',
+      '..GDGDGD',
+      '..GDGDGD',
+      '..GDGDGD',
+      'GDGDGDGD',
+      'GDGDGDGD',
+      'GDGDGDGD',
+    ]
+  },
+  phBattery: {
+    out: '#3a2f22',
+    shadow: null,
+    pal: { K:'#3a2f22', G:'#88ad68' },
+    nightPal: { K:'#1c2740', G:'#254220' },
+    rows: [
+      'KKKKKKKKKK..',
+      'KGGGG....K..',
+      'KGGGG....KKK',
+      'KGGGG....KKK',
+      'KGGGG....KKK',
+      'KGGGG....K..',
+      'KKKKKKKKKK..',
+    ]
+  }
+};
+
+
+/* ================= 手机壳 · 远古 iPhone 风格 =================
+   窄屏(≤760px)上另起一套界面: 黑条状态栏 + 弹簧板桌面 + 底栏 + 全屏应用。
+   桌面那套(任务栏 / 左下角面板)在手机上让位, 但随时能切回来 ——
+   系统属性 → 设置里有开关, 记在 localStorage['phoneShell']。
+
+   三态开关:
+     localStorage 里没有值 = 船长还没表态 → 跟着屏幕宽度走(窄屏开, 宽屏关);
+     记了 'on' / 'off' = 船长表过态 → 就按他说的来, 哪怕屏幕宽度变了。
+
+   规矩照旧: 纯像素硬边, 每个表面都有 body.night 变体, 触屏目标不小于 40px。
+
+   怎么用: index.html 里把本段整个贴进去(前面先有 PHONE_SPRITES 和 drawSprite)。
+   预览页 mobile/phone-preview.html 用的是同一份文件, 不会出现"预览一个样、真机另一个样"。 */
+(function(){
+'use strict';
+
+var QS = function(s){ return document.querySelector(s); };
+var PREF_KEY = 'phoneShell';
+
+/* ---------- 应用清单: 图标 / 名字 / 搬进全屏视图的窗口 ---------- */
+var PHONE_APPS = [
+  { k:'site',    ic:'phAppSite',    lb:'小站',   tgt:'site' },
+  { k:'term',    ic:'phAppTerm',    lb:'终端',   tgt:'term',   open:function(){ if(typeof termToggle === 'function') termToggle(true); } },
+  { k:'help',    ic:'phAppHelp',    lb:'帮助',   tgt:'helpWin', open:function(){ if(typeof helpAsk === 'function') helpAsk(); else if(typeof helpToggle === 'function') helpToggle(true); } },
+  { k:'calc',    ic:'phAppCalc',    lb:'计算器', tgt:'calcWin', open:function(){ if(typeof calcToggle === 'function') calcToggle(true); } },
+  { k:'game',    ic:'phAppGame',    lb:'游戏厅', tgt:'gameWin', open:function(){ if(typeof gameToggle === 'function') gameToggle(true); } },
+  { k:'diary',   ic:'phAppDiary',   lb:'日记',   tgt:'diaryWin', open:function(){ if(typeof diaryAppToggle === 'function') diaryAppToggle(true); } },
+  { k:'browser', ic:'phAppBrowser', lb:'浏览器', tgt:'browserWin', open:function(){ if(typeof brToggle === 'function') brToggle(true); } },
+  { k:'album',   ic:'phAppAlbum',   lb:'相册',   tgt:'albumWin', open:function(){ if(typeof albumWinToggle === 'function') albumWinToggle(true); } },
+  { k:'paint',   ic:'phAppPaint',   lb:'画板',   tgt:'paintWin', open:function(){ if(typeof ptPaintToggle === 'function') ptPaintToggle(true); } },
+  { k:'solar',   ic:'phAppSolar',   lb:'太阳系', tgt:'solarWin', open:function(){ if(typeof solarToggle === 'function') solarToggle(true); } },
+  { k:'timer',   ic:'phAppTimer',   lb:'沙漏',   tgt:'hgWin', open:function(){ if(typeof hgToggle === 'function') hgToggle(true); } },
+  { k:'count',   ic:'phAppCount',   lb:'倒数日', tgt:'ddWin', open:function(){ if(typeof ddToggle === 'function') ddToggle(true); } },
+  { k:'img',     ic:'phAppImg',     lb:'找图',   tgt:'imgSearchWin', open:function(){ if(typeof imgSearchToggle === 'function') imgSearchToggle(true); } },
+  { k:'grade',   ic:'phAppGrade',   lb:'成绩',   tgt:'gradeWin', open:function(){ if(typeof gradeToggle === 'function') gradeToggle(true); } },
+  { k:'cube',    ic:'phAppCube',    lb:'魔方',   tgt:'cubeWin', open:function(){ if(typeof cubeToggle === 'function') cubeToggle(true); } },
+  { k:'task',    ic:'phAppTask',    lb:'任务管理', tgt:'tmgrWin', open:function(){ if(typeof tmgrToggle === 'function') tmgrToggle(true); } },
+  { k:'note',    ic:'phAppNote',    lb:'记事本', tgt:'noteWin', open:function(){ if(typeof noteToggle === 'function') noteToggle(true); } },
+  { k:'pc',      ic:'phAppPc',      lb:'我的电脑', tgt:'mypcWin', open:function(){ if(typeof mypcToggle === 'function') mypcToggle(true); } },
+  { k:'sys',     ic:'phAppSys',     lb:'系统设置', tgt:'sysWin', open:function(){ if(typeof sysToggle === 'function') sysToggle(true, 'set'); } },
+  { k:'sign',    ic:'phAppSign',    lb:'每日签到', open:function(){ if(typeof checkin === 'function') checkin(); } },
+  { k:'power',   ic:'phAppPower',   lb:'关机',   open:function(){ var b = document.getElementById('startShutdown'); if(b) b.click(); } }
+];
+/* 底栏常驻的四个 */
+var PHONE_DOCK = ['site', 'game', 'cube', 'term'];
+
+/* 能被搬进全屏视图的窗口 */
+var PHONE_WINDOWS = ['term','helpWin','calcWin','mineWin','gameWin','g2048Win','ttWin','snakeWin','diaryWin',
+  'hgWin','paintWin','solarWin','albumWin','ddWin','imgSearchWin','gradeWin','cubeWin','tmgrWin','browserWin',
+  'sysWin','noteWin','mypcWin','ticketWin','spoilerWin'];
+
+/* 桌面那三块面板, 壳接管整屏时搬进壳里, 不接管时留在原地 */
+var CHROME_PARTS = ['#deckMusic', '#capState', '#dynIsland'];
+
+var shell, home, view, dock, statusBar, homeBar, gridEl, capSlot;
+var current = null;      /* 现在待在全屏视图里的那个元素 */
+var mounted = false;     /* 三块面板是否已经搬进壳 */
+var built = false;
+var pref = null;         /* null=没表态, 'on', 'off' */
+var mqPhone = window.matchMedia ? window.matchMedia('(max-width:760px)') : null;
+
+/* ================= 搭壳 ================= */
+function buildShell(){
+  if(built || QS('#phoneShell')) return;
+  built = true;
+
+  shell = document.createElement('div');
+  shell.id = 'phoneShell';
+  shell.innerHTML =
+    '<div id="phoneStatus">' +
+      '<span class="pb-time" id="pbTime">--:--</span>' +
+      '<div class="pb-island" id="pbIsland"></div>' +
+      '<div class="pb-right">' +
+        '<canvas class="pb-ic" id="pbSignal"></canvas>' +
+        '<canvas class="pb-ic" id="pbBattery"></canvas>' +
+      '</div>' +
+    '</div>' +
+    '<div id="phoneHome">' +
+      '<div class="pb-banner">' +
+        '<canvas id="pbLogo"></canvas>' +
+        '<div class="pb-txt">' +
+          '<div class="pb-name">船只悠悠的小站</div>' +
+          '<div class="pb-sub" id="pbSub">一条慢悠悠的船, 泊在互联网边上。</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pb-cap" id="pbCap"></div>' +
+      '<div class="pb-quick">' +
+        '<button type="button" class="pb-btn" id="pbNight">夜航</button>' +
+        '<button type="button" class="pb-btn" id="pbSign2">签到</button>' +
+        '<button type="button" class="pb-btn" id="pbSet">设置</button>' +
+      '</div>' +
+      '<div class="pb-grid" id="pbGrid"></div>' +
+    '</div>' +
+    '<div id="pbMusic"></div>' +
+    '<div id="phoneDock"></div>' +
+    '<div id="phoneView"></div>' +
+    '<button type="button" id="phoneHomeBar" aria-label="回主屏" title="回主屏"></button>';
+  document.body.appendChild(shell);
+
+  statusBar = QS('#phoneStatus');
+  home = QS('#phoneHome');
+  view = QS('#phoneView');
+  dock = QS('#phoneDock');
+  homeBar = QS('#phoneHomeBar');
+  gridEl = QS('#pbGrid');
+  capSlot = QS('#pbCap');
+
+  /* 弹簧板图标: 底栏那四个不重复摆 */
+  PHONE_APPS.forEach(function(app){
+    if(PHONE_DOCK.indexOf(app.k) >= 0) return;
+    gridEl.appendChild(iconButton(app));
+  });
+  /* 底栏图标 */
+  PHONE_DOCK.forEach(function(k){
+    var app = appByKey(k);
+    if(app) dock.appendChild(iconButton(app));
+  });
+
+  /* 顶栏时间 */
+  tickClock();
+  setInterval(tickClock, 20000);
+
+  /* 状态栏右上角两个小像素图标 + 站标小船 —— 画在这儿, 不管壳有没有开都要画 */
+  drawIcon(QS('#pbSignal'), 'phSignal', 1);
+  drawIcon(QS('#pbBattery'), 'phBattery', 1);
+  var logo = QS('#pbLogo');
+  if(logo){
+    try{ drawSprite(logo, typeof boatSkinName === 'function' ? boatSkinName() : 'boat', 2); }catch(e){}
+  }
+
+  /* 白天夜里换色, 图标得重画一遍(夜航用暗色板) */
+  if(window.MutationObserver){
+    new MutationObserver(function(){
+      drawIcon(QS('#pbSignal'), 'phSignal', 1);
+      drawIcon(QS('#pbBattery'), 'phBattery', 1);
+    }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  /* 按钮 */
+  QS('#pbNight').addEventListener('click', function(){
+    var nb = document.getElementById('nightBtn');
+    if(nb) nb.click();
+  });
+  QS('#pbSign2').addEventListener('click', function(){
+    if(typeof checkin === 'function') checkin();
+  });
+  QS('#pbSet').addEventListener('click', function(){
+    if(typeof sysToggle === 'function') sysToggle(true, 'set');
+  });
+  homeBar.addEventListener('click', function(){ goHome(); });
+
+  /* 桌面图标点开 */
+  shell.addEventListener('click', function(e){
+    var btn = e.target.closest ? e.target.closest('.pb-icon') : null;
+    if(!btn) return;
+    openApp(btn.getAttribute('data-app'));
+  });
+
+  /* 窗口自己开/关的时候, 跟着搬家 */
+  PHONE_WINDOWS.forEach(function(id){
+    var el = QS('#' + id);
+    if(!el) return;
+    rememberHome(el);
+    if(window.MutationObserver){
+      new MutationObserver(function(){
+        if(!shellTakingOver()) return;
+        if(el.classList.contains('open')) enterView(el);
+        else leaveView(el);
+      }).observe(el, { attributes: true, attributeFilter: ['class'] });
+    }
+  });
+  rememberHome(QS('#site'));
+}
+
+/* 记住每个窗口原来在哪儿, 不接管的时候搬回去 */
+function rememberHome(el){
+  if(!el || el.__pbHome) return;
+  el.__pbHome = { parent: el.parentNode, next: el.nextSibling };
+}
+function restoreHome(el){
+  if(!el || !el.__pbHome) return;
+  var h = el.__pbHome;
+  if(h.parent && h.parent.isConnected){
+    h.parent.insertBefore(el, h.next && h.next.isConnected ? h.next : null);
+  }else{
+    document.body.appendChild(el);
+  }
+}
+
+function appByKey(k){
+  for(var i = 0; i < PHONE_APPS.length; i++) if(PHONE_APPS[i].k === k) return PHONE_APPS[i];
+  return null;
+}
+function iconButton(app){
+  var b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'pb-icon';
+  b.setAttribute('data-phone-icon', app.k);
+  b.setAttribute('data-app', app.k);
+  b.setAttribute('data-label', app.lb);
+  b.title = app.lb;
+  var cv = document.createElement('canvas');
+  b.appendChild(cv);
+  var s = document.createElement('span');
+  s.textContent = app.lb;
+  b.appendChild(s);
+  drawIcon(cv, app.ic, 2);
+  return b;
+}
+/* 夜航的状态栏图标要单独画。
+   为什么不用 drawSprite: 它会给顶边提亮、给外轮廓描深色, 提亮之后亮度
+   又飘上去了 —— 夜里那点绿亮得跟信号灯似的。所以夜航这一版直接平铺像素,
+   不提亮不描边, 亮不亮就按色板说了算。 */
+function paintFlat(cv, key, scale, pal){
+  if(!cv || typeof SPRITES === 'undefined') return;
+  var sp = SPRITES[key];
+  if(!sp || !sp.rows) return;
+  var rows = sp.rows, cols = 0;
+  rows.forEach(function(r){ cols = Math.max(cols, r.length); });
+  var pad = 2;
+  cv.width = (cols + pad * 2) * scale;
+  cv.height = (rows.length + pad * 2) * scale;
+  var ctx = cv.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  for(var y = 0; y < rows.length; y++){
+    var row = rows[y];
+    for(var x = 0; x < row.length; x++){
+      var c = pal[row[x]];
+      if(!c) continue;
+      ctx.fillStyle = c;
+      ctx.fillRect((x + pad) * scale, (y + pad) * scale, scale, scale);
+    }
+  }
+}
+function drawIcon(cv, key, scale){
+  if(!cv || typeof drawSprite !== 'function') return;
+  var sp = typeof SPRITES !== 'undefined' ? SPRITES[key] : null;
+  var night = document.body.classList.contains('night');
+  /* 夜航 + 有暗色板 -> 平铺暗色像素; 白天 -> 走 drawSprite, 有体积感 */
+  if(night && sp && sp.nightPal){
+    paintFlat(cv, key, scale, sp.nightPal);
+    return;
+  }
+  try{ drawSprite(cv, key, scale); }catch(e){}
+}
+function tickClock(){
+  var el = QS('#pbTime');
+  if(!el) return;
+  var d = new Date();
+  el.textContent = (d.getHours() < 10 ? '0' : '') + d.getHours() + ':' + (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
+}
+
+/* ================= 进出全屏应用 ================= */
+function enterView(el){
+  if(!view || !el) return;
+  if(el === current) return;
+  if(current && current !== el) restoreHome(current);   /* 上一个搬回原位 */
+  if(el.parentNode !== view) view.appendChild(el);
+  el.classList.add('pb-inview');
+  current = el;
+  document.body.classList.add('phone-app');
+  try{ window.scrollTo(0, 0); }catch(e){}
+}
+function leaveView(el){
+  if(!el || el !== current) return;
+  restoreHome(el);
+  el.classList.remove('pb-inview');
+  current = null;
+  document.body.classList.remove('phone-app');
+}
+function openApp(k){
+  var app = appByKey(k);
+  if(!app) return;
+  if(app.tgt === 'site'){
+    var site = QS('#site');
+    if(site){
+      if(site.parentNode !== view) view.appendChild(site);
+      site.classList.add('pb-inview');
+      current = site;
+      document.body.classList.add('phone-app');
+      try{ window.scrollTo(0, 0); }catch(e){}
+    }
+    return;
+  }
+  if(app.open) app.open();
+  else if(app.tgt) toastSoft(app.lb + ' 还没装上。');
+}
+function goHome(){
+  if(!current) return;
+  if(current.id === 'site'){
+    current.classList.remove('pb-inview');
+    restoreHome(current);
+  }else{
+    current.classList.remove('open');
+    current.classList.remove('pb-inview');
+    restoreHome(current);
+  }
+  current = null;
+  document.body.classList.remove('phone-app');
+}
+function toastSoft(msg){
+  if(typeof toast === 'function') toast(msg);
+}
+
+/* ================= 桌面那三块面板, 搬进壳 / 搬回去 ================= */
+function mountChrome(){
+  if(mounted) return;
+  var music = QS('#deckMusic'), cap = QS('#capState'), island = QS('#dynIsland');
+  if(music && QS('#pbMusic')) QS('#pbMusic').appendChild(music);
+  if(island && QS('#pbIsland')) QS('#pbIsland').appendChild(island);
+  if(cap && capSlot) capSlot.appendChild(cap);
+  mounted = true;
+}
+function unmountChrome(){
+  if(!mounted) return;
+  CHROME_PARTS.forEach(function(sel){
+    var el = QS(sel);
+    if(el) restoreHome(el);
+  });
+  mounted = false;
+}
+function snapshotChromeHome(){
+  CHROME_PARTS.forEach(function(sel){
+    rememberHome(QS(sel));
+  });
+}
+
+/* ================= 开关 ================= */
+function readPref(){
+  try{ return localStorage.getItem(PREF_KEY); }catch(e){ return null; }
+}
+function narrowNow(){
+  if(mqPhone && mqPhone.matches) return true;
+  return !!(window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
+}
+/* 船长没表态 → 跟着屏幕宽度走; 表过态 → 按他说的来 */
+function wantShell(){
+  if(pref === 'on') return true;
+  if(pref === 'off') return false;
+  return narrowNow();
+}
+/* 壳是不是正在接管整屏(窄屏 + 开着) */
+function shellTakingOver(){
+  return wantShell() && narrowNow();
+}
+function setShell(on, save){
+  pref = on ? 'on' : 'off';
+  if(save !== false){
+    try{ localStorage.setItem(PREF_KEY, pref); }catch(e){}
+  }
+  applyShell();
+}
+function applyShell(){
+  var on = wantShell();
+  document.body.classList.toggle('phone-shell', on);
+
+  if(shellTakingOver()){
+    mountChrome();
+    /* 接管的时候, 已经开着的窗口要搬进全屏视图 */
+    PHONE_WINDOWS.forEach(function(id){
+      var el = QS('#' + id);
+      if(el && el.classList.contains('open')) enterView(el);
+    });
+  }else{
+    if(current){ restoreHome(current); current = null; }
+    document.body.classList.remove('phone-app');
+    unmountChrome();
+  }
+  syncPrefBox();
+}
+function syncPrefBox(){
+  var box = QS('#setPhoneShell');
+  if(box) box.checked = wantShell();
+}
+
+/* ================= 开机 ================= */
+function boot(){
+  /* 手机图标先并进 SPRITES, 再建壳 ——
+     顺序反了的话, 画图标那会儿 SPRITES 里还没有这些图标, 画出来是空画布 */
+  if(typeof SPRITES !== 'undefined' && typeof PHONE_SPRITES !== 'undefined'){
+    for(var k in PHONE_SPRITES) SPRITES[k] = PHONE_SPRITES[k];
+  }
+
+  buildShell();
+  snapshotChromeHome();
+
+  /* 船长的态度 */
+  var saved = readPref();
+  pref = (saved === 'on' || saved === 'off') ? saved : null;
+
+  /* URL 里带 ?phone=off / ?phone=on 可以临时顶一下(体检脚本用得上) */
+  try{
+    var q = (location.search || '').match(/[?&]phone=(on|off)/);
+    if(q) pref = q[1];
+  }catch(e){}
+
+  applyShell();
+
+  /* 切换开关 */
+  var box = QS('#setPhoneShell');
+  if(box) box.addEventListener('change', function(){ setShell(this.checked, true); });
+
+  /* 屏幕尺寸变了, 进出窄屏要重新挂面板 */
+  if(mqPhone){
+    var onChange = function(){ applyShell(); };
+    if(mqPhone.addEventListener) mqPhone.addEventListener('change', onChange);
+    else if(mqPhone.addListener) mqPhone.addListener(onChange);
+  }
+  window.addEventListener('resize', function(){ applyShell(); });
+
+  /* 站名副标题抄一份到壳上 */
+  var sub = QS('#siteSub');
+  if(sub){
+    var copy = function(){ var t = QS('#pbSub'); if(t) t.textContent = sub.textContent; };
+    copy();
+    setInterval(copy, 3000);
+  }
+  /* 夜航按钮的字跟着白天/夜航变 */
+  var nb = QS('#pbNight');
+  if(nb){
+    setInterval(function(){
+      nb.textContent = document.body.classList.contains('night') ? '天亮' : '夜航';
+    }, 1000);
+  }
+}
+
+/* 导出给外部用(设置页、测试脚本) */
+window.PHONE_SHELL = {
+  open: openApp, home: goHome, set: setShell, on: wantShell,
+  visible: shellTakingOver, mount: mountChrome, unmount: unmountChrome
+};
+
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+
+})();
+/* <<< 手机壳 JS <<< */
 </script>
 </body>
 </html>
