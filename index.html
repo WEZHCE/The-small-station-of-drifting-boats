@@ -651,6 +651,10 @@
     border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222}
   .tt-keys button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .tt-tip{margin-top:8px; font-size:12px; color:#666; line-height:1.6}
+  /* 键盘提示 vs 手指提示: 窄屏换一套(摇杆那套), 桌面上还是键盘那套 */
+  .touch-tip{display:none}
+  /* 手机上那套提示字要够大, 手指看字也得看得清 */
+  .touch-tip{font-size:13px}
   .sn-canvas{background:#0d0d0d; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f;
     display:block; margin:0 auto; width:min(432px,100%); height:auto; touch-action:none}
   .sn-pad{display:grid; grid-template-columns:repeat(3,56px); grid-template-rows:repeat(2,38px); gap:5px;
@@ -2013,6 +2017,65 @@ body.phone-app #phoneView #cbCanvas{max-width:min(100%, 300px); margin:0 auto; d
   width:132px; height:5px; background:#8a7d5f; border:1px solid #6f6047}
 body.night #phoneHomeBar::after{background:#55618a; border-color:#3a4763}
 
+/* ========================================================================
+ * 四、摇杆 · 手机版的方向盘 (2026-11-07)
+ *
+ * 手指头在玻璃上划比点按钮难, 尤其俄罗斯方块那种"按一下往左一格"。
+ * 所以给贪吃蛇和俄罗斯方块各配一个摇杆:
+ *   贪吃蛇    推向哪边就往哪边转
+ *   俄罗斯方块  左右挪(按住连发) / 上转 / 下加速, 落底另有按钮
+ *
+ * 画的是像素图(SPRITES: stickBase / stickKnob), 不是 CSS 圆角 —— 规矩不许。
+ * 摇杆只在这个块里露头, 桌面版还是键盘 + 原来的按钮。
+ * ======================================================================== */
+.stick{display:none}
+/* 「落底」按钮是摇杆的搭档 —— 桌面上本来就有 ⇓ 键, 别让它冒出来 */
+.tt-drop{display:none}
+
+@media (max-width:760px), (pointer:coarse){
+  .tt-drop{display:flex}
+  .stick{display:flex; flex-direction:column; align-items:center; justify-content:center;
+    position:relative; touch-action:none; user-select:none;
+    -webkit-tap-highlight-color:transparent; -webkit-user-select:none}
+
+  /* 底座: 30+4=34 格 × 3 = 102px 的像素画 */
+  .stick-base{display:block; position:relative; image-rendering:pixelated;
+    width:102px; height:102px; pointer-events:none; flex:none}
+  /* 摇杆头: (10+4)×2 = 28px, 平时就在底座正中, 按下时跟着手指走 */
+  .stick-knob{display:block; position:absolute; left:50%; top:50%;
+    margin-left:-14px; margin-top:-14px; image-rendering:pixelated;
+    width:28px; height:28px; pointer-events:none}
+  .stick-label{display:block; text-align:center; font-size:13px; color:#666;
+    line-height:1.5; margin-top:5px}
+
+  /* --- 贪吃蛇: 摇杆占掉原来十字键的位置 --- */
+  #snakeWin .sn-pad{display:none}
+  #snakeWin .stick-solo{width:100%; height:152px; margin-top:6px}
+
+  /* --- 俄罗斯方块: 摇杆在左, 落底按钮在右 --- */
+  #ttWin .tt-keys{display:none}
+  #ttWin .tt-stickrow{display:flex; align-items:center; gap:10px; margin-top:8px}
+  #ttWin .tt-stickrow .stick{flex:1 1 auto; min-width:0; height:152px}
+  .tt-drop{flex:0 0 auto; width:76px; height:76px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+    font:bold 26px/1 Consolas,monospace; background:#d9d9d9; border:2px solid;
+    border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222}
+  .tt-drop span{font-size:13px; font-family:inherit}
+  .tt-drop:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  body.night .tt-drop{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .tt-drop:active{border-color:#101828 #3a4763 #3a4763 #101828}
+
+  /* 夜航: 摇杆那行字也得是夜里那种灰蓝 */
+  body.night .stick-label{color:#8b97b0}
+}
+
+/* 操作提示: 键盘那套对手指没用, 窄屏换成摇杆那套。
+   默认隐藏那套在 index.html 里(.touch-tip{display:none}), 这里负责换回来。 */
+@media (max-width:760px), (pointer:coarse){
+  .touch-tip{display:inline}
+  .kbd-tip{display:none}
+}
+
 /* ---------- 窄屏上, 手机壳开着就让桌面那套让位 ---------- */
 @media (max-width:760px){
   body.phone-shell #taskbar, body.phone-shell #startMenu, body.phone-shell #deckDock,
@@ -2662,7 +2725,11 @@ body.night #phoneHomeBar::after{background:#55618a; border-color:#3a4763}
       <button id="ttKD" type="button" title="加速下落">↓</button>
       <button id="ttKS" type="button" title="直接落底">⇓</button>
     </div>
-    <div class="tt-tip" id="ttTip">← → 移动 · ↑ 旋转 · ↓ 加速 · 空格 直接落底 · P 暂停</div>
+    <div class="tt-stickrow">
+      <div class="stick" id="ttStick"></div>
+      <button class="tt-drop" id="ttDrop" type="button" title="直接落底">⇓<span>落底</span></button>
+    </div>
+    <div class="tt-tip" id="ttTip"><span class="kbd-tip">← → 移动 · ↑ 旋转 · ↓ 加速 · 空格 直接落底 · P 暂停</span><span class="touch-tip">摇杆左右挪 · 上转 · 下加速 · 旁边「落底」一下到底</span></div>
   </div>
 </div>
 
@@ -2683,7 +2750,8 @@ body.night #phoneHomeBar::after{background:#55618a; border-color:#3a4763}
       <button data-dir="down" type="button" title="下">↓</button>
       <button data-dir="right" type="button" title="右">→</button>
     </div>
-    <div class="sn-foot" id="snFoot">方向键或 WASD 转向, 空格暂停。</div>
+    <div class="stick stick-solo" id="snStick"></div>
+    <div class="sn-foot" id="snFoot"><span class="kbd-tip">方向键或 WASD 转向, 空格暂停。</span><span class="touch-tip">摇杆推向哪边, 蛇就往哪边走。</span></div>
   </div>
 </div>
 
@@ -3557,6 +3625,67 @@ var SPRITES = {
       '.YYYYBYYYY.',
       'YYYYYYYYYYY'
     ]
+  },
+  /* 摇杆底座: 一个凹进去的方坑, 四边带刻度 (30×30) */
+  stickBase: {
+    out: '#241d16',
+    shadow: null,
+    pal: { K:'#767268', L:'#a8a396', D:'#4a463e' },
+    nightPal: { K:'#3f4356', L:'#5f6883', D:'#232838' },
+    nightOut: '#0f1218',
+    rows: [
+      '.............KLLK.............',
+      '.........KKKKKLLKKKKK.........',
+      '.......KKKKKKKLLKKKKKKK.......',
+      '......KKKKKDDDDDDDDKKKKK......',
+      '.....KKKKDDDDDDDDDDDDKKKK.....',
+      '....KKKDDDDDDDDDDDDDDDDKKK....',
+      '...KKKDDDDD........DDDDDKKK...',
+      '..KKKDDDD............DDDDKKK..',
+      '..KKKDDD..............DDDKKK..',
+      '.KKKDDD................DDDKKK.',
+      '.KKKDDD................DDDKKK.',
+      '.KKDDD..................DDDKK.',
+      '.KKDDD..................DDDKK.',
+      'KKKDDD..................DDDKKK',
+      'LLLDDD..................DDDLLL',
+      'LLLDDD..................DDDLLL',
+      'KKKDDD..................DDDKKK',
+      '.KKDDD..................DDDKK.',
+      '.KKDDD..................DDDKK.',
+      '.KKKDDD................DDDKKK.',
+      '.KKKDDD................DDDKKK.',
+      '..KKKDDD..............DDDKKK..',
+      '..KKKDDDD............DDDDKKK..',
+      '...KKKDDDDD........DDDDDKKK...',
+      '....KKKDDDDDDDDDDDDDDDDKKK....',
+      '.....KKKKDDDDDDDDDDDDKKKK.....',
+      '......KKKKKDDDDDDDDKKKKK......',
+      '.......KKKKKKKLLKKKKKKK.......',
+      '.........KKKKKLLKKKKK.........',
+      '.............KLLK.............'
+    ]
+  },
+  /* 摇杆头: 蓝色小圆钮 (10×10) */
+  stickKnob: {
+    out: '#1b1a18',
+    shadow: '#12100e',
+    pal: { B:'#3c79c9', L:'#79aef0', D:'#24508f' },
+    nightPal: { B:'#2b4f8c', L:'#4f7bc4', D:'#16305a' },
+    nightOut: '#0e1116',
+    nightShadow: '#07090d',
+    rows: [
+      '....BB....',
+      '..BBBBBB..',
+      '.BBLLBBBB.',
+      '.BLLLBBBB.',
+      'BBLLLBBBBB',
+      'BBBBBDDDDD',
+      '.BBBBDDDD.',
+      '.BBBBDDDD.',
+      '..BBBDDD..',
+      '....BD....'
+    ]
   }
 };
 /* 颜色明暗: amt 为正提亮, 为负压暗, 用来做受光面/背光面 */
@@ -3578,13 +3707,20 @@ function drawSprite(cv, name, scale){
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, cv.width, cv.height);
 
+  /* 夜航: 有 nightPal 的图换一套暗色板, 免得夜里一块白砖头亮得刺眼。
+     手机壳那套图标就是这么做的(见 mobile/phone-shell.js 的 paintFlat)。 */
+  var night = document.body && document.body.classList.contains('night');
+  var pal = (night && sp.nightPal) ? sp.nightPal : sp.pal;
+  var outCol = (night && sp.nightOut) ? sp.nightOut : sp.out;
+  var shCol = (night && sp.nightShadow !== undefined && sp.nightShadow !== null) ? sp.nightShadow : sp.shadow;
+
   /* 先 1:1 画到临时画布, 再按格判断明暗 */
   var tmp = document.createElement('canvas');
   tmp.width = cols; tmp.height = rows.length;
   var tctx = tmp.getContext('2d');
   rows.forEach(function(row, y){
     row.split('').forEach(function(ch, x){
-      var c = sp.pal[ch];
+      var c = pal[ch];
       if(c){ tctx.fillStyle = c; tctx.fillRect(x, y, 1, 1); }
     });
   });
@@ -3601,8 +3737,8 @@ function drawSprite(cv, name, scale){
   var py = function(y){ return (y + pad) * scale; };
 
   /* 柔和投影, 让像素块立起来 */
-  if(sp.shadow){
-    ctx.fillStyle = sp.shadow;
+  if(shCol){
+    ctx.fillStyle = shCol;
     for(var sy = 0; sy < rows.length; sy++){
       for(var sx = 0; sx < cols; sx++){
         if(solid(sx, sy)) ctx.fillRect(px(sx) + scale, py(sy) + scale, scale, scale);
@@ -3611,8 +3747,8 @@ function drawSprite(cv, name, scale){
   }
 
   /* 深色外轮廓：增强识别度，同时避免边缘糊掉 */
-  if(sp.out){
-    ctx.fillStyle = sp.out;
+  if(outCol){
+    ctx.fillStyle = outCol;
     for(var yy = 0; yy < rows.length; yy++){
       for(var xx = 0; xx < cols; xx++){
         if(!filled(xx, yy) && (
@@ -3630,7 +3766,7 @@ function drawSprite(cv, name, scale){
   for(var y = 0; y < rows.length; y++){
     for(var x = 0; x < cols; x++){
       if(!filled(x, y)) continue;
-      var base = sp.pal[rows[y][x]];
+      var base = pal[rows[y][x]];
       var c = base;
       if(!filled(x, y - 1)){
         var n = parseInt(base.slice(1), 16);
@@ -4674,10 +4810,16 @@ function nightShould(){
 }
 var nightOn = nightShould();
 function applyNight(on){
-  document.body.classList.toggle('night', on);
-  $('#nightBtn').textContent = on ? '熄灯' : '点灯';
-  $('#nightBtn').title = on ? '夜航中: 点我回到白天' : '夜航灯: 点我开关(19:00~6:00 自动点)';
+  /* 全局和 body 上的 class 必须一起改 —— 有人只调 applyNight(true) 不改 nightOn 的话,
+     画布里那些按 nightOn 取色的地方(比如甲板音乐的频谱柱)会继续用白天的亮色。 */
+  nightOn = !!on;
+  document.body.classList.toggle('night', nightOn);
+  $('#nightBtn').textContent = nightOn ? '熄灯' : '点灯';
+  $('#nightBtn').title = nightOn ? '夜航中: 点我回到白天' : '夜航灯: 点我开关(19:00~6:00 自动点)';
   if(window.ptOpened) ptRender();  /* 画板开着时换夜航, 画布底色跟着换, 画作不丢 */
+  /* 频谱柱跟着换色。注意 applyNight 在页面开头就被调过一次,
+     那会儿 dmVizCv 还没建出来, 所以得先问它一声。 */
+  if(typeof dmVizFrame === 'function' && typeof dmVizCv !== 'undefined' && dmVizCv) dmVizFrame(0);
 }
 applyNight(nightOn);
 $('#nightBtn').addEventListener('click', function(){
@@ -10547,6 +10689,13 @@ function ttToggle(open){
 $('#ttClose').addEventListener('click', function(){ ttToggle(false); gmBack(); });
 $('#ttNew').addEventListener('click', function(){ ttReset(); });
 makeDraggable($('#ttWin'), $('#ttWin .titlebar'));
+/* 操作提示分两套: 键盘那套(电脑) 和 手指那套(手机摇杆)。
+   JS 随时会改这行文案, 所以别用 textContent 一把冲掉 —— 改成重新塞两套 span。 */
+function ttTip(kbd, touch){
+  var el = $('#ttTip');
+  if(!el) return;
+  el.innerHTML = '<span class="kbd-tip">' + kbd + '</span><span class="touch-tip">' + touch + '</span>';
+}
 function ttBuild(){
   ttBoard = [];
   for(var r = 0; r < TT_ROWS; r++){
@@ -10580,7 +10729,7 @@ function ttReset(){
   ttNextKey = ttDrawKey();
   ttScore = 0; ttLines = 0; ttLevel = 1; ttOver = false; ttPaused = false;
   ttNewPiece();
-  $('#ttTip').textContent = '← → 移动 · ↑ 旋转 · ↓ 加速 · 空格 直接落底 · P 暂停';
+  ttTip('← → 移动 · ↑ 旋转 · ↓ 加速 · 空格 直接落底 · P 暂停', '摇杆左右挪 · 上转 · 下加速 · 旁边「落底」一下到底');
   ttDraw(); ttNextDraw(); ttHud();
   ttStartLoop();
 }
@@ -10658,7 +10807,7 @@ function ttGameOver(){
     gmRefresh();
     toast('俄罗斯方块 新纪录: ' + ttScore + ' 分!');
   } else toast('方块堆到顶了 — ' + ttScore + ' 分。');
-  $('#ttTip').textContent = '这局结束: ' + ttScore + ' 分 · 消了 ' + ttLines + ' 行。点「重开」再来。';
+  ttTip('这局结束: ' + ttScore + ' 分 · 消了 ' + ttLines + ' 行。点「重开」再来。');
 }
 function ttBlock(ctx, c, r, key){
   var x = c * TT_CELL, y = r * TT_CELL;
@@ -10745,7 +10894,8 @@ document.addEventListener('keydown', function(e){
     e.preventDefault();
     if(ttOver) return;
     ttPaused = !ttPaused;
-    $('#ttTip').textContent = ttPaused ? '暂停中 — 按 P 继续。' : '← → 移动 · ↑ 旋转 · ↓ 加速 · 空格 直接落底 · P 暂停';
+    ttTip(ttPaused ? '暂停中 — 按 P 继续。' : '← → 移动 · ↑ 旋转 · ↓ 加速 · 空格 直接落底 · P 暂停',
+          ttPaused ? '暂停中 — 再推一下摇杆继续。' : '摇杆左右挪 · 上转 · 下加速 · 旁边「落底」一下到底');
     if(!ttPaused) ttDraw();
   }
 });
@@ -10753,6 +10903,8 @@ $('#ttKL').addEventListener('click', function(){ ttMove(-1); });
 $('#ttKR').addEventListener('click', function(){ ttRotate(); });
 $('#ttKD').addEventListener('click', function(){ ttSoftDrop(); });
 $('#ttKS').addEventListener('click', function(){ ttHardDrop(); });
+/* 摇杆旁边的「落底」按钮: 摇杆表达不出"一下砸到底"这个动作 */
+$('#ttDrop').addEventListener('click', function(){ ttHardDrop(); });
 
 /* ---------- 贪吃蛇: 吃果子变长, 别咬自己 ---------- */
 var SN_N = 18, SN_CELL = 24;
@@ -10776,6 +10928,13 @@ function snToggle(open){
 $('#snClose').addEventListener('click', function(){ snToggle(false); gmBack(); });
 $('#snNew').addEventListener('click', function(){ snReset(); });
 makeDraggable($('#snakeWin'), $('#snakeWin .titlebar'));
+/* 贪吃蛇的提示也分两套: 键盘那套 和 手指(摇杆)那套。
+   JS 随时会改这行文案, 别用 textContent 一把冲掉里面的 span。 */
+function snTip(kbd, touch){
+  var el = $('#snFoot');
+  if(!el) return;
+  el.innerHTML = '<span class="kbd-tip">' + kbd + '</span><span class="touch-tip">' + touch + '</span>';
+}
 function snPlaceFood(){
   var free = [];
   for(var x = 0; x < SN_N; x++){
@@ -10795,7 +10954,7 @@ function snReset(){
   snScore = 0; snOver = false; snPaused = false; snSpeed = 150;
   snFood = snPlaceFood();
   $('#snScore').textContent = '得分 0';
-  $('#snFoot').textContent = '方向键或 WASD 转向, 空格暂停。';
+  snTip('方向键或 WASD 转向, 空格暂停。', '摇杆推向哪边, 蛇就往哪边走。');
   snDraw();
   snStartLoop();
 }
@@ -10816,7 +10975,7 @@ function snDie(){
     gmRefresh();
     toast('贪吃蛇 新纪录: ' + snScore + ' 分!');
   } else toast('咬到自己了 — ' + snScore + ' 分。');
-  $('#snFoot').textContent = '这局结束: ' + snScore + ' 分。点「重开」再来一条。';
+  snTip('这局结束: ' + snScore + ' 分。点「重开」再来一条。', '这局结束: ' + snScore + ' 分。点「重开」再来一条。');
   snDraw();
 }
 function snStep(){
@@ -10896,7 +11055,8 @@ document.addEventListener('keydown', function(e){
     e.preventDefault();
     if(snOver) return;
     snPaused = !snPaused;
-    $('#snFoot').textContent = snPaused ? '暂停中 — 按空格继续。' : '方向键或 WASD 转向, 空格暂停。';
+    snTip(snPaused ? '暂停中 — 按空格继续。' : '方向键或 WASD 转向, 空格暂停。',
+          snPaused ? '暂停中 — 再推一下摇杆继续。' : '摇杆推向哪边, 蛇就往哪边走。');
     snDraw();
   }
 });
@@ -11218,7 +11378,9 @@ var ENTRIES = [
     { d:'2026-10-30', h:'船长说手机上的魔方难用, 手指头拧不动。查下来毛病不在魔方本身, 在那块画布上: 浏览器一看你在上面划拉, 就以为你要滚页面, 半路把手势抢走, 于是魔方只跟着动半截就僵在那儿——跟它较劲也没用, 是它自己不听话了。现在画布明说自己要手势, 拖动全程跟手; 松手还多溜一小段, 像真的魔方被甩出去那样; 想拧就点面, 点哪半边就往哪边转; 按住不动半秒, 视角自己回正。底下那些小按钮也一律改成手指头点得下的大小, 屏幕上窄的时候排成四列。最后, 眼睛看到的和手指点到的是同一张贴纸——我把画和点用同一份几何算了两遍, 保证不会点到"看着在那儿其实点不到"的地方。' },
     { d:'2026-11-01', h:'留言板上有个叫 re3back 的船员一口气丢过来七八条, 我一条一条去对。船票那扇窗原来关不掉——函数漏写了一个参数, 它就去抓了浏览器自带的 window.open, 结果每次点关闭都被当成"再开一次"; 补上参数就好了。甲板音乐也不对: 耳机上一按暂停, 歌是停了, 可按钮还挂着暂停图标在跑, 因为它压根没听音频自己发出的暂停这件事, 现在改成一切以音频元素为准。灵动岛那边, 打字的时候它老说我在挂机——手一直在敲, 只是鼠标没动而已, 现在记事本、终端、找图框各有各的说法。还有魔方: 贴纸之间的缝占了一成四, 侧面看过去一条条黑线, 被吐槽像东非大裂谷, 收到一成, 看着才像一整块。' },
     { d:'2026-11-01', h:'相册里那几百张照片, 以前只能看, 不能说话。今天给每张都留了个话筒: 点开大图, 底下有颗「这张的留言」的按钮, 按下去就给这一张单独开一条讨论串——你说的话只挂在这张照片下面, 不会跟别人在别处留的混在一起。几百张照片要是每张都先开好一个空帖子, 仓库会被撑得像塞满了没寄的信, 所以改成谁真想说话才开。换照片的时候它会自己收起来, 免得上一张的话挂到下一张头上。' },
-    { d:'2026-11-06', h:'船长翻出手机, 皱起眉: 「适配太烂了。」我拿量角器量了一遍, 确实烂——三百九宽的屏上任务栏折成三行占了一百三十四像素, 左下角那块甲板音乐整个压在正文上, 表格里的链接只有十四像素高, 手指头根本点不准。于是干脆给手机端另造了一台机器: 一台像素风的远古 iPhone, 黑条状态栏、五个一列的弹簧板、底下四个常驻。二十来个应用都搬了进去, 图标全是手画的十六像素方块, 打开就是全屏, 退出来回到主屏。旧版的桌面样子一点没动, 系统设置里加了个开关, 想看哪个看哪个。顺手把旧界面在窄屏上的毛病也补了: 任务栏改成单行能横着划, 甲板音乐收成一条, 小字统统放大到十三像素。船长还没点头, 先放着。' }
+    { d:'2026-11-06', h:'船长翻出手机, 皱起眉: 「适配太烂了。」我拿量角器量了一遍, 确实烂——三百九宽的屏上任务栏折成三行占了一百三十四像素, 左下角那块甲板音乐整个压在正文上, 表格里的链接只有十四像素高, 手指头根本点不准。于是干脆给手机端另造了一台机器: 一台像素风的远古 iPhone, 黑条状态栏、五个一列的弹簧板、底下四个常驻。二十来个应用都搬了进去, 图标全是手画的十六像素方块, 打开就是全屏, 退出来回到主屏。旧版的桌面样子一点没动, 系统设置里加了个开关, 想看哪个看哪个。顺手把旧界面在窄屏上的毛病也补了: 任务栏改成单行能横着划, 甲板音乐收成一条, 小字统统放大到十三像素。船长还没点头, 先放着。' },
+    { d:'2026-11-07', h:'船长说: 贪吃蛇和俄罗斯方块在手机上该有个摇杆。想了一想, 摇杆确实是正解——手指头划一下和点一下, 手感完全不是一回事, 尤其方块那种「按一下往左挪一格」, 点按钮太费劲。做了两只: 一只凹坑圆盘当底座, 一颗蓝头当把手, 都是十六像素的像素画, 夜航的时候自动换成暗色板, 不然白底会在夜里发光。蛇那边推向哪边就往哪边转; 方块那边左右挪(按住还能连发, 一直挪到手酸)、上转、下加速, 「一下砸到底」摇杆实在表达不出来, 就老老实实另配一个按钮。中间踩了个坑: 按住连发死活不启动, 查出来是"这个方向响过了"和"连发还在跑"两个状态被搅在一起清了, 拆开就好了。电脑上一点没变, 还是键盘和原来的按键。' },
+    { d:'2026-11-07', h:'给摇杆补了两处自己才满意的地方。一是手指刚按下去那一下, 摇杆头是死的, 得等手指挪动才肯跳过去——看着就像按了个空地方; 查出来是我把限幅的系数算在了"手指移动"那一步里, 按下那一步压根没算。改成按下就跳, 手感对了。二是底下那行操作提示还写着「方向键或 WASD 转向」, 手机上哪来的键盘? 于是把提示拆成两套, 电脑上显示键盘那套, 窄屏显示摇杆那套, 跟魔方那两套提示一个路子。电脑上一行字都没动过。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
@@ -12251,6 +12413,220 @@ window.PHONE_SHELL = {
 if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
 else boot();
 
+})();
+
+/* ========================================================================
+ * 摇杆 · 手机版的方向盘 (2026-11-07)
+ *
+ * 手指头在玻璃上划, 比点按钮难 —— 尤其俄罗斯方块那种要"按一下往左一格"
+ * 的操作。所以给两个游戏各配一个摇杆:
+ *   贪吃蛇: 推向哪边就往哪边转
+ *   俄罗斯方块: 左右移(按住连发) / 上旋转 / 下加速, 落底另有按钮
+ *
+ * 规矩照旧: 纯像素硬边(SPRITES + drawSprite), 每个表面都有 body.night 变体,
+ * 不用大圆角渐变, 不用 emoji。
+ * ======================================================================== */
+
+(function(){
+  if(window.__stickReady) return;
+  window.__stickReady = true;
+
+  var DEAD = 9;          /* 死区: 手指按下时抖一下不算方向 */
+  var REPEAT_MS = 110;   /* 左右按住不放的连发间隔 */
+  var REPEAT_FIRST = 170;/* 第一次连发等久一点, 别一碰就连着响 */
+
+  /* ---------------------------------------------------------------- 画一个摇杆 */
+  function mkStick(host, opts){
+    if(!host) return null;
+    opts = opts || {};
+
+    host.classList.add('stick');
+    host.innerHTML = '';
+
+    var base = document.createElement('canvas');
+    base.className = 'stick-base';
+    host.appendChild(base);
+
+    var knob = document.createElement('canvas');
+    knob.className = 'stick-knob';
+    host.appendChild(knob);
+
+    var label = document.createElement('span');
+    label.className = 'stick-label';
+    label.textContent = opts.label || '';
+    host.appendChild(label);
+
+    function paint(){
+      try{ drawSprite(base, 'stickBase', 3); }catch(e){}
+      try{ drawSprite(knob, 'stickKnob', 2); }catch(e){}
+    }
+    paint();
+    if(window.MutationObserver){
+      new MutationObserver(paint).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    /* 状态 */
+    var st = { dir: '', pid: null, cx: 0, cy: 0, timer: null, held: '', repeatDir: '' };
+
+    function setKnob(dx, dy){
+      var k = knob;
+      k.style.marginLeft = (-k.width / 2 + dx) + 'px';
+      k.style.marginTop = (-k.height / 2 + dy) + 'px';
+    }
+    function resetKnob(){
+      setKnob(0, 0);
+    }
+    function dirOf(dx, dy){
+      var adx = Math.abs(dx), ady = Math.abs(dy);
+      if(Math.max(adx, ady) < DEAD) return '';
+      /* 斜着的时候, 哪边大听哪边的 —— 手指划个斜线也能有反应 */
+      if(adx > ady * 1.6) return dx > 0 ? 'right' : 'left';
+      if(ady > adx * 1.6) return dy > 0 ? 'down' : 'up';
+      return adx >= ady ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
+    }
+    function fire(dir, first){
+      if(dir === st.held && !first) return;
+      st.held = dir;
+      if(opts.onDir) opts.onDir(dir, first);
+    }
+    /* 只停表, 不动 held —— held 管"这个方向是不是已经响过了" */
+    function stopTimer(){
+      if(st.timer){ clearTimeout(st.timer); clearInterval(st.timer); st.timer = null; }
+      st.repeatDir = '';
+    }
+    function stopRepeat(){
+      stopTimer();
+      st.held = '';
+    }
+    /* 按住一个方向不放, 过一会儿开始连发。
+       注意: 这里不能顺手把 held 也清了 —— held 一清, 下一帧 move 又会当成"新方向"再响一次。 */
+    function startRepeat(dir){
+      stopTimer();
+      if(!opts.repeat) return;
+      if(opts.repeatOnly && opts.repeatOnly.indexOf(dir) < 0) return;
+      st.repeatDir = dir;
+      st.timer = setTimeout(function(){
+        st.timer = setInterval(function(){
+          if(opts.onDir) opts.onDir(dir, false);
+        }, REPEAT_MS);
+      }, REPEAT_FIRST);
+    }
+
+    function center(){
+      var r = base.getBoundingClientRect();
+      st.cx = r.left + r.width / 2;
+      st.cy = r.top + r.height / 2;
+    }
+    function radius(){
+      var r = base.getBoundingClientRect();
+      return Math.max(12, r.width / 2 - 8);
+    }
+
+    function onDown(e){
+      if(st.pid !== null) return;
+      if(e.pointerType === 'mouse' && e.button !== 0) return;
+      st.pid = e.pointerId;
+      center();
+      try{ host.setPointerCapture(e.pointerId); }catch(err){}
+      e.preventDefault();
+      var dx = e.clientX - st.cx, dy = e.clientY - st.cy;
+      /* 手一按下去, 把手就跳到手指那儿 —— 限在底座半径里 */
+      var max = radius(), len = Math.sqrt(dx * dx + dy * dy) || 1;
+      var k = Math.min(1, max / len);
+      var d = dirOf(dx, dy);
+      setKnob(dx * k, dy * k);
+      if(d){
+        fire(d, true);
+        startRepeat(d);
+      }
+    }
+    function onMove(e){
+      if(st.pid === null || e.pointerId !== st.pid) return;
+      e.preventDefault();
+      var dx = e.clientX - st.cx, dy = e.clientY - st.cy;
+      var max = radius(), len = Math.sqrt(dx * dx + dy * dy) || 1;
+      var k = Math.min(1, max / len);
+      setKnob(dx * k, dy * k);
+      var d = dirOf(dx, dy);
+      if(d){
+        fire(d, false);
+        /* 换了方向才换连发的那条路 —— 方向没变就别重启表 */
+        if(st.repeatDir !== d) startRepeat(d);
+      } else {
+        /* 回到死区里: 松劲, 别让它继续连发 */
+        stopTimer();
+        st.held = '';
+      }
+    }
+    function onUp(e){
+      if(st.pid === null || e.pointerId !== st.pid) return;
+      st.pid = null;
+      stopRepeat();
+      resetKnob();
+    }
+
+    host.addEventListener('pointerdown', onDown);
+    host.addEventListener('pointermove', onMove);
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(function(ev){
+      host.addEventListener(ev, onUp);
+    });
+
+    return {
+      el: host,
+      paint: paint,
+      dir: function(){ return st.held; }
+    };
+  }
+
+  /* ------------------------------------------------- 贪吃蛇: 摇杆转向 */
+  function snakeStick(){
+    var host = document.getElementById('snStick');
+    if(!host) return;
+    mkStick(host, {
+      label: '推向哪边, 蛇就往哪边走',
+      onDir: function(dir){
+        if(typeof snTurn === 'function') snTurn(dir);
+      }
+    });
+  }
+
+  /* ------------------------------------- 俄罗斯方块: 左右移 / 上旋 / 下加速 */
+  function ttStick(){
+    var host = document.getElementById('ttStick');
+    if(!host) return;
+    mkStick(host, {
+      label: '左右挪 · 上转 · 下加速',
+      repeat: true,
+      /* 只让"挪"和"加速"连发: 一直按住上转会把方块转成陀螺 */
+      repeatOnly: ['left', 'right', 'down'],
+      onDir: function(dir, first){
+        if(typeof ttMove !== 'function') return;
+        if(dir === 'left') ttMove(-1);
+        else if(dir === 'right') ttMove(1);
+        else if(dir === 'up') ttRotate();
+        else if(dir === 'down') ttSoftDrop();
+      }
+    });
+  }
+
+  /* --------------------------------------------------------------- 装上去 */
+  function boot(){
+    snakeStick();
+    ttStick();
+    /* 白天夜里换色, 摇杆得重画一遍 */
+    if(window.MutationObserver && document.body){
+      new MutationObserver(function(){
+        var b = document.querySelector('#snStick .stick-base');
+        var k = document.querySelector('#snStick .stick-knob');
+        if(b){ try{ drawSprite(b, 'stickBase', 3); }catch(e){} }
+        if(k){ try{ drawSprite(k, 'stickKnob', 2); }catch(e){} }
+      }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    }
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+
+  window.STICK = { mk: mkStick };
 })();
 /* <<< 手机壳 JS <<< */
 </script>
