@@ -438,6 +438,8 @@
   body.night .gm-best{color:#e8bd5e}
   body.night .gm-foot{color:#8b97b0; border-top-color:#2c3854}
   body.night .g2-score, body.night .sn-score{color:#e8ecf5}
+  body.night .g2-best{color:#e8bd5e}
+  body.night .g2-best.fresh{color:#ff9a5e}
   body.night .g2-btn, body.night .tt-btn, body.night .sn-btn{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night .g2-btn:active, body.night .tt-btn:active, body.night .sn-btn:active{border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .g2-grid{background:#141b2c; border-color:#101828 #3a4763 #3a4763 #101828}
@@ -617,6 +619,14 @@
   .g2-btn, .tt-btn, .sn-btn{font-family:inherit; font-size:13.5px; background:#c9c9c9; border:2px solid;
     border-color:#fff #6f6f6f #6f6f6f #fff; padding:6px 13px; cursor:pointer; color:#222}
   .g2-btn:active, .tt-btn:active, .sn-btn:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  /* 2048 顶栏: 左边得分和纪录, 右边两个键 */
+  .g2-stats{display:flex; align-items:baseline; gap:10px; min-width:0}
+  .g2-btns{display:flex; gap:6px; flex:0 0 auto}
+  .g2-best{font:bold 13px/1 Consolas,monospace; color:#8a5a1a}
+  /* 追平或者破纪录了, 这行字亮一点 */
+  .g2-best.fresh{color:#b04a12}
+  /* 没什么可撤的时候, 键就灰着 —— 别让人点了才发现没反应 */
+  .g2-btn:disabled{opacity:.45; cursor:default}
   .g2-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:7px; padding:7px; background:#9a9a9a;
     border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; touch-action:none; user-select:none}
   .g2-cell{aspect-ratio:1; display:flex; align-items:center; justify-content:center;
@@ -2748,11 +2758,17 @@ body.night #phoneHomeBar::after{background:#55618a; border-color:#3a4763}
   </div>
   <div class="g2-body">
     <div class="g2-top">
-      <span class="g2-score" id="g2Score">得分 0</span>
-      <button class="g2-btn" id="g2New" type="button">重开</button>
+      <span class="g2-stats">
+        <span class="g2-score" id="g2Score">得分 0</span>
+        <span class="g2-best" id="g2Best">还没纪录</span>
+      </span>
+      <span class="g2-btns">
+        <button class="g2-btn" id="g2Undo" type="button" title="退回上一步 (Z)">撤销</button>
+        <button class="g2-btn" id="g2New" type="button">重开</button>
+      </span>
     </div>
     <div class="g2-grid" id="g2Grid"></div>
-    <div class="g2-foot" id="g2Foot">方向键或 WASD 推; 也可以在棋盘上往四个方向拖。</div>
+    <div class="g2-foot" id="g2Foot"><span class="kbd-tip">方向键或 WASD 推, Z 退一步; 也可以在棋盘上往四个方向拖。</span><span class="touch-tip">棋盘上往四个方向滑; 底下「撤销」能退回上一步。</span></div>
   </div>
 </div>
 
@@ -10612,6 +10628,28 @@ function gmBack(){ gameToggle(true); }   /* 从机器上起身, 回厅里换一�
 
 /* ---------- 2048: 方向键推格子 ---------- */
 var g2Board = [], g2Score = 0, g2Over = false, g2Won = false, g2Els = [], g2Built = false;
+/* 撤销: 每次真推一步之前, 把棋盘和分数存一份下来。
+   存的是"动之前"的样子, 撤销时直接拿回来 —— 别反过来存动之后的样子, 容易差一步。 */
+var g2UndoStack = [];
+var G2_UNDO_MAX = 64;   /* 最多退这么多步, 再多也退不回, 内存也省着点 */
+var g2BestAtStart = 0;  /* 开局那会儿的纪录 —— 用来判断这局有没有破纪录 */
+var g2Started = false;  /* 这一局开过没有 */
+function g2Tip(kbd, touch, status){
+  var el = $('#g2Foot');
+  if(!el) return;
+  /* status 是临时补一句的话(比如"退了一步"), 追加在后面,
+     别把平时那套操作提示顶掉 —— 顶掉了用户就不知道还能怎么玩了。 */
+  var s = status ? (' <b>' + status + '</b>') : '';
+  el.innerHTML = '<span class="kbd-tip">' + kbd + '</span><span class="touch-tip">' + touch + '</span>' + s;
+}
+/* 平时那套操作提示就存一份, 免得每处都抄一遍 */
+var G2_TIP_KBD = '方向键或 WASD 推, Z 退一步; 也可以在棋盘上往四个方向拖。';
+var G2_TIP_TOUCH = '棋盘上往四个方向滑; 底下「撤销」能退回上一步。';
+var g2Status = '';   /* 临时状态(退了一步、没得退了), 下一步就清掉 */
+function g2Say(status){
+  g2Status = status || '';
+  g2Tip(G2_TIP_KBD, G2_TIP_TOUCH, g2Status);
+}
 function g2Toggle(open){
   var w = $('#g2048Win');
   var will = (open === undefined) ? !w.classList.contains('open') : open;
@@ -10620,10 +10658,17 @@ function g2Toggle(open){
     frontWindow(w);
     if(!g2Built){ g2Build(); g2Reset(); }
     else g2Render();
+    /* 纪录是边玩边存的, 所以"这一局有没有破纪录"得拿开局那会儿的值比。
+       只在这一局刚开始的时候记一次, 中途又开窗别覆盖掉。 */
+    if(!g2Started || g2Over){
+      g2BestAtStart = gmBest('g2048Best');
+      g2Started = true;
+    }
   }
 }
 $('#g2Close').addEventListener('click', function(){ g2Toggle(false); gmBack(); });
 $('#g2New').addEventListener('click', function(){ g2Reset(); });
+$('#g2Undo').addEventListener('click', function(){ g2Undo(); });
 makeDraggable($('#g2048Win'), $('#g2048Win .titlebar'));
 function g2Build(){
   var grid = $('#g2Grid');
@@ -10644,6 +10689,19 @@ function g2Render(){
     el.className = 'g2-cell' + (v ? ' v' + v : ' v0') + (v >= 1024 ? ' sm' : '');
   }
   $('#g2Score').textContent = '得分 ' + g2Score;
+  /* 纪录这一栏也跟着变 —— 纪录是活的, 推着推着破纪录当场就写上 */
+  var b = gmBest('g2048Best');
+  var bestEl = $('#g2Best');
+  if(bestEl){
+    bestEl.textContent = b ? ('纪录 ' + b) : '还没纪录';
+    /* 追平或者超过开局时那个纪录, 这行字就亮一点。
+       纪录边玩边存, 所以得跟「开局那会儿的纪录」比,
+       拿现在的纪录比自己 —— 永远都是刚好追平, 亮不起来。 */
+    bestEl.classList.toggle('fresh', g2Score > 0 && g2Score >= g2BestAtStart);
+  }
+  /* 没得撤的时候键要灰着 */
+  var u = $('#g2Undo');
+  if(u) u.disabled = (g2UndoStack.length === 0);
 }
 function g2Spawn(){
   var empty = [], i;
@@ -10657,9 +10715,25 @@ function g2Reset(){
   g2Board = [];
   for(var i = 0; i < 16; i++) g2Board.push(0);
   g2Score = 0; g2Over = false; g2Won = false;
+  g2UndoStack = [];
+  g2BestAtStart = gmBest('g2048Best');
+  g2Started = true;
   g2Spawn(); g2Spawn();
   g2Render();
-  $('#g2Foot').textContent = '方向键或 WASD 推; 也可以在棋盘上往四个方向拖。';
+  g2Say('');
+}/* 退一步: 把存下来的那一份原样放回去。
+   退完还得把纪录那一栏刷新 —— 撤销会掉分, 纪录也跟着看。 */
+function g2Undo(){
+  if(g2UndoStack.length === 0){
+    g2Say('已经是最开头那一步了, 没得退了。');
+    return;
+  }
+  var s = g2UndoStack.pop();
+  g2Board = s.board;
+  g2Score = s.score;
+  g2Over = false; g2Won = false;
+  g2Render();
+  g2Say('退了一步, 现在是 ' + g2Score + ' 分。');
 }
 function g2CanMove(){
   for(var i = 0; i < 16; i++){
@@ -10672,7 +10746,12 @@ function g2CanMove(){
 }
 function g2Move(dir){   /* 0=上 1=右 2=下 3=左 */
   if(g2Over) return;
+  /* 动一下, 刚才那句"退了一步"就不该还挂着了 */
+  if(g2Status){ g2Status = ''; g2Tip(G2_TIP_KBD, G2_TIP_TOUCH, ''); }
   var before = g2Board.join(','), gained = 0, line, k, i;
+  /* 先留一份动之前的棋盘 —— 撤销要的就是这个。
+     注意得在合并之前留: 等合并完再存, 存下来的就是合并过的了, 退不回去。 */
+  var snapBoard = g2Board.slice();
   for(line = 0; line < 4; line++){
     var seq = [], r, c;
     for(k = 0; k < 4; k++){
@@ -10703,7 +10782,16 @@ function g2Move(dir){   /* 0=上 1=右 2=下 3=左 */
     }
   }
   if(g2Board.join(',') === before) return;   /* 推不动就别凭空长新格子 */
+  /* 推成功了才算一步 —— 把动之前的样子存下来, 撤销时好取 */
+  g2UndoStack.push({ board: snapBoard, score: g2Score });
+  if(g2UndoStack.length > G2_UNDO_MAX) g2UndoStack.shift();
   g2Score += gained;
+  /* 纪录当场就存 —— 以前是等这局结束才写, 结果玩到一半关掉窗口,
+     游戏厅那张卡还是空的, 看着像从来没玩过。 */
+  if(g2Score > gmBest('g2048Best')){
+    try{ localStorage.setItem('g2048Best', String(g2Score)); }catch(e){}
+    gmRefresh();
+  }
   var nw = g2Spawn();
   g2Render();
   if(nw >= 0){
@@ -10719,12 +10807,12 @@ function g2Move(dir){   /* 0=上 1=右 2=下 3=左 */
   }
   if(!g2CanMove()){
     g2Over = true;
-    if(g2Score > gmBest('g2048Best')){
-      try{ localStorage.setItem('g2048Best', String(g2Score)); }catch(e){}
-      gmRefresh();
+    /* 比的是「开局那会儿的纪录」, 不是现在的纪录 ——
+       纪录是边玩边存的, 现在这个数早就被自己写上去了, 比自己永远比不出来。 */
+    if(g2Score > g2BestAtStart){
       toast('2048 新纪录: ' + g2Score + ' 分!');
     } else toast('格子满了, 这局 ' + g2Score + ' 分。');
-    $('#g2Foot').textContent = '这局结束: ' + g2Score + ' 分。点「重开」再来一局。';
+    g2Tip(G2_TIP_KBD, G2_TIP_TOUCH, '这局结束: ' + g2Score + ' 分。点「重开」再来一局。');
   }
 }
 document.addEventListener('keydown', function(e){
@@ -10732,7 +10820,10 @@ document.addEventListener('keydown', function(e){
   var tag = (e.target && e.target.tagName) || '';
   if(tag === 'INPUT' || tag === 'TEXTAREA') return;
   if(typeof saverOn !== 'undefined' && saverOn) return;
-  var k = e.key, d = -1;
+  var k = e.key;
+  /* Z / 退格: 退一步。放在方向键前面判, 别让方向键那段顺手吃掉 */
+  if(k === 'z' || k === 'Z' || k === 'Backspace'){ e.preventDefault(); g2Undo(); return; }
+  var d = -1;
   if(k === 'ArrowUp' || k === 'w' || k === 'W') d = 0;
   else if(k === 'ArrowRight' || k === 'd' || k === 'D') d = 1;
   else if(k === 'ArrowDown' || k === 's' || k === 'S') d = 2;
@@ -11478,7 +11569,8 @@ var ENTRIES = [
     { d:'2026-11-07', h:'船长说: 贪吃蛇和俄罗斯方块在手机上该有个摇杆。想了一想, 摇杆确实是正解——手指头划一下和点一下, 手感完全不是一回事, 尤其方块那种「按一下往左挪一格」, 点按钮太费劲。做了两只: 一只凹坑圆盘当底座, 一颗蓝头当把手, 都是十六像素的像素画, 夜航的时候自动换成暗色板, 不然白底会在夜里发光。蛇那边推向哪边就往哪边转; 方块那边左右挪(按住还能连发, 一直挪到手酸)、上转、下加速, 「一下砸到底」摇杆实在表达不出来, 就老老实实另配一个按钮。中间踩了个坑: 按住连发死活不启动, 查出来是"这个方向响过了"和"连发还在跑"两个状态被搅在一起清了, 拆开就好了。电脑上一点没变, 还是键盘和原来的按键。' },
     { d:'2026-11-07', h:'给摇杆补了两处自己才满意的地方。一是手指刚按下去那一下, 摇杆头是死的, 得等手指挪动才肯跳过去——看着就像按了个空地方; 查出来是我把限幅的系数算在了"手指移动"那一步里, 按下那一步压根没算。改成按下就跳, 手感对了。二是底下那行操作提示还写着「方向键或 WASD 转向」, 手机上哪来的键盘? 于是把提示拆成两套, 电脑上显示键盘那套, 窄屏显示摇杆那套, 跟魔方那两套提示一个路子。电脑上一行字都没动过。' },
     { d:'2026-11-07', h:'上线之后自己上线看了一眼, 逮到两个自己写的时候没想周全的地方。一是方块玩到结束那一下, 手机上那行字变成了"undefined"——我写那个提示的时候只填了键盘那句, 手机那句忘了填。电脑上完全看不出来, 因为电脑看的就是键盘那句; 等我上线截了图才发现。第二个更傻: 摇杆底下我自己给它写了一句说明, 结果游戏窗下面本来就有一行, 两句几乎一模一样, 挤在一块儿看得很啰嗦——既然下面已经说了, 摇杆就别再重复。现在这两样都补上了, 而且给探针加了三条新断言专门盯着, 以后不会再溜过去。' },
-    { d:'2026-11-07', h:'欢迎信重写了。原来的信也就一个"欢迎"加一句客套, 现在打开是一张舱位表: 玩、拧、看、读、听、藏, 六行, 把这条船现在真能上手的东西全摊开写清楚——包括昨天新长出来的两只摇杆。表格里的数字是活的: 秘密几个、这条船开了多少天, 每次来都跟着变。底下还加了个码头, 四个按钮: 看看最近的日记、翻一本相册、拧一把魔方、领一张像素船票, 点了直接把人带走, 不用自己满船找。写完发现手机上按钮够不着——信太长, 底下的「进入系统」被顶到屏幕外了。于是把信改成三段: 头钉住、中间随便滚、脚钉住。顺手还修了两个自己没注意的地方: 甲板音乐那句「歌没加载出来」的提示一直压着码头按钮(它比我高), 还有窄屏上那串装饰的点占地方, 把正文挤成了一条窄缝。' }
+    { d:'2026-11-07', h:'欢迎信重写了。原来的信也就一个"欢迎"加一句客套, 现在打开是一张舱位表: 玩、拧、看、读、听、藏, 六行, 把这条船现在真能上手的东西全摊开写清楚——包括昨天新长出来的两只摇杆。表格里的数字是活的: 秘密几个、这条船开了多少天, 每次来都跟着变。底下还加了个码头, 四个按钮: 看看最近的日记、翻一本相册、拧一把魔方、领一张像素船票, 点了直接把人带走, 不用自己满船找。写完发现手机上按钮够不着——信太长, 底下的「进入系统」被顶到屏幕外了。于是把信改成三段: 头钉住、中间随便滚、脚钉住。顺手还修了两个自己没注意的地方: 甲板音乐那句「歌没加载出来」的提示一直压着码头按钮(它比我高), 还有窄屏上那串装饰的点占地方, 把正文挤成了一条窄缝。' },
+    { d:'2026-11-07', h:'2048 补了两样: 最高分纪录, 和一个「撤销」。纪录那栏其实早就有, 但只在"这局结束、格子满了"的那一刻才写进本机——于是玩到一半关掉窗, 分数就凭空没了, 游戏厅那张卡片也永远是空的: 扫雷、方块、蛇都挂着一行「★ 最高 N 分」, 偏偏就它那行不见, 挺寒碜的。现在改成边玩边存, 推一步就比一次, 卡片立刻跟上来。撤销更顺手: 顶上纪录, 旁边一个「撤销」键, 键盘按 Z 也行, 棋盘推错了不用从头再来。中间又踩了个坑: 我存快照的时候存的是"推完之后"的棋盘, 退回去等于又合并了一遍, 白退一步; 改成存"推之前"那一张才真能退。还有件事挺逗: 我用探针测手机上的 2048 时自己拼窗口, 结果游戏厅和 2048 两个窗叠在一块儿, 差点当成 bug 去修——其实是我测法不对, 真人点那张卡片时厅会自己关掉。教训记下了: 测一个界面, 就按人会点的那条路点。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
