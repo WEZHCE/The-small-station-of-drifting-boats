@@ -2640,7 +2640,7 @@ body.night #phoneHomeBar::after{background:#55618a; border-color:#3a4763}
     <div class="help-sec">🖱 处处可点</div>
     <ul>
       <li>开始菜单翻新了: <b>系统与设备</b> / <b>网站设置</b>(屏保时长·夜航·音效·开机动画) / <b>游客信息</b> — 你是第几次上船, 它记得</li>
-      <li>左下角三块小面板: <b>甲板音乐</b>(十四首已上架——VOCALOID 加英文歌和动漫主题曲, 像素频谱跟着唱) + <b>船长状态</b>(课表+学生假期双驱动的状态灯, 法定节假日自动切放假模式, 地点/事情/心情实时更新) + <b>灵动岛</b>(实时报你此刻在干嘛, 顺便记你上船几分钟)</li>
+      <li>左下角三块小面板: <b>甲板音乐</b>(<span id="hcSongN">…</span>首已上架——VOCALOID 加英文歌和动漫主题曲, 像素频谱跟着唱) + <b>船长状态</b>(课表+学生假期双驱动的状态灯, 法定节假日自动切放假模式, 地点/事情/心情实时更新) + <b>灵动岛</b>(实时报你此刻在干嘛, 顺便记你上船几分钟)</li>
       <li>站名 / 副标题 / 运行天数 / 各板块标题 / 便利贴 / 页脚时钟 — 挨个点过去, 全都有回应</li>
       <li>开始菜单里有<b>每日签到</b>: +5 海里, 连签 7 天翻倍; 游客信息里能领<b>像素船票</b>(可下载), 还有<b>秘密清单</b> — 全站藏着 18 个秘密, 撞到一个记一个</li>
       <li>相册: 十五本板块相册(已开张十一本, 其余虚位以待), 点封面选中, 双击封面或点「翻开相册」在独立窗口里看全部图片; 图片点开放大, <b>← →</b> 切换, <b>Esc</b> 关闭; 大图左上角可<b>单张下载</b>, 相册窗口里能<b>整本打包带走</b>; 每张照片都能单独留言——点大图下面的「💬 这张的留言」就开一条属于它的讨论串, 登录 GitHub 就能写, 换照片会自动收起</li>
@@ -3192,7 +3192,7 @@ body.night #phoneHomeBar::after{background:#55618a; border-color:#3a4763}
           <div class="wc-mrow"><span class="wc-mkey">拧</span><span class="wc-dots">····</span><span class="wc-mval"><b>魔方.EXE</b>: 二阶三阶四阶都能拧, 还会自己解。手指头点一下贴纸就能拧一层, 松手还能再滑一截 —— 上个月刚把"拧不动"这毛病治好。</span></div>
           <div class="wc-mrow"><span class="wc-mkey">看</span><span class="wc-dots">····</span><span class="wc-mval"><b>十五本相册</b>里开了十一本, 是真的校园和食堂; <b>真实比例的太阳系</b>能拖着看; 画板可以画, 沙漏在走, 倒数日替你记着日子。</span></div>
           <div class="wc-mrow"><span class="wc-mkey">读</span><span class="wc-dots">····</span><span class="wc-mval"><b>日记</b>是真的近况, <b>终端</b>能敲命令, <b>小站浏览器</b>还能逛仿真出来的别的站; <b>任务管理器</b>里二十个 AI 船员正在挤内存, 帧率和堆内存是真读出来的。</span></div>
-          <div class="wc-mrow"><span class="wc-mkey">听</span><span class="wc-dots">····</span><span class="wc-mval">甲板音乐常年在放, 十四首; 夜里会自动<b>熄灯</b>换暗色板。</span></div>
+          <div class="wc-mrow"><span class="wc-mkey">听</span><span class="wc-dots">····</span><span class="wc-mval">甲板音乐常年在放, <span id="wcSongN">…</span>首; 夜里会自动<b>熄灯</b>换暗色板。</span></div>
           <div class="wc-mrow"><span class="wc-mkey">藏</span><span class="wc-dots">····</span><span class="wc-mval">全站藏着 <b id="wcSecretN">?</b> 个秘密, 没有提示, 值得自己撞见; 撞不明白再翻 <b>help.chm</b>, 那是官方外挂(翻它之前有道门帘, 剧透警告)。</span></div>
         </div>
       </div>
@@ -5288,13 +5288,58 @@ function helpToggle(open){
   var w = $('#helpWin');
   var will = (open === undefined) ? !w.classList.contains('open') : open;
   w.classList.toggle('open', will);
-  if(will) frontWindow(w);
+  if(will){ frontWindow(w); syncSongCount(); }
 }
 $('#tbCmd').addEventListener('click', function(){ termToggle(true); });
 $('#tbHelp').addEventListener('click', function(){ helpAsk(); });
 $('#helpClose').addEventListener('click', function(){ helpToggle(false); });
 
 /* ---------- 小站浏览器: 只能访问船际网络里认证过的站点 ---------- */
+/* 歌单有多少首, 页面上的说法就得是多少首 —— 写死的那句迟早过期。 */
+function cnNum(n){
+  var d = ['零','一','二','三','四','五','六','七','八','九'];
+  if(n < 10) return d[n];
+  if(n === 10) return '十';
+  if(n < 20) return '十' + d[n - 10];
+  if(n < 100){ var t = Math.floor(n / 10), o = n % 10; return d[t] + '十' + (o ? d[o] : ''); }
+  return String(n);
+}
+function songCountCn(){ return cnNum(SONGS.length); }
+/* 页面上写"多少首"的地方有两处是静态 HTML, 刷新时机各不同, 统一一个函数刷。 */
+function syncSongCount(){
+  var n = songCountCn();
+  var a = $('#hcSongN'); if(a) a.textContent = n;
+  var b = $('#wcSongN'); if(b) b.textContent = n;
+}
+var SONGS = [
+  { name:'月が綺麗ねと言われたい！ · 初音ミク', src:'docs/music/song-1.mp3' },
+  { name:'こわいこと · 镜音铃', src:'docs/music/song-2.mp3' },
+  { name:'角色T · 重音テト', src:'docs/music/song-3.mp3' },
+  { name:'バカみたいに · 初音ミク', src:'docs/music/song-4.mp3' },
+  { name:'影色舞', src:'docs/music/song-5.mp3' },
+  { name:'栞 (Shiori)', src:'docs/music/song-6.mp3' },
+  { name:'(洛天依原创)告死鸟', src:'docs/music/song-9.mp3' },
+  { name:"I Can't Wait · GUMI", src:'docs/music/song-7.mp3' },
+  { name:'死別 · Shannon feat. GUMI', src:'docs/music/song-8.mp3' },
+  { name:'空之箱', src:'docs/music/song-10.mp3' },
+  { name:'Something Just Like This · Chainsmokers & Coldplay', src:'docs/music/song-11.mp3' },
+  { name:'See You Again · Charlie Puth', src:'docs/music/song-12.mp3' },
+  { name:'Duvet · Bôa（《玲音》OP）', src:'docs/music/song-13.mp3' },
+  { name:'愛属性 · ピノキオピー feat.初音ミク', src:'docs/music/song-14.mp3' },
+  { name:'再见Monstre · 森罗万象（Voあよ）', src:'docs/music/song-15.mp3' },
+  { name:'MONTAGEM PITTY · 洛天依原创', src:'docs/music/song-16.mp3' },
+  { name:'Bad Apple!! · 東方 影絵', src:'docs/music/song-17.mp3' },
+  { name:'カプチーノ · 初音ミク（カササギ）', src:'docs/music/song-18.mp3' },
+  { name:'ブレインロット · 東京真中 feat. 重音テト', src:'docs/music/song-19.mp3' },
+  { name:'深海少女 · 初音ミク', src:'docs/music/song-20.mp3' },
+  { name:'说谎的你（嘘つき君）· 初音ミク原创', src:'docs/music/song-21.mp3' },
+  { name:'プレパレード · 《龙与虎》OP（PCS Anime 剧本级加长版）', src:'docs/music/song-22.mp3' },
+  { name:'千本桜 · 初音ミク（原版 MV）', src:'docs/music/song-23.mp3' },
+  { name:'My Soul, Your Beats! · 《Angel Beats!》OP（PCS Anime 剧本级加长版）', src:'docs/music/song-24.mp3' },
+  { name:'Last Diary · 《可塑性记忆》OP（PCS Anime 剧本级加长版）', src:'docs/music/song-25.mp3' },
+  { name:'たばこ（烟草）· コレサワ', src:'docs/music/song-26.mp3' },
+  { name:'Heaven · 初识不知曲中意，再听已是曲中人', src:'docs/music/song-27.mp3' }
+];
 var BR_SITES = [
   { url:'www.xiaozhan.com', name:'船只悠悠的小站', cls:'site-home',
     alias:['xiaozhan', '小站', 'home', '主页', 'index'],
@@ -5367,7 +5412,7 @@ var BR_SITES = [
           '<span class="tv-st">' + (on ? '▶ 播出中' : '点击收听') + '</span></div>';
       }).join('');
       return '<div class="tv-head">◈ 舰载电视台<span class="tv-onair' + (dm.playing ? ' live' : '') + '">' + (dm.playing ? '● ON AIR' : '○ 待机') + '</span></div>' +
-        '<div class="tv-sub">甲板音乐频道 · 十四个节目轮流播出 · 点谁谁开唱</div>' + rows +
+        '<div class="tv-sub">甲板音乐频道 · ' + songCountCn() + '个节目轮流播出 · 点谁谁开唱</div>' + rows +
         '<div class="tv-note">节目单和左下角甲板音乐是同一批演员——那边点这边点, 都是一个海。</div>';
     }
   },
@@ -5379,7 +5424,7 @@ var BR_SITES = [
         ['游戏厅.EXE 四合一', '★★★★★', '42K', 'game', '安装'],
         ['魔方.EXE 二阶/三阶/四阶', '★★★★★', '128K', 'cube', '安装'],
         ['画板.EXE', '★★★★☆', '24K', 'paint', '安装'],
-        ['甲板音乐离线包', '★★★★★', '14 首', 'music', '播放'],
+        ['甲板音乐离线包', '★★★★★', SONGS.length + ' 首', 'music', '播放'],
         ['640K 内存扩容包', '★★★★★', '9999K', 'mem', '下载']
       ].map(function(r){
         return '<div class="sf-row"><span class="sf-name"><b>' + r[0] + '</b></span>' +
@@ -6428,6 +6473,7 @@ function showWelcome(){
   var secN = (typeof SECRETS !== 'undefined') ? SECRETS.length : 0;
   var secEl = $('#wcSecretN');
   if(secEl) secEl.textContent = secN;
+  syncSongCount();
   var manEl = $('#wcManifestN');
   if(manEl) manEl.textContent = 'MANIFEST · ' + (typeof days !== 'undefined' ? days : 0) + ' 天';
   $('#wcDevice').textContent = window.innerWidth < 760
@@ -6494,7 +6540,7 @@ var MYPC_ITEMS = [
   { n:'宜忌黄历.DB', g:'DB', act:'', prev:'宜: 点右下角的时钟\n忌: 全信\n(黄历由本站友情编造, 时钟那里每天两签。)' },
   { n:'相册', g:'DIR', act:'gallery', prev:'十五本相册, 十一本开馆。\n校门、操场、像素猫和船长的画, 都在里面。\n大图能单张下载, 整本也能打包带走。' },
   { n:'日记', g:'DIR', act:'diary', prev:'船舱日记 — 近况和日记记在同一本账上,\n红点标过的日子, 船都出过海。' },
-  { n:'甲板音乐', g:'DIR', act:'', prev:'十四首常年在放: VOCALOID、英文歌、动漫主题曲。\n左下角那块黑盒就是机房。' },
+  { n:'甲板音乐', g:'DIR', act:'', prev: songCountCn() + '首常年在放: VOCALOID、英文歌、动漫主题曲。\n左下角那块黑盒就是机房。' },
   { n:'帮助.chm', g:'CHM', act:'help', prev:'全站彩蛋的官方外挂。\n翻开前有一道剧透门帘 — 自己撞见的和看答案的, 差一条海峡。' },
   { n:'系统盘', g:'SYS', act:'sys', prev:'Windows 98 · 船只悠悠版, 内核 v7.10。\n640K 内存 — 同时开 4 个应用除外。' },
   { n:'回收站', g:'BIN', act:'', prev:'空的。\n这条船什么都不丢, 连坏心情都捞去当燃料了。' }
@@ -7128,7 +7174,7 @@ var TM_PROCS = [
   { n:'ClaudeCode.exe',      c:1,  mem:33, cpu:[3,10],  note:'也在凑热闹。' },
   { n:'DeepSeek.exe',        c:1,  mem:28, cpu:[2,8],   note:'燃料常年见底的奋斗者。' },
   { n:'LongCat.exe',         c:1,  mem:12, cpu:[1,3],   note:'第一顿猫粮花了 $0.23, 试航顺利, 喵。' },
-  { n:'甲板音乐.exe',        c:1,  mem:23, cpu:[0,1],   music:true, note:'待机中, 歌单里压着十四首。' },
+  { n:'甲板音乐.exe',        c:1,  mem:23, cpu:[0,1],   music:true, note:'待机中, 歌单里压着 ' + songCountCn() + ' 首。' },
   { n:'giscus.exe',          c:1,  mem:14, cpu:[1,3],   note:'留言板看门员, 每条留言都是真的。' },
   { n:'640K.sys',            c:1,  mem:8,  cpu:[0,0],   guard:'拆天花板属于违禁操作。', note:'内存天花板, 1981 年封顶, 至今没动过。' },
   { n:'crtcollapse.sys',     c:1,  mem:6,  cpu:[0,1],   note:'CRT 坍缩模拟驱动, 关机那一下全靠它。' }
@@ -7398,22 +7444,8 @@ makeDraggable($('#tmgrWin'), $('#tmgrWin .titlebar'));
 
 /* ---------- 左下角双黑盒 · 甲板音乐 ---------- */
 /* 加歌: 音频文件放进 docs/music/, 再往 SONGS 里加一行 { name:'歌名', src:'docs/music/文件.mp3' } */
-var SONGS = [
-  { name:'月が綺麗ねと言われたい！ · 初音ミク', src:'docs/music/song-1.mp3' },
-  { name:'こわいこと · 镜音铃', src:'docs/music/song-2.mp3' },
-  { name:'角色T · 重音テト', src:'docs/music/song-3.mp3' },
-  { name:'バカみたいに · 初音ミク', src:'docs/music/song-4.mp3' },
-  { name:'影色舞', src:'docs/music/song-5.mp3' },
-  { name:'栞 (Shiori)', src:'docs/music/song-6.mp3' },
-  { name:'(洛天依原创)告死鸟', src:'docs/music/song-9.mp3' },
-  { name:"I Can't Wait · GUMI", src:'docs/music/song-7.mp3' },
-  { name:'死別 · Shannon feat. GUMI', src:'docs/music/song-8.mp3' },
-  { name:'空之箱', src:'docs/music/song-10.mp3' },
-  { name:'Something Just Like This · Chainsmokers & Coldplay', src:'docs/music/song-11.mp3' },
-  { name:'See You Again · Charlie Puth', src:'docs/music/song-12.mp3' },
-  { name:'Duvet · Bôa（《玲音》OP）', src:'docs/music/song-13.mp3' },
-  { name:'愛属性 · ピノキオピー feat.初音ミク', src:'docs/music/song-14.mp3' }
-];
+
+
 var dm = { idx:0, loadedIdx:-1, playing:false, actx:null, analyser:null, srcNode:null, raf:null, data:null, zeroFrames:0 };
 var dmAudio = null;
 /* 循环模式: all=列表循环 / one=单曲循环 / seq=顺序播放(放完就停), 记忆到本地 */
@@ -7614,6 +7646,7 @@ function dmArmGesture(){
     document.addEventListener(ev, fire, { capture:true, once:false });
   });
 }
+syncSongCount();
 if(SONGS.length){
   var musicOnPref = true;
   try{ musicOnPref = localStorage.getItem('autoplayMusic') !== 'off'; }catch(e){}
@@ -11663,7 +11696,9 @@ var ENTRIES = [
     { d:'2026-11-07', h:'2048 补了两样: 最高分纪录, 和一个「撤销」。纪录那栏其实早就有, 但只在"这局结束、格子满了"的那一刻才写进本机——于是玩到一半关掉窗, 分数就凭空没了, 游戏厅那张卡片也永远是空的。' },
     { d:'2026-11-07', h:'现在改成边玩边存, 推一步就比一次, 卡片立刻跟上来。撤销更顺手: 顶上纪录, 旁边一个「撤销」键, 键盘按 Z 也行, 棋盘推错了不用从头再来。' },
     { d:'2026-11-07', h:'倒数日.EXE 翻修了: 一列改两列, 字放大一号, 节日表也填饱了。之前农历只备到 2028 年六个节, 公历十二个, 翻来翻去就是那些; 现在农历排到 2032 年十一个, 加上五个节气、母亲节父亲节(这两个日子会跑, 得算), 公历添到二十五个。' },
-    { d:'2026-11-07', h:'萝莉日那条写的是 10 月 28 日, 那是「世界动画日」, 网上管它叫萝莉日。顺手给每张卡加了个小角标, 写明这日子按哪套历法算, 免得有人对着"母亲节"较劲。核对时还真逮着一个错: 2028 年闰五月, 端午提前到 5 月 28 号, 旧表写的 6 月 22 是错的。' }
+    { d:'2026-11-07', h:'萝莉日那条写的是 10 月 28 日, 那是「世界动画日」, 网上管它叫萝莉日。顺手给每张卡加了个小角标, 写明这日子按哪套历法算, 免得有人对着"母亲节"较劲。核对时还真逮着一个错: 2028 年闰五月, 端午提前到 5 月 28 号, 旧表写的 6 月 22 是错的。' },
+    { d:'2026-11-07', h:'甲板音乐又进货了: 十四首变二十七首。船长甩过来十四个文件, 有一个跟原有的《玲音》主题曲是同一个, 剩下的十三个就都搬进船舱了——《东方》的 Bad Apple!!、千本桜、深海少女, 还有《My Soul, Your Beats!》。' },
+    { d:'2026-11-07', h:'页面上原来写着「甲板音乐十四首」, 歌单都二十七首了, 那句话就假了。干脆不写死, 让它自己数, 中文数字也跟着变。舰载电视台的节目单本来就是这张歌单, 点谁谁开唱。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
