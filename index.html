@@ -930,13 +930,15 @@
   body.night .night-channel{display:block}
 
   /* ---------- 欢迎登船: 第一次打开网站的欢迎信 ---------- */
-  #welcomeWrap{position:fixed; inset:0; z-index:350; background:rgba(32,26,15,.55); display:none;
+  /* 欢迎信是模态框, 得盖过 #toast(900) —— 否则那句「这首歌没加载出来」会盖住码头按钮 */
+  #welcomeWrap{position:fixed; inset:0; z-index:920; background:rgba(32,26,15,.55); display:none;
     align-items:center; justify-content:center; padding:18px}
   #welcomeWrap.open{display:flex}
-  #welcome{width:min(470px,94vw); background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+  #welcome{width:min(470px,94vw); max-height:94vh; display:flex; flex-direction:column;
+    background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
     box-shadow:8px 8px 0 rgba(0,0,0,.3)}
-  #welcome .titlebar{cursor:default}
-  .wc-body{padding:16px 18px 14px}
+  #welcome .titlebar{cursor:default; flex:none}
+  .wc-body{padding:16px 18px 14px; overflow-y:auto; min-height:0}
   .wc-hero{display:flex; align-items:center; gap:14px; padding-bottom:12px; border-bottom:1px dashed #cfc4a5}
   #wcBoat{flex:none}
   .wc-title{font-family:"KaiTi","楷体",serif; font-size:30px; letter-spacing:5px; color:#3f5c33;
@@ -948,10 +950,36 @@
   .wc-text{margin-top:8px; font-size:13.5px; line-height:1.85; color:#4a4335}
   .wc-text p{margin:6px 0}
   .wc-text b{color:#2038a8}
+  .wc-text code{font-family:Consolas,monospace; font-size:12.5px; background:#efe8d4; color:#8a4a12;
+    border:1px solid #d8cdb2; padding:0 4px}
+  body.night .wc-text code{background:#243050; color:#e8b34c; border-color:#3a4763}
   .wc-hint{color:#6f6047}
+  /* 舱位表: 这条船上现在装着什么 —— 一张硬边像素表格 */
+  .wc-manifest{margin-top:11px; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    background:#efe8d4}
+  .wc-manifest-hd{display:flex; align-items:center; gap:7px; padding:5px 9px; background:#3d6fd0; color:#fff;
+    font-family:"SimHei","黑体",sans-serif; font-size:13px; letter-spacing:1px}
+  .wc-manifest-hd b{font-family:Consolas,monospace; font-size:13px; color:#ffe9a8}
+  .wc-manifest-body{padding:8px 10px 9px}
+  .wc-mrow{display:flex; align-items:flex-start; gap:8px; padding:3px 0; font-size:13px; line-height:1.7}
+  .wc-mrow + .wc-mrow{border-top:1px dotted #cfc4a5}
+  .wc-mkey{flex:none; width:66px; color:#6b5f45; font-family:Consolas,monospace; font-size:12.5px; letter-spacing:.5px}
+  .wc-mval{flex:1; min-width:0; color:#4a4335}
+  .wc-mval b{color:#2038a8}
+  .wc-mval em{font-style:normal; color:#6f6047}
+  .wc-dots{flex:none; letter-spacing:2px; color:#b3a88c; font-size:11px; line-height:1.9}
+  /* 码头: 钉在窗外沿的一排小按钮 —— 它本来就该像码头一样一直在, 不跟着正文滚走 */
+  .wc-dock{padding:0 0 9px; margin-bottom:9px; border-bottom:1px dashed #b3a88c}
+  .wc-dock-t{font-size:12.5px; color:#6b5f45; letter-spacing:1px; margin-bottom:6px}
+  .wc-dock-btns{display:flex; flex-wrap:wrap; gap:7px}
+  .wc-dock-btns button{font-family:"SimHei","黑体",sans-serif; font-size:13px; cursor:pointer; color:#222;
+    background:#fbf7ec; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; padding:5px 11px; min-height:30px}
+  .wc-dock-btns button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .wc-device{margin-top:10px; padding:8px 11px; background:#efe8d4; border:1px dashed #b3a88c;
     font-size:12.5px; color:#6b5f45; line-height:1.7}
-  .wc-btns{display:flex; gap:8px; margin-top:13px}
+  /* 底下的「进入系统」钉在窗外沿, 内容长了只滚中间那块 —— 按钮永远够得着 */
+  .wc-foot{flex:none; padding:10px 18px 12px; border-top:1px dashed #cfc4a5; background:#f6f0df}
+  .wc-btns{display:flex; gap:8px; margin-top:0}
   .wc-btns button{font-family:"SimHei","黑体",sans-serif; font-size:14px; cursor:pointer; color:#222;
     border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; padding:7px 18px}
   .wc-btns button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
@@ -969,7 +997,21 @@
   body.night .wc-text{color:#c3cbdc}
   body.night .wc-text b{color:#7fb0f0}
   body.night .wc-hint{color:#7d8cab}
+  body.night .wc-manifest{border-color:#101828 #3a4763 #3a4763 #101828; background:#1c2740}
+  body.night .wc-manifest-hd{background:#243050; color:#c8cfdd}
+  body.night .wc-manifest-hd b{color:#7fb0f0}
+  body.night .wc-mrow + .wc-mrow{border-top-color:#2c3854}
+  body.night .wc-mkey{color:#7d8cab}
+  body.night .wc-mval{color:#c3cbdc}
+  body.night .wc-mval b{color:#7fb0f0}
+  body.night .wc-mval em{color:#8b97b0}
+  body.night .wc-dots{color:#3a4763}
+  body.night .wc-dock{border-color:#2c3854}
+  body.night .wc-dock-t{color:#8b97b0}
+  body.night .wc-dock-btns button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .wc-dock-btns button:active{border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .wc-device{background:#1c2740; border-color:#2c3854}
+  body.night .wc-foot{background:#1c2740; border-top-color:#2c3854}
   body.night .wc-btns button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night .wc-btns button:active{border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .wc-go{background:#3d6fd0; color:#fff}
@@ -1767,6 +1809,18 @@
   .help-foot{font-size:13px}
   .wc-device{font-size:13px}
   .wc-again button{font-size:13px}
+  /* 欢迎信里的舱位表和码头按钮: 手指头比鼠标粗, 小字统统垫到 13px, 按钮垫到 40px */
+  .wc-text code{font-size:13px}
+  .wc-manifest-hd{font-size:13.5px}
+  .wc-manifest-hd b{font-size:13px}
+  .wc-mrow{font-size:13.5px}
+  .wc-mkey{font-size:13px; width:60px}
+  /* 窄屏上那串引点太占地方, 把正文让给值那一栏 */
+  .wc-dots{display:none}
+  .wc-mval{font-size:13.5px}
+  .wc-dots{font-size:13px}
+  .wc-dock-t{font-size:13px}
+  .wc-dock-btns button{min-height:40px; padding:6px 12px; font-size:13.5px}
   .boot-skip{min-height:40px; padding:0 12px; font-size:13px}
   .set-opts label, .set-check{font-size:13.5px}
   .set-opts input, .set-check input{width:18px; height:18px}
@@ -3095,12 +3149,39 @@ body.night #phoneHomeBar::after{background:#55618a; border-color:#3a4763}
       </div>
       <div class="wc-badge">你是第 <b id="wcVisitN">?</b> 次登船的旅客 · <span id="wcRank"></span></div>
       <div class="wc-text">
-        <p>这是一个把自己伪装成<b>老电脑</b>的个人网站: 会开机, 会关机, 闲置太久还会自己放屏保。</p>
-        <p>任务栏里藏着一排真能玩的应用 — 终端、<b>游戏厅</b>(扫雷 / 2048 / 俄罗斯方块 / 贪吃蛇)、画板、倒计时沙漏、<b>真实比例的太阳系</b>、<b>魔方.EXE</b>(二阶三阶四阶都能拧, 还会自己解), 还有刚上船的<b>任务管理器</b>: 二十个 ChatGPT 正在里面挤内存。彩蛋没有提示, 但值得自己撞见; 撞不明白再翻帮助.chm, 那是官方外挂。</p>
-        <p>站名、便利贴、右下角的小船, 挨个点过去都有回应。相册是真的校园, 喜欢的图能<b>单张下载或整本打包</b>; 日记是真的近况; 甲板音乐常年在放。留言板等真话。</p>
+        <p>这是一个把自己伪装成<b>老电脑</b>的个人网站: 会开机, 会关机, 闲置太久还会自己放屏保。整个界面是手写的 — 一个 <code>index.html</code>, 没有框架, 没有后端, 连这张欢迎信都是从那份文件里长出来的。</p>
+        <p>船舱里装着二十来样能真上手的东西, 不是摆样子的:</p>
+      </div>
+
+      <div class="wc-manifest">
+        <div class="wc-manifest-hd">舱位表 <b id="wcManifestN">MANIFEST</b></div>
+        <div class="wc-manifest-body">
+          <div class="wc-mrow"><span class="wc-mkey">玩</span><span class="wc-dots">····</span><span class="wc-mval"><b>游戏厅</b>里四台机器: 扫雷 / 2048 / 俄罗斯方块 / 贪吃蛇, 分数都存着。手机上俄罗斯方块和贪吃蛇<b>多了一只摇杆</b> —— 蛇往哪边推就往哪边转, 方块左右挪还能按住连发。</span></div>
+          <div class="wc-mrow"><span class="wc-mkey">拧</span><span class="wc-dots">····</span><span class="wc-mval"><b>魔方.EXE</b>: 二阶三阶四阶都能拧, 还会自己解。手指头点一下贴纸就能拧一层, 松手还能再滑一截 —— 上个月刚把"拧不动"这毛病治好。</span></div>
+          <div class="wc-mrow"><span class="wc-mkey">看</span><span class="wc-dots">····</span><span class="wc-mval"><b>十五本相册</b>里开了十一本, 是真的校园和食堂; <b>真实比例的太阳系</b>能拖着看; 画板可以画, 沙漏在走, 倒数日替你记着日子。</span></div>
+          <div class="wc-mrow"><span class="wc-mkey">读</span><span class="wc-dots">····</span><span class="wc-mval"><b>日记</b>是真的近况, <b>终端</b>能敲命令, <b>小站浏览器</b>还能逛仿真出来的别的站; <b>任务管理器</b>里二十个 AI 船员正在挤内存, 帧率和堆内存是真读出来的。</span></div>
+          <div class="wc-mrow"><span class="wc-mkey">听</span><span class="wc-dots">····</span><span class="wc-mval">甲板音乐常年在放, 十四首; 夜里会自动<b>熄灯</b>换暗色板。</span></div>
+          <div class="wc-mrow"><span class="wc-mkey">藏</span><span class="wc-dots">····</span><span class="wc-mval">全站藏着 <b id="wcSecretN">?</b> 个秘密, 没有提示, 值得自己撞见; 撞不明白再翻 <b>help.chm</b>, 那是官方外挂(翻它之前有道门帘, 剧透警告)。</span></div>
+        </div>
+      </div>
+
+      <div class="wc-text">
+        <p>站名、便利贴、右下角那只会晃的小船, 挨个点过去都有回应。留言板等真话 — 每条留言底下还能单独讨论一张照片。</p>
         <p class="wc-hint">别急着逛完 — 这条船的座右铭是: 更新了, 又好像没更新。</p>
       </div>
+
       <div class="wc-device" id="wcDevice"></div>
+    </div>
+    <div class="wc-foot">
+      <div class="wc-dock">
+        <div class="wc-dock-t">码头 — 要不要先办点事:</div>
+        <div class="wc-dock-btns">
+          <button type="button" id="wcGoDiary">看看最近的日记</button>
+          <button type="button" id="wcGoAlbum">翻一本相册</button>
+          <button type="button" id="wcGoCube">拧一把魔方</button>
+          <button type="button" id="wcGoTicket">领一张像素船票</button>
+        </div>
+      </div>
       <div class="wc-btns">
         <button id="welcomeStart" type="button">进入系统</button>
       </div>
@@ -6311,13 +6392,27 @@ $('#setMusic').addEventListener('change', function(){   /* 之前漏了这环: �
 function showWelcome(){
   $('#wcVisitN').textContent = visitN;
   $('#wcRank').textContent = visitRank(visitN);
+  /* 舱位表里的两个数字随船况变: 秘密清单有多长、这船开了多少天 */
+  var secN = (typeof SECRETS !== 'undefined') ? SECRETS.length : 0;
+  var secEl = $('#wcSecretN');
+  if(secEl) secEl.textContent = secN;
+  var manEl = $('#wcManifestN');
+  if(manEl) manEl.textContent = 'MANIFEST · ' + (typeof days !== 'undefined' ? days : 0) + ' 天';
   $('#wcDevice').textContent = window.innerWidth < 760
-    ? '设备建议: 小屏也能开船, 但舱位紧凑 — 任务栏会挤成一排沙丁鱼。有空换电脑来, 这台假电脑的全部乐趣才铺得开。'
+    ? '设备建议: 小屏也能开船 — 窄屏上会自动换成另一套手机界面, 底下四个常驻图标就是; 老界面随时能切回来(系统属性 → 设置)。'
     : '设备建议: 大屏 + 鼠标, 你现在的装备就很对味。浏览器认最新版 Chrome / Edge, 别用祖传 IE, 它连船票都买不了。';
   drawSprite($('#wcBoat'), 'boat', 4);
   $('#welcomeWrap').classList.add('open');
-  
 }
+/* 码头上那几个按钮: 点了直接把人带走 */
+function wcGo(fn){
+  hideWelcome();
+  try{ fn(); }catch(e){}
+}
+$('#wcGoDiary').addEventListener('click', function(){ wcGo(function(){ diaryAppToggle(true); }); });
+$('#wcGoAlbum').addEventListener('click', function(){ wcGo(function(){ albumWinToggle(true); }); });
+$('#wcGoCube').addEventListener('click', function(){ wcGo(function(){ cubeToggle(true); }); });
+$('#wcGoTicket').addEventListener('click', function(){ wcGo(function(){ openTicket(true); }); });
 function hideWelcome(){ $('#welcomeWrap').classList.remove('open'); }
 $('#welcomeClose').addEventListener('click', hideWelcome);
 $('#welcomeStart').addEventListener('click', function(){
@@ -11382,7 +11477,8 @@ var ENTRIES = [
     { d:'2026-11-06', h:'船长翻出手机, 皱起眉: 「适配太烂了。」我拿量角器量了一遍, 确实烂——三百九宽的屏上任务栏折成三行占了一百三十四像素, 左下角那块甲板音乐整个压在正文上, 表格里的链接只有十四像素高, 手指头根本点不准。于是干脆给手机端另造了一台机器: 一台像素风的远古 iPhone, 黑条状态栏、五个一列的弹簧板、底下四个常驻。二十来个应用都搬了进去, 图标全是手画的十六像素方块, 打开就是全屏, 退出来回到主屏。旧版的桌面样子一点没动, 系统设置里加了个开关, 想看哪个看哪个。顺手把旧界面在窄屏上的毛病也补了: 任务栏改成单行能横着划, 甲板音乐收成一条, 小字统统放大到十三像素。船长还没点头, 先放着。' },
     { d:'2026-11-07', h:'船长说: 贪吃蛇和俄罗斯方块在手机上该有个摇杆。想了一想, 摇杆确实是正解——手指头划一下和点一下, 手感完全不是一回事, 尤其方块那种「按一下往左挪一格」, 点按钮太费劲。做了两只: 一只凹坑圆盘当底座, 一颗蓝头当把手, 都是十六像素的像素画, 夜航的时候自动换成暗色板, 不然白底会在夜里发光。蛇那边推向哪边就往哪边转; 方块那边左右挪(按住还能连发, 一直挪到手酸)、上转、下加速, 「一下砸到底」摇杆实在表达不出来, 就老老实实另配一个按钮。中间踩了个坑: 按住连发死活不启动, 查出来是"这个方向响过了"和"连发还在跑"两个状态被搅在一起清了, 拆开就好了。电脑上一点没变, 还是键盘和原来的按键。' },
     { d:'2026-11-07', h:'给摇杆补了两处自己才满意的地方。一是手指刚按下去那一下, 摇杆头是死的, 得等手指挪动才肯跳过去——看着就像按了个空地方; 查出来是我把限幅的系数算在了"手指移动"那一步里, 按下那一步压根没算。改成按下就跳, 手感对了。二是底下那行操作提示还写着「方向键或 WASD 转向」, 手机上哪来的键盘? 于是把提示拆成两套, 电脑上显示键盘那套, 窄屏显示摇杆那套, 跟魔方那两套提示一个路子。电脑上一行字都没动过。' },
-    { d:'2026-11-07', h:'上线之后自己上线看了一眼, 逮到两个自己写的时候没想周全的地方。一是方块玩到结束那一下, 手机上那行字变成了"undefined"——我写那个提示的时候只填了键盘那句, 手机那句忘了填。电脑上完全看不出来, 因为电脑看的就是键盘那句; 等我上线截了图才发现。第二个更傻: 摇杆底下我自己给它写了一句说明, 结果游戏窗下面本来就有一行, 两句几乎一模一样, 挤在一块儿看得很啰嗦——既然下面已经说了, 摇杆就别再重复。现在这两样都补上了, 而且给探针加了三条新断言专门盯着, 以后不会再溜过去。' }
+    { d:'2026-11-07', h:'上线之后自己上线看了一眼, 逮到两个自己写的时候没想周全的地方。一是方块玩到结束那一下, 手机上那行字变成了"undefined"——我写那个提示的时候只填了键盘那句, 手机那句忘了填。电脑上完全看不出来, 因为电脑看的就是键盘那句; 等我上线截了图才发现。第二个更傻: 摇杆底下我自己给它写了一句说明, 结果游戏窗下面本来就有一行, 两句几乎一模一样, 挤在一块儿看得很啰嗦——既然下面已经说了, 摇杆就别再重复。现在这两样都补上了, 而且给探针加了三条新断言专门盯着, 以后不会再溜过去。' },
+    { d:'2026-11-07', h:'欢迎信重写了。原来的信也就一个"欢迎"加一句客套, 现在打开是一张舱位表: 玩、拧、看、读、听、藏, 六行, 把这条船现在真能上手的东西全摊开写清楚——包括昨天新长出来的两只摇杆。表格里的数字是活的: 秘密几个、这条船开了多少天, 每次来都跟着变。底下还加了个码头, 四个按钮: 看看最近的日记、翻一本相册、拧一把魔方、领一张像素船票, 点了直接把人带走, 不用自己满船找。写完发现手机上按钮够不着——信太长, 底下的「进入系统」被顶到屏幕外了。于是把信改成三段: 头钉住、中间随便滚、脚钉住。顺手还修了两个自己没注意的地方: 甲板音乐那句「歌没加载出来」的提示一直压着码头按钮(它比我高), 还有窄屏上那串装饰的点占地方, 把正文挤成了一条窄缝。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
