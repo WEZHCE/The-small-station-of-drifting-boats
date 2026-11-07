@@ -1295,10 +1295,6 @@
   .gd-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px}
   .gd-head b{font-family:"KaiTi","楷体",serif; font-size:16.5px; color:#3f5c33}
   .gd-head span{font-size:11.5px; color:#8a7d5f}
-  .gd-pool{font-family:"SimHei","黑体",sans-serif; font-style:normal; font-size:12px; color:#8a5a1a;
-    border:1px solid #d8c39a; background:#f6ecd8; padding:0 5px; margin-left:7px; letter-spacing:1px;
-    vertical-align:2px; display:inline-block}
-  .gd-ruler{margin:0 0 6px; font-size:12px; color:#a09375; line-height:1.5}
   .gd-motto{margin:0 0 6px; font-size:12px; color:#8a7d5f}
   .gd-totals{display:flex; gap:8px; margin:6px 0 8px}
   .gd-total{flex:1; min-width:0; background:#f7f2e3; border:1px solid #e0d8c2; padding:6px 4px 5px; text-align:center}
@@ -1328,8 +1324,6 @@
   body.night .gd-card{background:#16203a; border-color:#2c3854}
   body.night .gd-head b{color:#8fbf8f}
   body.night .gd-head span{color:#7d8cab}
-  body.night .gd-pool{color:#e8bd5e; border-color:#3a4763; background:#1c2740}
-  body.night .gd-ruler{color:#55618a}
   body.night .gd-motto{color:#7d8cab}
   body.night .gd-total{background:#101828; border-color:#1c2740}
   body.night .gd-total em{color:#7d8cab}
@@ -1771,11 +1765,9 @@
     .dd-tag{font-size:13px}
     .dd-ctrl button{width:36px; height:30px; font-size:13px}
     #boatOdo{font-size:10.5px}
-    /* 成绩档案在手机上: 标题行挤了日期+口径角标, 表格字也偏小, 一起放大 */
+    /* 成绩档案在手机上: 标题行挤了日期, 表格字也偏小, 一起放大 */
     .gd-head{flex-wrap:wrap; gap:2px 6px}
     .gd-head span{font-size:12.5px; display:flex; align-items:center; gap:6px; flex-wrap:wrap}
-    .gd-pool{margin-left:0; font-size:12px}
-    .gd-ruler{font-size:12.5px}
     .gd-motto{font-size:12.5px}
     .gd-total em{font-size:12px}
     .gd-total i{font-size:12px}
@@ -8204,7 +8196,7 @@ function gdDecrypt(pass){
   } catch(e){ return null; }
 }
 /* 密文: {开学考 + 第一次月考 + 第二次月考 + 冀豫联考} 的成绩 JSON, 用口令派生密钥 XOR 加密——明文不落源码 */
-var GD_BLOB = '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';
+var GD_BLOB = 'UUkA2WYqMg8wa/zwpZJNS/4eqvgrbCPfmEH9yorObhAHknyph8dRjuwpcsOiPsI352FCawfH6U2JVQ0TELxnSAGH3GOIzh6nG7TJ6ZY9qLwKPXNiI4JZTdSRZs/ubUsrkpVuwIpxRRqW1MqdpX14c5j5lfhaIdS6xm/NIi8gaT0EmoB9cHIHPnhKr7VALGzfJxG3TqKfl0TcWMCAQLJRsyRW9iLZkwDWD2Tgei5i+QlYdmdm0IMyAXkZ/syeRS8A8Tk7OUUvamiJ24rgNGYohwB/fTq3pzSlyAJOJwIGSjTsb9pm9u1t1CtBEgVJVlT5N/bi5V2+0oOLh+flAY/3LbxyeEgwxG78lYbYO0j8lRjOC96ZEx4Z1dVqqbRQSz40oYV5rW+Y1AsMtB5UKNbF5NbkEiZeneiaJAyTKjHA5YTTJefKCycs63z+Fi310DXlM8zxNQiBm71XrRfKue9698qnv1wIrVIHxHDmo2YH1O1FfKiMJAu4NSG0DyOqx+C9ynMA3542NLhAgh9TjSKd+3rrL9S68IHLZodT4enDmN05Bm1vu2z3I7Ay0jtn9DdCF54LFgPJnLKvSoZ1f3q6PszWZdN0cyMkC+JcB7AK917DGktbHCQtq2SPk8e34j2kwf5PYnFQr6fabjBTd5jF2TAqL48s0byJp3B1LtkIChF1Bn0qHcl+Mxobpsns5oxXISLE4Az1W3wNSxeegngWGBzV0zLzSyOXy3k+rSK0/mtYpoHRqy1MW2gj9EeFCfaiUaksCDTtEGB52krpoZvV+p0+NpU9llcUt3D81HD8z/L1xsAmZw/HtIM+pWH1EfJy6k2nCdqsa1yzdWoV9OtHp15EjXYGf3fPDblpUQFviy4Sd8Jd6vV4Db8VM+AU/Z99KTtcz5IEFMJlPwvT9t3r9BEhPfjlfXFJI0bflApCxFKUWWTUvZLhFtXukJTTAuHLPtyv8Z3EaYHneRh8jEXcLl7oy2mqsUeXaiZCNQyCSNc7ArxHIdGEd4OwY1ek4QV6BFmq6SDlCgIzBDD2hyzjfYMeGbrbkpzOAEC5Oh+KVZ0K0o0iyfDDhcufC9QWfVI8BzabowA2QPCWtMQeSHnC8PoaSrmU5Rxb2djiuyptzmJxx8nKL9fc6Dk7BOb6ZcCt3HzolPxC9snMnDlDUN4Hd7YyYrfGGdER+62Lp1RAuKcySXRm9LV98SVThLXzvVT2kWnLjNTrOgUdCMgw94+qBuGR11YazS6r12sYbipDrZ6vBvkYhs4BL4uEQUrq/X2BXTFwdMt5pJGVppgBCZHe4IrgFrLnEYNFThc5s326TAyvwLmc7Kr/avVbSI+LA9Gmtu9Fs9kGeuS6gAL+apP07X2lIbHRhMJA8uZEUVi7RRYZxfWlpkOTgG9mSth/0TIxISGLOQMMbSPsT16suqWV9LOk0TEwnWM1tuFi6hU9ofUbHZEeR/R/FvPCmDVBRclYqipX7NL1l0Iq60ly3Ioe1O+J/yybYFO0xdFd6U4Ewufcs7qa+dC30CZW2taTyKin5CuB5E7Y+3mkvgGr/FWy9D3hQq3pCrM87aZU1ir9yDEkgY/PQyWFpTueixk+2D3yzThRlYR1TAG82sUTHvBR1+t1L3iXbc2GU9ukGlHTQS5aYenk8W1Fa2j55u1SSHaFvpsk205o5EoHU17pZOE4dkfjKwqd8+rfiXgSRWbNb5wzslZtRvwVU5Qf9oHtvCnLP+gN7JMYUoex/e+QXJ4Y+AVJHh7a/CIiGb1AmkJ1QH4BAYA7yl+Rd3yjZMjT4+MuiB0=';
 function gdRankDelta(prev, now){
   if (prev == null || now == null) return null;
   return prev - now;   /* 名次变小 = 进步(正数) */
@@ -8215,42 +8207,25 @@ function gdDeltaHtml(d){
   if (d < 0) return '<i class="down">↓' + (-d) + '</i>';
   return '<i class="flat">持平</i>';
 }
-/* 名次口径: 校内卷和联考卷的参考人数差一个量级, 跨口径的名次不能直接减。
-   校内卷 pool='school', 联考卷 pool='joint'——口径不同就只比同口径的上一场。 */
-function gdPoolOf(ex){ return (ex && ex.pool) ? ex.pool : 'school'; }
-function gdPoolLabel(ex){
-  return gdPoolOf(ex) === 'joint' ? '联考口径' : '校内口径';
-}
-/* 名次那一列的口径也得跟着变: 校内卷排的是校名次, 联考卷排的是联考名次 */
-function gdRankColLabel(ex){
-  return gdPoolOf(ex) === 'joint' ? '联考次' : '校名次';
-}
-function gdSamePool(prev, ex){
-  return !!(prev && gdPoolOf(prev) === gdPoolOf(ex));
-}
+/* 名次一律是校里排的, 每一场都能跟上一场直接比。 */
 function gdRenderCard(ex, prev){
-  var same = gdSamePool(prev, ex);
   var subjRows = ex.subs.map(function(s){
-    var p = (same && prev) ? (prev.subs.find(function(x){ return x[0] === s[0]; }) || [null, null, null]) : [null, null, null];
+    var p = (prev) ? (prev.subs.find(function(x){ return x[0] === s[0]; }) || [null, null, null]) : [null, null, null];
     var d = gdRankDelta(p[2], s[2]);
     var dCls = d === null ? '' : (d > 0 ? ' class="gd-up"' : (d < 0 ? ' class="gd-down"' : ''));
     return '<tr><td>' + s[0] + '</td><td>' + s[1] + '</td><td>' + (s[2] == null ? '—' : s[2]) +
       '</td><td' + dCls + '>' + (d === null ? '—' : gdDeltaHtml(d).replace(/<[^>]+>/g, '')) + '</td></tr>';
   }).join('');
-  var clsD = same ? gdRankDelta(prev.cls, ex.cls) : null;
-  var schD = same ? gdRankDelta(prev.sch, ex.sch) : null;
+  var clsD = gdRankDelta(prev ? prev.cls : null, ex.cls), schD = gdRankDelta(prev ? prev.sch : null, ex.sch);
   return '<div class="gd-card">' +
-    '<div class="gd-head"><b>' + ex.name + '</b><span>' + ex.date +
-      '<i class="gd-pool">' + gdPoolLabel(ex) + '</i></span></div>' +
+    '<div class="gd-head"><b>' + ex.name + '</b><span>' + ex.date + '</span></div>' +
     '<p class="gd-motto">' + (ex.note || '') + '</p>' +
-    (prev && !same ? '<p class="gd-ruler">上一场是' + gdPoolLabel(prev) + ', 这场是' + gdPoolLabel(ex) +
-      '——参考人数不一样, 名次不跨着比。</p>' : '') +
     '<div class="gd-totals">' +
       '<div class="gd-total"><em>总分</em><b>' + ex.total + '</b><i class="flat">—</i></div>' +
       '<div class="gd-total"><em>班名</em><b>' + ex.cls + '</b>' + gdDeltaHtml(clsD) + '</div>' +
       '<div class="gd-total"><em>校名</em><b>' + ex.sch + '</b>' + gdDeltaHtml(schD) + '</div>' +
     '</div>' +
-    '<table class="gd-table"><tr><th>科目</th><th>分数</th><th>' + gdRankColLabel(ex) + '</th><th>较上次</th></tr>' + subjRows + '</table>' +
+    '<table class="gd-table"><tr><th>科目</th><th>分数</th><th>校名次</th><th>较上次</th></tr>' + subjRows + '</table>' +
   '</div>';
 }
 function gdRenderGrades(data){
@@ -12837,7 +12812,7 @@ var ENTRIES = [
     { d:'2026-11-07', h:'甲板音乐又进货了: 十四首变二十七首。船长甩过来十四个文件, 有一个跟原有的《玲音》主题曲是同一个, 剩下的十三个就都搬进船舱了——《东方》的 Bad Apple!!、千本桜、深海少女, 还有《My Soul, Your Beats!》。' },
     { d:'2026-11-07', h:'页面上原来写着「甲板音乐十四首」, 歌单都二十七首了, 那句话就假了。干脆不写死, 让它自己数, 中文数字也跟着变。舰载电视台的节目单本来就是这张歌单, 点谁谁开唱。' },
     { d:'2026-11-07', h:'冀豫联考的成绩进档案了。总分 794.5, 班名 20, 校名 721; 数学 118 分是九科里最能打的一门, 政治 62 分垫底。具体数字不写在这儿——想看得输口令。' },
-    { d:'2026-11-07', h:'联考跟月考不是一套名次: 月考排的是学校里几百号人, 联考排的是两个省的人, 差着好几千。硬减一减, 语文会显示"进步了七百多名"——那是假的, 参考的人根本不是一批。所以给每场卷子标了个口径角标, 不同口径之间干脆不比, 表里就留个"—"。' },
+    { d:'2026-11-07', h:'联考跟月考不是一套卷子, 但名次还是校里排的——所以直接能跟上次比。语文从三百多名掉到一千多, 数学从一千一百多拉回九百多, 班名十六退到二十。难了一档, 掉的分就更多, 但名次摆在那儿, 骗不了自己。' },
     { d:'2026-11-07', h:'船长说: 手机端别偷懒, 每个应用都要重排一遍。二十来扇窗挨个改, 按钮抬到手指点得下, 小字抬到看得清, 画布不许被拉扁。这活儿费眼睛, 但按下去没反应才是真的费劲。' },
     { d:'2026-11-07', h:'平板上打开会错乱, 查出来是两件事叠在一起: 手机壳自己跳出来接管, 在网页正中摆了一台小手机; 留言板那块又被压扁, 底下的漂流瓶、搜索框、便利贴全挤成一团。现在平板归旧界面管, 壳只在真窄的屏幕上才上场。' },
     { d:'2026-11-07', h:'相册"只显示一个"其实是看岔了——每本封面塞的是四张小图, 平板上每格才一百来像素, 看着就只剩一张。改成窄的时候只露一张大图, 宽的时候四张横着排, 网格列数也跟着屏幕宽度走。' }
