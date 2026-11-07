@@ -1118,44 +1118,50 @@
   body.night #csText em{color:#7d8cab}
 
   /* ---------- 倒数日.EXE: 节日与自定义倒数 ---------- */
-  #ddWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(400px,92vw);
+  /* 2026-11-07: 改成两列排(节日多了, 一列得滚到天荒地老), 顺便把字和窗都放大一号 */
+  #ddWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(560px,94vw);
     display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
   #ddWin.open{display:block}
   #ddWin .titlebar{cursor:move}
-  .dd-body{padding:9px}
-  .dd-list{max-height:320px; overflow-y:auto; display:flex; flex-direction:column; gap:6px}
-  .dd-card{display:flex; align-items:center; gap:10px; background:#f8f3e4; border:1px solid #ddd3b8;
-    border-left:4px solid #7c9c66; padding:7px 10px}
+  .dd-body{padding:10px}
+  .dd-list{max-height:min(52vh,440px); overflow-y:auto; display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px; align-content:start}
+  .dd-card{position:relative; display:flex; flex-direction:column; gap:3px; background:#f8f3e4;
+    border:1px solid #ddd3b8; border-left:4px solid #7c9c66; padding:8px 10px 9px; min-width:0}
   .dd-card.soon{border-left-color:#d9a441}
   .dd-card.soon .dd-num{color:#c94f3d}
   .dd-card.today{background:#f2d97c; border-color:#d9c66a; border-left-color:#c94f3d}
   .dd-card.today .dd-num{color:#c94f3d}
   .dd-card.past{opacity:.55; border-left-color:#b3a88c}
-  .dd-num{min-width:76px; text-align:center; font-family:"SimHei","黑体",sans-serif; font-size:13px;
-    color:#3f5c33; white-space:nowrap}
-  .dd-num b{font-size:25px; margin-right:2px}
+  .dd-top{display:flex; align-items:center; justify-content:space-between; gap:6px}
+  .dd-num{font-family:"SimHei","黑体",sans-serif; font-size:13px; color:#3f5c33; white-space:nowrap}
+  .dd-num b{font-size:30px; margin-right:3px; letter-spacing:-1px}
   .dd-info{flex:1; min-width:0}
-  .dd-info b{display:block; font-family:"SimHei","黑体",sans-serif; font-size:13.5px; color:#2e2a22}
-  .dd-info span{display:block; font-family:Consolas,monospace; font-size:11px; color:#8a7d5f}
-  .dd-info em{display:block; font-style:normal; font-size:12px; color:#6b5f45; margin-top:2px; line-height:1.5; word-break:break-all}
-  .dd-ctrl{display:flex; flex-direction:column; gap:3px; flex:none}
-  .dd-ctrl button{width:32px; height:20px; font-family:inherit; font-size:11px; color:#222; background:#e8e0cc;
+  .dd-info b{display:block; font-family:"SimHei","黑体",sans-serif; font-size:15px; color:#2e2a22}
+  .dd-info span{display:block; font-family:Consolas,monospace; font-size:12px; color:#8a7d5f}
+  .dd-info em{display:block; font-style:normal; font-size:12.5px; color:#6b5f45; margin-top:3px; line-height:1.5; word-break:break-word}
+  /* 角标: 告诉人这日子是按哪套历法算的 */
+  .dd-tag{display:inline-block; font-style:normal; font-family:Consolas,"Courier New",monospace; font-size:13px;
+    line-height:17px; color:#5a5342; background:#e6dcc2; border:1px solid #c9bfa3; padding:0 4px; margin-left:5px;
+    vertical-align:2px; letter-spacing:0}
+  .dd-ctrl{display:flex; gap:4px; flex:none}
+  .dd-ctrl button{width:34px; height:28px; font-family:inherit; font-size:13px; color:#222; background:#e8e0cc;
     border:2px solid; border-color:#fff #a89d84 #a89d84 #fff; cursor:pointer; padding:0}
   .dd-ctrl button:active{border-color:#a89d84 #fff #fff #a89d84}
   .dd-form{display:none; margin-bottom:8px; background:#f8f3e4; border:1px dashed #b3a88c; padding:8px}
   .dd-form.open{display:block}
-  .dd-form input{display:block; width:100%; box-sizing:border-box; margin-bottom:6px; padding:5px 8px;
-    font-family:inherit; font-size:13px; background:#fbf7ec; color:#2e2a22;
+  .dd-form input{display:block; width:100%; box-sizing:border-box; margin-bottom:6px; padding:7px 8px;
+    font-family:inherit; font-size:14px; background:#fbf7ec; color:#2e2a22;
     border:2px solid; border-color:#a89d84 #fff #fff #a89d84}
   .dd-form-btns{display:flex; gap:6px; justify-content:flex-end}
-  .dd-form-btns button{font-family:inherit; font-size:12px; color:#222; background:#e8e0cc; cursor:pointer;
-    border:2px solid; border-color:#fff #a89d84 #a89d84 #fff; padding:4px 14px}
+  .dd-form-btns button{font-family:inherit; font-size:13px; color:#222; background:#e8e0cc; cursor:pointer;
+    border:2px solid; border-color:#fff #a89d84 #a89d84 #fff; padding:6px 14px}
   .dd-form-btns button:active{border-color:#a89d84 #fff #fff #a89d84}
-  .dd-foot{display:flex; justify-content:space-between; align-items:center; margin-top:8px}
-  .dd-foot button{font-family:"SimHei","黑体",sans-serif; font-size:12.5px; color:#222; background:#e8e0cc; cursor:pointer;
-    border:2px solid; border-color:#fff #a89d84 #a89d84 #fff; padding:4px 12px}
+  .dd-foot{display:flex; justify-content:space-between; align-items:center; margin-top:9px}
+  .dd-foot button{font-family:"SimHei","黑体",sans-serif; font-size:13px; color:#222; background:#e8e0cc; cursor:pointer;
+    border:2px solid; border-color:#fff #a89d84 #a89d84 #fff; padding:6px 12px}
   .dd-foot button:active{border-color:#a89d84 #fff #fff #a89d84}
-  .dd-foot span{font-size:11px; color:#8a7d5f}
+  .dd-foot span{font-size:12px; color:#8a7d5f}
   body.night #ddWin{background:#1a2338; border-color:#3a4763}
   body.night .dd-card{background:#101828; border-color:#2c3854; border-left-color:#4a7ab0}
   body.night .dd-card.soon{border-left-color:#d9a441}
@@ -1166,6 +1172,7 @@
   body.night .dd-info b{color:#c8cfdd}
   body.night .dd-info span{color:#7d8cab}
   body.night .dd-info em{color:#aeb9d0}
+  body.night .dd-tag{color:#aeb9d0; background:#1b2540; border-color:#3a4763}
   body.night .dd-form{background:#101828; border-color:#2c3854}
   body.night .dd-form input{background:#0d1322; color:#c8cfdd;
     border-color:#101828 #3a4763 #3a4763 #101828}
@@ -1173,6 +1180,8 @@
     border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night .dd-form-btns button:active, body.night .dd-foot button:active{border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .dd-foot span{color:#7d8cab}
+  body.night .dd-ctrl button{background:#243050; color:#c8cfdd; border-color:#3a4763 #101828 #101828 #3a4763}
+  body.night .dd-ctrl button:active{border-color:#101828 #3a4763 #3a4763 #101828}
 
   body.night .lb-cap{background:#161e30; border-color:#3a4763 #101828 #101828 #3a4763; color:#aeb9d0}
   body.night .lb-cap b{color:#8fbf8f}
@@ -1714,6 +1723,13 @@
     .cb-timer{font-size:16px; min-width:70px}
     .cb-hist{max-height:38px}
     .help-body{max-height:56vh}
+    /* 倒数日: 窄屏上两列太挤(每列才 170px, 30px 的数字加中文名塞不下), 退回一列,
+       但字和按钮还是放大号的, 手指头点得着。 */
+    .dd-list{grid-template-columns:1fr; max-height:min(54vh,460px); gap:7px}
+    .dd-num b{font-size:26px}
+    .dd-info b{font-size:14px}
+    .dd-tag{font-size:13px}
+    .dd-ctrl button{width:36px; height:30px; font-size:13px}
     #boatOdo{font-size:10.5px}
     footer{padding:16px 16px 20px}
     .boot-title{font-size:28px; letter-spacing:3px}
@@ -6628,27 +6644,59 @@ window.addEventListener('resize', function(){
 });
 
 /* ---------- 倒数日.EXE: 内置节日 + 自定义倒数(localStorage) ---------- */
-var DD_LUNAR = {   /* 农历节日对照(公历), 只备到 2028 — 再远的等日历自己长 */
-  '除夕': { '2026':'02-16', '2027':'02-05', '2028':'01-25' },
-  '春节': { '2026':'02-17', '2027':'02-06', '2028':'01-26' },
-  '元宵': { '2026':'03-03', '2027':'02-20', '2028':'02-09' },
-  '清明': { '2026':'04-05', '2027':'04-05', '2028':'04-04' },
-  '端午': { '2026':'06-19', '2027':'06-09', '2028':'06-22' },
-  '中秋': { '2026':'09-25', '2027':'09-15', '2028':'10-03' }
+/* 2026-11-07: 节日表从 2026 排到 2032, 加了节气、母亲节父亲节和一批好玩的日子。
+   农历/节气对照是用 lunar-javascript 一年一年算出来核过的, 顺手改掉一个错的: 2028 年闰五月, 端午是 05-28 不是 06-22。 */
+var DD_LUNAR = {   /* 农历节日对照(公历) */
+  '除夕': { '2026':'02-16', '2027':'02-05', '2028':'01-25', '2029':'02-12', '2030':'02-02', '2031':'01-22', '2032':'02-10' },
+  '春节': { '2026':'02-17', '2027':'02-06', '2028':'01-26', '2029':'02-13', '2030':'02-03', '2031':'01-23', '2032':'02-11' },
+  '元宵': { '2026':'03-03', '2027':'02-20', '2028':'02-09', '2029':'02-27', '2030':'02-17', '2031':'02-06', '2032':'02-25' },
+  '龙抬头': { '2026':'03-20', '2027':'03-09', '2028':'02-26', '2029':'03-16', '2030':'03-05', '2031':'02-22', '2032':'03-13' },
+  '端午': { '2026':'06-19', '2027':'06-09', '2028':'05-28', '2029':'06-16', '2030':'06-05', '2031':'06-24', '2032':'06-12' },
+  '七夕': { '2026':'08-19', '2027':'08-08', '2028':'08-26', '2029':'08-16', '2030':'08-05', '2031':'08-24', '2032':'08-12' },
+  '中元': { '2026':'08-27', '2027':'08-16', '2028':'09-03', '2029':'08-24', '2030':'08-13', '2031':'09-01', '2032':'08-20' },
+  '中秋': { '2026':'09-25', '2027':'09-15', '2028':'10-03', '2029':'09-22', '2030':'09-12', '2031':'10-01', '2032':'09-19' },
+  '重阳': { '2026':'10-18', '2027':'10-08', '2028':'10-26', '2029':'10-16', '2030':'10-05', '2031':'10-24', '2032':'10-12' },
+  '腊八': { '2026':'01-15', '2027':'01-04', '2028':'01-22', '2029':'01-11', '2030':'01-01', '2031':'01-20', '2032':'01-08' },
+  '小年': { '2026':'01-30', '2027':'01-19', '2028':'02-06', '2029':'01-26', '2030':'01-16', '2031':'02-04', '2032':'01-23' }
 };
-var DD_FIXED = [
+var DD_TERM = {   /* 节气(公历) */
+  '立春': { '2026':'02-04', '2027':'02-04', '2028':'02-04', '2029':'02-03', '2030':'02-04', '2031':'02-04', '2032':'02-04' },
+  '清明': { '2026':'04-05', '2027':'04-05', '2028':'04-04', '2029':'04-04', '2030':'04-05', '2031':'04-05', '2032':'04-04' },
+  '夏至': { '2026':'06-21', '2027':'06-21', '2028':'06-21', '2029':'06-21', '2030':'06-21', '2031':'06-21', '2032':'06-21' },
+  '秋分': { '2026':'09-23', '2027':'09-23', '2028':'09-22', '2029':'09-23', '2030':'09-23', '2031':'09-23', '2032':'09-22' },
+  '冬至': { '2026':'12-22', '2027':'12-22', '2028':'12-21', '2029':'12-21', '2030':'12-22', '2031':'12-22', '2032':'12-21' }
+};
+var DD_FIXED = [   /* 公历固定日子。tag 是角标上写的历法 */
   { n:'元旦', md:'01-01', note:'新的一年, 旧的新决心。' },
-  { n:'小站生日', md:'08-21', note:'这条船 2026 年的下水纪念日。' },
-  { n:'劳动节', md:'05-01', note:'劳动者的节日, 也包括写作业的。' },
-  { n:'国庆节', md:'10-01', note:'举国同庆, 作业同在。' },
-  { n:'船长生日', md:'11-13', note:'站名本人的 +1 岁仪式。' },
-  { n:'开学日', md:'09-01', note:'暑假余额清零日, 年年准时报到。' },
-  { n:'青年节', md:'05-04', note:'五四青年节, 高中生是正规军。' },
-  { n:'儿童节', md:'06-01', note:'超龄儿童也想过, 怎么了。' },
-  { n:'程序员节', md:'10-24', note:'1024——程序员的进制浪漫。' },
+  { n:'情人节', md:'02-14', note:'一年里最该写信的一天, 哪怕只写给自己。' },
+  { n:'植树节', md:'03-12', note:'种一棵, 像素的也算。' },
+  { n:'女生节', md:'03-07', note:'女同学今天有特权, 班长可以请假。' },
+  { n:'妇女节', md:'03-08', note:'半边天, 另一半天也要写完作业。' },
   { n:'愚人节', md:'04-01', note:'今天小站说的话, 信几分自己定。' },
+  { n:'世界地球日', md:'04-22', note:'船在地球上, 地球也在船上。' },
+  { n:'世界读书日', md:'04-23', note:'今天读点什么, 哪怕是 help.chm。' },
+  { n:'劳动节', md:'05-01', note:'劳动者的节日, 也包括写作业的。' },
+  { n:'青年节', md:'05-04', note:'五四青年节, 高中生是正规军。' },
+  { n:'国际博物馆日', md:'05-18', note:'十五本相册, 算十五个展馆。' },
+  { n:'儿童节', md:'06-01', note:'超龄儿童也想过, 怎么了。' },
+  { n:'全国爱眼日', md:'06-06', note:'看久了就抬头看看远处, 真的。' },
+  { n:'世界海洋日', md:'06-08', note:'船的生日大概在今天。' },
+  { n:'小站生日', md:'08-21', note:'这条船 2026 年的下水纪念日。' },
+  { n:'开学日', md:'09-01', note:'暑假余额清零日, 年年准时报到。' },
+  { n:'教师节', md:'09-10', note:'给老师看一眼屏幕, 就算打过招呼了。' },
+  { n:'国庆节', md:'10-01', note:'举国同庆, 作业同在。' },
+  { n:'世界动物日', md:'10-04', note:'猫、狗、海鸥, 都是邻居。' },
+  { n:'程序员节', md:'10-24', note:'1024——程序员的进制浪漫。' },
+  { n:'萝莉日', md:'10-28', note:'这天是「世界动画日」, 网上管它叫萝莉日 — 二次元浓度最高的一天。' },
+  { n:'万圣节', md:'11-01', note:'今晚可以不写作业(理论上)。' },
   { n:'双十一', md:'11-11', note:'购物节/光棍节, 反正和作业无关。' },
+  { n:'船长生日', md:'11-13', note:'站名本人的 +1 岁仪式。' },
+  { n:'平安夜', md:'12-24', note:'苹果先放桌上, 圣诞老人明早来。' },
   { n:'圣诞节', md:'12-25', note:'袜子挂床头前, 记得先洗袜子。' }
+];
+var DD_WEEK = [   /* 第几个星期几, 日子会跑, 所以单独算 */
+  { n:'母亲节', m:5, nth:2, wd:0, note:'五月的第二个星期天, 记得说句谢谢。' },
+  { n:'父亲节', m:6, nth:3, wd:0, note:'六月的第三个星期天, 硬汉也是人。' }
 ];
 var DD_ONCE = [
   { n:'高考', iso:'2029-06-07', note:'船长的最终关卡——三年磨一剑, 这天开锋。' },
@@ -6680,27 +6728,58 @@ function ddNextLunar(n){
   }
   return null;   /* 对照表用完了 */
 }
+function ddNextTerm(n){
+  var years = Object.keys(DD_TERM[n] || {}).sort();
+  for(var i = 0; i < years.length; i++){
+    var iso = years[i] + '-' + DD_TERM[n][years[i]];
+    if(ddDays(iso) >= 0) return iso;
+  }
+  return null;   /* 对照表用完了 */
+}
 function ddNextWeekday(wd){   /* 最近的一个星期几(0=周日..6=周六), 当天就算当天 */
   var t = ddToday0(), delta = (wd - t.getDay() + 7) % 7;
   t.setDate(t.getDate() + delta);
   var m = t.getMonth() + 1, d = t.getDate();
   return t.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (d < 10 ? '0' : '') + d;
 }
+function ddNextNthWeekday(m, nth, wd){   /* 某月的第 n 个星期几(第 5 个没有就退到最后一个) */
+  var y = ddToday0().getFullYear();
+  for(var k = 0; k < 3; k++){
+    var yy = y + k;
+    var daysIn = new Date(yy, m, 0).getDate();          /* 这个月几天 */
+    var first = new Date(yy, m - 1, 1).getDay();        /* 1 号是星期几 */
+    var day = 1 + (wd - first + 7) % 7 + (nth - 1) * 7;/* 第 n 个星期几落在几号 */
+    if(day > daysIn){                                  /* 第 5 个不存在, 取最后一个 */
+      var lastW = new Date(yy, m, 0).getDay();
+      day = daysIn - ((lastW - wd + 7) % 7);
+    }
+    var iso = yy + '-' + (m < 10 ? '0' : '') + m + '-' + (day < 10 ? '0' : '') + day;
+    if(ddDays(iso) >= 0) return iso;
+  }
+  return ddNextWeekday(wd);
+}
 function ddBuildAll(){
   var items = [];
   DD_FIXED.forEach(function(f){
-    items.push({ n:f.n, iso:ddNextFixed(f.md), note:f.note, builtin:true });
+    items.push({ n:f.n, iso:ddNextFixed(f.md), note:f.note, tag:'公历', builtin:true });
   });
   Object.keys(DD_LUNAR).forEach(function(n){
     var iso = ddNextLunar(n);
-    if(iso) items.push({ n:n, iso:iso, note:'农历节日, 以公历为准。', builtin:true });
+    if(iso) items.push({ n:n, iso:iso, note:'农历节日, 已换算成公历。', tag:'农历', builtin:true });
+  });
+  Object.keys(DD_TERM).forEach(function(n){
+    var iso = ddNextTerm(n);
+    if(iso) items.push({ n:n, iso:iso, note:'二十四节气之一, 日子随年份差一两天。', tag:'节气', builtin:true });
+  });
+  DD_WEEK.forEach(function(f){
+    items.push({ n:f.n, iso:ddNextNthWeekday(f.m, f.nth, f.wd), note:f.note, tag:'公历', builtin:true });
   });
   DD_ONCE.forEach(function(f){
-    items.push({ n:f.n, iso:f.iso, note:f.note, builtin:true });
+    items.push({ n:f.n, iso:f.iso, note:f.note, tag:'一生一次', builtin:true });
   });
-  items.push({ n:'最近的周五', iso:ddNextWeekday(5), note:'熬到周五, 就是胜利。', builtin:true });
+  items.push({ n:'最近的周五', iso:ddNextWeekday(5), note:'熬到周五, 就是胜利。', tag:'每周', builtin:true });
   ddUser.forEach(function(u){
-    items.push({ n:u.n, iso:u.d, note:u.note || '', id:u.id, builtin:false, days:ddDays(u.d) });
+    items.push({ n:u.n, iso:u.d, note:u.note || '', id:u.id, builtin:false, tag:'自己写', days:ddDays(u.d) });
   });
   items.forEach(function(it){
     if(it.days === undefined) it.days = ddDays(it.iso);
@@ -6712,15 +6791,18 @@ function ddBuildAll(){
 function ddRender(){
   var html = ddBuildAll().map(function(it){
     var cls = 'dd-card' + (it.days === 0 ? ' today' : (it.days > 0 && it.days <= 7) ? ' soon' : (it.days < 0 ? ' past' : ''));
-    var num = it.days === 0 ? '就是今天'
-      : it.days < 0 ? '过去 ' + (-it.days) + ' 天'
+    var num = it.days === 0 ? '<b>今天</b>'
+      : it.days < 0 ? '过去 <b>' + (-it.days) + '</b> 天'
       : '<b>' + it.days + '</b> 天';
+    var tag = it.tag ? '<i class="dd-tag">' + escHtml(it.tag) + '</i>' : '';
     var ctrl = it.builtin ? '' :
       '<span class="dd-ctrl"><button data-dd-edit="' + it.id + '" type="button" title="编辑">改</button>' +
       '<button data-dd-del="' + it.id + '" type="button" title="删除">删</button></span>';
-    return '<div class="' + cls + '"><div class="dd-num">' + num + '</div>' +
-      '<div class="dd-info"><b>' + escHtml(it.n) + '</b><span>' + it.iso + '</span>' +
-      (it.note ? '<em>' + escHtml(it.note) + '</em>' : '') + '</div>' + ctrl + '</div>';
+    /* 数字和"改/删"同一排, 名字和日子在下 — 两列排的时候这样才不挤 */
+    return '<div class="' + cls + '">' +
+      '<div class="dd-top"><span class="dd-num">' + num + '</span>' + ctrl + '</div>' +
+      '<div class="dd-info"><b>' + escHtml(it.n) + tag + '</b><span>' + it.iso + '</span>' +
+      (it.note ? '<em>' + escHtml(it.note) + '</em>' : '') + '</div></div>';
   }).join('');
   $('#ddList').innerHTML = html || '<div class="dd-card"><div class="dd-info"><em>一个倒数都没有, 像一段不着急的日子。</em></div></div>';
 }
@@ -11570,7 +11652,8 @@ var ENTRIES = [
     { d:'2026-11-07', h:'给摇杆补了两处自己才满意的地方。一是手指刚按下去那一下, 摇杆头是死的, 得等手指挪动才肯跳过去——看着就像按了个空地方; 查出来是我把限幅的系数算在了"手指移动"那一步里, 按下那一步压根没算。改成按下就跳, 手感对了。二是底下那行操作提示还写着「方向键或 WASD 转向」, 手机上哪来的键盘? 于是把提示拆成两套, 电脑上显示键盘那套, 窄屏显示摇杆那套, 跟魔方那两套提示一个路子。电脑上一行字都没动过。' },
     { d:'2026-11-07', h:'上线之后自己上线看了一眼, 逮到两个自己写的时候没想周全的地方。一是方块玩到结束那一下, 手机上那行字变成了"undefined"——我写那个提示的时候只填了键盘那句, 手机那句忘了填。电脑上完全看不出来, 因为电脑看的就是键盘那句; 等我上线截了图才发现。第二个更傻: 摇杆底下我自己给它写了一句说明, 结果游戏窗下面本来就有一行, 两句几乎一模一样, 挤在一块儿看得很啰嗦——既然下面已经说了, 摇杆就别再重复。现在这两样都补上了, 而且给探针加了三条新断言专门盯着, 以后不会再溜过去。' },
     { d:'2026-11-07', h:'欢迎信重写了。原来的信也就一个"欢迎"加一句客套, 现在打开是一张舱位表: 玩、拧、看、读、听、藏, 六行, 把这条船现在真能上手的东西全摊开写清楚——包括昨天新长出来的两只摇杆。表格里的数字是活的: 秘密几个、这条船开了多少天, 每次来都跟着变。底下还加了个码头, 四个按钮: 看看最近的日记、翻一本相册、拧一把魔方、领一张像素船票, 点了直接把人带走, 不用自己满船找。写完发现手机上按钮够不着——信太长, 底下的「进入系统」被顶到屏幕外了。于是把信改成三段: 头钉住、中间随便滚、脚钉住。顺手还修了两个自己没注意的地方: 甲板音乐那句「歌没加载出来」的提示一直压着码头按钮(它比我高), 还有窄屏上那串装饰的点占地方, 把正文挤成了一条窄缝。' },
-    { d:'2026-11-07', h:'2048 补了两样: 最高分纪录, 和一个「撤销」。纪录那栏其实早就有, 但只在"这局结束、格子满了"的那一刻才写进本机——于是玩到一半关掉窗, 分数就凭空没了, 游戏厅那张卡片也永远是空的: 扫雷、方块、蛇都挂着一行「★ 最高 N 分」, 偏偏就它那行不见, 挺寒碜的。现在改成边玩边存, 推一步就比一次, 卡片立刻跟上来。撤销更顺手: 顶上纪录, 旁边一个「撤销」键, 键盘按 Z 也行, 棋盘推错了不用从头再来。中间又踩了个坑: 我存快照的时候存的是"推完之后"的棋盘, 退回去等于又合并了一遍, 白退一步; 改成存"推之前"那一张才真能退。还有件事挺逗: 我用探针测手机上的 2048 时自己拼窗口, 结果游戏厅和 2048 两个窗叠在一块儿, 差点当成 bug 去修——其实是我测法不对, 真人点那张卡片时厅会自己关掉。教训记下了: 测一个界面, 就按人会点的那条路点。' }
+    { d:'2026-11-07', h:'2048 补了两样: 最高分纪录, 和一个「撤销」。纪录那栏其实早就有, 但只在"这局结束、格子满了"的那一刻才写进本机——于是玩到一半关掉窗, 分数就凭空没了, 游戏厅那张卡片也永远是空的: 扫雷、方块、蛇都挂着一行「★ 最高 N 分」, 偏偏就它那行不见, 挺寒碜的。现在改成边玩边存, 推一步就比一次, 卡片立刻跟上来。撤销更顺手: 顶上纪录, 旁边一个「撤销」键, 键盘按 Z 也行, 棋盘推错了不用从头再来。中间又踩了个坑: 我存快照的时候存的是"推完之后"的棋盘, 退回去等于又合并了一遍, 白退一步; 改成存"推之前"那一张才真能退。还有件事挺逗: 我用探针测手机上的 2048 时自己拼窗口, 结果游戏厅和 2048 两个窗叠在一块儿, 差点当成 bug 去修——其实是我测法不对, 真人点那张卡片时厅会自己关掉。教训记下了: 测一个界面, 就按人会点的那条路点。' },
+    { d:'2026-11-07', h:'倒数日.EXE 翻修了: 一列改成两列, 字放大一号, 节日表也填饱了。之前节日只备到 2028 年, 而且只有六个农历节加十二个公历节, 翻来翻去就是那些; 现在农历排到 2032 年, 加上五个节气、母亲节父亲节(这两个日子会跑, 得算), 公历固定节日添到二十五个——情人节、植树节、女生节、妇女节、世界地球日、世界读书日、国际博物馆日、全国爱眼日、世界海洋日、教师节、世界动物日、萝莉日、万圣节、平安夜, 都在里面。萝莉日那条写的是 10 月 28 日, 那是「世界动画日」, 网上管它叫萝莉日, 二次元浓度最高的一天。顺手把每张卡加了个小角标, 写明这日子是按哪套历法算的(公历/农历/节气/每周/自己写), 免得有人对着"母亲节"那天较劲。核对的时候还真逮着一个错: 2028 年是闰五月, 端午提前到 5 月 28 号, 旧表里写的 6 月 22 号是错的——这回把农历和节气都用日历库一年一年算出来核过一遍。窄屏上两列太挤, 会退回一列, 但字和按钮照样是放大号的。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
