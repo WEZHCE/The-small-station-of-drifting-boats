@@ -73,7 +73,9 @@
   .tb-btn:active{border-color:#666 #fff #fff #666}
 
   .masthead{display:flex; align-items:center; gap:16px; padding:30px 28px 18px}
-  #logo{width:64px; height:64px; cursor:pointer}
+  /* 小船是 16x12 的像素画(加 2px 边是 20x16), scale 4 画出来正好 80x64 ——
+     框得按这个比例写, 硬写成正方形会把船拉胖 */
+  #logo{width:80px; height:64px; cursor:pointer}
   .site-name{font-family:"KaiTi","楷体","STKaiti",serif; font-size:42px; letter-spacing:6px;
     color:#3f5c33; text-shadow:2px 2px 0 #d8cdb2; line-height:1.2}
   .site-sub{margin-top:2px; color:#8a7f68; font-size:14px; letter-spacing:1px}
@@ -183,6 +185,15 @@
      giscus 会自动回报内容高度 */
   #giscusBox{height:calc(100vh - 260px); height:calc(100dvh - 260px); min-height:480px; overflow-y:auto; overflow-x:hidden; padding-right:4px}
   #giscusBox iframe{width:100%; border:none; background:transparent}
+  /* giscus 报不报高度, 得看它心情: 桌面上它会 postMessage 回一个
+     giscus.resizeHeight, 窄屏上常常一声不吭 —— iframe 就一直是 150px,
+     底下那行"捞一个漂流瓶"和搜索框全被它压在下面, 看着像两块叠在一起。
+     所以窄屏上我们自己给 iframe 一个够高的兜底高度, 框也撑开,
+     底下那行东西自然落到框外面去, 谁也不压谁。 */
+  @media (max-width:1020px){
+    #giscusBox{height:auto; min-height:0; overflow:visible}
+    #giscusBox iframe{height:360px; min-height:360px}
+  }
 
   /* 留言搜索 */
   .gb-search{display:flex; gap:6px; margin:12px 0 2px}
@@ -1053,6 +1064,15 @@
   body.night .sp-btns button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night .sp-btns button:active{border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .sp-go{background:#3d6fd0; color:#fff}
+  /* 剧透门帘也是要用手点的: 窄屏上"以后直接翻"那行得够高, 两个按钮也得够大 */
+  @media (max-width:760px){
+    .sp-body{padding:12px 14px 8px; gap:10px}
+    .sp-text{font-size:13.5px; line-height:1.9}
+    .sp-remember{min-height:40px; font-size:13px; margin-bottom:6px}
+    .sp-remember input{width:18px; height:18px}
+    .sp-btns{gap:10px}
+    .sp-btns button{min-height:40px; padding:8px 14px; font-size:13.5px}
+  }
 
   /* ---------- 左下角面板组: 甲板音乐 + 船长状态 + 灵动岛(灰黄面板, 配整站羊皮纸) ---------- */
   #deckDock{position:fixed; left:10px; bottom:calc(var(--tb-h) + 4px + env(safe-area-inset-bottom)); z-index:60;
@@ -1194,6 +1214,17 @@
     border:1px solid #d5ccb4; overflow:hidden}
   .album-thumbs img{width:100%; height:100%; object-fit:cover; display:block}
   body.night .photo img, body.night #lbImg, body.night .album-thumbs{border-color:#2c3854; background:#101828}
+  /* 平板上每个相册只露 2x2 的小图, 每格才 109px —— 看着就像"这本只有一张图"。
+     宽一点的屏幕上把缩略图摊成 4 张一排(或者只露一张大图), 别挤成马赛克。
+     768px 以下就老老实实只露一张大图, 像素画集那种一屏一张才叫相册。 */
+  @media (min-width:761px) and (max-width:1100px){
+    .album-thumbs{grid-template-columns:repeat(4,1fr); aspect-ratio:4/1}
+    .album-thumbs img:nth-child(n+5){display:none}
+  }
+  @media (max-width:760px){
+    .album-thumbs{grid-template-columns:1fr; aspect-ratio:4/3}
+    .album-thumbs img:nth-child(n+2){display:none}
+  }
 
   /* ---------- 图片搜索.EXE: 按内容和标签找图 ---------- */
   #imgSearchWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(560px,92vw);
@@ -1495,8 +1526,13 @@
   .hp-banner{background:#2038a8; color:#fff; font-family:"SimHei","黑体",sans-serif; padding:8px 12px;
     font-size:16px; letter-spacing:2px}
   .hp-marquee{overflow:hidden; white-space:nowrap; border-bottom:1px dashed #aaa; padding:4px 0; color:#a33}
-  .hp-marquee span{display:inline-block; padding-left:100%; animation:hpMq 9s linear infinite}
-  @keyframes hpMq{to{transform:translateX(-100%)}}
+  /* 跑马灯: 那行字比窗口还长(1442px), 以前是靠 translateX 把它往左推。
+     问题是元素本身会跟着跑到窗口外面去 —— 浏览器窗口里就多出一条
+     1442px 宽的横向溢出, 页面被撑出横向滚动条, 看着像坏了。
+     改用 text-indent 推: 字在框里走, 框自己一动不动。 */
+  .hp-marquee span{display:block; width:100%; overflow:hidden; white-space:nowrap;
+    animation:hpMq 14s linear infinite}
+  @keyframes hpMq{from{text-indent:100%} to{text-indent:-100%}}
   .site-home p{margin:8px 0; font-size:13px}
   .hp-links{list-style:none; padding:0; margin:8px 0}
   .hp-links a{color:#2038a8; text-decoration:underline; cursor:pointer}
@@ -1695,14 +1731,12 @@
     .about-grid{grid-template-columns:1fr}
     .info-table{max-width:430px}
     .about-text{max-width:560px}
-    #giscusBox{height:auto; min-height:0; overflow:visible}
   }
 
   @media (max-width:760px){
     /* 手机上强制铺满可用宽度, 不给浏览器排版差异留余地 */
     #site{max-width:100%; padding:20px 10px 60px}
     .window{width:100%}
-    #giscusBox{height:auto; min-height:0; overflow:visible}
     .masthead{padding:22px 16px 12px}
     .site-name{font-size:32px; letter-spacing:3px}
     .menu{margin:0 16px}
@@ -1810,7 +1844,12 @@
   #site .footer-links a{display:inline-flex; align-items:center; min-height:40px; padding:0 6px}
   #site .menu a{min-height:40px; display:flex; align-items:center; justify-content:center; font-size:13.5px}
 
-  /* --- 日历 / 日记 --- */
+  /* --- 日历 / 日记 ---
+   * 日历: 七列平分宽度的话, 375px 宽的机器上每格只剩 37px —— 手指头按不准。
+   *   改成每列至少 40px, 挤不下就让日历这一块横着划。 */
+  body.phone-shell .cal, body.phone-app .cal{overflow-x:auto; padding:6px}
+  body.phone-shell .cal-grid, body.phone-app .cal-grid{grid-template-columns:repeat(7, minmax(40px, 1fr))}
+  body.phone-shell .cal-d, body.phone-app .cal-d{min-width:40px}
   #calPrev, #calNext{width:44px; height:40px; font-size:16px}
   .cal-d{min-height:40px; font-size:13px}
   .cal-w{font-size:13px}
@@ -2106,6 +2145,39 @@ body.phone-app #phoneView #cbCanvas{max-width:100%}
    300px 的立方体在 390 宽的屏上刚好, 360 宽的屏上整页也塞得下。 */
 body.phone-app #phoneView #cbCanvas{max-width:min(100%, 300px); margin:0 auto; display:block}
 
+/* ---------- 俄罗斯方块: 摇杆得一眼能看见, 不许被挤到屏幕外 ----------
+ * 手机壳里窗口只有 770px 高, 而棋盘 + 侧栏 + 摇杆摞起来有 900px。
+ * 摇杆要是跟着正文一起往下滚, 手指根本够不着(实测探针点下去落在横杠上,
+ * 方块纹丝不动)。所以: 棋盘那半截自己滚, 摇杆那一行钉在窗口底边,
+ * 像游戏机上那样 —— 一直摸得到。 */
+body.phone-app #phoneView #ttWin{
+  display:flex !important;
+  flex-direction:column;
+  overflow:hidden !important;
+}
+body.phone-app #phoneView #ttWin > .titlebar{flex:none}
+body.phone-app #phoneView #ttWin > .tt-body{
+  flex:1 1 auto;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden !important;
+}
+/* 棋盘 + 侧栏: 这一块自己滚 */
+body.phone-app #phoneView #ttWin .tt-main{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+/* 棋盘在窄长屏上缩一号, 侧栏压成一行, 好让摇杆那行留在屏幕上 */
+body.phone-app #phoneView #ttWin .tt-canvas{max-width:min(200px, 100%); width:auto; height:auto}
+body.phone-app #phoneView #ttWin .tt-side{flex:none; flex-direction:row; flex-wrap:wrap; gap:6px}
+body.phone-app #phoneView #ttWin .tt-box{flex:1 1 20%; min-width:0; padding:4px 6px}
+body.phone-app #phoneView #ttWin .tt-next{flex:0 0 auto; max-width:56px}
+body.phone-app #phoneView #ttWin .tt-stickrow{flex:none}
+body.phone-app #phoneView #ttWin .tt-tip{flex:none}
+
 /* ---------- 回主屏的那条横杠 ---------- */
 #phoneHomeBar{position:absolute; left:0; right:0; bottom:0; height:40px; z-index:7;
   background:transparent; border:none; padding:0; cursor:pointer}
@@ -2393,7 +2465,1023 @@ body.night #phoneHomeBar::after{background:#55618a; border-color:#3a4763}
   body:not(.phone-shell) #startBtn{flex:0 0 auto}
   body:not(.phone-shell) #tray{flex:0 0 auto}
 }
+
+/* ========================================================================
+ * 四、平板档 761~1023px: 手机壳不接管, 老界面自己得站得住
+ *
+ * 平板上船长说的"错乱", 拆开看是三件事:
+ *   1) 手机壳自己跳出来接管(已在 phone-shell.js 里改成平板一律不接管);
+ *   2) 任务栏那一排 18 个键在 820px 上放不下, 最后几个被切掉一半;
+ *   3) 左下角那块甲板音乐(192px 宽的竖面板)压着正文 —— 平板上相册封面
+ *      直接被它盖住一块。
+ *
+ * 这里把 2 和 3 一起解决:
+ *   - 任务栏的键在平板上缩一号(34px), 18 个刚好一行放下 —— 键上写的是
+ *     单个字的徽标, 34px 照样认得出, 也比"被切一半"强;
+ *   - 甲板音乐沿用窄屏那套"压成一条贴底横着", 船长状态/灵动岛/小船/
+ *     里程牌这些浮层在平板上同样收掉 —— 它们都是压正文的。
+ *
+ * 注意别把触摸目标也一起缩: 键宽 34px 只是"平板上放得下",
+ * 高度仍留 32px 以上, 桌面档体检的下限是 28px。
+ * ======================================================================== */
+@media (min-width:761px) and (max-width:1023px){
+  /* 任务栏: 一行, 刚好放得下 */
+  body:not(.phone-shell) #taskbar{
+    gap:3px;
+    padding:0 4px env(safe-area-inset-bottom);
+    overflow-x:visible;
+  }
+  body:not(.phone-shell) #taskbar > button{
+    flex:0 0 auto;
+    min-width:34px;
+    min-height:32px;
+    padding:0 3px;
+  }
+  body:not(.phone-shell) #startBtn{
+    flex:0 0 auto;
+    min-width:60px;
+    min-height:32px;
+    padding:0 8px;
+    font-size:13px;
+  }
+  body:not(.phone-shell) .tb-badge{
+    font:bold 12px/16px Consolas,monospace;
+    min-width:22px; height:18px;
+  }
+  body:not(.phone-shell) #tray{
+    flex:0 0 auto;
+    height:32px;
+    gap:4px;
+    padding:0 4px;
+  }
+  body:not(.phone-shell) #tray #nightBtn{
+    min-width:34px; min-height:32px; font-size:12px;
+  }
+  /* 761~899 这一段连时钟都挤, 让位给应用键 */
+  @media (max-width:899px){
+    body:not(.phone-shell) #trayClock{display:none}
+  }
+
+  /* 甲板音乐: 压成一条, 贴底横着(跟窄屏同一套) */
+  body:not(.phone-shell) #deckDock{
+    left:0; right:0;
+    bottom:calc(36px + env(safe-area-inset-bottom));
+    z-index:60;
+    gap:0;
+  }
+  body:not(.phone-shell) #deckMusic{
+    width:auto;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:4px 8px;
+  }
+  body:not(.phone-shell) #deckMusic .dm-head,
+  body:not(.phone-shell) #deckMusic #dmViz,
+  body:not(.phone-shell) #deckMusic .dm-time,
+  body:not(.phone-shell) #deckMusic .dm-count,
+  body:not(.phone-shell) #deckMusic #dmList > *:not(.on){display:none}
+  body:not(.phone-shell) #deckMusic .dm-list{
+    flex:1 1 0%;
+    min-width:0;
+    max-height:none;
+    overflow:hidden;
+    border:none;
+    background:transparent;
+  }
+  body:not(.phone-shell) #deckMusic .dm-item.on{
+    display:flex;
+    align-items:center;
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    min-height:32px;
+    padding:0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:12px;
+  }
+  body:not(.phone-shell) #deckMusic .dm-ctrl{margin:0; flex:none; gap:4px}
+  body:not(.phone-shell) #deckMusic .dm-btn{flex:none; width:32px; height:32px; font-size:12px}
+  body:not(.phone-shell) #deckMusic .dm-prog{position:absolute; left:0; right:0; top:0; height:4px; margin:0}
+  /* 船长状态 / 灵动岛 / 小船 / 里程牌: 平板上它们也是压正文的浮层, 收掉 */
+  body:not(.phone-shell) #capState,
+  body:not(.phone-shell) #dynIsland,
+  body:not(.phone-shell) #boatOdo,
+  body:not(.phone-shell) #boatPet,
+  body:not(.phone-shell) #gullPet{display:none !important}
+
+  /* 正文底部留够任务栏 + 音乐条 */
+  body:not(.phone-shell).on{padding-bottom:calc(36px + 52px + 8px + env(safe-area-inset-bottom))}
+}
 /* <<< 旧界面窄屏补丁 CSS <<< */
+/* >>> 窄屏重构 CSS · 游戏类 (mobile/inject.cjs 自动插入, 别手改) >>> */
+/* ========================================================================
+ * 应用窗口 · 窄屏重排 (2026-11-07)
+ *
+ * 干什么:
+ *   把「游戏 + 小工具」这一批窗口在窄长屏上重新排一遍:
+ *     终端 / 计算器 / 扫雷 / 游戏厅 / 2048 / 俄罗斯方块 / 贪吃蛇 /
+ *     日记.EXE / 沙漏.EXE / 画板.EXE
+ *
+ * 什么时候生效:
+ *   只在 @media (max-width:760px) 里 —— 桌面(>760px)一个像素都不动。
+ *
+ * 两种窄屏状态都要管, 所以规则分两拨:
+ *   A. 共用规则 —— 前缀 :is(body:not(.phone-shell), body.phone-shell, body.phone-app)
+ *      body:not(.phone-shell) = 手机壳关着(旧界面里把这些窗口弹出来)
+ *      body.phone-shell      = 手机壳接管(壳在的时候 body 上一定有这个类)
+ *      body.phone-app       = 窗口已搬进壳的全屏视图(enterView() 才会加)
+ *   B. 只在旧界面窄屏生效的规则 —— 前缀 body:not(.phone-shell)
+ *      (壳里窗口本来就铺满 #phoneView, 由 phone-shell.css 摆, 这里不插手)
+ *
+ * 跟谁分家:
+ *   mobile/phone-shell.css    手机壳本体 + 全局触摸适配(按钮 40px / 字 13px)
+ *                             + 摇杆/键盘的切换
+ *   mobile/legacy-mobile.css  旧版正文(任务栏 / 甲板 / 日历 / 留言板)的窄屏补丁
+ *   本文件                    只管「应用窗口」这一摊, 不碰正文, 不碰任务栏
+ *
+ * 判据(跟 mobile/app-check.cjs 的口径一致):
+ *   1) 触摸目标: button / a / input / select / [role=button] 的 min(宽,高) >= 40px
+ *   2) 字号:     自身含文本节点的元素 >= 13px
+ *   3) 横向溢出: 窗口自己不出横向滚动条, 元素不许越过窗口右沿
+ *   4) 画布:     CSS 盒子的宽高比跟画布 attr 宽高比偏差 <= 8%(不许压扁)
+ *   5) 像素风:   2px 立体硬边框 + 纯色底, 不用大圆角 / 渐变 / 毛玻璃 / emoji
+ *   6) 每个新表面都要有 body.night 变体
+ *
+ * 注入:
+ *   由 mobile/inject.cjs 塞进 index.html 的 <style> 尾部(带标记块),
+ *   别手改 index.html 里那一段。本块要排在 phone-shell.css 之后 ——
+ *   下面有两条规则要盖过壳里那套「内部滚动盒」的写法。
+ * ======================================================================== */
+
+/* ========================================================================
+ * 一、两种窄屏状态共用的规则
+ *    触摸目标 / 字号 / 网格 / 画布比例 —— 跟壳开不开没关系, 一起写。
+ * ======================================================================== */
+@media (max-width:760px){
+
+  /* ---------- 终端 ----------
+   * 原来 #termIn 只有 17px 高(输入框没给高度), 手指头按不准 -> 垫到 40px。
+   * 判据 1(触摸目标): input#termIn 293x17 -> 293x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #termIn{
+    min-height:40px;
+    padding:4px 8px;
+    font-size:14px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #termRow{
+    padding:6px 8px;
+    gap:6px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #termRow label{font-size:14px}
+
+  /* ---------- 计算器 ----------
+   * .calc-grid button 原来 34px 高 -> 44px(宽本来就够)。
+   * 判据 1(触摸目标): 20 个 button 89x34 -> 89x44 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #calcWin .calc-grid button{
+    height:44px;
+    font-size:14px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #calcWin .calc-display{
+    min-height:36px;
+    font-size:20px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #calcWin .calc-body{padding:8px}
+
+  /* ---------- 扫雷 ----------
+   * 九列塞进 390px 每格只有 37px, 手指头点不准。
+   * 办法: 每列至少 40px(minmax(40px,1fr)); 九列正好塞满窗口宽,
+   * 屏再窄一点塞不下就让这块横着划(overflow-x:auto), 不把格子压小。
+   * 判据 1(触摸目标): 82 个 button.cell 37x37 -> 40x40 以上 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .mine-body{padding:6px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .mine-grid{
+    grid-template-columns:repeat(9, minmax(40px, 1fr));
+    gap:0;
+    padding:2px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .mine-grid::-webkit-scrollbar{
+    height:0; display:none;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .cell{
+    aspect-ratio:1;
+    font-size:17px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin #mineFlagMode{
+    min-height:40px;
+    padding:4px 12px;
+    font-size:13px;
+  }
+  /* 判据 2(字号): .mine-best 12.5px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .mine-best{font-size:13px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .mine-foot{gap:8px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .led{font-size:19px}
+
+  /* ---------- 游戏厅 ----------
+   * 判据 2(字号): .gm-desc / .gm-best / .gm-foot 12.5px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #gameWin .gm-desc,
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #gameWin .gm-best,
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #gameWin .gm-foot{font-size:13px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #gameWin .gm-body{padding:10px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #gameWin .gm-grid{gap:8px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #gameWin .gm-card{
+    padding:10px 8px;
+    gap:8px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #gameWin .gm-ico{
+    min-width:44px; height:44px; font-size:14px;
+  }
+
+  /* ---------- 2048 ----------
+   * 判据 1(触摸目标): #g2Undo / #g2New 58x32 -> 58x44 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #g2048Win .g2-btn{
+    min-height:44px;
+    padding:6px 14px;
+    font-size:13.5px;
+  }
+  /* 判据 2(字号): .g2-foot 12.5px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #g2048Win .g2-foot{font-size:13px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #g2048Win .g2-body{padding:10px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #g2048Win .g2-top{gap:6px}
+
+  /* ---------- 俄罗斯方块 ----------
+   * 窄长屏上画布在上、侧栏在下; 侧栏那几块数据横着排(排不下就折行),
+   * 竖着排会把画布挤扁。
+   * 判据 1(触摸目标): #ttNew 108x32 -> 108x44 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ttWin .tt-btn{
+    min-height:44px;
+    padding:6px 14px;
+    font-size:13.5px;
+  }
+  /* 判据 2(字号): .tt-k 11.5px / .tt-tip 12px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ttWin .tt-k{font-size:13px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ttWin .tt-tip{font-size:13px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ttWin .tt-body{padding:10px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ttWin .tt-main{
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+  }
+  /* 判据 4(画布比例): 宽度跟着容器走, 高度自动 —— 绝不许写死高度 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ttWin .tt-canvas{
+    width:100%;
+    max-width:min(240px, 100%);
+    height:auto;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ttWin .tt-side{
+    flex:1 1 auto;
+    width:100%;
+    flex-direction:row;
+    flex-wrap:wrap;
+    align-items:flex-start;
+    gap:6px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ttWin .tt-box{
+    flex:1 1 30%;
+    min-width:72px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ttWin .tt-next{
+    max-width:100%;
+    height:auto;
+    margin:0;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ttWin #ttNew{
+    flex:0 0 auto;
+    min-height:44px;
+  }
+
+  /* ---------- 贪吃蛇 ----------
+   * 判据 1(触摸目标): #snNew 58x32 -> 58x44 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #snakeWin .sn-btn{
+    min-height:44px;
+    padding:6px 14px;
+    font-size:13.5px;
+  }
+  /* 判据 2(字号): .sn-foot 12.5px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #snakeWin .sn-foot{font-size:13px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #snakeWin .sn-body{padding:10px}
+  /* 判据 4(画布比例): 432x432 的画布缩到屏宽, 高度自动, 不压扁 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #snakeWin .sn-canvas{
+    width:min(432px, 100%);
+    height:auto;
+  }
+
+  /* ---------- 日记 ----------
+   * 判据 1(触摸目标): .dw-date 366x25 -> 366x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #diaryWin .dw-date{
+    font-size:13px;
+    min-height:40px;
+    padding:8px 10px;
+  }
+  /* 判据 2(字号): .dw-date 12.5px / .dw-item-date 11px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #diaryWin .dw-item-date{font-size:13px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #diaryWin .dw-item-text{font-size:13.5px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #diaryWin .diarywin-body{padding:8px}
+
+  /* ---------- 沙漏 ----------
+   * 判据 1(触摸目标): 5 个预设键 38x26 + 2 个控制键 60x29 / 84x29 -> 全部 >= 40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #hgWin .hg-presets button{
+    font-size:13px;
+    min-height:40px;
+    min-width:40px;
+    padding:4px 10px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #hgWin .hg-ctrl button{
+    font-size:13px;
+    min-height:40px;
+    padding:5px 14px;
+  }
+  /* 判据 2(字号): .hg-presets button 12px / .hg-note 11.5px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #hgWin .hg-note{font-size:13px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #hgWin .hg-body{padding:10px}
+  /* 判据 4(画布比例): 沙漏画布 24x28, 缩放后比例不变 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #hgWin #hgCv{
+    width:min(200px, 70vw);
+    height:auto;
+  }
+
+  /* ---------- 画板 ----------
+   * 十个色块一行排不下, 窄屏改 5 列 2 行 —— 每块 60px 以上, 手指点得着。
+   * 判据 1(触摸目标): .pt-tool 121x27 / .pt-sw 34x34 / .pt-act 120x29 -> 全部 >= 40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #paintWin .pt-tool{
+    font-size:13px;
+    min-height:40px;
+    padding:6px 0;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #paintWin .pt-act{
+    font-size:13px;
+    min-height:40px;
+    padding:6px 0;
+  }
+  /* 判据 2(字号): .pt-note 11.5px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #paintWin .pt-note{font-size:13px}
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #paintWin .pt-colors{
+    grid-template-columns:repeat(5, 1fr);
+    gap:4px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #paintWin .pt-sw{
+    aspect-ratio:1;
+    width:100%;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #paintWin .pt-body{padding:8px}
+  /* 判据 4(画布比例): 24x24 的格子, 宽高都跟着容器走, 不许压扁 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #paintWin #ptCv{
+    width:100%;
+    height:auto;
+  }
+}
+
+/* ========================================================================
+ * 二、只在旧界面窄屏生效 (body:not(.phone-shell))
+ *    手机壳关着的时候, 这些窗口还是「居中的小对话框」。
+ *    窄长屏上要让它们占满 —— 不然 40px 的棋格根本排不开。
+ * ======================================================================== */
+@media (max-width:760px){
+
+  /* ---------- 终端: 铺满一屏, 输出区自己滚, 输入行贴底 ---------- */
+  body:not(.phone-shell) #term{
+    left:0; right:0; top:0; bottom:0;
+    transform:none;
+    width:auto; max-width:none;
+    height:auto;
+  }
+  body:not(.phone-shell) #term.open{display:flex; flex-direction:column}
+  body:not(.phone-shell) #term #termOut{
+    flex:1 1 auto;
+    min-height:0;
+    height:auto;
+    max-height:none;
+    overflow-y:auto;
+  }
+  body:not(.phone-shell) #term #termRow{flex:none}
+
+  /* ---------- 扫雷: 铺满一屏, 九列每格 40px 以上 ---------- */
+  body:not(.phone-shell) #mineWin{
+    left:0; right:0; top:0; bottom:0;
+    transform:none;
+    width:auto; max-width:none;
+    height:auto;
+  }
+  body:not(.phone-shell) #mineWin.open{display:flex; flex-direction:column}
+  body:not(.phone-shell) #mineWin .mine-body{
+    flex:1 1 auto;
+    min-height:0;
+    max-height:none;
+    overflow-y:auto;
+  }
+
+  /* ---------- 日记: 窗口内部自己滚, 日历列表不再套一层滚动 ---------- */
+  body:not(.phone-shell) #diaryWin .diarywin-body{
+    max-height:calc(94vh - 30px);
+    overflow-y:auto;
+  }
+  body:not(.phone-shell) #diaryWin .dw-list{
+    max-height:none;
+    overflow:visible;
+  }
+
+  /* ---------- 游戏厅 / 2048 / 俄罗斯方块 / 贪吃蛇 / 日记 / 沙漏 / 画板 / 计算器:
+     窗口贴边, 少留白(原来的 min(XXXpx,92vw) 居中对话框太挤) ---------- */
+  body:not(.phone-shell) #gameWin,
+  body:not(.phone-shell) #g2048Win,
+  body:not(.phone-shell) #ttWin,
+  body:not(.phone-shell) #snakeWin,
+  body:not(.phone-shell) #diaryWin,
+  body:not(.phone-shell) #hgWin,
+  body:not(.phone-shell) #paintWin,
+  body:not(.phone-shell) #calcWin{
+    max-width:calc(100vw - 8px);
+  }
+}
+
+/* ========================================================================
+ * 三、手机壳里的全屏应用 (body.phone-shell)
+ *    壳里窗口就是一屏, 里头的滚动盒要放开 —— 套娃滚动最难用。
+ *    (phone-shell.css 只放开了几个通用盒子, 游戏这几个还得在这儿放)
+ * ======================================================================== */
+@media (max-width:760px){
+  body.phone-shell .mine-body,
+  body.phone-shell .gm-body,
+  body.phone-shell .g2-body,
+  body.phone-shell .tt-body,
+  body.phone-shell .sn-body,
+  body.phone-shell .diarywin-body,
+  body.phone-shell .hg-body,
+  body.phone-shell .pt-body,
+  body.phone-shell .calc-body{
+    max-height:none !important;
+    height:auto !important;
+    overflow:visible !important;
+  }
+  /* 终端在壳里是「输出区自己滚 + 输入行贴底」, 别把输出区也放开 */
+  body.phone-shell #phoneView > #term > #termOut{flex:1 1 auto; min-height:0}
+  body.phone-shell #phoneView > #term > #termRow{flex:none}
+
+  /* 画板 / 沙漏在壳里要把画布摆正中间, 别贴着边 */
+  body.phone-shell #phoneView #paintWin #ptCv{margin:0 auto}
+  body.phone-shell #phoneView #hgWin #hgCv{margin:0 auto}
+
+  /* 扫雷: 九列 40px 一共 360px, 加上外框和内边距在 375/390 宽的机器上
+     刚好塞得下; 再窄的机器(360 以下)就让棋盘横着划 —— 但别让格子变小,
+     小格子点不准。 */
+  body.phone-shell #mineWin .mine-grid{padding:1px; gap:0}
+}
+
+/* ========================================================================
+ * 四、夜航
+ *    这份补丁只动尺寸和排版, 没添新颜色 —— 这些窗口的夜色底
+ *    (底 #1a2338 / 边框 #3a4763 / 字 #c8cfdd)在 index.html 里已经配好了。
+ *    万一以后往里加了颜色, 必须同时补 body.night 那一份。
+ * ======================================================================== */
+
+/* 本文件由 mobile/inject.cjs 注入 index.html 的 <style> 尾部, 别手改那一段 */
+/* <<< 窄屏重构 CSS · 游戏类 <<< */
+/* >>> 窄屏重构 CSS · 工具类 (mobile/inject.cjs 自动插入, 别手改) >>> */
+/* ========================================================================
+ * 应用窗口 · 窄屏重排 (工具/信息类) (2026-11-07)
+ *
+ * 干什么:
+ *   把「工具 + 信息」这一批窗口在窄长屏上重新排一遍:
+ *     太阳系 / 相册.EXE / 倒数日.EXE / 图片搜索 / 成绩监控 / 魔方.EXE /
+ *     任务管理器 / 小站浏览器 / 系统设置 / 记事本.EXE / 我的电脑
+ *
+ * 什么时候生效:
+ *   只在 @media (max-width:760px) 里 —— 桌面(>760px)一个像素都不动。
+ *
+ * 两种窄屏状态都要管, 所以前缀用 :is(...) 一把写两套:
+ *   body:not(.phone-shell) = 手机壳关着(旧界面里把这些窗口弹出来)
+ *   body.phone-shell      = 手机壳接管(壳在的时候 body 上一定有这个类)
+ *   body.phone-app       = 窗口已搬进壳的全屏视图(enterView() 才会加)
+ *
+ * 跟谁分家:
+ *   mobile/phone-shell.css    手机壳本体 + 全局触摸适配 + 摇杆/键盘切换
+ *   mobile/legacy-mobile.css  旧版正文(任务栏 / 甲板 / 日历)的窄屏补丁
+ *   mobile/app-narrow.css     「游戏类」窗口的窄屏补丁
+ *   本文件                    只管「工具/信息类」这一摊
+ *
+ * 判据(跟 mobile/app-check.cjs 的口径一致):
+ *   1) 触摸目标: button / a / input / select / [role=button] 的 min(宽,高) >= 40px
+ *      (勾选框/radio 算它最近的 label 祖先 —— 手指点的是 label)
+ *   2) 字号:     自身含文本节点的元素 >= 13px
+ *   3) 横向溢出: 元素不许越过窗口右沿, 窗口自己不出横向滚动条
+ *   4) 画布:     CSS 盒子的宽高比跟画布 attr 宽高比偏差 <= 8%(不许压扁)
+ *   5) 像素风:   2px 立体硬边框 + 纯色底, 不用大圆角 / 渐变 / 毛玻璃 / emoji
+ *   6) 每个新表面都要有 body.night 变体
+ *
+ * 注入:
+ *   由 mobile/inject.cjs 塞进 index.html 的 <style> 尾部(带标记块),
+ *   别手改 index.html 里那一段。
+ * ======================================================================== */
+
+@media (max-width:760px){
+
+  /* ======================================================================
+   * 一、太阳系.EXE
+   *   窄长屏上原来的布局是"左边 78px 的行星列表 + 右边大画布",
+   *   画布被挤成一条窄柱, 星点全挤在一起。
+   *   改成: 画布在上, 行星列表在下横着排一行, 手指点哪颗去哪颗。
+   * ====================================================================== */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #solarWin .solar-bar{
+    flex-wrap:wrap;
+    gap:6px;
+    padding:6px 8px;
+  }
+  /* 判据 1(触摸目标): #solarIn/#solarOut/#solarHome 26x24 -> 40x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #solarWin .solar-btn{
+    min-width:40px;
+    width:40px;
+    height:40px;
+    padding:0;
+    font-size:16px;
+  }
+  /* 判据 2(字号): #solarSpeed 12px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #solarWin .solar-speed{
+    font-size:13px;
+    margin-left:4px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #solarWin .solar-main{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  /* 判据 4(画布比例): 画布在上, 宽高由宽度决定, 不许被 flex 拉变形。
+     高度还得给下面的行星列表和状态行留地方, 不然那两行就被顶出屏幕了。 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #solarWin #solarCv{
+    width:100%;
+    height:auto;
+    min-height:0;
+    aspect-ratio:1 / 1.2;
+    flex:none;
+    order:-1;
+  }
+  /* 行星列表: 九颗摆成 5+4 两行(网格, 不横划 —— 横划的话最后几颗在屏幕上外,
+     手指得推着找)。每颗都还是 >= 44px 的大按钮。 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #solarWin .solar-nav{
+    width:auto;
+    flex:none;
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:4px;
+    padding:6px 4px;
+    border-right:none;
+    border-top:1px solid #9a9a9a;
+    overflow:visible;
+  }
+  /* 判据 1(触摸目标): 九颗行星按钮 71x24 -> >= 40x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #solarWin .solar-nav button{
+    min-width:40px;
+    min-height:44px;
+    padding:4px 4px;
+    justify-content:center;
+    /* 判据 2(字号): 12px -> 13px */
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #solarWin .solar-status{
+    flex-wrap:wrap;
+    gap:2px 10px;
+    padding:6px 8px;
+    /* 判据 2(字号): 11px -> 13px */
+    font-size:13px;
+  }
+  /* 判据 2(字号): #solarInfo / #solarScale 11px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #solarWin #solarInfo,
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #solarWin #solarScale{
+    font-size:13px;
+    white-space:normal;
+    line-height:1.6;
+  }
+  body.night #solarWin .solar-nav{border-top-color:#101828}
+
+  /* ======================================================================
+   * 二、相册.EXE
+   * ====================================================================== */
+  /* 判据 1(触摸目标): #albumDl 70.8x37 -> >= 40x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #albumWin .ab-dl{
+    min-height:40px;
+    padding:6px 12px;
+    /* 判据 2(字号): 11px -> 13px */
+    font-size:13px;
+  }
+  /* 判据 2(字号): #albumWinInfo 11px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #albumWin #albumWinInfo{
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #albumWin .ab-status{
+    flex-wrap:wrap;
+    gap:6px 10px;
+    padding:6px 10px;
+    /* 判据 2(字号): 底部那行说明 11px -> 13px */
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #albumWin .ab-status > span{
+    font-size:13px;
+  }
+  /* 相册窗口里的照片网格: 窄屏上两列, 照片别挤成邮票 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #albumWin .ab-view{
+    padding:10px 8px;
+  }
+
+  /* ======================================================================
+   * 三、倒数日.EXE
+   * ====================================================================== */
+  /* 判据 1(触摸目标): #ddAdd 93x31 -> >= 40x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ddWin #ddAdd{
+    min-height:40px;
+    padding:6px 12px;
+  }
+  /* 判据 2(字号): .dd-info span 12px / em 12.5px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ddWin .dd-info span{
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ddWin .dd-info em{
+    font-size:13px;
+  }
+  /* 判据 2(字号): .dd-foot span 12px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ddWin .dd-foot span{
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ddWin .dd-foot button{
+    min-height:40px;
+    padding:6px 12px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ddWin .dd-form input{
+    min-height:44px;
+    font-size:14px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ddWin .dd-form-btns button{
+    min-height:40px;
+    font-size:13px;
+  }
+
+  /* ======================================================================
+   * 四、图片搜索
+   * ====================================================================== */
+  /* 判据 1(触摸目标): #isInput 291x29 -> 44 高 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #imgSearchWin .is-row input{
+    min-height:44px;
+    font-size:14px;
+  }
+  /* 判据 1(触摸目标): #isGo 71x29 -> >= 40x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #imgSearchWin .is-row button{
+    min-height:44px;
+    padding:6px 14px;
+    font-size:13.5px;
+  }
+  /* 判据 1(触摸目标): 标签按钮 38x20 -> >= 40x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #imgSearchWin .is-tag{
+    min-width:40px;
+    min-height:40px;
+    padding:4px 12px;
+    /* 判据 2(字号): 12px -> 13px */
+    font-size:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  /* 判据 2(字号): #isHint 11.5px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #imgSearchWin .is-hint{
+    font-size:13px;
+    line-height:1.7;
+  }
+  body.night #imgSearchWin .is-tag{border-color:#2c3854}
+
+  /* ======================================================================
+   * 五、成绩监控(加密档案)
+   * ====================================================================== */
+  /* 判据 1(触摸目标): #gdPass 190x31 -> 44 高 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #gradeWin .gd-lockrow input{
+    min-height:44px;
+    font-size:15px;
+  }
+  /* 判据 1(触摸目标): #gdUnlock 62x31 -> >= 40x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #gradeWin .gd-lockrow button{
+    min-height:44px;
+    padding:6px 16px;
+    font-size:13.5px;
+  }
+  /* 判据 2(字号): .gd-note 11px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #gradeWin .gd-note{
+    font-size:13px;
+    line-height:1.7;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #gradeWin .gd-lock p{
+    font-size:13.5px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #gradeWin .gd-top button{
+    min-height:40px;
+  }
+
+  /* ======================================================================
+   * 六、魔方.EXE
+   * ====================================================================== */
+  /* 判据 1(触摸目标): #cbSpeed 60x16 (滑杆太矮按不准) -> 40 高 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #cubeWin .cb-spd input{
+    width:100%;
+    min-width:100px;
+    height:40px;
+  }
+  /* 判据 1(触摸目标): #cbStep 39.5x40 -> 40x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #cubeWin #cbStep{
+    min-width:40px;
+    min-height:40px;
+  }
+  /* 判据 2(字号): .cb-spd span / #cbSpdVal / #cbBest 12px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #cubeWin .cb-spd span{
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #cubeWin #cbSpdVal{
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #cubeWin #cbBest{
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #cubeWin #cbBest b{
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #cubeWin .cb-hist{
+    font-size:12.5px;
+  }
+
+  /* ======================================================================
+   * 七、任务管理器
+   * ====================================================================== */
+  /* 判据 1(触摸目标): 三个页签 62x27 -> >= 40x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #tmgrWin .tm-tab{
+    flex:1 1 0%;
+    min-width:40px;
+    min-height:40px;
+    padding:4px 10px;
+    font-size:13.5px;
+  }
+  /* 判据 1(触摸目标): 结束任务/切换至/新任务 62~82x26 -> >= 40x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #tmgrWin .tm-btnrow button{
+    flex:1 1 auto;
+    min-width:40px;
+    min-height:40px;
+    padding:4px 12px;
+    /* 判据 2(字号): 12px -> 13px */
+    font-size:13px;
+  }
+  /* 判据 2(字号): .tm-appstate 11.5px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #tmgrWin .tm-appstate{
+    font-size:13px;
+  }
+  /* 判据 2(字号): #tmAppHint 11px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #tmgrWin .tm-hint{
+    font-size:13px;
+    line-height:1.7;
+  }
+  /* 判据 2(字号): 底部三个数 11.5px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #tmgrWin .tm-status span{
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #tmgrWin .tm-approw{
+    min-height:40px;
+    font-size:13.5px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #tmgrWin .tm-prow{
+    min-height:40px;
+    font-size:13.5px;
+  }
+
+  /* ======================================================================
+   * 八、小站浏览器
+   * ====================================================================== */
+  /* 判据 1(触摸目标): 四个导航键 24x24 -> 40x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #browserWin .br-btn{
+    min-width:40px;
+    width:40px;
+    height:40px;
+    font-size:16px;
+  }
+  /* 判据 1(触摸目标): #brUrl 216x15 -> 44 高 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #browserWin #brUrl{
+    min-height:44px;
+    font-size:14px;
+    line-height:1.6;
+  }
+  /* 判据 1(触摸目标): #brGo 26x14 -> >= 40x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #browserWin .br-go{
+    min-width:40px;
+    min-height:40px;
+    padding:4px 8px;
+    /* 判据 2(字号): 12px -> 13px */
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #browserWin .br-toolbar{
+    flex-wrap:wrap;
+    gap:6px;
+    padding:6px 8px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #browserWin .br-addr{
+    min-width:100%;
+    order:2;
+  }
+  /* 判据 1(触摸目标): 主页里那七个链接只有 16px 高 -> 40px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #browserWin .hp-links a{
+    display:inline-block;
+    min-height:40px;
+    line-height:40px;
+    padding:0 2px;
+  }
+  /* 判据 2(字号): #brStatus / 底部说明 / .br-note 10.5~11px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #browserWin #brStatus{
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #browserWin .br-status > span{
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #browserWin .br-note{
+    font-size:13px;
+    padding:4px 8px 6px;
+    line-height:1.6;
+  }
+  /* 主页那几行说明字也一起放大 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #browserWin .site-home p{
+    font-size:13.5px;
+    line-height:1.8;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #browserWin .hp-fine{
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #browserWin .hp-banner{
+    font-size:17px;
+  }
+
+  /* ======================================================================
+   * 九、系统设置
+   * ====================================================================== */
+  /* 判据 1(触摸目标): 页签 62x27 -> >= 40x40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #sysWin .sys-tab{
+    flex:1 1 0%;
+    min-width:40px;
+    min-height:40px;
+    padding:4px 10px;
+    font-size:13.5px;
+  }
+  /* 判据 1(触摸目标): 手指点的是 label, label 高必须 >= 40 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #sysWin .set-opts label{
+    min-height:40px;
+    font-size:13.5px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #sysWin label.set-check{
+    min-height:40px;
+    padding:4px 0;
+    font-size:13.5px;
+  }
+  /* 勾选框本身也放大一点(手指头粗, 14px 的小方块戳不准) */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #sysWin .set-opts input,
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #sysWin .set-check input{
+    width:22px;
+    height:22px;
+  }
+  /* 判据 2(字号): .set-note 11.5px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #sysWin .set-note{
+    font-size:13px;
+    line-height:1.7;
+  }
+  /* 判据 2(字号): .sys-foot 11px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #sysWin .sys-foot{
+    font-size:13px;
+    line-height:1.7;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #sysWin .set-row{
+    padding:10px 2px 8px;
+  }
+
+  /* ======================================================================
+   * 十、记事本.EXE
+   * ====================================================================== */
+  /* 判据 2(字号): #noteStat / 底部说明 11px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #noteWin .note-status{
+    font-size:13px;
+    padding:6px 10px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #noteWin .note-status span{
+    font-size:13px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #noteWin #noteText{
+    font-size:14px;
+    line-height:1.9;
+  }
+
+  /* ======================================================================
+   * 十一、我的电脑
+   * ====================================================================== */
+  /* 判据 2(字号): .mp-glyph 10.5px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mypcWin .mp-glyph{
+    font-size:13px;
+  }
+  /* 判据 2(字号): .mp-label 12px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mypcWin .mp-label{
+    font-size:13px;
+  }
+  /* 判据 2(字号): #mpPreview 12.5px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mypcWin #mpPreview{
+    font-size:13px;
+    line-height:1.8;
+  }
+  /* 判据 2(字号): #mpStat / 底部说明 11px -> 13px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mypcWin .mp-status{
+    font-size:13px;
+    padding:6px 10px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mypcWin .mp-status span{
+    font-size:13px;
+  }
+  /* 窄屏上图标两列, 别挤成四列小疙瘩 */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mypcWin .mp-grid{
+    grid-template-columns:repeat(2, 1fr);
+    gap:10px 6px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mypcWin .mp-item{
+    min-height:72px;
+  }
+}
+/* ========================================================================
+ * 二、旧界面窄屏 (body:not(.phone-shell))
+ *   手机壳关着的时候, 这 12 个窗口还是「居中的小对话框」。
+ *   窄长屏上让它们占满一屏 —— 弹窗里的表格/列表才有地方站。
+ *   (跟 app-narrow.css 里游戏类窗口一个做法: 窗口贴边, 内部只留一个滚动层)
+ * ======================================================================== */
+@media (max-width:760px){
+
+  body:not(.phone-shell) #solarWin,
+  body:not(.phone-shell) #albumWin,
+  body:not(.phone-shell) #ddWin,
+  body:not(.phone-shell) #imgSearchWin,
+  body:not(.phone-shell) #gradeWin,
+  body:not(.phone-shell) #cubeWin,
+  body:not(.phone-shell) #tmgrWin,
+  body:not(.phone-shell) #browserWin,
+  body:not(.phone-shell) #sysWin,
+  body:not(.phone-shell) #noteWin,
+  body:not(.phone-shell) #mypcWin,
+  body:not(.phone-shell) #helpWin{
+    left:0; right:0; top:0; bottom:0;
+    transform:none;
+    width:auto; max-width:none;
+    height:auto;
+  }
+  /* 窗口里自己滚的盒子放开 —— 整页一起滚, 别套娃 */
+  body:not(.phone-shell) #albumWin .ab-view,
+  body:not(.phone-shell) #ddWin .dd-list,
+  body:not(.phone-shell) #imgSearchWin .is-results,
+  body:not(.phone-shell) #gradeWin .gd-body,
+  body:not(.phone-shell) #tmgrWin .tm-applist,
+  body:not(.phone-shell) #tmgrWin .tm-proclist,
+  body:not(.phone-shell) #browserWin .br-view,
+  body:not(.phone-shell) #mypcWin .mp-preview,
+  body:not(.phone-shell) #helpWin .help-body{
+    height:auto;
+    max-height:none;
+    overflow:visible;
+  }
+  /* 记事本: 输入框吃掉剩下的高度 */
+  body:not(.phone-shell) #noteWin.open{display:flex; flex-direction:column}
+  body:not(.phone-shell) #noteWin #noteText{flex:1 1 auto; height:auto; min-height:260px}
+}
+
+/* ========================================================================
+ * 三、手机壳里的全屏应用 (body.phone-app)
+ *   这 12 个窗口是裸 div(没有 .window 类), phone-shell.css 里那条
+ *   「标题栏吸顶」只管 .window, 管不到它们 —— 这里补上:
+ *   窗口滚动的时候标题栏留在顶上, 状态行贴在底下。
+ * ======================================================================== */
+@media (max-width:760px){
+  body.phone-app #phoneView > #solarWin > .titlebar,
+  body.phone-app #phoneView > #albumWin > .titlebar,
+  body.phone-app #phoneView > #ddWin > .titlebar,
+  body.phone-app #phoneView > #imgSearchWin > .titlebar,
+  body.phone-app #phoneView > #gradeWin > .titlebar,
+  body.phone-app #phoneView > #cubeWin > .titlebar,
+  body.phone-app #phoneView > #tmgrWin > .titlebar,
+  body.phone-app #phoneView > #browserWin > .titlebar,
+  body.phone-app #phoneView > #sysWin > .titlebar,
+  body.phone-app #phoneView > #noteWin > .titlebar,
+  body.phone-app #phoneView > #mypcWin > .titlebar,
+  body.phone-app #phoneView > #helpWin > .titlebar{
+    position:sticky;
+    top:0;
+    z-index:4;
+  }
+  body.phone-app #phoneView > #albumWin .ab-status,
+  body.phone-app #phoneView > #tmgrWin .tm-status,
+  body.phone-app #phoneView > #noteWin .note-status,
+  body.phone-app #phoneView > #mypcWin .mp-status,
+  body.phone-app #phoneView > #solarWin .solar-status,
+  body.phone-app #phoneView > #browserWin .br-status{
+    position:sticky;
+    bottom:0;
+    z-index:3;
+  }
+}
+
+/* 这份文件由 mobile/inject.cjs 注入进 index.html，别手改 index.html 里那段 */
+/* <<< 窄屏重构 CSS · 工具类 <<< */
 </style>
 </head>
 <body>
@@ -2929,7 +4017,7 @@ body.night #phoneHomeBar::after{background:#55618a; border-color:#3a4763}
     <canvas id="solarCv"></canvas>
   </div>
   <div class="solar-status">
-    <span id="solarInfo">拖动平移 · 滚轮缩放 · 左侧列表点谁去谁 — 提醒: 真实比例下, 太空几乎是空的</span>
+    <span id="solarInfo">拖动平移 · ＋－ 缩放 · 点行星名去谁那儿 — 提醒: 真实比例下, 太空几乎是空的</span>
     <span id="solarScale"></span>
   </div>
 </div>
@@ -6084,6 +7172,21 @@ function solSize(){
       s:Math.random() < .85 ? 1 : 2, a:.2 + Math.random()*.55,
       tw:Math.random() < .3 ? 1.5 + Math.random()*3 : 0 });
   }
+}
+/* 画布的宽高是按"当时那块地方有多大"记下来的, 尺寸一变就得重记,
+   不然画布会被拉长(星点变成椭圆, 拖动也跟着歪)。
+   窗口拖动、手机壳里把太阳系拉满、旋转屏 —— 都是尺寸变了但没通知的情形,
+   所以盯住画布本身, 它一改就重画。 */
+if(window.ResizeObserver){
+  var solRO = new ResizeObserver(function(){
+    if(!$('#solarWin').classList.contains('open')) return;
+    var r = solCv.getBoundingClientRect();
+    if(r.width < 10) return;
+    if(Math.round(r.width) === sol.W && Math.round(r.height) === sol.H) return;
+    solSize();
+    if(!sol.scale) solFit();
+  });
+  solRO.observe(solCv);
 }
 function solScaleMin(){
   return (Math.min(sol.W, sol.H) / 2 - 22) / 4600 / 2;
@@ -11734,7 +12837,10 @@ var ENTRIES = [
     { d:'2026-11-07', h:'甲板音乐又进货了: 十四首变二十七首。船长甩过来十四个文件, 有一个跟原有的《玲音》主题曲是同一个, 剩下的十三个就都搬进船舱了——《东方》的 Bad Apple!!、千本桜、深海少女, 还有《My Soul, Your Beats!》。' },
     { d:'2026-11-07', h:'页面上原来写着「甲板音乐十四首」, 歌单都二十七首了, 那句话就假了。干脆不写死, 让它自己数, 中文数字也跟着变。舰载电视台的节目单本来就是这张歌单, 点谁谁开唱。' },
     { d:'2026-11-07', h:'冀豫联考的成绩进档案了。总分 794.5, 班名 20, 校名 721; 数学 118 分是九科里最能打的一门, 政治 62 分垫底。具体数字不写在这儿——想看得输口令。' },
-    { d:'2026-11-07', h:'联考跟月考不是一套名次: 月考排的是学校里几百号人, 联考排的是两个省的人, 差着好几千。硬减一减, 语文会显示"进步了七百多名"——那是假的, 参考的人根本不是一批。所以给每场卷子标了个口径角标, 不同口径之间干脆不比, 表里就留个"—"。' }
+    { d:'2026-11-07', h:'联考跟月考不是一套名次: 月考排的是学校里几百号人, 联考排的是两个省的人, 差着好几千。硬减一减, 语文会显示"进步了七百多名"——那是假的, 参考的人根本不是一批。所以给每场卷子标了个口径角标, 不同口径之间干脆不比, 表里就留个"—"。' },
+    { d:'2026-11-07', h:'船长说: 手机端别偷懒, 每个应用都要重排一遍。二十来扇窗挨个改, 按钮抬到手指点得下, 小字抬到看得清, 画布不许被拉扁。这活儿费眼睛, 但按下去没反应才是真的费劲。' },
+    { d:'2026-11-07', h:'平板上打开会错乱, 查出来是两件事叠在一起: 手机壳自己跳出来接管, 在网页正中摆了一台小手机; 留言板那块又被压扁, 底下的漂流瓶、搜索框、便利贴全挤成一团。现在平板归旧界面管, 壳只在真窄的屏幕上才上场。' },
+    { d:'2026-11-07', h:'相册"只显示一个"其实是看岔了——每本封面塞的是四张小图, 平板上每格才一百来像素, 看着就只剩一张。改成窄的时候只露一张大图, 宽的时候四张横着排, 网格列数也跟着屏幕宽度走。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
@@ -12391,6 +13497,7 @@ var mounted = false;     /* 三块面板是否已经搬进壳 */
 var built = false;
 var pref = null;         /* null=没表态, 'on', 'off' */
 var mqPhone = window.matchMedia ? window.matchMedia('(max-width:760px)') : null;
+var mqCoarse = window.matchMedia ? window.matchMedia('(pointer:coarse)') : null;
 
 /* ================= 搭壳 ================= */
 function buildShell(){
@@ -12663,19 +13770,37 @@ function snapshotChromeHome(){
 function readPref(){
   try{ return localStorage.getItem(PREF_KEY); }catch(e){ return null; }
 }
+/* 窄 = 宽度真的窄(手机竖屏那一类)。
+   平板(761~1020)不算窄 —— 平板上再摆一台 390 宽的小手机, 只会盖住半张网页,
+   船长说的"平板打开网站会错乱"就是这么来的。 */
 function narrowNow(){
-  if(mqPhone && mqPhone.matches) return true;
-  return !!(window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
+  return !!(mqPhone && mqPhone.matches);
 }
-/* 船长没表态 → 跟着屏幕宽度走; 表过态 → 按他说的来 */
+/* 真的是手指头的设备(平板、触摸屏笔记本) */
+function coarseNow(){
+  return !!(mqCoarse && mqCoarse.matches);
+}
+/* 壳有三种状态:
+     off       不出现
+     mock      宽屏(鼠标设备)上摆一台小手机当预览
+     takeover  接管整屏(窄屏真手机)
+   船长没表态 → 只在窄屏接管; 表过态(on) → 宽屏上给他摆一台预览的小手机。
+   平板(手指头 + 不窄)一律 off —— 船长说过"平板打开网站会错乱",
+   那次错乱就是壳自己跳出来接管, 在网页正中摆了一台 390px 的小手机,
+   底下那层网页从它背后露出来, 看着像坏了。
+   平板上就算船长在设置里手动点了"开", 也不接管 —— 见 setShell 里的提示。 */
+function shellMode(){
+  if(pref === 'off') return 'off';
+  if(narrowNow()) return 'takeover';
+  if(coarseNow()) return 'off';      /* 平板: 老界面本来就顺眼, 别插手 */
+  return pref === 'on' ? 'mock' : 'off';
+}
 function wantShell(){
-  if(pref === 'on') return true;
-  if(pref === 'off') return false;
-  return narrowNow();
+  return shellMode() !== 'off';
 }
-/* 壳是不是正在接管整屏(窄屏 + 开着) */
+/* 壳是不是正在接管整屏 */
 function shellTakingOver(){
-  return wantShell() && narrowNow();
+  return shellMode() === 'takeover';
 }
 function setShell(on, save){
   pref = on ? 'on' : 'off';
@@ -12683,6 +13808,10 @@ function setShell(on, save){
     try{ localStorage.setItem(PREF_KEY, pref); }catch(e){}
   }
   applyShell();
+  /* 船长在平板上点了"开", 但平板不算窄 —— 告诉他一声, 别让人以为没生效 */
+  if(on && !narrowNow() && coarseNow()){
+    toastSoft('平板上不接管手机界面 —— 窄屏(手机)才会换。');
+  }
 }
 function applyShell(){
   var on = wantShell();
