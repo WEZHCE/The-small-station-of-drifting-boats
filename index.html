@@ -5704,6 +5704,10 @@ function buildBootScene(){
   bootTextY = bootH * .42;
   var off = document.createElement('canvas');
   off.width = bootW; off.height = Math.round(bootFontSize * 1.7);
+  /* 视口被压得极扁时(比如缩到 1x1), 离屏画布会算出 0 宽 0 高,
+     getImageData 直接抛 IndexSizeError, 整段开机动画的 console 就脏了。
+     尺寸不成画的时候干脆别画, 等下一次 resize 再来。 */
+  if(off.width < 1 || off.height < 1){ bootParts = []; bootMaxArrive = 0; return; }
   var octx = off.getContext('2d');
   octx.font = 'bold ' + bootFontSize + 'px "KaiTi","楷体","STKaiti",serif';
   octx.textAlign = 'center'; octx.textBaseline = 'middle';
