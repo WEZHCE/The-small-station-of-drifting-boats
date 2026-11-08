@@ -2177,6 +2177,42 @@ body.phone-app #phoneView #ttWin .tt-tip{flex:none}
   width:132px; height:5px; background:#8a7d5f; border:1px solid #6f6047}
 body.night #phoneHomeBar::after{background:#55618a; border-color:#3a4763}
 
+/* ---------- 手机版关机画面 (2026-11-08) ----------
+   桌面那套关机是 CRT 自检 + BIOS 一行行打字, 给鼠标看的。
+   手机上开机动画都嫌慢, 关机更不该让人等字敲完 ——
+   所以手机上另来一块黑屏: 一条船, 一句话, 一个电源键。
+   电源键按下去就回到主屏, 船还泊在原处。 */
+#phonePower{
+  position:absolute; left:0; right:0; top:0; bottom:0; z-index:8;
+  display:none;
+  flex-direction:column; align-items:center; justify-content:center;
+  background:#0a0a0c; color:#f2ecdd;
+  font-family:Consolas,"Courier New",monospace;
+}
+body.phone-power #phonePower{display:flex}
+/* 关机就是关机: 状态栏、横杠都收起来, 屏幕上只剩那块黑 */
+body.phone-power #phoneStatus, body.phone-power #phoneHomeBar,
+body.phone-power #phoneHome, body.phone-power #phoneDock,
+body.phone-power #pbMusic, body.phone-power #phoneView{display:none !important}
+#phonePower .pp-boat{margin-bottom:12px; image-rendering:pixelated; display:block}
+#phonePower .pp-text{
+  font-size:14px; line-height:2; text-align:center; color:#e8a33d;
+}
+#phonePower .pp-power{
+  margin-top:18px; padding:12px 30px;
+  background:#000; color:#e8a33d;
+  border:3px solid #e8a33d; border-radius:0;
+  font-family:inherit; font-size:15px; cursor:pointer;
+  min-height:44px;
+}
+#phonePower .pp-power:active{background:#e8a33d; color:#000}
+#phonePower .pp-hint{
+  position:absolute; left:12px; right:12px; bottom:26px;
+  text-align:center; font-size:12px; color:#6a6a6a; line-height:1.7;
+}
+body.night #phonePower{background:#05070f}
+body.night #phonePower .pp-hint{color:#4a5670}
+
 /* ========================================================================
  * 四、摇杆 · 手机版的方向盘 (2026-11-07)
  *
@@ -2236,8 +2272,7 @@ body.night #phoneHomeBar::after{background:#55618a; border-color:#3a4763}
   .kbd-tip{display:none}
 }
 
-/* ---------- 窄屏上, 手机壳开着就让桌面那套让位 ---------- */
-@media (max-width:760px){
+/* ---------- 窄屏上, 手机壳开着就让桌面那套让位 ---------- */@media (max-width:760px){
   body.phone-shell #taskbar, body.phone-shell #startMenu, body.phone-shell #deckDock,
   body.phone-shell #boatPet, body.phone-shell #gullPet,
   body.phone-shell #boatOdo{display:none !important}
@@ -3474,6 +3509,665 @@ body.night #phoneHomeBar::after{background:#55618a; border-color:#3a4763}
 
 /* 这份文件由 mobile/inject.cjs 注入进 index.html，别手改 index.html 里那段 */
 /* <<< 窄屏重构 CSS · 工具类 <<< */
+/* >>> 手机端应用界面 CSS (mobile/inject.cjs 自动插入, 别手改) >>> */
+/* ========================================================================
+ * 手机端 · 每个应用一套自己的界面 (2026-11-08)
+ *
+ * 船长原话: 「应用点开之后显示不全, 每个应用的尺寸都不合适, 还留有大黑边!
+ *            (你根本就没有单独为手机端写独立的应用界面!!!)」
+ *
+ * 这份文件干三件事:
+ *   一、把布局视口钉死 —— 不让任何一张图/一个盒子把手机屏幕撑宽
+ *      (这是"四周大黑边"的真凶: 手机浏览器遇上超宽内容, 会把布局视口
+ *       撑到那个宽度, 壳是 fixed inset:0, 于是跟着变宽, 屏幕上就多出边)
+ *   二、壳里的应用: 一屏一应用 —— 自己的标题条 + 会滚的内容 + 钉住的底栏
+ *      (原来的做法是"把桌面的窗口拉满一屏", 桌面窗口照搬到手机上,
+ *       内容短的窗口下半屏是一大片灰, 内容长的挤成一团)
+ *   三、手机版关机画面 —— 桌面的 CRT 自检是给鼠标的, 手机上另来一套
+ *
+ * 什么时候生效:
+ *   只在 @media (max-width:760px) 里 —— 桌面(>760px)一个像素都不动。
+ *
+ * 跟谁分家:
+ *   mobile/phone-shell.css    手机壳本体(状态栏/弹簧板/底栏)+ 全局触摸适配
+ *   mobile/app-narrow.css     游戏类窗口的窄屏补丁
+ *   mobile/app-narrow2.css    工具/信息类窗口的窄屏补丁
+ *   本文件                    手机壳里的"应用界面" —— 头/身/底的分工
+ *
+ * 判据(跟 mobile/app-check.cjs 一致):
+ *   1) 触摸目标 >= 40px   2) 字号 >= 13px   3) 横向不许溢出
+ *   4) 画布不许压扁      5) 像素风: 纯色底 + 硬边, 不用大圆角/渐变/毛玻璃/emoji
+ *   6) 每个新表面都要有 body.night 变体
+ *
+ * 注入: 由 mobile/inject.cjs 塞进 index.html 的 <style> 尾部(带标记块),
+ *       别手改 index.html 里那一段。
+ * ======================================================================== */
+
+/* ========================================================================
+ * 一、钉死布局视口
+ *   手机浏览器(和 Chrome 的移动端模拟)碰上比屏幕宽的内容时,
+ *   会把"布局视口"整个撑宽 —— 表现就是页面右侧多出一截,
+ *   fixed 的壳跟着变宽, 于是出现"四周大黑边 + 尺寸全不对"。
+ *   overflow-x:hidden 是最省事也最稳的一刀。
+ *   顺带把图片的固有宽压住(img 的固有宽会参与最小内容宽的计算)。
+ * ======================================================================== */
+@media (max-width:760px){
+  html{overflow-x:hidden}
+  body, body.on{max-width:100%}
+  /* 图片不许撑宽页面: 相册封面/照片里的 img 固有宽最大到 1192px */
+  .album-thumbs img, .photo img, #site img{max-width:100%}
+  /* grid/flex 子项默认 min-width:auto, 内容一宽就把轨道顶开 */
+  .album-thumbs > *, .photo > *, .mp-grid > *{min-width:0}
+}
+
+/* ========================================================================
+ * 二、壳里的应用: 一屏一应用
+ *   头: 手机应用条(不是桌面的蓝标题栏)
+ *   身: 吃剩下的高度, 自己滚
+ *   底: 钉在下面(状态行/按钮行)
+ * ======================================================================== */
+@media (max-width:760px){
+
+  /* ---------- 2.1 应用条: 手机上长这样 ---------- */
+  body.phone-app #phoneView > *:not(#site){
+    display:flex !important;
+    flex-direction:column;
+    overflow:hidden !important;
+    background:#f2ecdd;
+  }
+  body.night.phone-app #phoneView > *:not(#site){background:#0d1322}
+  body.phone-app #phoneView > *:not(#site) > .titlebar{
+    flex:none;
+    height:46px;
+    padding:0 6px 0 10px;
+    gap:8px;
+    background:#2b2b2b;
+    border-bottom:2px solid #000;
+    color:#f2ecdd;
+    font-family:Consolas,"Courier New",monospace;
+    font-size:14px;
+    letter-spacing:1px;
+    box-shadow:none;
+    cursor:default;
+  }
+  body.night.phone-app #phoneView > *:not(#site) > .titlebar{
+    background:#0b1020;
+    border-bottom-color:#1c2740;
+    color:#c8cfdd;
+  }
+  body.phone-app #phoneView > *:not(#site) > .titlebar .tb-title{
+    flex:1; min-width:0;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    font-size:14px;
+  }
+  body.phone-app #phoneView > *:not(#site) > .titlebar .tb-btn{
+    width:40px; height:40px; font-size:16px;
+    background:#3a3a3a; color:#f2ecdd;
+    border:2px solid; border-color:#6f6f6f #000 #000 #6f6f6f;
+  }
+  body.phone-app #phoneView > *:not(#site) > .titlebar .tb-btn:active{
+    border-color:#000 #6f6f6f #6f6f6f #000;
+  }
+  body.night.phone-app #phoneView > *:not(#site) > .titlebar .tb-btn{
+    background:#1c2740; color:#c8cfdd;
+    border-color:#3a4763 #0b1020 #0b1020 #3a4763;
+  }
+
+  /* ---------- 2.2 终端: 输出区滚, 输入行钉底 ---------- */
+  body.phone-app #phoneView > #term > #termOut{
+    flex:1 1 auto; min-height:0;
+    overflow-y:auto !important;
+  }
+  body.phone-app #phoneView > #term > #termRow{flex:none}
+
+  /* ---------- 2.3 一个身子一个滚动层的窗口 ---------- */
+  body.phone-app #phoneView > #helpWin > .help-body,
+  body.phone-app #phoneView > #calcWin > .calc-body,
+  body.phone-app #phoneView > #mineWin > .mine-body,
+  body.phone-app #phoneView > #gameWin > .gm-body,
+  body.phone-app #phoneView > #g2048Win > .g2-body,
+  body.phone-app #phoneView > #snakeWin > .sn-body,
+  body.phone-app #phoneView > #diaryWin > .diarywin-body,
+  body.phone-app #phoneView > #hgWin > .hg-body,
+  body.phone-app #phoneView > #paintWin > .pt-body,
+  body.phone-app #phoneView > #ddWin > .dd-body,
+  body.phone-app #phoneView > #imgSearchWin > .is-body,
+  body.phone-app #phoneView > #gradeWin > .gd-body,
+  body.phone-app #phoneView > #cubeWin > .cb-body,
+  body.phone-app #phoneView > #ticketWin > .tk-body,
+  body.phone-app #phoneView > #spoilerWin > .sp-body{
+    flex:1 1 auto; min-height:0;
+    overflow-y:auto !important;
+    -webkit-overflow-scrolling:touch;
+  }
+  /* 剧透门帘的按钮行钉底 */
+  body.phone-app #phoneView > #spoilerWin > .sp-foot{flex:none}
+
+  /* ---------- 2.4 有状态行/底栏的窗口 ---------- */
+  body.phone-app #phoneView > #albumWin > #albumWinView{
+    flex:1 1 auto; min-height:0; overflow-y:auto !important;
+  }
+  body.phone-app #phoneView > #albumWin > .ab-status{flex:none}
+  body.phone-app #phoneView > #tmgrWin > .tm-tabs{flex:none}
+  body.phone-app #phoneView > #tmgrWin > .tm-body{
+    flex:1 1 auto; min-height:0; overflow-y:auto !important;
+  }
+  body.phone-app #phoneView > #tmgrWin > .tm-status{flex:none}
+  body.phone-app #phoneView > #mypcWin > #mpGrid{flex:none}
+  body.phone-app #phoneView > #mypcWin > #mpPreview{
+    flex:1 1 auto; min-height:0; overflow-y:auto !important;
+  }
+  body.phone-app #phoneView > #mypcWin > .mp-status{flex:none}
+  body.phone-app #phoneView > #sysWin > .sys-tabs{flex:none}
+  body.phone-app #phoneView > #sysWin > .sys-body{
+    flex:1 1 auto; min-height:0; overflow-y:auto !important;
+  }
+  body.phone-app #phoneView > #sysWin > .sys-foot{flex:none}
+  body.phone-app #phoneView > #browserWin > .br-toolbar{flex:none}
+  body.phone-app #phoneView > #browserWin > #brView{
+    flex:1 1 auto; min-height:0; overflow-y:auto !important;
+  }
+  body.phone-app #phoneView > #browserWin > .br-status{flex:none}
+  body.phone-app #phoneView > #browserWin > .br-note{flex:none}
+  body.phone-app #phoneView > #solarWin > .solar-bar{flex:none}
+  body.phone-app #phoneView > #solarWin > .solar-main{
+    flex:1 1 auto; min-height:0; overflow-y:auto !important;
+  }
+  body.phone-app #phoneView > #solarWin > .solar-status{flex:none}
+
+  /* ---------- 2.5 记事本: 纸铺满, 状态行钉底 ---------- */
+  body.phone-app #phoneView > #noteWin > #noteText{
+    flex:1 1 auto; min-height:0; overflow:auto !important;
+  }
+  body.phone-app #phoneView > #noteWin > .note-status{flex:none}
+
+  /* ---------- 2.6 站名正文: 别当窗口排, 它是篇文章 ---------- */
+  body.phone-app #phoneView > #site{display:block !important; overflow-y:auto !important}
+
+  /* ======================================================================
+   * 2.7 逐个应用的"手机样子"
+   *     上面是通用分工(头/身/底), 下面是每个应用自己的排法。
+   * ====================================================================== */
+
+  /* ---------- 画板: 画布占中间, 工具条和色板在下面, 不许拉成巨幅 ---------- */
+  body.phone-app #phoneView > #paintWin > .pt-body{
+    display:flex; flex-direction:column;
+  }
+  body.phone-app #phoneView #paintWin #ptCv{
+    width:100%; max-width:min(100%, 320px); height:auto;
+    margin:0 auto; flex:none;
+  }
+  body.phone-app #phoneView #paintWin .pt-colors{
+    grid-template-columns:repeat(5, 1fr); gap:4px;
+    order:2; margin:8px 0 6px; flex:none;
+  }
+  body.phone-app #phoneView #paintWin .pt-row{order:1; flex:none}
+  body.phone-app #phoneView #paintWin .pt-foot{order:3; flex:none}
+  body.phone-app #phoneView #paintWin .pt-note{order:4; flex:none}
+
+  /* ---------- 成绩: 内容短的窗口不该留一大片灰底 ----------
+     原来 .gd-body 在壳里被拉成 770px 高, 里面只有 199px 的解锁表单,
+     下半屏全是空的(截图里一大片灰)。改成"身子只占内容那么多":
+     锁着就 199px 高, 解锁后卡片多了自己会滚。 */
+  body.phone-app #phoneView > #gradeWin > .gd-body{
+    flex:0 1 auto; min-height:0;
+    overflow-y:auto !important; -webkit-overflow-scrolling:touch;
+    background:transparent;
+  }
+  body.night.phone-app #phoneView > #gradeWin > .gd-body{background:transparent}
+  body.phone-app #phoneView #gradeWin .gd-lock{padding:24px 6px 18px}
+  body.phone-app #phoneView #gradeWin .gd-card{margin-bottom:8px}
+  body.phone-app #phoneView #gradeWin .gd-top{flex-wrap:wrap; gap:4px 8px}
+
+  /* ---------- 魔方: 画布放大一号, 走法键两行, 提示行别被挤没 ---------- */
+  body.phone-app #phoneView #cubeWin #cbCanvas{
+    max-width:min(100%, 330px); margin:0 auto; display:block;
+  }
+  body.phone-app #phoneView #cubeWin .cb-mv{
+    grid-template-columns:repeat(6, 1fr); gap:5px;
+  }
+  body.phone-app #phoneView #cubeWin .cb-mv button{
+    min-height:40px; padding:6px 2px; font-size:14px;
+  }
+  body.phone-app #phoneView #cubeWin .cb-row button{min-height:40px}
+  body.phone-app #phoneView #cubeWin .cb-hint{font-size:13px; line-height:1.7}
+  body.phone-app #phoneView #cubeWin .cb-hist{max-height:54px; font-size:13px}
+
+  /* ---------- 太阳系: 画布在上, 行星行在下, 状态行钉底 ---------- */
+  body.phone-app #phoneView #solarWin .solar-main{gap:6px}
+
+  /* ---------- 相册: 两列照片, 底部那行钉着 ---------- */
+  body.phone-app #phoneView #albumWin .ab-view{padding:8px 6px}
+
+  /* ---------- 我的电脑: 图标区固定, 预览区滚 ---------- */
+  body.phone-app #phoneView #mypcWin .mp-grid{
+    grid-template-columns:repeat(4, 1fr); gap:6px 4px; padding:6px 4px;
+  }
+  body.phone-app #phoneView #mypcWin .mp-item{min-height:60px}
+
+  /* ---------- 任务管理器: 三个页签 + 列表 + 底部三个数 ---------- */
+  body.phone-app #phoneView #tmgrWin .tm-tabs{
+    display:flex; gap:4px; padding:6px 6px 0; flex:none;
+  }
+  body.phone-app #phoneView #tmgrWin .tm-panel{padding:6px 8px}
+
+  /* ---------- 系统设置: 页签在上, 内容滚, 底下一行说明 ---------- */
+  body.phone-app #phoneView #sysWin .sys-tabs{
+    display:flex; gap:4px; padding:6px 6px 0; flex:none;
+  }
+  body.phone-app #phoneView #sysWin .sys-panel{padding:8px 10px}
+
+  /* ---------- 日记: 左边那天列表别占满, 内容给右边 ---------- */
+  body.phone-app #phoneView #diaryWin .diarywin-body{
+    display:flex; flex-direction:column;
+  }
+  body.phone-app #phoneView #diaryWin .dw-list{flex:none; max-height:132px}
+  body.phone-app #phoneView #diaryWin .dw-entries{
+    flex:1 1 auto; min-height:0; overflow-y:auto !important;
+  }
+
+  /* ---------- 贪吃蛇: 棋盘在上, 摇杆钉底 ---------- */
+  body.phone-app #phoneView > #snakeWin > .sn-body{
+    display:flex; flex-direction:column;
+  }
+  body.phone-app #phoneView #snakeWin #snCanvas{
+    max-width:min(100%, 320px); margin:0 auto; flex:none;
+  }
+  body.phone-app #phoneView #snakeWin .stick-solo{
+    flex:none; height:138px; margin-top:auto;
+  }
+  body.phone-app #phoneView #snakeWin .sn-foot{flex:none}
+
+  /* ---------- 沙漏: 沙子在中间, 预设和旋钮在下面 ---------- */
+  body.phone-app #phoneView > #hgWin > .hg-body{
+    display:flex; flex-direction:column; align-items:stretch;
+  }
+  body.phone-app #phoneView #hgWin #hgCv{
+    max-width:min(100%, 260px); margin:0 auto; flex:none;
+  }
+  body.phone-app #phoneView #hgWin .hg-presets{flex:none}
+  body.phone-app #phoneView #hgWin .hg-ctrl{flex:none}
+  body.phone-app #phoneView #hgWin .hg-note{flex:none}
+
+  /* ---------- 计算器: 显示屏在上, 键盘在下 ---------- */
+  body.phone-app #phoneView > #calcWin > .calc-body{
+    display:flex; flex-direction:column;
+  }
+  body.phone-app #phoneView #calcWin .calc-display{flex:none}
+  body.phone-app #phoneView #calcWin .calc-grid{flex:none}
+
+  /* ---------- 浏览器: 地址栏在上, 页面在下, 状态行钉底 ---------- */
+  body.phone-app #phoneView #browserWin .br-toolbar{padding:6px}
+  body.phone-app #phoneView #browserWin .br-addr{flex:1 1 100%; min-width:100%}
+
+  /* ---------- 倒数日: 列表滚, 表单和按钮在下面 ---------- */
+  body.phone-app #phoneView > #ddWin > .dd-body{
+    display:flex; flex-direction:column;
+  }
+  body.phone-app #phoneView #ddWin .dd-list{
+    flex:1 1 auto; min-height:0; overflow-y:auto !important;
+  }
+  body.phone-app #phoneView #ddWin .dd-form{flex:none}
+  body.phone-app #phoneView #ddWin .dd-foot{flex:none}
+
+  /* ---------- 图片搜索: 输入框在上, 结果在下 ---------- */
+  body.phone-app #phoneView > #imgSearchWin > .is-body{
+    display:flex; flex-direction:column;
+  }
+  body.phone-app #phoneView #imgSearchWin .is-row{flex:none}
+  body.phone-app #phoneView #imgSearchWin .is-tags{flex:none}
+  body.phone-app #phoneView #imgSearchWin .is-hint{flex:none}
+  body.phone-app #phoneView #imgSearchWin .is-results{
+    flex:1 1 auto; min-height:0; overflow-y:auto !important;
+  }
+
+  /* ---------- 游戏厅: 四个机器入口 + 底下一行 ---------- */
+  body.phone-app #phoneView > #gameWin > .gm-body{
+    display:flex; flex-direction:column;
+  }
+  body.phone-app #phoneView #gameWin .gm-head{flex:none}
+  body.phone-app #phoneView #gameWin .gm-grid{flex:1 1 auto; align-content:start}
+  body.phone-app #phoneView #gameWin .gm-foot{flex:none}
+}
+
+/* ========================================================================
+ * 三、手机版关机画面
+ *   样式放在 mobile/phone-shell.css 里(那是壳自己的表面),
+ *   这里只留一句说明, 别写两份 —— 两份会互相覆盖, 以后改起来找不到北。
+ *   规则摘要: #phonePower 全黑, body.phone-power 时才显示;
+ *   .pp-boat 像素小船 / .pp-text 橙字 / .pp-power 电源键 / .pp-hint 底注。
+ * ======================================================================== */
+
+/* 本文件由 mobile/inject.cjs 注入进 index.html 的 <style> 尾部, 别手改那一段 */
+/* <<< 手机端应用界面 CSS <<< */
+/* >>> 队友补丁 CSS (mobile/inject.cjs 自动插入, 别手改) >>> */
+/* --- fix-album.css --- */
+/* ========================================================================
+ * 相册窗口里的「换册」条 (bug ①)
+ *
+ * 毛病: 手机壳接管整屏之后主页面被藏起来了(body.phone-shell:not(.phone-app)),
+ *   相册窗口自己又没有换册的地方 —— 在手机上打开永远只能看第一本《像素画集》。
+ *
+ * 修法: 在 #albumWin 的状态条里加一条册子选择带:
+ *   [◀] 换册 [像素画集][捣鼓token][校园时光]… [▶]
+ *   点谁换谁。桌面上也多了一条路, 但主页面封面那套一点没动。
+ *
+ * 规矩: 纯色底 + 2px 硬边框(不圆角/不渐变/不毛玻璃), 夜航有变体,
+ *   触摸目标 ≥40px, 字号 ≥13px, 窄屏不许溢出(册子条自己横着划)。
+ * ======================================================================== */
+
+/* 状态条要能折行 —— 册子条占自己一整行 */
+#albumWin .ab-status{flex-wrap:wrap}
+
+.ab-bookbar{flex:0 0 100%; display:flex; align-items:center; gap:6px; margin-top:6px; min-width:0}
+.ab-book-label{flex:none; font-family:"SimHei","黑体",sans-serif; font-size:13px;
+  line-height:1.2; color:#4a4335; letter-spacing:1px}
+.ab-book-nav{flex:none; width:40px; height:40px; min-width:40px; padding:0; background:#c9c9c9;
+  border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; color:#222; cursor:pointer;
+  font-family:Consolas,"Courier New",monospace; font-size:14px; line-height:1}
+.ab-book-nav:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+/* 册子条自己横着划 —— 十五本放不下是常态, 不是溢出 */
+.ab-book-strip{flex:1 1 auto; min-width:0; position:relative; display:flex; align-items:center; gap:6px;
+  padding:2px; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch}
+.ab-book-chip{flex:none; min-height:40px; max-width:62vw; padding:0 10px; background:#fbf7ec;
+  border:2px solid; border-color:#d9d2c0 #9a9a9a #9a9a9a #d9d2c0; color:#4a4335; cursor:pointer;
+  font-family:"SimHei","黑体",sans-serif; font-size:13px; line-height:1.2;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.ab-book-chip:active{border-color:#9a9a9a #d9d2c0 #d9d2c0 #d9d2c0}
+.ab-book-chip.sel{background:#f2d97c; border-color:#a89d84 #fff #fff #a89d84; color:#4a3d1e; font-weight:bold}
+
+/* ---------- 夜航: 每个表面都得有自己那身 ---------- */
+body.night .ab-book-label{color:#8b97b0}
+body.night .ab-book-nav{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+body.night .ab-book-nav:active{border-color:#101828 #3a4763 #3a4763 #101828}
+body.night .ab-book-chip{background:#1c2740; border-color:#33405f #101828 #101828 #33405f; color:#c8cfdd}
+body.night .ab-book-chip:active{border-color:#101828 #33405f #33405f #101828}
+body.night .ab-book-chip.sel{background:#3d4f7d; border-color:#101828 #3a4763 #3a4763 #101828; color:#fff}
+
+/* --- fix-giscus.css --- */
+/* =====================================================================
+ * bug ⑧ 留言板重叠 —— 独立补丁 (配 mobile/fix-giscus.js 使用)
+ * 由 lead 注入 station-repo/index.html; 不动仓库里别的文件。
+ *
+ * 【根因】(数字全是实测, 见交付报告)
+ * 1) 真正的"压住"不在留言板内部 —— #giscusBox 和 .gb-search 本来就
+ *    嵌在 .gb-panel 里面, 那种"交集"是包含关系, 不是遮挡。
+ *    压住留言板的是钉在视口底下的两条固定条:
+ *      #deckDock 甲板音乐条 (position:fixed, z-index:60, 高 56)
+ *      #taskbar   任务栏     (position:fixed, z-index:90, 高 48)
+ *    滚到留言板那一屏, 390 宽时 .gb-panel 被压 18816px²,
+ *    .sticky-note 便利贴被压 18377px² (481 宽 23470, 620 宽 31249),
+ *    桌面上 .gb-panel 被任务栏压 11290px²。
+ *    上一轮给 iframe 兜了 360px 高, 面板被撑到 500px, 压得更狠 ——
+ *    这就是船长说的「比原来还糟糕」。
+ *
+ * 2) 窄屏上留言板压根不是「一整块自己滚」:
+ *    #giscusBox 是 height:auto + overflow:visible, 面板高度全听
+ *    外部控件 giscus 的 —— giscus 报多高, 面板就多高。
+ *
+ * 【修法】
+ * A. 高度我们说了算: 窄屏上 #giscusBox 封顶 (100dvh - 470) + 自己滚。
+ *    470 = 底下两条固定条(104) + 标题(44) + 说明(56) + 面板里别的块
+ *    (漂流瓶 54 + 搜索 54) + 面板留白(20) + 便利贴(148) + 余量(44)。
+ *    面板从此有上限, 多少条评论都撑不爆它, 也就不会被底下的固定条压住。
+ *    便利贴的间距在窄屏上收 10px(22→12), 整块刚好塞进 740px 里。
+ * B. iframe 铺满盒子 (高度 = 盒子高度) —— 几何上它跟盒子完全重合,
+ *    谁也压不到谁 (平级块、便利贴、面板外的一切, 交集全是 0)。
+ *    注意: 上一版只写 height:100% 却没给 giscus 那层包装 div.giscus
+ *    一个确定的高度, 百分比没参照, iframe 掉回 giscus 默认的 150px。
+ *    这一版两层都给了确定高度, 100% 才算得出来。
+ * C. 高度跟着 giscus 报的真高度走 (fix-giscus.js 把 resizeHeight
+ *    写进 --gb-box-h): 盒子 = min(giscus 报的高度, 封顶值),
+ *    所以框里的高度刚好等于评论要的高度, 评论一条不丢。
+ *    万一评论太多(超过封顶值), 框里自己滚 —— fix-giscus.js 把 giscus
+ *    建 iframe 时写死的 scrolling="no" 拿掉了, 内层文档才滚得动
+ *    (留着那属性, 框一矮, 底下的评论就永远够不着)。
+ *
+ * 【像素风】
+ * 只动高度/滚动/间距, 没加新表面、没加颜色、没加圆角渐变,
+ * 底色还是站里原来那几块 —— 夜航 (body.night) 不用另外配色。
+ * ===================================================================== */
+
+/* ---------- 桌面: 只补一条 display:block ----------
+   giscus 的 iframe 是 inline 的, 行盒会在底下多出几像素的空当,
+   包装层 div.giscus 就比 iframe 高一截 (实测 360 vs 352) ——
+   留言板底下凭空多一条空白。改成块级, 包装层就跟 iframe 一样高。
+   桌面别的样子一点没动 (框还是 giscus 报的高度)。 */
+#giscusBox iframe{ display: block; }
+
+/* ---------- 窄屏 (手机壳里 / 老界面窄屏): 留言板一整块, 自己滚 ---------- */
+@media (max-width:1020px){
+  /* 高度: fix-giscus.js 会把 giscus 报的真高度写进 --gb-box-h;
+     它还没说话时, 用视口高度算一个封顶值 (100dvh - 470)。 */
+  #giscusBox{
+    height: var(--gb-box-h, clamp(150px, calc(100dvh - 470px), 460px)) !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 4px;
+  }
+
+  /* giscus 自己套的那层 div: 得给它一个【确定】的高度,
+     iframe 的百分比高度才有参照 (上一版漏了这条, iframe 掉回 150px)。 */
+  #giscusBox > .giscus{
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+
+  /* iframe 铺满盒子 —— 高度等于盒子, 几何上跟盒子完全重合, 谁也压不到谁。
+     评论比盒子还高时, 由框里自己滚 (fix-giscus.js 把 scrolling="no" 拿掉了)。 */
+  #giscusBox iframe{
+    height: 100% !important;
+    min-height: 0 !important;
+    display: block;
+    width: 100%;
+    border: none;
+    background: transparent;
+  }
+
+  /* 便利贴离面板近一点 —— 整块(标题+面板+便利贴)才塞得进
+     视口减掉底下两条固定条那 740px 里, 固定条就压不到便利贴了。 */
+  .sticky-note{ margin-top: 12px; }
+
+  /* 手机壳里 #phoneView 本来就是自己滚的, 手机壳的 CSS 原本把
+     #giscusBox 改成 height:auto/overflow:visible(不想套娃)。
+     这里用 html 提高权重, 把留言板收回「一整块自己滚」, 谁先注入都算我们赢。 */
+  html body.phone-app #phoneView #giscusBox{
+    height: var(--gb-box-h, clamp(150px, calc(100dvh - 470px), 460px)) !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+  html body.phone-app #phoneView #giscusBox > .giscus{
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+  html body.phone-app #phoneView #giscusBox iframe{
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+
+  /* 点「留言板」跳过来时, 底下给固定条留出位置, 别一上来就被压住 */
+  #guestbook{ scroll-margin-bottom: 120px; }
+}
+
+/* --- fix-music.css --- */
+/* ========================================================================
+ * 甲板音乐: 手机上要能翻整张歌单 (bug ②)
+ *
+ * 毛病: 手机壳把甲板音乐缩成贴底的一条, 只留当前这一首
+ *   (mobile/phone-shell.css 里 #pbMusic #deckMusic .dm-item{display:none}),
+ *   二十七首歌一首都点不到 —— 想听别的歌只能先关掉壳回桌面。
+ *
+ * 修法: 手机壳的音乐条上加一个「歌单 / 收起」按钮。
+ *   收起时还是原来那条紧凑的横条(只显示当前这首, 一点没变),
+ *   点开就往上撑开, 二十七首全列出来, 点谁换谁。
+ *   状态挂在 body.pb-music-open 上 (JS 加的), 桌面没有这个 class, 一点不露头。
+ *
+ * 规矩: 纯色底 + 2px 硬边框(不圆角/不渐变/不毛玻璃/不 emoji),
+ *   触摸目标 ≥40px, 字号 ≥13px, 夜航每个表面都有变体。
+ * ======================================================================== */
+
+/* ---------- 默认: 桌面不露头 ---------- */
+#dmSheetBar{display:none}
+
+/* ---------- 手机壳: 收起状态 —— 横条左边多一个「歌单」按钮 ---------- */
+body.phone-shell #pbMusic #deckMusic #dmSheetBar{
+  display:flex; flex:none; align-items:center; gap:6px; order:-1;
+}
+body.phone-shell #pbMusic #deckMusic #dmSheetBar .dm-sheet-title{display:none}
+body.phone-shell #pbMusic #deckMusic #dmSheetBar .dm-sheet-btn{
+  display:flex; align-items:center; justify-content:center;
+  width:auto; min-width:44px; height:40px; padding:0 6px;
+  background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+  color:#222; cursor:pointer; font-family:Consolas,"Courier New",monospace;
+  font-size:13px; line-height:1; white-space:nowrap;
+}
+body.phone-shell #pbMusic #deckMusic #dmSheetBar .dm-sheet-btn:active{
+  border-color:#6f6f6f #fff #fff #6f6f6f;
+}
+
+/* ---------- 手机壳: 展开状态 —— 整张歌单铺开 ---------- */
+/* 歌单一开, 桌面不该整块消失 —— 那样看着像"点一下歌单, 整块主屏没了"。
+   改法: 歌单当一层抽屉, 从底下往上抽出来, 盖在主屏上面:
+     - #phoneHome 一个像素都不动(还是原来那块, 还能点、还能滚),
+       歌单从底下抽上来盖住它的下半截 —— 主屏只是"被盖住一部分", 没消失
+     - 抽屉顶上压一道 3px 硬边 + 一条硬阴影 → 一眼看出是"浮上来一层"
+     - 收起就弹回原来那条窄条, 主屏一点没变
+   不用 display:none 藏主屏 —— 藏起来才叫"桌面没了"。 */
+body.phone-shell{--pb-sheet-h:min(54vh,400px)}
+body.phone-shell.pb-music-open #pbMusic{
+  height:var(--pb-sheet-h); align-items:flex-end;
+}
+/* 待在全屏应用里的时候, 底下那条音乐条还是别探头 */
+body.phone-app #pbMusic.pb-music-open{display:none}
+/* 抽屉本身 = 甲板音乐那块面板, 长了高; 顶上那道硬边和硬阴影是"浮起来"的证据 */
+body.phone-shell.pb-music-open #pbMusic #deckMusic{
+  flex-direction:column; align-items:stretch; height:100%; gap:6px; padding:10px 8px 6px;
+  flex:1 1 auto; width:100%;
+  border-top:3px solid #6f6f6f;
+  box-shadow:3px 3px 0 rgba(43,38,28,.16), 0 -4px 0 rgba(43,38,28,.22);
+}
+/* 展开时标题也出来: 「歌单 · 27 首」(手机上原来的 .dm-head 是藏着的) */
+body.phone-shell.pb-music-open #pbMusic #deckMusic #dmSheetBar{
+  width:100%; justify-content:space-between; flex:none;
+}
+body.phone-shell.pb-music-open #pbMusic #deckMusic #dmSheetBar .dm-sheet-title{
+  display:block; font-family:"SimHei","黑体",sans-serif; font-size:13px;
+  line-height:1.2; color:#4a4335; letter-spacing:1px;
+}
+/* 歌单本体: 能竖着划, 二十七首都在里头 */
+body.phone-shell.pb-music-open #pbMusic #deckMusic .dm-list{
+  flex:1 1 auto; min-height:0; max-height:none; margin:0;
+  overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
+  background:#f2ecdd; border:2px solid; border-color:#a89d84 #fff #fff #a89d84;
+}
+/* 每一首都露出来: 够大才点得中 */
+body.phone-shell.pb-music-open #pbMusic #deckMusic .dm-item{
+  display:flex; align-items:center; width:100%; min-height:40px; padding:0 8px;
+  font-size:13px; line-height:1.2; color:#4a4335; background:transparent;
+  border:none; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+body.phone-shell.pb-music-open #pbMusic #deckMusic .dm-item i{
+  font-style:normal; flex:none; margin-right:6px; font-size:13px; color:#8a7d5f;
+}
+body.phone-shell.pb-music-open #pbMusic #deckMusic .dm-item.on{
+  background:#f2d97c; color:#4a3d1e; font-weight:bold;
+}
+
+/* ---------- 夜航: 每一块都得换成夜里的那身 ---------- */
+body.night #pbMusic #deckMusic #dmSheetBar .dm-sheet-btn{
+  background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd;
+}
+body.night #pbMusic #deckMusic #dmSheetBar .dm-sheet-btn:active{
+  border-color:#101828 #3a4763 #3a4763 #101828;
+}
+body.night.pb-music-open #pbMusic #deckMusic #dmSheetBar .dm-sheet-title{color:#8b97b0}
+body.night.pb-music-open #pbMusic #deckMusic .dm-list{
+  background:#0d1322; border-color:#101828 #3a4763 #3a4763 #101828;
+}
+body.night.pb-music-open #pbMusic #deckMusic .dm-item{color:#c8cfdd}
+body.night.pb-music-open #pbMusic #deckMusic .dm-item i{color:#6d7a94}
+body.night.pb-music-open #pbMusic #deckMusic .dm-item.on{background:#243050; color:#fff}
+/* 抽屉顶上那道硬边, 夜里也要是暗的 —— 不许冒出一道白线 */
+body.night.pb-music-open #pbMusic #deckMusic{border-top-color:#3a4763}
+
+/* --- fix-welcome.css --- */
+/* ========================================================================
+ * 欢迎信 · 窄屏加宽 + 压短 (bug ③)
+ *
+ * 船长的话: 「太长了, 应该做宽一些。」
+ *
+ * 原来那封信:
+ *   #welcome{width:min(470px,94vw)}   —— 壳子里有 18px 内边距, 390 的屏上
+ *   实际只有 354px 宽(比 94vw=366 还窄, 因为 flex 盒子被挤了一下);
+ *   .wc-body 要滚 1257px 才看得完, 舱位表一个人就占了 669px。
+ *
+ * 这份补丁只管窄屏(max-width:760px), 桌面一行都不碰:
+ *   470px 那个宽度、桌面上的字号行距、桌面上的舱位表, 全部原样。
+ *
+ * 规矩:
+ *   - 纯像素硬边, 只用颜色/边框/尺寸, 没有渐变、没有大圆角、没有毛玻璃;
+ *   - 字号一律 >= 13px, 按钮一律 >= 40px;
+ *   - 没有新增表面, 所以不用另起夜航配色(夜航那套本来就在页面里);
+ *   - 窄屏不吃满屏宽就等于没改, 宽度按宽度算(教训 68)。
+ * ======================================================================== */
+
+@media (max-width:760px){
+
+  /* ---------- 一、信占满屏宽 ----------
+     壳子的 18px 内边距让出来, 信贴着屏幕边; 高度也从 94vh 放到 100%,
+     身子(scrollHeight 那块)能多出五十来像素, 要滚的次数就少一次。 */
+  #welcomeWrap{padding:0}
+  #welcome{
+    width:100%;           /* 390 的屏上就是 390, 不是 354 */
+    min-width:0;          /* 免得里面的长句子把盒子顶出屏幕 */
+    max-height:100%;
+  }
+
+  /* ---------- 二、身子: 少留白, 但字号行距不挤 ---------- */
+  .wc-body{padding:12px 12px 10px}
+  .wc-text{margin-top:7px; font-size:13.5px; line-height:1.8}
+  .wc-text p{margin:5px 0}
+  .wc-text code{font-size:13px}
+
+  /* ---------- 三、头: 小一号, 少占一行 ---------- */
+  .wc-hero{gap:10px; padding-bottom:9px}
+  .wc-title{font-size:26px; letter-spacing:4px}
+  .wc-sub{font-size:13px; letter-spacing:0}
+  .wc-badge{margin:9px 0 0; padding:3px 10px; font-size:13px}
+  .wc-badge b{font-size:14px}
+
+  /* ---------- 四、舱位表: 键位让开, 一行能多站几个字 ----------
+     键位图(.wc-mkey)原来占 60px, 其实就一个字; 窄屏上收到 24px,
+     值那栏就能多出三十几个字, 六行加起来能少滚一半。 */
+  .wc-manifest{margin-top:9px}
+  .wc-manifest-hd{padding:4px 8px; font-size:13.5px; letter-spacing:.5px}
+  .wc-manifest-hd b{font-size:13px}
+  .wc-manifest-body{padding:6px 8px 7px}
+  .wc-mrow{gap:6px; padding:2px 0; font-size:13.5px; line-height:1.6}
+  .wc-mkey{width:24px; font-size:13px; letter-spacing:0; text-align:center}
+  .wc-mval{font-size:13.5px}
+
+  /* ---------- 五、底下那段设备建议 ---------- */
+  .wc-device{margin-top:8px; padding:6px 9px; font-size:13px; line-height:1.6}
+  /* 窄屏上舱位表那几行已经压短了, 头图那块小船也占地方 —— 顺手再省一点 */
+  .wc-hero{gap:10px; padding-bottom:8px}
+  #wcBoat{width:64px; height:48px}
+
+  /* ---------- 六、脚: 钉住, 四个按钮都够得着 ---------- */
+  .wc-foot{padding:8px 12px 10px}
+  .wc-dock{padding-bottom:8px; margin-bottom:8px}
+  .wc-dock-t{font-size:13px; margin-bottom:5px}
+  .wc-dock-btns{gap:6px}
+  .wc-dock-btns button{min-height:40px; padding:6px 10px; font-size:13.5px}
+  .wc-btns button{min-height:40px; font-size:14px; padding:8px 16px}
+}
+/* <<< 队友补丁 CSS <<< */
 </style>
 </head>
 <body>
@@ -12798,24 +13492,14 @@ var ENTRIES = [
     { d:'2026-11-06', h:'船长翻出手机, 皱起眉: 「适配太烂了。」三百九宽的屏上任务栏折成三行占了一百三十四像素, 左下角那块甲板音乐整个压在正文上, 表格里的链接只有十四像素高, 手指头根本点不准。' },
     { d:'2026-11-06', h:'于是给手机端另造了一台机器: 像素风的远古 iPhone, 黑条状态栏、弹簧板、底下四个常驻。二十来个应用都搬了进去, 图标全是手画的十六像素方块, 打开就是全屏。' },
     { d:'2026-11-06', h:'旧版的桌面样子一点没动, 系统设置里加了个开关, 想看哪个看哪个。船长还没点头, 先放着。' },
-    { d:'2026-11-07', h:'船长说贪吃蛇和俄罗斯方块在手机上该有个摇杆。想了一想, 摇杆确实是正解——手指头划一下和点一下, 手感完全不是一回事, 尤其方块那种「按一下往左挪一格」, 点按钮太费劲。' },
-    { d:'2026-11-07', h:'做了两只: 一只凹坑圆盘当底座, 一颗蓝头当把手, 都是十六像素的像素画, 夜航自动换暗色板, 不然白底会在夜里发光。蛇那边推向哪边就往哪边转; 方块那边左右挪、上转、下加速, 按住还能连发。' },
-    { d:'2026-11-07', h:'「一下砸到底」摇杆实在表达不出来, 就老老实实另配一个按钮。电脑上一点没变, 还是键盘和原来的按键。' },
-    { d:'2026-11-07', h:'又补了两处自己才满意的地方: 手指刚按下去那一下, 摇杆头也得跳过去, 不然看着像按了个空地方; 底下那行提示还写着「方向键或 WASD 转向」, 手机上哪来的键盘, 拆成键盘和摇杆两套。' },
-    { d:'2026-11-07', h:'上线之后自己看了一眼, 逮到两个自己写的时候没想周全的地方: 方块玩到结束那一下, 手机上那行字变成了"undefined"; 摇杆底下那句说明跟游戏窗下面的一模一样, 啰嗦。' },
-    { d:'2026-11-07', h:'欢迎信重写了。打开是一张舱位表: 玩、拧、看、读、听、藏, 六行, 把这条船现在真能上手的东西全摊开写清楚。底下还加了个码头, 四个按钮点了直接把人带走, 不用自己满船找。' },
-    { d:'2026-11-07', h:'写完发现手机上按钮够不着——信太长, 底下的「进入系统」被顶到屏幕外了。于是把信改成三段: 头钉住、中间随便滚、脚钉住。' },
-    { d:'2026-11-07', h:'2048 补了两样: 最高分纪录, 和一个「撤销」。纪录那栏其实早就有, 但只在"这局结束、格子满了"的那一刻才写进本机——于是玩到一半关掉窗, 分数就凭空没了, 游戏厅那张卡片也永远是空的。' },
-    { d:'2026-11-07', h:'现在改成边玩边存, 推一步就比一次, 卡片立刻跟上来。撤销更顺手: 顶上纪录, 旁边一个「撤销」键, 键盘按 Z 也行, 棋盘推错了不用从头再来。' },
-    { d:'2026-11-07', h:'倒数日.EXE 翻修了: 一列改两列, 字放大一号, 节日表也填饱了。之前农历只备到 2028 年六个节, 公历十二个, 翻来翻去就是那些; 现在农历排到 2032 年十一个, 加上五个节气、母亲节父亲节(这两个日子会跑, 得算), 公历添到二十五个。' },
-    { d:'2026-11-07', h:'萝莉日那条写的是 10 月 28 日, 那是「世界动画日」, 网上管它叫萝莉日。顺手给每张卡加了个小角标, 写明这日子按哪套历法算, 免得有人对着"母亲节"较劲。核对时还真逮着一个错: 2028 年闰五月, 端午提前到 5 月 28 号, 旧表写的 6 月 22 是错的。' },
-    { d:'2026-11-07', h:'甲板音乐又进货了: 十四首变二十七首。船长甩过来十四个文件, 有一个跟原有的《玲音》主题曲是同一个, 剩下的十三个就都搬进船舱了——《东方》的 Bad Apple!!、千本桜、深海少女, 还有《My Soul, Your Beats!》。' },
-    { d:'2026-11-07', h:'页面上原来写着「甲板音乐十四首」, 歌单都二十七首了, 那句话就假了。干脆不写死, 让它自己数, 中文数字也跟着变。舰载电视台的节目单本来就是这张歌单, 点谁谁开唱。' },
-    { d:'2026-11-07', h:'冀豫联考的成绩进档案了。总分 794.5, 班名 20, 校名 721; 数学 118 分是九科里最能打的一门, 政治 62 分垫底。具体数字不写在这儿——想看得输口令。' },
-    { d:'2026-11-07', h:'联考跟月考不是一套卷子, 但名次还是校里排的——所以直接能跟上次比。语文从三百多名掉到一千多, 数学从一千一百多拉回九百多, 班名十六退到二十。难了一档, 掉的分就更多, 但名次摆在那儿, 骗不了自己。' },
-    { d:'2026-11-07', h:'船长说: 手机端别偷懒, 每个应用都要重排一遍。二十来扇窗挨个改, 按钮抬到手指点得下, 小字抬到看得清, 画布不许被拉扁。这活儿费眼睛, 但按下去没反应才是真的费劲。' },
-    { d:'2026-11-07', h:'平板上打开会错乱, 查出来是两件事叠在一起: 手机壳自己跳出来接管, 在网页正中摆了一台小手机; 留言板那块又被压扁, 底下的漂流瓶、搜索框、便利贴全挤成一团。现在平板归旧界面管, 壳只在真窄的屏幕上才上场。' },
-    { d:'2026-11-07', h:'相册"只显示一个"其实是看岔了——每本封面塞的是四张小图, 平板上每格才一百来像素, 看着就只剩一张。改成窄的时候只露一张大图, 宽的时候四张横着排, 网格列数也跟着屏幕宽度走。' }
+    { d:'2026-11-07', h:'船长说手机上该有个摇杆。想了一想, 摇杆确实是正解: 手指划一下和点一下, 手感完全不是一回事。做了两只, 凹坑圆盘当底座, 蓝头当把手, 都是十六像素的像素画, 夜航自动换暗色板。' },
+    { d:'2026-11-07', h:'欢迎信重写了。打开是一张舱位表: 玩、拧、看、读、听、藏, 六行, 把能上手的东西全摊开写清楚。底下加了个码头, 四个按钮点了直接带走人。写完发现手机上按钮够不着, 就改成头钉住、中间随便滚、脚钉住。' },
+    { d:'2026-11-07', h:'2048 补了两样: 最高分纪录, 和一个「撤销」。纪录原来只在这局结束的那一刻才写进本机, 于是玩到一半关掉窗, 分数就凭空没了。现在改成边玩边存, 推错一步按 Z 退回去。' },
+    { d:'2026-11-07', h:'甲板音乐又进货了: 十四首变二十七首。船长甩过来十四个文件, 有一个跟原有的《玲音》主题曲是同一个, 剩下十三个都搬进船舱了——《东方》的 Bad Apple!!、千本桜、深海少女。' },
+    { d:'2026-11-07', h:'冀豫联考的成绩进档案了。总分 794.5, 班名 20, 校名 721。名次还是校里排的, 所以能直接跟上次比: 语文从三百多名掉到一千多, 数学从一千一百多拉回九百多, 班名十六退到二十。' },
+    { d:'2026-11-07', h:'船长说: 手机端别偷懒, 每个应用都要重排一遍。二十来扇窗挨个改, 按钮抬到手指点得下, 小字抬到看得清, 画布不许被拉扁。这活儿费眼睛, 但按下去没反应才真费劲。平板不再摆小手机了, 归旧界面管。' },
+    { d:'2026-11-08', h:'船长一口气报了八处毛病。查出来最要命的一条: 手机上拖一下, 浏览器会以为你在滚页面, 手势半路被抢走——魔方只能拧不能转, 就是这个缘故。画布上补一行 touch-action, 手势就回到自己手里。' },
+    { d:'2026-11-08', h:'八处都改完了: 相册能换册, 甲板音乐能列整份歌单, 欢迎信铺满屏宽, 手机关机不用再跑一遍 BIOS, 留言板不再被底下的条子压住。手机壳里每个应用也重排了一遍——标题条钉在顶上, 内容自己滚, 状态行钉在底下。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
@@ -13453,7 +14137,7 @@ var PHONE_APPS = [
   { k:'pc',      ic:'phAppPc',      lb:'我的电脑', tgt:'mypcWin', open:function(){ if(typeof mypcToggle === 'function') mypcToggle(true); } },
   { k:'sys',     ic:'phAppSys',     lb:'系统设置', tgt:'sysWin', open:function(){ if(typeof sysToggle === 'function') sysToggle(true, 'set'); } },
   { k:'sign',    ic:'phAppSign',    lb:'每日签到', open:function(){ if(typeof checkin === 'function') checkin(); } },
-  { k:'power',   ic:'phAppPower',   lb:'关机',   open:function(){ var b = document.getElementById('startShutdown'); if(b) b.click(); } }
+  { k:'power',   ic:'phAppPower',   lb:'关机',   open:function(){ showPhonePower(); } }
 ];
 /* 底栏常驻的四个 */
 var PHONE_DOCK = ['site', 'game', 'cube', 'term'];
@@ -13509,6 +14193,14 @@ function buildShell(){
     '<div id="pbMusic"></div>' +
     '<div id="phoneDock"></div>' +
     '<div id="phoneView"></div>' +
+    /* 手机版关机画面 —— 桌面那套是 CRT 自检+BIOS 打字, 给鼠标看的。
+       手机上另来一块黑屏: 一条船, 一句话, 一个电源键。 */
+    '<div id="phonePower">' +
+      '<canvas class="pp-boat" id="ppBoat"></canvas>' +
+      '<div class="pp-text">小站已熄灭。<br>现在可以安全地漂走了。</div>' +
+      '<button type="button" class="pp-power" id="ppPowerBtn">⏻ 再上船</button>' +
+      '<div class="pp-hint">手机上的关机不用 BIOS 自检 —— 按电源键就回来了。</div>' +
+    '</div>' +
     '<button type="button" id="phoneHomeBar" aria-label="回主屏" title="回主屏"></button>';
   document.body.appendChild(shell);
 
@@ -13563,6 +14255,15 @@ function buildShell(){
     if(typeof sysToggle === 'function') sysToggle(true, 'set');
   });
   homeBar.addEventListener('click', function(){ goHome(); });
+
+  /* 关机画面上的电源键: 再上船 */
+  var ppBtn = QS('#ppPowerBtn');
+  if(ppBtn){
+    ppBtn.addEventListener('click', function(){
+      hidePhonePower();
+      toastSoft('又开船了。');
+    });
+  }
 
   /* 桌面图标点开 */
   shell.addEventListener('click', function(e){
@@ -13716,6 +14417,30 @@ function goHome(){
 }
 function toastSoft(msg){
   if(typeof toast === 'function') toast(msg);
+}
+
+/* ================= 手机版关机 =================
+   桌面的关机是 CRT 自检 + BIOS 打字, 那是给鼠标看的。
+   手机上开机动画都嫌慢, 关机更不该让人等一行行字敲出来 ——
+   所以手机上另来一块黑屏: 一条船, 一句话, 一个电源键。
+   电源键按下去就回到主屏, 船还泊在原处。 */
+var powerOn = false;
+function showPhonePower(){
+  if(!shell) return;
+  if(current) goHome();          /* 先退出正在看的应用, 关机时它也该收起来 */
+  powerOn = true;
+  document.body.classList.add('phone-power');
+  var boat = QS('#ppBoat');
+  if(boat){
+    try{ drawSprite(boat, typeof boatSkinName === 'function' ? boatSkinName() : 'boat', 3); }catch(e){}
+  }
+  /* 状态栏那两格图标得画出来, 不然黑屏上头上一片空 */
+  drawIcon(QS('#pbSignal'), 'phSignal', 1);
+  drawIcon(QS('#pbBattery'), 'phBattery', 1);
+}
+function hidePhonePower(){
+  powerOn = false;
+  document.body.classList.remove('phone-power');
 }
 
 /* ================= 桌面那三块面板, 搬进壳 / 搬回去 ================= */
@@ -14087,6 +14812,755 @@ else boot();
   else boot();
 
   window.STICK = { mk: mkStick };
+})();
+
+/* --- fix-album.js --- */
+/* ========================================================================
+ * 相册窗口里的「换册」条 (bug ①) —— JS
+ *
+ * 毛病: 手机壳接管整屏之后主页面被藏起来了, 相册窗口自己又没有换册的地方,
+ *   在手机上打开永远是第一本《像素画集》。
+ *
+ * 修法: 在 #albumWin 的状态条里塞一条册子选择带
+ *   [◀] 换册 [像素画集][捣鼓token][校园时光]… [▶]
+ * 点谁换谁 —— 换的是全局 albumSel, 窗口内容就地重画,
+ * 主页面那套封面点击一点没动。
+ *
+ * 用到的全局(都在 index.html 那个内联脚本里, 顶层 var/function → 挂在 window 上):
+ *   window.ALBUMS / window.albumSel / window.renderAlbums()
+ *   window.renderAlbumContent() / window.updateAlbumBar()
+ *
+ * 规矩: 不碰桌面上原来的换册方式; 触摸目标 ≥40px; 不 commit(这文件在仓库外)。
+ * ======================================================================== */
+(function(){
+  'use strict';
+  var QS = function(s){ return document.querySelector(s); };
+
+  if(window.__albumBookBar) return;      /* 注入两次也不会长出两条带子 */
+  window.__albumBookBar = true;
+
+  /* ---------- 数据 ---------- */
+  function albums(){
+    var A = window.ALBUMS;
+    return (A && A.length) ? A : [];
+  }
+  function sel(){
+    var n = Number(window.albumSel);
+    return (isFinite(n) && n >= 0 && n < albums().length) ? n : 0;
+  }
+
+  /* ---------- 换册 ---------- */
+  function pick(i){
+    var A = albums();
+    if(!A.length) return;
+    i = ((i % A.length) + A.length) % A.length;
+    window.albumSel = i;
+    try{ if(typeof window.renderAlbums === 'function') window.renderAlbums(); }catch(e){}
+    try{ if(typeof window.renderAlbumContent === 'function') window.renderAlbumContent(); }catch(e){}
+    try{ if(typeof window.updateAlbumBar === 'function') window.updateAlbumBar(); }catch(e){}
+    sync();
+  }
+  function step(d){ pick(sel() + d); }
+
+  /* ---------- 册子条 ---------- */
+  function build(){
+    var win = QS('#albumWin');
+    if(!win) return false;
+    /* 正常: 塞在状态条(.ab-status)里, 跟「打包带走」那一行并排。
+       兜底: 万一状态条改名了/挪走了, 就直接塞在窗口身上 —— 有地方就行, 别悄悄没了 */
+    var status = win.querySelector('.ab-status');
+    var host = status || win;
+    /* 条子还在窗口里就别再塞一条 */
+    var old = win.querySelector('#abBookBar');
+    if(old) return true;
+
+    var bar = document.createElement('div');
+    bar.id = 'abBookBar';
+    bar.className = 'ab-bookbar';
+
+    var prev = document.createElement('button');
+    prev.type = 'button';
+    prev.id = 'abBookPrev';
+    prev.className = 'ab-book-nav';
+    prev.title = '上一本';
+    prev.setAttribute('aria-label', '上一本相册');
+    prev.textContent = '◀';
+    prev.addEventListener('click', function(){ step(-1); });
+
+    var label = document.createElement('span');
+    label.className = 'ab-book-label';
+    label.textContent = '换册';
+
+    var strip = document.createElement('div');
+    strip.id = 'abBookStrip';
+    strip.className = 'ab-book-strip';
+
+    var next = document.createElement('button');
+    next.type = 'button';
+    next.id = 'abBookNext';
+    next.className = 'ab-book-nav';
+    next.title = '下一本';
+    next.setAttribute('aria-label', '下一本相册');
+    next.textContent = '▶';
+    next.addEventListener('click', function(){ step(1); });
+
+    albums().forEach(function(a, i){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ab-book-chip';
+      b.setAttribute('data-book', String(i));
+      b.title = a.name + (a.kind ? '' : ' —— 还空着, 等船长把新画搬进来');
+      b.textContent = a.name;
+      b.addEventListener('click', function(){ pick(i); });
+      strip.appendChild(b);
+    });
+
+    bar.appendChild(prev);
+    bar.appendChild(label);
+    bar.appendChild(strip);
+    bar.appendChild(next);
+    host.appendChild(bar);
+    return true;
+  }
+
+  /* ---------- 当前那本高亮 + 滚到看得见 ---------- */
+  function sync(){
+    var strip = QS('#abBookStrip');
+    if(!strip) return;
+    var cur = sel();
+    var chips = strip.querySelectorAll('.ab-book-chip');
+    for(var i = 0; i < chips.length; i++){
+      var on = (Number(chips[i].getAttribute('data-book')) === cur);
+      chips[i].classList.toggle('sel', on);
+      chips[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+    var sel2 = strip.querySelector('.ab-book-chip.sel');
+    if(sel2 && strip.scrollWidth > strip.clientWidth + 1){
+      /* 自己算 scrollLeft: 别用 scrollIntoView, 它会把祖先容器也带着滚 */
+      strip.scrollLeft = Math.max(0, sel2.offsetLeft - (strip.clientWidth - sel2.offsetWidth) / 2);
+    }
+  }
+
+  function init(){
+    if(!build()) return;
+    /* 页面里换册的时候(桌面上点封面), 册子条得跟着走 */
+    if(typeof window.renderAlbumContent === 'function' && !window.renderAlbumContent.__abBarWrap){
+      var orig = window.renderAlbumContent;
+      var wrapped = function(){
+        var r = orig.apply(this, arguments);
+        sync();
+        return r;
+      };
+      wrapped.__abBarWrap = true;
+      window.renderAlbumContent = wrapped;
+    }
+    /* 兜底: 窗口标题一变, 就知道换册了 */
+    var title = QS('#albumWinTitle');
+    if(title && window.MutationObserver && !title.__abTitleObs){
+      new MutationObserver(function(){ sync(); })
+        .observe(title, {childList:true, characterData:true, subtree:true});
+      title.__abTitleObs = true;
+    }
+    /* 再兜一层: 盯着整个 #albumWin。哪天相册窗口改成后渲染, 或者状态条改名了,
+       窗口里头一变就再试着塞一次册子条 —— 别悄没声地就没了。
+       (bar 已经在的时候回调立刻返回, 不会自己踩自己) */
+    if(!window.__abWinObs){
+      var win = QS('#albumWin');
+      if(win && window.MutationObserver){
+        window.__abWinObs = true;
+        new MutationObserver(function(){
+          if(QS('#abBookBar')) return;
+          if(build()) init();
+        }).observe(win, {childList:true, subtree:true});
+      }
+    }
+    sync();
+  }
+
+  /* ---------- 兜底: 相册窗口的结构万一变了, 别静默失效 ----------
+   * 现在的 init() 靠 #albumWin 里那个 .ab-status 才有地方塞册子条。
+   * 哪天相册窗口改了结构(状态条改名/挪位/改成异步渲染),
+   * build() 会返回 false, 换册条就没了, 而且一声不响。
+   * 所以:
+   *   1) build() 失败就隔一会儿再试一次(最多试几次)
+   *   2) 再加一个盯着 #albumWin 的观察者 —— 窗口内容一变就重试 */
+  var tries = 0;
+  function retry(){
+    if(QS('#abBookBar')) return;
+    tries++;
+    if(tries > 12) return;              /* 大约 12 次 × 250ms = 3 秒, 够了 */
+    setTimeout(function(){
+      if(QS('#abBookBar')) return;
+      if(build()){ init(); return; }
+      retry();
+    }, 250);
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ init(); retry(); });
+  else { init(); retry(); }
+})();
+
+/* --- fix-diary.js --- */
+/* ========================================================================
+ * 2026-11-07 的日记: 18 条 → 6 条 (bug ⑥)
+ *
+ * 船长的话: 「昨天的日记精简到最多 6 条, 每个也不准多写。」
+ * 规矩(AGENTS.md 教训 61): 日记 ≤140 字、一件事一条。
+ *
+ * 那天真正干的事有 18 件, 留 6 件, 一件一件事, 每件 60~100 字:
+ *   1. 手机上给贪吃蛇和俄罗斯方块配了摇杆(十六像素的像素画, 夜航有暗色板)
+ *   2. 欢迎信重写: 舱位表六行 + 码头四个按钮; 写完发现手机上够不着,
+ *      就改成头钉住、中间随便滚、脚钉住
+ *   3. 2048 最高分纪录改成边玩边存, 外加一个「撤销」
+ *   4. 甲板音乐十四首变二十七首, 页面上写死的「十四首」干脆让它自己数
+ *   5. 冀豫联考成绩进档案; 名次还是校里排的, 所以能直接跟上次比
+ *   6. 手机端二十来扇窗挨个重排一遍(平板也不再摆小手机了)
+ *
+ * 没留下的那几件(摇杆的两个细节、「一下砸到底」另配的按钮、倒数日翻修、
+ * 闰五月的农历核对、相册封面看岔了、上线后逮到的两个 bug)不算大事,
+ * 一天只留 6 格, 挤不下的先放抽屉。
+ *
+ * 怎么改的:
+ *   ENTRIES 是页面里的字面量数组(var 声明, 全局)。这里不 splice,
+ *   只把 2026-11-07 那几项换成新的 6 条, 其余日期一个字节都不动 ——
+ *   别的日期的日期、正文、顺序全部原样保留。
+ *   换完之后顺手把 entryIdx 重新算一遍并让日记重画一遍
+ *   (不然它还指着老下标, 翻页会串)。
+ *
+ *   幂等判据: 那天已经 ≤6 条就算压过了(船长后来把压好的 6 条直接写进
+ *   index.html, 或者日后亲手改过这 6 条, 都不该被我再覆盖一遍)。
+ *
+ * 规矩:
+ *   - 不碰别的日期(2026-11-06 及以前的 48 条一条不动);
+ *   - 幂等: 已经换成这 6 条了就什么都不做, 反复注入结果一样;
+ *   - 纯文本, 没有新增界面, 所以不需要夜航配色;
+ *   - 语气: 高一学生船长(真诚、冷幽默、不装大人), 不写打工人词。
+ * ======================================================================== */
+(function(){
+  var TARGET = '2026-11-07';
+
+  /* 压完的 6 条。一条一件事, 每条 60~100 字(91 / 100 / 88 / 91 / 95 / 99)。 */
+  var FIX_ENTRIES = [
+    { h:'船长说手机上该有个摇杆。想了一想, 摇杆确实是正解: 手指划一下和点一下, 手感完全不是一回事。做了两只, 凹坑圆盘当底座, 蓝头当把手, 都是十六像素的像素画, 夜航自动换暗色板。' },
+    { h:'欢迎信重写了。打开是一张舱位表: 玩、拧、看、读、听、藏, 六行, 把能上手的东西全摊开写清楚。底下加了个码头, 四个按钮点了直接带走人。写完发现手机上按钮够不着, 就改成头钉住、中间随便滚、脚钉住。' },
+    { h:'2048 补了两样: 最高分纪录, 和一个「撤销」。纪录原来只在这局结束的那一刻才写进本机, 于是玩到一半关掉窗, 分数就凭空没了。现在改成边玩边存, 推错一步按 Z 退回去。' },
+    { h:'甲板音乐又进货了: 十四首变二十七首。船长甩过来十四个文件, 有一个跟原有的《玲音》主题曲是同一个, 剩下十三个都搬进船舱了——《东方》的 Bad Apple!!、千本桜、深海少女。' },
+    { h:'冀豫联考的成绩进档案了。总分 794.5, 班名 20, 校名 721。名次还是校里排的, 所以能直接跟上次比: 语文从三百多名掉到一千多, 数学从一千一百多拉回九百多, 班名十六退到二十。' },
+    { h:'船长说: 手机端别偷懒, 每个应用都要重排一遍。二十来扇窗挨个改, 按钮抬到手指点得下, 小字抬到看得清, 画布不许被拉扁。这活儿费眼睛, 但按下去没反应才真费劲。平板不再摆小手机了, 归旧界面管。' }
+  ];
+
+  /* 找那天的下标 */
+  function dayIdx(E){
+    var idx = [];
+    for (var i = 0; i < E.length; i++){
+      if (E[i] && E[i].d === TARGET) idx.push(i);
+    }
+    return idx;
+  }
+
+  /* 已经压过没有?
+   *   判据用「条数」而不是「逐字比对」——
+   *   因为船长后来把压好的 6 条直接写进了 index.html, 又或者他日后亲手改这 6 条,
+   *   那都属于船长自己的编辑, 我不该再动它。只有那天还挂着原来那一大堆(>6 条)、
+   *   明显还没压过的时候, 才由我来压。 */
+  function alreadyFixed(E, idx){
+    return idx.length <= FIX_ENTRIES.length;
+  }
+
+  /* 重排: 遇到 2026-11-07 的位置, 把那 18 项换成新的 6 项;
+     其余日期的条目原样、按原顺序留着。 */
+  function fixList(){
+    var E = window.ENTRIES;
+    if (!E || !E.length) return false;
+    var idx = dayIdx(E);
+    if (!idx.length) return false;
+    if (alreadyFixed(E, idx)) return true;
+
+    var next = [], placed = false;
+    for (var j = 0; j < E.length; j++){
+      if (E[j] && E[j].d === TARGET){
+        if (!placed){
+          for (var f = 0; f < FIX_ENTRIES.length; f++) next.push({ d: TARGET, h: FIX_ENTRIES[f].h });
+          placed = true;
+        }
+        continue;
+      }
+      next.push(E[j]);
+    }
+    if (!placed){
+      for (var f2 = 0; f2 < FIX_ENTRIES.length; f2++) next.push({ d: TARGET, h: FIX_ENTRIES[f2].h });
+    }
+    E.length = 0;
+    for (var n = 0; n < next.length; n++) E.push(next[n]);
+    return true;
+  }
+
+  /* 换完之后: entryIdx 重新算(按当天日期找), 日记重画一遍 */
+  function refresh(){
+    var E = window.ENTRIES;
+    if (!E || !E.length) return;
+    var now = Date.now();
+    var ni = 0;
+    for (var i = E.length - 1; i >= 0; i--){
+      var t = new Date(E[i].d).getTime();
+      if (!isNaN(t) && t <= now){ ni = i; break; }
+    }
+    window.entryIdx = ni;
+    if (typeof window.showEntry === 'function'){ try{ window.showEntry(ni); }catch(e){} }
+    /* 日记.EXE 的日期列表(写着「某日（N 篇）」)也得跟着变 */
+    if (typeof window.dwBuildDates === 'function'){
+      try{
+        window.dwBuildDates();
+        if (typeof window.dwRenderList === 'function') window.dwRenderList();
+      }catch(e){}
+    }
+  }
+
+  function run(){
+    if (!fixList()) return false;   /* ENTRIES 还没出来, 等等再说 */
+    refresh();
+    return true;
+  }
+
+  if (run()) return;                   /* 注入点在脚本末尾, 一般一次就成了 */
+
+  /* 保险: ENTRIES 还没定义(万一被当成外部脚本注入), 等等再试 */
+  var tries = 0;
+  var timer = setInterval(function(){
+    tries++;
+    if (run() || tries > 60) clearInterval(timer);
+  }, 100);
+  if (typeof document !== 'undefined'){
+    document.addEventListener('DOMContentLoaded', function(){ run(); });
+  }
+})();
+
+/* --- fix-giscus.js --- */
+/* =====================================================================
+ * bug ⑧ 留言板重叠 —— 配套的 JS (配合 mobile/fix-giscus.css 使用)
+ * 由 lead 注入 station-repo/index.html; 不动仓库里别的文件。
+ *
+ * 【为什么需要它】
+ * giscus 是外部控件, 它只做两件事:
+ *   1. 建一个 iframe, 上面写死 scrolling="no" (老属性);
+ *   2. 评论加载好之后 postMessage 一条 {"giscus":{"resizeHeight":N}},
+ *      并把 N 写进 iframe 的内联 style.height。
+ * 站里原本既不听那条消息, 也不管那个 scrolling="no" ——
+ * 于是窄屏上 iframe 卡在 150px, 底下的评论够不着。
+ *
+ * 【这个文件做三件事】
+ * A. 弄清「留言要有多高」:
+ *    - 听 giscus 的 postMessage (只认 origin 是 https://giscus.app 的);
+ *    - 同时直接读 iframe 的内联 style.height ——
+ *      giscus 自己也会把报的高度写在那里, 消息漏掉了也能读到
+ *      (桌面那份消息常在我们装监听之前就发掉了);
+ *    - 两条路取大的那个, 别被中途一个 81px 的临时高度钉死。
+ * B. 把 iframe 上写死的 scrolling="no" 拿掉 ——
+ *    框矮下来的时候, 里头的文档才跟着重排、自己滚,
+ *    底下的评论才够得着 (实测: 留着那属性, 框一矮, 内层视口还是旧的,
+ *    多出来的内容永远滚不到; 拿掉之后内层视口跟着框走, maxScroll 从 18 变 212)。
+ *    拿掉之后框里自己滚, 评论一条不丢。
+ * C. 算留言框该多高, 写进 #giscusBox 的 --gb-box-h (CSS 拿它当盒子的高度):
+ *      高度 = min( giscus 报的真高度, 视口里塞得下的高度 ), 至少 150
+ *    视口里塞得下的高度 = 视口高 - 470, 夹在 150~460 之间。
+ *    470 = 底下两条固定条(104) + 标题(44) + 说明(56) + 面板里别的块(108)
+ *          + 便利贴(148) + 余量(10)。
+ *    giscus 还没上报 (网络不通 / 评论还没加载) 时就用这个封顶值,
+ *    盒子绝不会塌成 150px, 也绝不会被底下的固定条压住。
+ *
+ * 【跟 CSS 的约定】(lead 注入时照这个对)
+ *    CSS 读:  #giscusBox { height: var(--gb-box-h, clamp(150px, calc(100dvh - 470px), 460px)) !important; ... }
+ *    JS  写:  #giscusBox 的 --gb-box-h (行内样式, 单位 px)
+ *    JS  暴露: window.__gbRealH (giscus 报的真高度), window.__gbBoxH (算出来的盒子高度)
+ *    只有 --gb-box-h 这一个变量名, CSS 里没有别的。
+ *
+ * 【规矩】
+ * - 不碰 DOM 结构, 只改一个 CSS 变量和一个属性;
+ * - 桌面 (>=1021px) 不改盒子的高度 —— 那边 giscus 报的高度本来就跟得上;
+ * - 不加新表面 → 不用另起夜航配色;
+ * - 不 commit, 不 push。
+ * ===================================================================== */
+(function(){
+  'use strict';
+  if(window.__fixGiscus) return;
+  window.__fixGiscus = true;
+
+  var GISCUS_ORIGIN = 'https://giscus.app';
+  var MIN_BOX = 150;      /* 留言框最少这么高, 再窄也没法看评论 */
+  var MAX_BOX = 460;      /* 再高也没用了, 视口就那么多 */
+  var BUDGET = 470;       /* 视口里要给别的块留的高度 */
+
+  var realH = null;       /* 留言要有多高 (px); null = 还没弄清楚 */
+
+  function box(){ return document.getElementById('giscusBox'); }
+  function frame(){ var b=box(); return b ? b.querySelector('iframe') : null; }
+
+  /* giscus 把报的高度写进 iframe 的内联 style.height —— 直接读它 */
+  function inlineHeight(){
+    var f = frame();
+    if(!f) return null;
+    var h = parseFloat(f.style.height);
+    return (h > 0) ? h : null;
+  }
+
+  /* 视口里塞得下的高度 (算式是死的, 不依赖页面排版, 免得量歪了) */
+  function capHeight(){
+    var vh = window.innerHeight || 844;
+    return Math.max(MIN_BOX, Math.min(MAX_BOX, vh - BUDGET));
+  }
+
+  /* 盒子该多高 */
+  function computeBox(){
+    var h = capHeight();
+    if(realH !== null) h = Math.min(h, realH);
+    return Math.max(MIN_BOX, Math.min(MAX_BOX, Math.round(h)));
+  }
+
+  function applyBoxHeight(){
+    var b = box();
+    if(!b) return;
+    var h = computeBox();
+    b.style.setProperty('--gb-box-h', h + 'px');
+    /* 给体检脚本留个话 */
+    window.__gbRealH = realH;
+    window.__gbBoxH = h;
+  }
+
+  /* 记下留言要有多高 (取大的那个, 别被临时高度钉死) */
+  function noteHeight(h){
+    if(!(h > 0)) return;
+    if(realH === null || h > realH){
+      realH = h;
+      applyBoxHeight();
+    }
+  }
+
+  /* 把 iframe 上写死的 scrolling="no" 拿掉 —— 框矮下来时里头才滚得动 */
+  function unlockScroll(f){
+    if(!f) return;
+    if(f.getAttribute('scrolling') === 'no'){
+      try{ f.removeAttribute('scrolling'); }catch(e){}
+    }
+  }
+
+  /* giscus 是懒加载的, iframe 可能后半夜才挂上来; 夜航切换还会重挂一次。
+     盯着盒子, 来了新 iframe 就再处理一遍。 */
+  function handleFrame(){
+    var b = box();
+    if(!b) return;
+    var f = b.querySelector('iframe');
+    if(!f) return;
+    unlockScroll(f);
+    noteHeight(inlineHeight());
+    applyBoxHeight();
+  }
+
+  function startWatch(){
+    var b = box();
+    if(!b) return;
+    if(window.MutationObserver){
+      var mo = new MutationObserver(handleFrame);
+      mo.observe(b, { childList: true, subtree: true });
+    }
+    /* 兜底: 盒子本身可能还没挂上 */
+    var tries = 0;
+    var iv = setInterval(function(){
+      tries++;
+      if(box()) handleFrame();
+      if(tries > 120) clearInterval(iv);
+    }, 250);
+
+    /* giscus 报的高度会随评论慢慢变大, 隔一会儿再读一次内联高度 */
+    var reads = 0;
+    var iv2 = setInterval(function(){
+      reads++;
+      var ih = inlineHeight();
+      if(ih !== null) noteHeight(ih);
+      if(reads > 120) clearInterval(iv2);
+    }, 700);
+  }
+
+  /* A: 听 giscus 的高度上报 */
+  window.addEventListener('message', function(e){
+    if(!e || e.origin !== GISCUS_ORIGIN) return;
+    var d = e.data;
+    if(!d || typeof d !== 'object') return;
+    var g = d.giscus;
+    if(!g) return;
+    if(typeof g.resizeHeight === 'number' && g.resizeHeight > 0){
+      noteHeight(g.resizeHeight);
+    }
+  }, false);
+
+  /* 视口变了 (转屏 / 拖窗口) → 重算一次 */
+  var rt = 0;
+  window.addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(applyBoxHeight, 200);
+  });
+
+  /* 起步 */
+  function boot(){
+    handleFrame();
+    startWatch();
+    applyBoxHeight();
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();
+
+/* --- fix-music.js --- */
+/* ========================================================================
+ * 甲板音乐: 手机上要能翻整张歌单 (bug ②) —— JS
+ *
+ * 毛病: 手机壳把甲板音乐缩成贴底的一条, 只留当前这首,
+ *   二十七首歌在手机上点不到。
+ *
+ * 修法: 在 #deckMusic 里插一条「歌单 · N 首 / 收起」的小条,
+ *   点一下就把整张歌单撑开, 点哪首换哪首。
+ *   歌单本身是页面里原有的 #dmList(每一首都是 button, 点一下调 dmPick(i)),
+ *   我只是把它露出来 —— 所以歌还是页面那二十七首, 一个字没改。
+ *
+ * 用到的全局(index.html 内联脚本顶层 var/function → 挂在 window 上):
+ *   window.SONGS / window.dm / window.dmPick / window.dmRender
+ *
+ * 规矩: 桌面一点不露头(新控件默认 display:none, 只在手机壳里出现);
+ *   触摸目标 ≥40px; 不 commit(这文件在仓库外)。
+ * ======================================================================== */
+(function(){
+  'use strict';
+
+  if(window.__dmSheetBar) return;    /* 注入两次也不会长出两条 */
+  window.__dmSheetBar = true;
+
+  function songCount(){
+    var S = window.SONGS;
+    return (S && S.length) ? S.length : 0;
+  }
+
+  function build(){
+    var music = document.getElementById('deckMusic');
+    if(!music) return false;
+    if(document.getElementById('dmSheetBar')) return true;
+
+    var bar = document.createElement('div');
+    bar.id = 'dmSheetBar';
+
+    var title = document.createElement('span');
+    title.className = 'dm-sheet-title';
+    title.textContent = '歌单 · ' + songCount() + ' 首';
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'dmListToggle';
+    btn.className = 'dm-sheet-btn';
+    btn.textContent = '歌单';
+    btn.title = '展开歌单（' + songCount() + ' 首）';
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-label', '展开甲板音乐歌单');
+
+    bar.appendChild(title);
+    bar.appendChild(btn);
+    /* 放在最前面: 收起时它就是横条左边那个小按钮 */
+    music.insertBefore(bar, music.firstChild);
+
+    btn.addEventListener('click', function(){
+      var pb = document.getElementById('pbMusic');
+      if(!pb) return;
+      var open = pb.classList.toggle('pb-music-open');
+      /* 状态也挂在 body 上: 弹簧板让位、桌面不生效, 都靠这个 class */
+      document.body.classList.toggle('pb-music-open', open);
+      btn.textContent = open ? '收起' : '歌单';
+      btn.title = open ? '收起歌单' : ('展开歌单（' + songCount() + ' 首）');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if(open) centerCurrent();
+    });
+    return true;
+  }
+
+  /* 把当前这首挪到歌单中间 —— 手算滚动, 别用 scrollIntoView(它会带着祖先一起滚) */
+  function centerCurrent(){
+    var list = document.getElementById('dmList');
+    if(!list) return;
+    var on = list.querySelector('.dm-item.on');
+    if(!on) return;
+    var lr = list.getBoundingClientRect();
+    var or = on.getBoundingClientRect();
+    if(!lr.height) return;
+    list.scrollTop += (or.top - lr.top) - (lr.height - or.height) / 2;
+  }
+
+  function init(){
+    if(!build()) return;
+    /* 页面那边换了歌(dmPick → dmRender 重建 #dmList), 首数不变,
+       但要是正好开着歌单, 把当前这首挪到看得见的地方 */
+    var orig = window.dmRender;
+    if(typeof orig === 'function' && !orig.__dmSheetWrap){
+      var wrapped = function(){
+        var r = orig.apply(this, arguments);
+        var pb = document.getElementById('pbMusic');
+        if(pb && pb.classList.contains('pb-music-open')) centerCurrent();
+        return r;
+      };
+      wrapped.__dmSheetWrap = true;
+      window.dmRender = wrapped;
+    }
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+
+/* --- fix-welcome-short.js --- */
+/* ========================================================================
+ * 欢迎信 · 窄屏精简版文案 (bug ③ 第二轮)
+ *
+ * 船长的话: 「太长」不只是宽 —— 手机上正文还要滚 376px 才看得完。
+ *             目标是窄屏上 .wc-body 的 scrollHeight ≤ 700(一屏多一点)。
+ *
+ * 为什么另开一个 js 而不是接着改 fix-welcome.css:
+ *   css 能改宽度、行距、字号, 改不了"这一行到底写几个字"。
+ *   舱位表六行 + 两段正文 + 设备建议, 一共占了 466 + 253 + 76 = 795px,
+ *   真正要治的是这些字。所以窄屏上换一套短说法, 桌面那套一个字不动。
+ *
+ * 规矩:
+ *   - 只有 innerWidth < 760 才换短说法; 变宽了立刻换回原版(存了原版 innerHTML);
+ *   - 短文案里 wcSecretN / wcSongN 这两个数字还是活的(秘密数、歌曲数),
+ *     换完之后重新 syncSongCount() 一次 —— 不写死数字;
+ *   - 舱位表还是六行, 每行不少于十个字(wc-check.cjs 的断言);
+ *   - 设备建议那段是 showWelcome() 动态写的(按宽度两套文案),
+ *     所以宽屏时靠再调一次原版 showWelcome() 还原, 不在这里抄一份;
+ *   - 不新增表面, 不新增颜色 → 夜航那套配色照旧生效, 不用另起变体;
+ *   - 纯像素硬边文案, 没有渐变/圆角/毛玻璃/emoji;
+ *   - 幂等: 反复注入、反复 showWelcome() 结果一样。
+ * ======================================================================== */
+(function () {
+  var NARROW = 760;
+
+  /* ---------- 窄屏短文案 ---------- */
+  var SHORT_ROWS = [
+    '<b>游戏厅</b>四台: 扫雷 / 2048 / 俄罗斯方块 / 贪吃蛇',
+    '<b>魔方.EXE</b>: 二阶三阶四阶都能拧, 还会自己解',
+    '<b>十五本相册</b>开了十一本, 还有真实比例的太阳系',
+    '<b>日记</b> / <b>终端</b> / <b>小站浏览器</b> / <b>任务管理器</b>',
+    '甲板音乐 <span id="wcSongN">…</span> 首常年在放, 夜里自动熄灯',
+    '全站藏着 <b id="wcSecretN">?</b> 个秘密, 没有提示, 撞不明白翻 <b>help.chm</b>'
+  ];
+  var SHORT_TEXT_1 =
+    '<p>一个把自己伪装成<b>老电脑</b>的个人网站: 会开机, 会关机, 手写的一个 <code>index.html</code>, 没有框架, 没有后端。</p>' +
+    '<p>船舱里装着二十来样能上手的东西:</p>';
+  var SHORT_TEXT_2 =
+    '<p>站名、便利贴、右下角那只会晃的小船, 点过去都有回应。</p>' +
+    '<p class="wc-hint">座右铭: 更新了, 又好像没更新。</p>';
+  var SHORT_DEVICE =
+    '设备建议: 窄屏自动换成手机界面; 老界面在「系统属性 → 设置」里切。';
+
+  /* ---------- 原版备份(只备份静态文案, 设备建议是动态的) ---------- */
+  var saved = null;
+
+  function qa(sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); }
+
+  function snapshot() {
+    if (saved) return saved;
+    var rows = qa('#welcome .wc-mrow .wc-mval');
+    var texts = qa('#welcome .wc-body > .wc-text');
+    if (!rows.length || texts.length < 2) return null;
+    saved = {
+      rows: rows.map(function (e) { return e.innerHTML; }),
+      texts: texts.map(function (e) { return e.innerHTML; })
+    };
+    return saved;
+  }
+
+  function isNarrow() { return window.innerWidth < NARROW; }
+
+  /* 把两个动态数字(秘密数、歌曲数)重新填上 —— 不写死 */
+  function fillNumbers() {
+    var sec = document.getElementById('wcSecretN');
+    if (sec && typeof SECRETS !== 'undefined' && SECRETS && SECRETS.length) {
+      sec.textContent = SECRETS.length;
+    }
+    if (typeof syncSongCount === 'function') { try { syncSongCount(); } catch (e) {} }
+  }
+
+  function applyShort() {
+    var s = snapshot();
+    if (!s) return false;
+    var rows = qa('#welcome .wc-mrow .wc-mval');
+    for (var i = 0; i < rows.length && i < SHORT_ROWS.length; i++) {
+      rows[i].innerHTML = SHORT_ROWS[i];
+    }
+    var texts = qa('#welcome .wc-body > .wc-text');
+    if (texts[0]) texts[0].innerHTML = SHORT_TEXT_1;
+    if (texts[1]) texts[1].innerHTML = SHORT_TEXT_2;
+    var dev = document.getElementById('wcDevice');
+    if (dev) dev.textContent = SHORT_DEVICE;
+    fillNumbers();
+    return true;
+  }
+
+  /* 静态文案还原成原版(设备建议不动 —— 它归 showWelcome 管) */
+  function restoreStatic() {
+    var s = snapshot();
+    if (!s) return false;
+    var rows = qa('#welcome .wc-mrow .wc-mval');
+    for (var i = 0; i < rows.length && i < s.rows.length; i++) rows[i].innerHTML = s.rows[i];
+    var texts = qa('#welcome .wc-body > .wc-text');
+    for (var j = 0; j < texts.length && j < s.texts.length; j++) texts[j].innerHTML = s.texts[j];
+    return true;
+  }
+
+  /* 宽屏: 还原静态文案; 顺便让原版 showWelcome() 把设备建议写回桌面那套 */
+  var orig = window.showWelcome;
+  function restoreAll() {
+    restoreStatic();
+    var wrap = document.getElementById('welcomeWrap');
+    var open = wrap && wrap.classList.contains('open');
+    if (open && typeof orig === 'function') {
+      try { orig.apply(window, arguments); } catch (e) {}
+    }
+  }
+
+  /* 按当前宽度决定用短版还是原版 */
+  function applyNow() {
+    if (isNarrow()) applyShort(); else restoreAll();
+  }
+
+  /* ---------- 把 showWelcome 包一层: 每次开信都按宽度对一次 ---------- */
+  if (typeof orig === 'function' && !orig.__wcShortWrapped) {
+    var wrapped = function () {
+      var r = orig.apply(this, arguments);
+      try { applyNow(); } catch (e) {}
+      return r;
+    };
+    wrapped.__wcShortWrapped = true;
+    window.showWelcome = wrapped;
+  }
+
+  /* ---------- 窗口尺寸变了(横竖屏、拖窗口): 换回来 ---------- */
+  var timer = null;
+  function onResize() {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(function () {
+      timer = null;
+      try { applyNow(); } catch (e) {}
+    }, 150);
+  }
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', onResize);
+
+  /* ---------- 页面一开始就是窄屏的, 先对一次 ---------- */
+  function boot() {
+    try { applyNow(); } catch (e) {}
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 })();
 /* <<< 手机壳 JS <<< */
 </script>
