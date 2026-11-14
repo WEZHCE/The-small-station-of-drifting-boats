@@ -437,6 +437,16 @@
   body.night .mine-foot #mineFlagMode{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night .mine-foot #mineFlagMode.on{background:#3d4f7d}
   body.night .mine-best{color:#8b97b0}
+  body.night .mine-diff{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .mine-diff:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .mine-diff.on{background:#3d4f7d; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .mine-mode{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .mine-mode:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .mine-mode.on{background:#3d4f7d; border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .mine-ctrl-note{color:#8b97b0}
+  body.night .mine-sb{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .mine-sb:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .cell.cur{box-shadow:inset 0 0 0 2px #ffd166}
 
   /* 游戏厅夜航配色: 窗口/卡片/棋盘整条换深夜色, 格子数字提亮 */
   body.night #gameWin, body.night #g2048Win, body.night #ttWin, body.night #snakeWin{background:#1a2338; border-color:#3a4763}
@@ -474,6 +484,9 @@
   body.night .tt-keys button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night .tt-keys button:active{border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .tt-tip, body.night .sn-foot{color:#8b97b0}
+  body.night .tt-mode{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .tt-mode:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .tt-mode.on{background:#3d4f7d; border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .sn-pad button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night .sn-pad button:active{border-color:#101828 #3a4763 #3a4763 #101828}
 
@@ -571,7 +584,7 @@
   .calc-grid button.eq:active{background:#355fa8}
 
   /* ---------- 扫雷 ---------- */
-  #mineWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(420px,92vw);
+  #mineWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(var(--mine-w,420px),92vw);
     display:none; background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; box-shadow:8px 8px 0 rgba(0,0,0,.25)}
   #mineWin.open{display:block}
   #mineWin .titlebar{cursor:move}
@@ -582,10 +595,10 @@
   .mine-face{width:40px; height:40px; font-family:Consolas,monospace; font-size:18px; font-weight:bold; color:#222;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0}
   .mine-face:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  .mine-grid{display:grid; grid-template-columns:repeat(9,1fr); gap:2px; background:#9a9a9a;
+  .mine-grid{display:grid; grid-template-columns:repeat(var(--mine-cols,9),1fr); gap:2px; background:#9a9a9a;
     border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f; padding:3px; touch-action:manipulation; user-select:none}
   .cell{aspect-ratio:1; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; background:#c9c9c9;
-    font-family:Consolas,monospace; font-weight:bold; font-size:17px; display:flex; align-items:center;
+    font-family:Consolas,monospace; font-weight:bold; font-size:var(--mine-cell-font,17px); display:flex; align-items:center;
     justify-content:center; padding:0; cursor:pointer}
   .cell.open{border:1px solid #9a9a9a; background:#bdbdbd; cursor:default}
   .cell.boom{background:#e46b5a}
@@ -597,6 +610,27 @@
     border-color:#fff #6f6f6f #6f6f6f #fff; padding:4px 10px; cursor:pointer; color:#222}
   #mineFlagMode.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
   .mine-best{font-size:12.5px; color:#555}
+
+  /* ---------- 扫雷: 难度 + 操作方式 ---------- */
+  .mine-diffs{display:flex; gap:5px; margin-bottom:9px}
+  .mine-diff{flex:1 1 0; min-width:0; min-height:34px; font-family:inherit; font-size:13px; color:#222;
+    background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0 6px}
+  .mine-diff:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .mine-diff.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
+  .mine-ctrl{margin-top:11px}
+  .mine-ctrl-top{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+  .mine-mode{font-family:inherit; font-size:13px; background:#c9c9c9; border:2px solid;
+    border-color:#fff #6f6f6f #6f6f6f #fff; padding:5px 10px; min-height:36px; cursor:pointer; color:#222}
+  .mine-mode:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .mine-mode.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
+  .mine-ctrl-note{font-size:13px; color:#666}
+  .mine-stickrow{display:none; align-items:center; gap:10px; margin-top:8px}
+  .mine-stickbtns{display:flex; flex-direction:column; gap:8px}
+  .mine-sb{width:76px; height:44px; font-family:inherit; font-size:13px; color:#222;
+    background:#d9d9d9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer}
+  .mine-sb:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  /* 光标格: 摇杆模式下手指够不着的那一格, 得让人一眼看见 */
+  .cell.cur{box-shadow:inset 0 0 0 2px #ffd166}
 
   /* ---------- 游戏厅 + 2048 / 俄罗斯方块 / 贪吃蛇 ---------- */
   #gameWin, #g2048Win, #ttWin, #snakeWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260;
@@ -671,6 +705,12 @@
   .tt-keys button{height:36px; font:bold 17px/1 Consolas,monospace; background:#d9d9d9; border:2px solid;
     border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222}
   .tt-keys button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  /* 操作方式切换: 摇杆 ↔ 四个按键, 谁能用哪套就自己挑 */
+  .tt-modrow{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
+  .tt-mode{font-family:inherit; font-size:13px; color:#222; background:#c9c9c9; border:2px solid;
+    border-color:#fff #6f6f6f #6f6f6f #fff; padding:5px 10px; min-height:36px; cursor:pointer}
+  .tt-mode:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .tt-mode.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
   .tt-tip{margin-top:8px; font-size:12px; color:#666; line-height:1.6}
   /* 键盘提示 vs 手指提示: 窄屏换一套(摇杆那套), 桌面上还是键盘那套 */
   .touch-tip{display:none}
@@ -2237,47 +2277,72 @@ body.night #phonePower .pp-hint{color:#4a5670}
  *   俄罗斯方块  左右挪(按住连发) / 上转 / 下加速, 落底另有按钮
  *
  * 画的是像素图(SPRITES: stickBase / stickKnob), 不是 CSS 圆角 —— 规矩不许。
- * 摇杆只在这个块里露头, 桌面版还是键盘 + 原来的按钮。
+ *
+ * ★ 2026-11-14: 摇杆和按键改成「船长自己切」——
+ *   以前是按屏宽自动切(窄屏给摇杆, 宽屏给按键), 船长说想要个手动开关。
+ *   现在窗口上有 .stick-mode 这个类, 谁是摇杆谁露脸:
+ *     选了摇杆 → 摇杆那套出来, 按键那套收起来
+ *     选了按键 → 四个键出来, 摇杆那套收起来
+ *   桌面也能用摇杆, 窄屏也能用按键 —— 手指粗的时候按格子就是不准。
  * ======================================================================== */
 .stick{display:none}
 /* 「落底」按钮是摇杆的搭档 —— 桌面上本来就有 ⇓ 键, 别让它冒出来 */
 .tt-drop{display:none}
+.tt-stickrow{display:none}
+.mine-stickrow{display:none}
+
+/* 摇杆长什么样 —— 跟它出不出现无关, 一律写好 */
+.stick{position:relative; touch-action:none; user-select:none;
+  -webkit-tap-highlight-color:transparent; -webkit-user-select:none}
+/* 底座: 30+4=34 格 × 3 = 102px 的像素画 */
+.stick-base{display:block; position:relative; image-rendering:pixelated;
+  width:102px; height:102px; pointer-events:none; flex:none}
+/* 摇杆头: (10+4)×2 = 28px, 平时就在底座正中, 按下时跟着手指走 */
+.stick-knob{display:block; position:absolute; left:50%; top:50%;
+  margin-left:-14px; margin-top:-14px; image-rendering:pixelated;
+  width:28px; height:28px; pointer-events:none}
+.stick-label{display:block; text-align:center; font-size:13px; color:#666;
+  line-height:1.5; margin-top:5px}
+/* 夜航: 摇杆那行字也得是夜里那种灰蓝 */
+body.night .stick-label{color:#8b97b0}
+
+/* ---------- 选了「摇杆」: 摇杆那套露脸 ---------- */
+#ttWin.stick-mode .tt-stickrow,
+#mineWin.stick-mode .mine-stickrow{
+  display:flex; align-items:center; gap:10px; margin-top:8px;
+}
+#ttWin.stick-mode .stick,
+#mineWin.stick-mode .stick{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+#ttWin.stick-mode .tt-stickrow .stick,
+#mineWin.stick-mode .mine-stickrow .stick{flex:1 1 auto; min-width:0; height:152px}
+#ttWin.stick-mode .tt-drop{
+  display:flex; flex:0 0 auto; width:76px; height:76px;
+  flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  font:bold 26px/1 Consolas,monospace; background:#d9d9d9; border:2px solid;
+  border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222;
+}
+#ttWin.stick-mode .tt-drop span{font-size:13px; font-family:inherit}
+#ttWin.stick-mode .tt-drop:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+body.night #ttWin.stick-mode .tt-drop{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+body.night #ttWin.stick-mode .tt-drop:active{border-color:#101828 #3a4763 #3a4763 #101828}
+/* 摇杆一套出来, 那四个按键就收起来 */
+#ttWin.stick-mode .tt-keys{display:none}
+
+/* ---------- 选了「按键」: 四个键露脸 ---------- */
+#ttWin:not(.stick-mode) .tt-keys{display:grid}
+
+/* 提示行也跟着操作方式换 —— 说哪套就说哪套, 别一半一半
+   摇杆那套在哪儿都能用(桌面也能拖着玩), 所以它一直露面;
+   按键那套窄屏说按键、桌面说键盘 —— 底下那段媒体查询管这个, 别在这儿抢。 */
+#ttWin.stick-mode .tt-tip .kbd-tip{display:none}
+#ttWin.stick-mode .tt-tip .touch-tip{display:inline}
 
 @media (max-width:760px), (pointer:coarse){
-  .tt-drop{display:flex}
-  .stick{display:flex; flex-direction:column; align-items:center; justify-content:center;
-    position:relative; touch-action:none; user-select:none;
-    -webkit-tap-highlight-color:transparent; -webkit-user-select:none}
-
-  /* 底座: 30+4=34 格 × 3 = 102px 的像素画 */
-  .stick-base{display:block; position:relative; image-rendering:pixelated;
-    width:102px; height:102px; pointer-events:none; flex:none}
-  /* 摇杆头: (10+4)×2 = 28px, 平时就在底座正中, 按下时跟着手指走 */
-  .stick-knob{display:block; position:absolute; left:50%; top:50%;
-    margin-left:-14px; margin-top:-14px; image-rendering:pixelated;
-    width:28px; height:28px; pointer-events:none}
-  .stick-label{display:block; text-align:center; font-size:13px; color:#666;
-    line-height:1.5; margin-top:5px}
-
-  /* --- 贪吃蛇: 摇杆占掉原来十字键的位置 --- */
+  /* --- 贪吃蛇没做切换(它只有一种操作), 窄屏上照旧给摇杆 --- */
   #snakeWin .sn-pad{display:none}
-  #snakeWin .stick-solo{width:100%; height:152px; margin-top:6px}
-
-  /* --- 俄罗斯方块: 摇杆在左, 落底按钮在右 --- */
-  #ttWin .tt-keys{display:none}
-  #ttWin .tt-stickrow{display:flex; align-items:center; gap:10px; margin-top:8px}
-  #ttWin .tt-stickrow .stick{flex:1 1 auto; min-width:0; height:152px}
-  .tt-drop{flex:0 0 auto; width:76px; height:76px;
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
-    font:bold 26px/1 Consolas,monospace; background:#d9d9d9; border:2px solid;
-    border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222}
-  .tt-drop span{font-size:13px; font-family:inherit}
-  .tt-drop:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  body.night .tt-drop{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
-  body.night .tt-drop:active{border-color:#101828 #3a4763 #3a4763 #101828}
-
-  /* 夜航: 摇杆那行字也得是夜里那种灰蓝 */
-  body.night .stick-label{color:#8b97b0}
+  #snakeWin .stick-solo{display:flex; width:100%; height:152px; margin-top:6px}
 }
 
 /* 操作提示: 键盘那套对手指没用, 窄屏换成摇杆那套。
@@ -2766,7 +2831,9 @@ body.night #phonePower .pp-hint{color:#4a5670}
    * 判据 1(触摸目标): 82 个 button.cell 37x37 -> 40x40 以上 */
   :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .mine-body{padding:6px}
   :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .mine-grid{
-    grid-template-columns:repeat(9, minmax(40px, 1fr));
+    /* 列数跟着难度走(简单 9 / 普通 12 / 困难 16) —— 写死 9 的话
+       困难档就挤成一坨了。格子最小还是 40px, 塞不下就横着划。 */
+    grid-template-columns:repeat(var(--mine-cols, 9), minmax(40px, 1fr));
     gap:0;
     padding:2px;
     overflow-x:auto;
@@ -2779,7 +2846,7 @@ body.night #phonePower .pp-hint{color:#4a5670}
   }
   :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .cell{
     aspect-ratio:1;
-    font-size:17px;
+    font-size:var(--mine-cell-font, 17px);
   }
   :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin #mineFlagMode{
     min-height:40px;
@@ -2862,6 +2929,27 @@ body.night #phonePower .pp-hint{color:#4a5670}
   :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ttWin #ttNew{
     flex:0 0 auto;
     min-height:44px;
+  }
+  /* 判据 1(触摸目标): 四个键 36px -> 44px; 操作方式切换按钮 36px -> 44px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ttWin .tt-keys button{
+    height:44px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #ttWin .tt-mode{
+    min-height:44px;
+    padding:6px 12px;
+  }
+
+  /* ---------- 扫雷: 难度按钮 + 操作方式切换 ----------
+   * 判据 1(触摸目标): .mine-diff 34px -> 40px; .mine-mode 36px -> 44px */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .mine-diff{
+    min-height:40px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .mine-mode{
+    min-height:44px;
+    padding:6px 12px;
+  }
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .mine-sb{
+    height:48px;
   }
 
   /* ---------- 贪吃蛇 ----------
@@ -3911,6 +3999,35 @@ body.night #phonePower .pp-hint{color:#4a5670}
   body.phone-app #phoneView #gameWin .gm-head{flex:none}
   body.phone-app #phoneView #gameWin .gm-grid{flex:1 1 auto; align-content:start}
   body.phone-app #phoneView #gameWin .gm-foot{flex:none}
+
+  /* ---------- 扫雷: 难度行在上, 棋盘中间, 操作行在下 ----------
+     2026-11-14 加了难度和操作方式切换, 手机上得重新分家:
+       难度按钮 3 个 + 操作方式切换 1 个 = 一行塞得下(每个 40px+)
+       棋盘自己横着划(困难档 16 列 x 40px = 640px, 屏才 390)
+       摇杆那行钉底, 手指够得着 */
+  body.phone-app #phoneView > #mineWin > .mine-body{
+    display:flex; flex-direction:column;
+  }
+  body.phone-app #phoneView #mineWin .mine-top{flex:none}
+  body.phone-app #phoneView #mineWin .mine-diffs{flex:none}
+  body.phone-app #phoneView #mineWin .mine-grid{flex:none}
+  body.phone-app #phoneView #mineWin .mine-foot{flex:none}
+  body.phone-app #phoneView #mineWin .mine-ctrl{flex:none}
+  body.phone-app #phoneView #mineWin .mine-ctrl-top{flex:none}
+  body.phone-app #phoneView #mineWin .mine-stickrow{flex:none}
+  body.phone-app #phoneView #mineWin .mine-ctrl-note{flex:1 1 120px; min-width:0}
+
+  /* ---------- 俄罗斯方块: 画布在上, 操作方式切换 + 摇杆钉底 ----------
+     画布 240x480 在 390 宽的屏上够得着; 侧栏那几块折行排在画布下面。
+     选「按键」时那四个键出来, 选「摇杆」时摇杆出来 —— 两者都在窗口里, 不重叠。 */
+  body.phone-app #phoneView > #ttWin > .tt-body{
+    display:flex; flex-direction:column;
+  }
+  body.phone-app #phoneView #ttWin .tt-main{flex:none}
+  body.phone-app #phoneView #ttWin .tt-modrow{flex:none}
+  body.phone-app #phoneView #ttWin .tt-keys{flex:none}
+  body.phone-app #phoneView #ttWin .tt-stickrow{flex:none}
+  body.phone-app #phoneView #ttWin .tt-tip{flex:none}
 }
 
 /* ========================================================================
@@ -4617,10 +4734,28 @@ body.night.pb-music-open #pbMusic #deckMusic{border-top-color:#3a4763}
       <button class="mine-face" id="mineFace" type="button" title="再来一局">:)</button>
       <span class="led" id="mineTime">000</span>
     </div>
+    <div class="mine-diffs" id="mineDiffs">
+      <button class="mine-diff" data-diff="easy" type="button">简单</button>
+      <button class="mine-diff" data-diff="normal" type="button">普通</button>
+      <button class="mine-diff" data-diff="hard" type="button">困难</button>
+    </div>
     <div class="mine-grid" id="mineGrid"></div>
     <div class="mine-foot">
       <button id="mineFlagMode" type="button">⚑ 插旗: 关</button>
       <span class="mine-best" id="mineBest"></span>
+    </div>
+    <div class="mine-ctrl" id="mineCtrl">
+      <div class="mine-ctrl-top">
+        <button class="mine-mode" id="mineMode" type="button">操作: 点按</button>
+        <span class="mine-ctrl-note" id="mineCtrlNote">手指点格子就翻开, 长按插旗。</span>
+      </div>
+      <div class="mine-stickrow">
+        <div class="stick" id="mineStick"></div>
+        <div class="mine-stickbtns">
+          <button class="mine-sb" id="mineOpen" type="button">翻开</button>
+          <button class="mine-sb" id="mineFlag" type="button">插旗</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -4691,6 +4826,9 @@ body.night.pb-music-open #pbMusic #deckMusic{border-top-color:#3a4763}
         <canvas class="tt-next" id="ttNext" width="120" height="96"></canvas>
         <button class="tt-btn" id="ttNew" type="button">重开</button>
       </div>
+    </div>
+    <div class="tt-modrow">
+      <button class="tt-mode" id="ttMode" type="button">操作: 摇杆</button>
     </div>
     <div class="tt-keys">
       <button id="ttKL" type="button" title="左移">←</button>
@@ -6126,10 +6264,147 @@ var ALBUMS = [
       { img:'docs/small/s-7.jpg', title:'笔与羽毛', cap:'黑笔、羽毛和演算纸凑在一起，都是桌面上顺手拿到的东西。' },
       { img:'docs/small/s-8.jpg', title:'纸模与小摆件', cap:'纸模型、笔和小摆件铺在桌上，手工课延长到了课间以后。' }
     ] },
-  { name:'相册 · 拾贰', desc:'', filled:false },
-  { name:'相册 · 拾叁', desc:'', filled:false },
-  { name:'相册 · 拾肆', desc:'', filled:false },
-  { name:'相册 · 拾伍', desc:'', filled:false }
+  { name:'相册 · 拾贰', desc:'操场、走廊、晚霞和空教室——一百多天里的校园，没有一张拍到人。', kw:'校园 操场 教室 宿舍 晚霞 跑道 空教室', kind:'img',
+    photos:[
+      { img:'docs/pick12/p12-01.jpg', title:'水边的桥', cap:'太阳压在水面正上方，亮得人睁不开眼。旁边一道长长的桥架横过去，栏杆一段一段排着。' },
+      { img:'docs/pick12/p12-02.jpg', title:'湖边的石栏', cap:'湖边有个石栏围起来的平台，空荡荡地伸进水里。栏杆上挂着红布条，风把它们吹得有点乱。' },
+      { img:'docs/pick12/p12-03.jpg', title:'屋檐下', cap:'屋檐角上挂着一只灯笼，红得有点旧。树下那丛绿倒是精神得很。' },
+      { img:'docs/pick12/p12-04.jpg', title:'一丛绿', cap:'镜头怼得太近，只剩下一片叶子的纹路。拍它的时候其实在等雨停。' },
+      { img:'docs/pick12/p12-05.jpg', title:'墙上的画', cap:'文化墙的大幅壁画，画里的人物穿着旧衣服在忙活。画里的人是画里的，不算人。' },
+      { img:'docs/pick12/p12-06.jpg', title:'压下来的云', cap:'云压得很低，树枝在底下晃成一片黑。路灯还亮着最后一盏。' },
+      { img:'docs/pick12/p12-07.jpg', title:'同一片天', cap:'同一片云，隔了几秒又拍一张。天更暗一点，路灯更亮一点。云走得比快门快。' },
+      { img:'docs/pick12/p12-08.jpg', title:'假山和水', cap:'假山蹲在水边，石头上趴着太阳晒出来的光斑。湖面平得像块没人碰过的玻璃。' },
+      { img:'docs/pick12/p12-09.jpg', title:'亭子空着', cap:'湖边那个小亭子今天没人，隔着水面远远地立着。风从亭子里穿过去，比人经过还勤。' },
+      { img:'docs/pick12/p12-10.jpg', title:'走廊尽头', cap:'走廊尽头一扇窗，光从那边斜着切进来，窗台上那件蓝衣服搭着，没人穿。' },
+      { img:'docs/pick12/p12-11.jpg', title:'天亮之前', cap:'天还没全亮，天边先烧成粉红一片，操场和看台都黑着。跑道空着，只有灯还亮着。' },
+      { img:'docs/pick12/p12-12.jpg', title:'早上的天边', cap:'十月九号早上六点零六分，天边只剩一条橙色的缝，楼群和树都黑着，只有那一道亮。' },
+      { img:'docs/pick12/p12-13.jpg', title:'绿色和蓝色', cap:'绿跑道贴着蓝墙仰着拍，像两块颜色撞在一起。跑道拐弯处还留着红道。' },
+      { img:'docs/pick12/p12-14.jpg', title:'夜里的看台', cap:'看台黑成一块，只剩护栏边上一排灯带一直排到头。走到头那点光，是操场另一头的路灯。' },
+      { img:'docs/pick12/p12-15.jpg', title:'亮着的楼', cap:'宿舍楼有几扇窗还亮着，底下的跑道亮着一串灯。别的都黑了，只有这几格在替谁值夜班。' },
+      { img:'docs/pick12/p12-16.jpg', title:'凌晨的宿舍', cap:'凌晨五点五十，宿舍里没开灯，只有一线天光从窗缝挤进来。桌上的东西都在原地。' },
+      { img:'docs/pick12/p12-17.jpg', title:'雾里的早晨', cap:'雾把整片校园糊成灰白，天亮得像一张没擦干净的玻璃。远处只露一点轮廓。' },
+      { img:'docs/pick12/p12-18.jpg', title:'路灯下的树', cap:'雾里那盏路灯把树顶照出一圈毛边，其余都沉在灰里。屋檐黑黑地压在上头。' },
+      { img:'docs/pick12/p12-19.jpg', title:'楼梯间的顶光', cap:'楼梯间顶上开了一扇天窗，光直直落下来，台阶上一道一道亮边。手里那盏小灯也得让位。' },
+      { img:'docs/pick12/p12-20.jpg', title:'空教室的书包', cap:'教室里没人，课桌上搁着书包、笔袋和作业，前面横幅写着「博文约礼 成德达才」，大屏还亮着动画。' },
+      { img:'docs/pick12/p12-21.jpg', title:'走廊上的屏', cap:'走廊尽头的大屏亮着，屏上是水墨插画不是真人，上头的红字横幅写着「博文约礼 成德达才」。' },
+      { img:'docs/pick12/p12-22.jpg', title:'白天的月亮', cap:'上午十点四十三分，月亮还挂在教学楼上面，亮得有点理直气壮。下面的楼是新的，红砖还新。' },
+      { img:'docs/pick12/p12-23.jpg', title:'红砖楼', cap:'红砖楼立在草坡边，玻璃幕墙一格一格排着。楼下那片草坪空着，树是刚栽的。' },
+      { img:'docs/pick12/p12-24.jpg', title:'宿舍窗角', cap:'宿舍窗边的一个角，白墙白窗台，床尾刚好切进画面一角。风扇露了半边。' },
+      { img:'docs/pick12/p12-25.jpg', title:'地上的一只', cap:'水泥地上一只小虫，爬过的地方留了一道浅印。蹲下去拍的，膝盖现在还疼。' },
+      { img:'docs/pick12/p12-26.jpg', title:'栏杆上的魔方', cap:'三阶魔方搁在栏杆上，被太阳晒得发烫，背景是白栏杆和天。风一吹差点滚下去，扶住了。' },
+      { img:'docs/pick12/p12-27.jpg', title:'栏杆和天', cap:'顺着栏杆往上看，白栏杆一根根切进蓝天，底下的墙裂开一道缝，没人管。' },
+      { img:'docs/pick12/p12-28.jpg', title:'换个角度的魔方', cap:'同一个魔方，挪到台阶中间，栏杆的影子一道一道落在它身上，背景是红台阶和绿地面。' },
+      { img:'docs/pick12/p12-29.jpg', title:'雾里的路', cap:'雾把路灯晕成一团黄，远处几棵树只剩轮廓，左边是教学楼的黑影。路上一个人也没有。' },
+      { img:'docs/pick12/p12-30.jpg', title:'橙色的方块', cap:'绿色平台上摆了个橙绿相间的方块，影子拉得老长。旁边一只羽毛球，一个蓝色布袋。' },
+      { img:'docs/pick12/p12-31.jpg', title:'草坪那边', cap:'草坪那头是教学楼和一片新楼群，中间还有个小圆顶。天空蓝得很高，操场的绿一直铺过来。' },
+      { img:'docs/pick12/p12-32.jpg', title:'交叉的扫帚', cap:'两把红扫帚交叉靠在墙边，背后的草坪空着，远处一排楼。天蓝得很干净。' },
+      { img:'docs/pick12/p12-33.jpg', title:'屋顶的钢架', cap:'仰拍屋顶的钢架和蓝墙，钢架的影子落在墙上，格子一样密。楼梯口那道红栏杆也切进画面一半。' },
+      { img:'docs/pick12/p12-34.jpg', title:'一排彩旗', cap:'蓝墙上贴着一串彩旗，墙上的白点像撒了一把碎米。风在别处忙，旗子没怎么动。' },
+      { img:'docs/pick12/p12-35.jpg', title:'后墙的展示', cap:'后墙的大屏亮着「南中是什么」，下面一排木柜，柜上贴着红纸和挂钟。屏里是插画，不是真人。' },
+      { img:'docs/pick12/p12-36.jpg', title:'校园里的柏油路', cap:'十一月的柏油路，路边的树绑着支架，草地黄了一半。路上没车。' },
+      { img:'docs/pick12/p12-37.jpg', title:'同一条路', cap:'同一条路，隔了几秒又拍一张。这次换了个方向，路对面那排楼更清楚。' },
+      { img:'docs/pick12/p12-38.jpg', title:'跑道尽头是山', cap:'新铺的塑胶跑道红得扎眼，跑到头是一排树和围墙，中间立着旗杆。跑道湿着，像刚被谁擦过。' },
+      { img:'docs/pick12/p12-39.jpg', title:'雨后的跑道', cap:'刚下过雨，红跑道和绿道都湿着，积水亮亮的，路上散着几片落叶。下午三点五十九分。' },
+      { img:'docs/pick12/p12-40.jpg', title:'雨停的操场', cap:'雨停了，一排石球坐在湿跑道边上，围出一小块干地。树影黑着，没人。' },
+      { img:'docs/pick12/p12-41.jpg', title:'实验室的课桌', cap:'实验室的课桌一排排摆好，桌角贴着蓝色标签，桌面是黄木板配白挡板。窗光过曝，晃眼。' },
+      { img:'docs/pick12/p12-42.jpg', title:'第二间空教室', cap:'这间教室的桌椅也摞好了，前面黑板上还留着「学习强国」的横幅。窗外那棵树比屋里热闹。' },
+      { img:'docs/pick12/p12-43.jpg', title:'走廊顶上的黑', cap:'走廊顶上吊着一台摄像机和一束线，天花板白得发冷，墙上一道一道接缝。' },
+      { img:'docs/pick12/p12-44.jpg', title:'空楼梯间', cap:'楼梯间只有回声，墙上一块深一块浅。栏杆扶手一格一格往下走。' },
+      { img:'docs/pick12/p12-45.jpg', title:'树下的推车', cap:'宿舍楼后面那条路上停着一辆小推车，旁边一排垃圾桶，树把天遮了一半。地上还有水。' },
+      { img:'docs/pick12/p12-46.jpg', title:'横幅下的广场', cap:'红色横幅底下是一片被树盖住的广场，告示牌立在中间，两辆车停在边上。楼上的窗一格一格黑着。' },
+      { img:'docs/pick12/p12-47.jpg', title:'宿舍楼外立面', cap:'宿舍楼的外墙一块块晒得深浅不一，阳台和防盗窗一格格往上排。下午四点十三分。' },
+      { img:'docs/pick12/p12-48.jpg', title:'宿舍走廊的下午', cap:'宿舍走廊一排红对联贴在门边，地上摆着几张木桌和黄色塑料凳。没人，拖把就靠在墙边。' },
+      { img:'docs/pick12/p12-49.jpg', title:'楼侧面的下午', cap:'从侧面仰拍宿舍楼，阳台一格一格往上排，防盗窗一扇扇关着。傍晚的光斜过来，玻璃一块亮一块暗。' },
+      { img:'docs/pick12/p12-50.jpg', title:'宿舍楼下', cap:'宿舍楼底下的拐角，一半黄墙一半蓝墙，墙根砖色深浅不一。傍晚五点零八分，路上没人。' },
+      { img:'docs/pick12/p12-51.jpg', title:'拱门上的字', cap:'拱门顶上一圈金字，底下顶着一座橙色的小塔楼。仰头拍的时候脖子酸。' },
+      { img:'docs/pick12/p12-52.jpg', title:'主楼和天球馆', cap:'主楼旁边那个白色圆顶是天球馆，红砖楼一栋接一栋。九月十四号早上五点五十八分，整片校园还没醒。' },
+      { img:'docs/pick12/p12-53.jpg', title:'校园的弯道', cap:'从楼上往下看，柏油路拐了个弯，路边一排树。左边是球场，器材架子摆着没人打。' },
+      { img:'docs/pick12/p12-54.jpg', title:'叠好的床', cap:'宿舍床铺叠得方方正正，蓝床单蓝被子。绿色那团是叠起来的外套。' },
+      { img:'docs/pick12/p12-55.jpg', title:'宿舍楼和灯', cap:'宿舍楼下立着一盏太阳能路灯，灯头空着。楼身红白相间，门开着，屋里没人。' },
+      { img:'docs/pick12/p12-56.jpg', title:'楼和天', cap:'红白相间的宿舍楼外墙，太阳能灯的板子在楼前亮着，红色电话亭贴在中间。天已经亮得没有云。' },
+      { img:'docs/pick12/p12-57.jpg', title:'教学楼外', cap:'教学楼外面一片空场，草地和新种的树围着，远处一排高楼。校园安静得像还没开门。' },
+      { img:'docs/pick12/p12-58.jpg', title:'主楼正面', cap:'主楼和旁边那栋楼对着站，中间隔着一条路和几棵树。傍晚的灯还没亮。' },
+      { img:'docs/pick12/p12-59.jpg', title:'玻璃上的水珠', cap:'水珠一颗颗砸在玻璃上，糊成一团。看不清外面，正好，什么也不用想。' },
+      { img:'docs/pick12/p12-60.jpg', title:'床上的书', cap:'书包扔在床上，书摊着没人收，旁边一支笔当书签。' },
+      { img:'docs/pick12/p12-61.jpg', title:'走廊展板', cap:'走廊展板贴着一张张作品，地上堆着几个收纳箱和一张小桌子。傍晚五点四十分，灯刚亮。' },
+      { img:'docs/pick12/p12-62.jpg', title:'夜里那几扇窗', cap:'夜里十点零五分，宿舍楼黑成一块，只有底下几扇窗还亮着，其余全沉在黑里。' },
+      { img:'docs/pick12/p12-63.jpg', title:'亮着的宿舍', cap:'同一栋楼的另一面，亮起来的窗更少，一排排像没关严的眼。夜里看这种照片最容易想家。' },
+      { img:'docs/pick12/p12-64.jpg', title:'看台的楼梯', cap:'体育馆看台的楼梯一层层往上，钢结构在顶上一格一格排开，栏杆白得发亮。整座看台今天一个观众都没有。' },
+      { img:'docs/pick12/p12-65.jpg', title:'雨里的操场', cap:'雨后的操场红得发亮，篮球架一个一个泡在水里，整片天是灰的。下午十二点四十五分。' }
+    ] },
+  { name:'相册 · 拾叁', desc:'书堆、试卷、折纸和一只小黄鸭——桌面视角的收藏。', kw:'书桌 试卷 笔记 折纸 玩偶 纸张', kind:'img',
+    photos:[
+      { img:'docs/pick13/p13-01.jpg', title:'书堆与小黄鸭', cap:'书、卷子、还有那只小黄鸭堆在架子上，床铺空着。宿舍最乱也最像家的一角。' },
+      { img:'docs/pick13/p13-02.jpg', title:'门口的小桌', cap:'宿舍门里一张小桌，塑料袋和绿壶挤在一起，旁边是张蓝色小凳。屋里没开灯，窗光在地上投出一块亮斑。' },
+      { img:'docs/pick13/p13-03.jpg', title:'堆书与台灯', cap:'书堆到快碰到台灯，灯一开，纸页边全镀了层黄。桌上还压着几本紫封皮的练习册。' },
+      { img:'docs/pick13/p13-04.jpg', title:'一叠纸和绿夹子', cap:'一叠纸散在桌上，绿夹子压着最上面那份，旁边还有个小橘子。桌角那台小风扇还在转。' },
+      { img:'docs/pick13/p13-05.jpg', title:'地上的红纸屑', cap:'水泥地上散着几片红纸屑，缝里卡着几粒沙，像是刚被风吹散。低头看见的，蹲下去拍更清楚。' },
+      { img:'docs/pick13/p13-06.jpg', title:'晃动的绿瓶', cap:'走廊里一瓶运动相机，举起来的时候手抖了，画面糊成一片绿。' },
+      { img:'docs/pick13/p13-07.jpg', title:'夜街的霓虹', cap:'夜里街边的招牌一块接一块，地面湿着，把颜色又抄了一遍。举相机的手在抖。' },
+      { img:'docs/pick13/p13-08.jpg', title:'打印出来的一页', cap:'打印的一页资料，左边是段落，右边附着一张方格表。字密得看不清行。' },
+      { img:'docs/pick13/p13-09.jpg', title:'手电照出的涂鸦', cap:'手电筒的光扫过墙上的涂鸦，亮出一只歪头的小人和一串发光线条。别的都看不见。' },
+      { img:'docs/pick13/p13-10.jpg', title:'名单铺在木板上', cap:'名单打印出来铺在木板上，密密麻麻的名字一列到底。哪个是自己的，看了两遍也没找着。' },
+      { img:'docs/pick13/p13-11.jpg', title:'第二张名单', cap:'另一张名单，字更小一档。同一块木板换个角度拍，纸的边角翘起来一点。' },
+      { img:'docs/pick13/p13-12.jpg', title:'教室后墙的小报', cap:'后墙的手抄小报，底下一圈海浪和太阳，中间是红纸写的一栏一栏名单。字写得挺好看。' },
+      { img:'docs/pick13/p13-13.jpg', title:'小报的另一面', cap:'同一面墙的另一半，两边各贴一排红纸名单，中间画着海。窗户反着白光，字有点看不清。' },
+      { img:'docs/pick13/p13-14.jpg', title:'试卷与手写答案', cap:'一张试卷摊在桌上，印的字和手写的字叠在一起，相机没对焦，虚成一片。纸也懒得再压平。' },
+      { img:'docs/pick13/p13-15.jpg', title:'另一份试卷', cap:'另一份试卷，整页都是手写的段落，一行一行挤得很满。写它的人那天一定很赶。' },
+      { img:'docs/pick13/p13-16.jpg', title:'教室大屏', cap:'教室大屏亮着，桌面壁纸是一片蓝，屏幕上摆着一排排图标。傍晚六点半，教室里只剩这块屏还醒着。' },
+      { img:'docs/pick13/p13-17.jpg', title:'黑板上的计划表', cap:'大屏上用彩笔写满了计划：哪科几号考、卷子第几套、几点交，字迹像好几个人凑的。' },
+      { img:'docs/pick13/p13-18.jpg', title:'粉笔写满的一整块', cap:'大屏这块黑板写得更满，「高考倒计时 45」那行特别大，底下写着「25 年考完 25 年卷子写完」。口气不小。' },
+      { img:'docs/pick13/p13-19.jpg', title:'物理笔记', cap:'摊开的物理笔记，公式旁边写着自己的批注，还画了电路图和方框图。笔就扔在旁边。' },
+      { img:'docs/pick13/p13-20.jpg', title:'纸箱里的漫画稿', cap:'纸箱里塞着一叠手绘的漫画稿，铅笔线一根一根，旁边还放着几支彩笔。人还没画完，稿子先被收起来了。' },
+      { img:'docs/pick13/p13-21.jpg', title:'折纸小怪兽', cap:'折纸折的小怪兽，四条腿站得笔直，影子拉得老长。折它的人当时应该挺得意。' },
+      { img:'docs/pick13/p13-22.jpg', title:'怪兽换个方向', cap:'同一只折纸怪兽，转了个身。背后还有一张印着数字的挂历。' },
+      { img:'docs/pick13/p13-23.jpg', title:'怪兽的背面', cap:'怪兽的背面，胶带贴过的地方有点起皱。折纸比它主人诚实。' },
+      { img:'docs/pick13/p13-24.jpg', title:'怪兽被风吹着', cap:'窗边的怪兽被风吹得歪了一点，影子拉长。没人扶，它自己站住了。' },
+      { img:'docs/pick13/p13-25.jpg', title:'桌上的文具堆', cap:'计算器、笔、高光笔、橡皮，还有一只小球玩偶，后面贴着课程表。找橡皮的时候总会先翻这里。' },
+      { img:'docs/pick13/p13-26.jpg', title:'小黄鸭', cap:'一只小黄鸭公仔站在本子上，橙色的脚翘着。它不算人，所以留在这儿。' },
+      { img:'docs/pick13/p13-27.jpg', title:'眼镜与笔袋', cap:'眼镜搁在蓝色笔袋上，旁边一双筷子似的白笔。桌上最整齐的一角，拍照都得先摆好。' },
+      { img:'docs/pick13/p13-28.jpg', title:'英语试卷', cap:'英语试卷打印出来摊在桌上，题目长得一眼望不到头，旁边还压着别的纸。五月三号早上八点二十六，卷子刚拿到手。' },
+      { img:'docs/pick13/p13-29.jpg', title:'画满圆和三角的卷子', cap:'数学卷子上全是圆和三角形的辅助线，旁边还写着一串函数口诀。箭头画得比字还认真。' },
+      { img:'docs/pick13/p13-30.jpg', title:'墙上的铅笔小人', cap:'墙上用铅笔画了个圆脸小人，头上还画了两个角。旁边一行歪歪扭扭的字，像签名。画它的人已经毕业了吧。' },
+      { img:'docs/pick13/p13-31.jpg', title:'椅背上的绿T恤', cap:'一件青绿色的T恤搭在椅背上，皱成一团，中间印着字。刚才有人在这儿坐着。' },
+      { img:'docs/pick13/p13-32.jpg', title:'摊开的卷子和书', cap:'桌上摊着摊开的卷子和书，桌沿卡着一排便签和一块橡皮。九月十七号上午十一点三十一。' },
+      { img:'docs/pick13/p13-33.jpg', title:'密到看不清的表', cap:'打印的表格密到一行接一行，格子小得数不清。这种表总是最后一列最难填。' },
+      { img:'docs/pick13/p13-34.jpg', title:'桌上的四阶魔方', cap:'一只四阶魔方立在桌上，颜色有点旧，底下压着一张小卡片。转不动的时候，它就只是块方糖。' },
+      { img:'docs/pick13/p13-35.jpg', title:'运动相机', cap:'运动相机架在支架上，屏幕里映着这张堆满杂物的桌。它比我会记得今天。' },
+      { img:'docs/pick13/p13-36.jpg', title:'相机的镜头', cap:'镜头怼近了看，镜片一圈圈同心圆，角上写着 ACTION 4。装它的人显然很爱这台机器。' },
+      { img:'docs/pick13/p13-37.jpg', title:'魔方与无线麦', cap:'一只绿面魔方，旁边躺着一只无线麦，屏幕上跳着秒表。录音的时候经常忘了它也在。' },
+      { img:'docs/pick13/p13-38.jpg', title:'笔压着的书', cap:'摊开的书被一支笔压着当书签，旁边散着橡皮和卷笔刀。读到一半插进去的，后来就忘了。' },
+      { img:'docs/pick13/p13-39.jpg', title:'屏幕上的「关于」', cap:'电脑开着「系统 · 关于」那一页，内存 16GB、显卡 2050 MHz 一行行列着。看硬件比看题提神。' },
+      { img:'docs/pick13/p13-40.jpg', title:'黑着灯的宿舍', cap:'宿舍没开灯，只有窗外一点光透进来，墙上两块暗影。三十号的早晨六点二十，谁也没起床。' },
+      { img:'docs/pick13/p13-41.jpg', title:'竖着排的字', cap:'一张纸，文字竖着排下去，手指按在纸上压住一角。看得出是打印的，看不清内容——大概是没打算给人看的。' },
+      { img:'docs/pick13/p13-42.jpg', title:'彩笔写满的黑板', cap:'大屏上用彩笔写着各科的安排，字挤得满当当：数学、语文、英语，还有「2 套组合卷+5 套卷」。写的人大概怕自己忘。' },
+      { img:'docs/pick13/p13-43.jpg', title:'电源和数据线', cap:'电源适配器缠着一圈数据线，像一团没解开的耳机。插座永远差那么一点。' },
+      { img:'docs/pick13/p13-44.jpg', title:'学习委员', cap:'后墙贴着一张「学习委员」的表，旁边挂着个红挂件，墙上还贴着「学习↓」「有人找出规律」之类的手写标语。十月二号下午十点。' },
+      { img:'docs/pick13/p13-45.jpg', title:'插头和排插', cap:'排插上插着一个插头，旁边搭着一根松掉的线，线头套着黄色护套。十月三号晚上，顺手拍的。' },
+      { img:'docs/pick13/p13-46.jpg', title:'同一块黑板', cap:'同一块黑板，隔了四十九分钟又拍一张。粉笔的反光更亮一点，字一个字没变。' }
+    ] },
+  { name:'相册 · 拾肆', desc:'托盘、面条、豆浆油条——一个人的食堂也要好好吃饭。', kw:'食堂 饭 托盘 面条 豆浆 油条', kind:'img',
+    photos:[
+      { img:'docs/pick14/p14-01.jpg', title:'一碗清汤面', cap:'不锈钢碗里一碗清汤面，青菜化在汤里，筷子搭在碗沿上。汤很清，是食堂里最老实的那碗。' },
+      { img:'docs/pick14/p14-02.jpg', title:'红烧肉盖饭', cap:'红烧肉盖饭，酱色亮得发红，米饭上浇了满满一勺。十一月十三的中午，饭盒还是热的。' },
+      { img:'docs/pick14/p14-03.jpg', title:'汤面与青菜', cap:'一碗汤面，青菜铺了半碗，筷子插在面里。九月十三号傍晚，这碗吃得很快。' },
+      { img:'docs/pick14/p14-04.jpg', title:'豆浆油条', cap:'一碗豆浆泡着油条，旁边塑料袋里还装着几根。配着吃的时候谁也不说话。' },
+      { img:'docs/pick14/p14-05.jpg', title:'一碗宽面', cap:'一碗宽面，面条在汤里挤着，牛肉块和红椒浮在上面。九月十七，十二点三十一。' },
+      { img:'docs/pick14/p14-06.jpg', title:'实验室的操作台', cap:'实验室的操作台，木尺、蓝色接线盒、纸卷摆了一排。九月十八号上午十一点十四分。' },
+      { img:'docs/pick14/p14-07.jpg', title:'接线板和木尺', cap:'接线板、木尺、一段导线，铺在蓝色实验台上，旁边压着一叠纸。器材领来了还没用上。' },
+      { img:'docs/pick14/p14-08.jpg', title:'电子秤', cap:'电子秤的显示屏亮着，黄色按钮在角落，侧面一个红色开关。称东西之前，它一直这么安静。' },
+      { img:'docs/pick14/p14-09.jpg', title:'米饭和青菜', cap:'一碗米饭，一碗带点绿的汤菜，筷子架在中间。九月二十四，中午十二点二十一。' }
+    ] },
+  { name:'相册 · 拾伍', desc:'天光、远路和雨后的城市——出校门以后的世界。', kw:'天空 日落 公路 雨 城市 远路', kind:'img',
+    photos:[
+      { img:'docs/pick15/p15-01.jpg', title:'傍晚的空路', cap:'傍晚的马路空得能听见风，路灯刚亮，路边一排树黑着。十月十号。' },
+      { img:'docs/pick15/p15-02.jpg', title:'斑马线', cap:'斑马线在暮色里一格一格排开，路灯刚亮那会儿还没人走。十月十号傍晚。' },
+      { img:'docs/pick15/p15-03.jpg', title:'城市的晚霞', cap:'城市边缘的晚霞烧成一条橙红带，底下是塔吊和楼顶的剪影。相机的时间戳不准，云是准的。' },
+      { img:'docs/pick15/p15-04.jpg', title:'晚霞再一张', cap:'同一片晚霞，隔了一分钟又拍一张。云的颜色又淡了一点，塔吊还在原地。' },
+      { img:'docs/pick15/p15-05.jpg', title:'公路上的车', cap:'从楼上往下拍公路，一辆电动车停在路边，车筐里还挂着东西。九月十三的下午。' },
+      { img:'docs/pick15/p15-06.jpg', title:'雾中的公路', cap:'雾把公路吞了一半，一辆车从雾里慢慢浮出来。开过去要更小心。' },
+      { img:'docs/pick15/p15-07.jpg', title:'雨天的车流', cap:'雨天傍晚的车流，几辆车并排开过，车灯在水汽里化开。玻璃上全是水。' },
+      { img:'docs/pick15/p15-08.jpg', title:'桥上的红灯', cap:'桥上排着队等红灯，天灰得均匀。红灯把车顶染了一层。' },
+      { img:'docs/pick15/p15-09.jpg', title:'桥上的横杆', cap:'桥上的横杆斜着切进画面，一串红灯挂在杆上，天空只剩一块。九月廿四，五点四十一分。' }
+    ] }
 ];
 var albumSel = 0, curPhotos = PHOTOS;
 var lastCoverClick = { i: -1, t: 0 };   /* 双击判定: 单击会重建封面节点, 原生 dblclick 靠不住 */
@@ -9918,18 +10193,103 @@ function mineToggle(open){
 }
 $('#tbGame').addEventListener('click', function(){ gameToggle(true); });
 $('#mineClose').addEventListener('click', function(){ mineToggle(false); });
-var M_SIZE = 9, M_MINES = 10;
+/* ---------- 扫雷 ----------
+ * 难度: 简单 9x9/10雷 · 普通 12x12/20雷 · 困难 16x16/40雷
+ *   M_SIZE / M_MINES 以前是写死的常量, 加难度就得让它跟着难度变。
+ * 操作方式: 「点按」(手指点格子) 和 「摇杆」(摇杆挪光标 + 旁边两个按钮)
+ *   两个都能用, 按钮在窗里, 想切就切 —— 不用赌设备是触屏还是鼠标。 */
+var M_DIFFS = {
+  easy:   { name:'简单', size:9,  mines:10, w:420 },
+  normal: { name:'普通', size:12, mines:20, w:500 },
+  hard:   { name:'困难', size:16, mines:40, w:600 }
+};
+var M_DIFF = 'easy', M_SIZE = 9, M_MINES = 10;
+var mMode = 'tap';        /* 'tap' 点按 | 'stick' 摇杆 */
+var mCur = 0;             /* 摇杆模式下的光标格 */
 var mCells = [], mState = 'idle', mFlags = 0, mSec = 0, mTimer = null, mFirst = true, mFlagMode = false;
 var mLedTimer = null, mOpenCount = 0;
 function minePad3(n){ return n < 0 ? '-' + String(Math.min(99, -n)).padStart(2, '0') : String(Math.min(999, n)).padStart(3, '0'); }
-function mineBestShow(){
+/* 最佳成绩按难度分开存; 简单那档沿用老键名 mineBest, 老记录别丢 */
+function mineBestKey(){ return M_DIFF === 'easy' ? 'mineBest' : 'mineBest_' + M_DIFF; }
+function mineBestRead(key){
   var b = null;
-  try{ b = parseInt(localStorage.getItem('mineBest'), 10) || null; }catch(e){}
-  $('#mineBest').textContent = b ? '★ 最佳 ' + b + ' 秒' : '';
+  try{ b = parseInt(localStorage.getItem(key), 10) || null; }catch(e){}
+  return b;
+}
+function mineBestShow(){
+  var b = mineBestRead(mineBestKey());
+  $('#mineBest').textContent = b ? ('★ ' + M_DIFFS[M_DIFF].name + ' 最佳 ' + b + ' 秒') : '';
+}
+/* 难度换档: 棋盘重建, 窗口也跟着长宽 */
+function mineSetDiff(key, quiet){
+  if(!M_DIFFS[key]) return;
+  var d = M_DIFFS[key];
+  M_DIFF = key; M_SIZE = d.size; M_MINES = d.mines;
+  try{ localStorage.setItem('mineDiff', key); }catch(e){}
+  var grid = $('#mineGrid'), win = $('#mineWin');
+  if(grid) grid.style.setProperty('--mine-cols', String(M_SIZE));
+  if(grid){
+    /* 格子里的数字得跟着格子变小, 不然大棋盘上全是挤在一起的字 */
+    grid.style.setProperty('--mine-cell-font', M_SIZE <= 9 ? '17px' : (M_SIZE <= 12 ? '15px' : '13px'));
+  }
+  if(win) win.style.setProperty('--mine-w', d.w + 'px');
+  $$('#mineDiffs .mine-diff').forEach(function(b){
+    b.classList.toggle('on', b.dataset.diff === key);
+  });
+  mineReset();
+  if(!quiet) toast('换成' + d.name + '了: ' + M_SIZE + '×' + M_SIZE + ', ' + M_MINES + ' 个雷。');
+}
+/* 操作方式: 点按 ↔ 摇杆 */
+function mineModeShow(){
+  var win = $('#mineWin');
+  if(win) win.classList.toggle('stick-mode', mMode === 'stick');
+  var btn = $('#mineMode');
+  if(btn){
+    btn.textContent = (mMode === 'stick' ? '操作: 摇杆' : '操作: 点按');
+    btn.classList.toggle('on', mMode === 'stick');
+  }
+  var note = $('#mineCtrlNote');
+  if(note){
+    note.textContent = mMode === 'stick'
+      ? '摇杆挪光标, 右边「翻开」「插旗」。'
+      : '手指点格子就翻开, 长按插旗。';
+  }
+  mineCurPaint();
+}
+function mineModeToggle(){
+  mMode = (mMode === 'stick') ? 'tap' : 'stick';
+  try{ localStorage.setItem('mineMode', mMode); }catch(e){}
+  mineModeShow();
+}
+/* 摇杆光标 */
+function mineCurPaint(){
+  var grid = $('#mineGrid');
+  if(!grid) return;
+  var kids = grid.children;
+  for(var i = 0; i < kids.length; i++){
+    if(mMode === 'stick' && i === mCur) kids[i].classList.add('cur');
+    else kids[i].classList.remove('cur');
+  }
+}
+function mineCurMove(dir){
+  if(mMode !== 'stick') return;
+  var x = mCur % M_SIZE, y = Math.floor(mCur / M_SIZE);
+  if(dir === 'left') x--; else if(dir === 'right') x++;
+  else if(dir === 'up') y--; else if(dir === 'down') y++;
+  if(x < 0) x = 0; if(x >= M_SIZE) x = M_SIZE - 1;
+  if(y < 0) y = 0; if(y >= M_SIZE) y = M_SIZE - 1;
+  var next = y * M_SIZE + x;
+  if(next === mCur) return;
+  mCur = next;
+  mineCurPaint();
+  /* 光标挪到哪, 那格就自己滚进来看 —— 别让船长还要去找 */
+  var el = mineCellEl(mCur);
+  if(el && el.scrollIntoView){ try{ el.scrollIntoView({ block:'nearest', inline:'nearest' }); }catch(e){} }
 }
 function mineReset(){
   clearInterval(mTimer); mTimer = null;
   mCells = []; mState = 'idle'; mFlags = 0; mSec = 0; mFirst = true; mOpenCount = 0;
+  mCur = 0;
   var grid = $('#mineGrid');
   grid.innerHTML = '';
   for(var i = 0; i < M_SIZE * M_SIZE; i++){
@@ -9941,10 +10301,10 @@ function mineReset(){
   $('#mineCount').textContent = minePad3(M_MINES);
   $('#mineTime').textContent = '000';
   $('#mineFace').textContent = ':)';
-  $('#mineFlagMode').textContent = '⚑ 插旗: 关';
-  $('#mineFlagMode').classList.remove('on');
-  mFlagMode = false;
+  $('#mineFlagMode').textContent = '⚑ 插旗: ' + (mFlagMode ? '开' : '关');
+  $('#mineFlagMode').classList.toggle('on', mFlagMode);
   mineBestShow();
+  mineCurPaint();
 }
 function mineNeighbors(i){
   var x = i % M_SIZE, y = Math.floor(i / M_SIZE), out = [];
@@ -9977,6 +10337,8 @@ function minePaint(i){
   else if(c.open){ el.textContent = ''; }
   else if(c.flag){ el.innerHTML = '<span class="flag">⚑</span>'; }
   else { el.textContent = ''; }
+  /* 光标那层不能被重画冲掉 —— 摇杆模式下光标得一直看得见 */
+  if(mMode === 'stick' && i === mCur) el.classList.add('cur');
 }
 function mineCountShow(){ $('#mineCount').textContent = minePad3(M_MINES - mFlags); }
 function mineStartTimer(){
@@ -10024,10 +10386,10 @@ function mineReveal(i){
     mineCountShow();
     $('#mineFace').textContent = '8)';
     confetti();
-    var best = null;
-    try{ best = parseInt(localStorage.getItem('mineBest'), 10) || null; }catch(e){}
+    var bkey = mineBestKey();
+    var best = mineBestRead(bkey);
     if(!best || mSec < best){
-      try{ localStorage.setItem('mineBest', String(mSec)); }catch(e){}
+      try{ localStorage.setItem(bkey, String(mSec)); }catch(e){}
       toast('扫雷大捷! ' + mSec + ' 秒, 新纪录!');
     } else toast('扫雷大捷! ' + mSec + ' 秒。');
     mineBestShow();
@@ -10038,6 +10400,7 @@ $('#mineGrid').addEventListener('click', function(e){
   if(!c) return;
   var i = +c.dataset.i;
   if(mLpDone){ mLpDone = false; return; }
+  if(mMode === 'stick'){ mCur = i; mineCurPaint(); return; }   /* 摇杆模式: 点格子只是挪光标 */
   if(mFlagMode) mineToggleFlag(i);
   else mineReveal(i);
 });
@@ -10062,6 +10425,44 @@ $('#mineFlagMode').addEventListener('click', function(){
   this.textContent = '⚑ 插旗: ' + (mFlagMode ? '开' : '关');
   this.classList.toggle('on', mFlagMode);
 });
+/* 难度按钮: 换档就重开一局 */
+$$('#mineDiffs .mine-diff').forEach(function(b){
+  b.addEventListener('click', function(){ mineSetDiff(b.dataset.diff); });
+});
+/* 操作方式切换 */
+$('#mineMode').addEventListener('click', mineModeToggle);
+/* 摇杆模式下的两个动作按钮 */
+$('#mineOpen').addEventListener('click', function(){
+  if(mMode !== 'stick') return;
+  if(mFlagMode){ mineToggleFlag(mCur); return; }
+  mineReveal(mCur);
+});
+$('#mineFlag').addEventListener('click', function(){
+  if(mMode !== 'stick') return;
+  /* 开过的格子插不了旗(规矩就是这样)。但光标正好停在一张翻开的纸上时,
+     点「插旗」一点反应也没有 —— 看着像按钮坏了, 所以说一声。 */
+  var c = mCells[mCur];
+  if(c && c.open){ toast('这格已经翻开了, 插不了旗。'); return; }
+  mineToggleFlag(mCur);
+});
+/* 读上次的难度和操作方式(读不到就用默认值) */
+(function(){
+  var d = null, mm = null;
+  try{ d = localStorage.getItem('mineDiff'); }catch(e){}
+  try{ mm = localStorage.getItem('mineMode'); }catch(e){}
+  if(d && M_DIFFS[d]){ M_DIFF = d; M_SIZE = M_DIFFS[d].size; M_MINES = M_DIFFS[d].mines; }
+  if(mm === 'stick' || mm === 'tap') mMode = mm;
+  var grid = $('#mineGrid'), win = $('#mineWin');
+  if(grid){
+    grid.style.setProperty('--mine-cols', String(M_SIZE));
+    grid.style.setProperty('--mine-cell-font', M_SIZE <= 9 ? '17px' : (M_SIZE <= 12 ? '15px' : '13px'));
+  }
+  if(win) win.style.setProperty('--mine-w', M_DIFFS[M_DIFF].w + 'px');
+  $$('#mineDiffs .mine-diff').forEach(function(b){
+    b.classList.toggle('on', b.dataset.diff === M_DIFF);
+  });
+  mineModeShow();
+})();
 mineReset();
 
 /* ========================================================================
@@ -12932,6 +13333,35 @@ var ttCv = $('#ttCanvas'), ttCtx = ttCv.getContext('2d');
 var ttNx = $('#ttNext'), ttNxCtx = ttNx.getContext('2d');
 var ttBoard = [], ttCur = null, ttNextKey = 'T', ttBag = [], ttTimer = null;
 var ttScore = 0, ttLines = 0, ttLevel = 1, ttOver = false, ttPaused = false, ttBuilt = false;
+/* 操作方式: 'stick' 摇杆 | 'keys' 四个按键
+   以前是按屏幕宽度自动切的(窄屏才给摇杆), 这回船长要手动切 ——
+   窄屏也能用按键(手指粗的格子按不准的时候), 宽屏也能用摇杆(有鼠标但想玩手指流)。
+   默认还是老规矩: 触屏给摇杆, 鼠标给按键; 船长手动切过之后就记着他的选择。 */
+var ttMode = 'keys';
+function ttModeShow(){
+  var win = $('#ttWin');
+  if(win) win.classList.toggle('stick-mode', ttMode === 'stick');
+  var btn = $('#ttMode');
+  if(btn){
+    btn.textContent = (ttMode === 'stick' ? '操作: 摇杆' : '操作: 按键');
+    btn.classList.toggle('on', ttMode === 'stick');
+  }
+  /* 提示行也跟着换 —— 说哪套就说哪套, 别一半一半 */
+  if(ttPaused){
+    ttTip('暂停中 — 按 P 继续。', '暂停中 — 再推一下摇杆继续。');
+  } else if(ttMode === 'stick'){
+    ttTip('← → 移动 · ↑ 旋转 · ↓ 加速 · 空格 直接落底 · P 暂停',
+          '摇杆左右挪 · 上转 · 下加速 · 旁边「落底」一下到底');
+  } else {
+    ttTip('← → 移动 · ↑ 旋转 · ↓ 加速 · 空格 直接落底 · P 暂停',
+          '底下四个键: ← 挪 · ↻ 转 · ↓ 加速 · ⇓ 落底');
+  }
+}
+function ttModeToggle(){
+  ttMode = (ttMode === 'stick') ? 'keys' : 'stick';
+  try{ localStorage.setItem('ttMode', ttMode); }catch(e){}
+  ttModeShow();
+}
 function ttToggle(open){
   var w = $('#ttWin');
   var will = (open === undefined) ? !w.classList.contains('open') : open;
@@ -12988,7 +13418,7 @@ function ttReset(){
   ttNextKey = ttDrawKey();
   ttScore = 0; ttLines = 0; ttLevel = 1; ttOver = false; ttPaused = false;
   ttNewPiece();
-  ttTip('← → 移动 · ↑ 旋转 · ↓ 加速 · 空格 直接落底 · P 暂停', '摇杆左右挪 · 上转 · 下加速 · 旁边「落底」一下到底');
+  ttModeShow();
   ttDraw(); ttNextDraw(); ttHud();
   ttStartLoop();
 }
@@ -13154,8 +13584,7 @@ document.addEventListener('keydown', function(e){
     e.preventDefault();
     if(ttOver) return;
     ttPaused = !ttPaused;
-    ttTip(ttPaused ? '暂停中 — 按 P 继续。' : '← → 移动 · ↑ 旋转 · ↓ 加速 · 空格 直接落底 · P 暂停',
-          ttPaused ? '暂停中 — 再推一下摇杆继续。' : '摇杆左右挪 · 上转 · 下加速 · 旁边「落底」一下到底');
+    ttModeShow();
     if(!ttPaused) ttDraw();
   }
 });
@@ -13165,6 +13594,20 @@ $('#ttKD').addEventListener('click', function(){ ttSoftDrop(); });
 $('#ttKS').addEventListener('click', function(){ ttHardDrop(); });
 /* 摇杆旁边的「落底」按钮: 摇杆表达不出"一下砸到底"这个动作 */
 $('#ttDrop').addEventListener('click', function(){ ttHardDrop(); });
+/* 操作方式切换按钮 */
+$('#ttMode').addEventListener('click', ttModeToggle);
+(function(){
+  var m = null;
+  try{ m = localStorage.getItem('ttMode'); }catch(e){}
+  if(m === 'stick' || m === 'keys'){
+    ttMode = m;                       /* 船长自己切过的, 记着他的 */
+  } else {
+    /* 没切过: 手指设备给摇杆(手指划比点准), 鼠标给按键 */
+    ttMode = (window.innerWidth <= 760 ||
+      (window.matchMedia && window.matchMedia('(pointer:coarse)').matches)) ? 'stick' : 'keys';
+  }
+  ttModeShow();
+})();
 
 /* ---------- 贪吃蛇: 吃果子变长, 别咬自己 ---------- */
 var SN_N = 18, SN_CELL = 24;
@@ -13655,7 +14098,12 @@ var ENTRIES = [
     { d:'2026-11-14', h:'船长报「手机端功能不全」, 说记事本的内容也没了。查出来是那封欢迎信: 它的层号九百二, 手机壳才九十五, 信一亮整个屏都被盖住, 手指点弹簧板一点反应没有。现在它住进主屏最上面, 收成一条横幅, 点标题才展开。' },
     { d:'2026-11-14', h:'「不能留言」也是真的: 留言框把人家自己报的高度硬压回三百七十四像素, 「使用 GitHub 登录」那按钮的下半截被切掉了, 怎么点都点不着。现在框自己保证至少四百像素高, 按钮整个露在外面, 框不够就自己滚。' },
     { d:'2026-11-14', h:'记事本吃字也查出来了: 打字后四百毫秒内把窗关掉, 字还没落盘就被旧内容盖回去。现在关窗、切应用、退出页面都先补存一次; 空白那张纸也会说句话, 不至于看着像加载失败。' },
-    { d:'2026-11-14', h:'生日的纸屑又闯祸: 体检在十个宽度上全报横向溢出。它是转着往下掉的, 转起来外接框比盒子大, 右边那几片有一半身子挂在屏外。按旋转后的外接框留边, 十个宽度一起安静了。' }
+    { d:'2026-11-14', h:'生日的纸屑又闯祸: 体检在十个宽度上全报横向溢出。它是转着往下掉的, 转起来外接框比盒子大, 右边那几片有一半身子挂在屏外。按旋转后的外接框留边, 十个宽度一起安静了。' },
+    { d:'2026-11-14', h:'扫雷终于分难度了: 九乘九十个雷, 十二乘十二二十个, 十六乘十六四十个。纪录按难度分开记, 简单那档还认得上次那条老记录。' },
+    { d:'2026-11-14', h:'扫雷和俄罗斯方块都能自己切操作方式了: 摇杆挪光标、按键点格子, 船长想用哪套用哪套, 切过一次就记着。以前是屏窄才给摇杆, 现在电脑上也照样能玩手指流。' },
+    { d:'2026-11-14', h:'相机里一千一百九十五张照片, 我一张张翻, 挑出一百二十九张「一个人都没拍到」的。远处操场上跑步的人、灌木丛后走过的一排人、只露在角落的一只手, 都得放大才看得见。' },
+    { d:'2026-11-14', h:'四本新相册开了张: 拾贰校园与操场六十五张, 拾叁桌面与笔记四十六张, 拾肆食堂与餐桌九张, 拾伍天光与远路九张。同一本相册里, 拍到人的那两张从来不收。' },
+    { d:'2026-11-14', h:'给每张照片都写了句说明, 写完发现大半是编的——把石头写成亭子, 把雾写成夜空。回头一张张对着图改, 改掉七十来条。写文案这种事, 凭印象是不行的。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
@@ -15027,17 +15475,37 @@ else boot();
     });
   }
 
+  /* -------------------------- 扫雷: 摇杆挪光标 (2026-11-14) */
+  /* 摇杆只管挪光标 —— 翻开/插旗另有按钮:
+     摇杆推一下就是"移动光标"这一个意思, 翻开是"按下", 两种意思混一起会按错。 */
+  function mineStick(){
+    var host = document.getElementById('mineStick');
+    if(!host) return;
+    mkStick(host, {
+      repeat: true,
+      /* 四个方向都连发 —— 光标在棋盘上慢慢挪太慢了 */
+      repeatOnly: ['left', 'right', 'up', 'down'],
+      onDir: function(dir){
+        if(typeof mineCurMove !== 'function') return;
+        mineCurMove(dir);
+      }
+    });
+  }
+
   /* --------------------------------------------------------------- 装上去 */
   function boot(){
     snakeStick();
     ttStick();
+    mineStick();
     /* 白天夜里换色, 摇杆得重画一遍 */
     if(window.MutationObserver && document.body){
       new MutationObserver(function(){
-        var b = document.querySelector('#snStick .stick-base');
-        var k = document.querySelector('#snStick .stick-knob');
-        if(b){ try{ drawSprite(b, 'stickBase', 3); }catch(e){} }
-        if(k){ try{ drawSprite(k, 'stickKnob', 2); }catch(e){} }
+        ['snStick', 'ttStick', 'mineStick'].forEach(function(id){
+          var b = document.querySelector('#' + id + ' .stick-base');
+          var k = document.querySelector('#' + id + ' .stick-knob');
+          if(b){ try{ drawSprite(b, 'stickBase', 3); }catch(e){} }
+          if(k){ try{ drawSprite(k, 'stickKnob', 2); }catch(e){} }
+        });
       }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
     }
   }
