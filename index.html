@@ -888,9 +888,24 @@
     font-family:Consolas,"Courier New",monospace; font-size:13.5px; line-height:1.8; color:#2e2a22}
   .note-status{display:flex; justify-content:space-between; gap:8px; border-top:1px solid #9a9a9a;
     padding:3px 10px; font-family:Consolas,monospace; font-size:11px; color:#333; background:#c9c9c9}
+  /* 空纸提示: 新来的旅客打开记事本是空的, 那不是坏了 —— 是在等他动笔。
+     以前只有一行浅灰的 placeholder, 看着跟"加载失败"一个样。
+     这一块浮在纸上面(写完第一个字就收起来), 硬边像素框, 不用图标。 */
+  .note-empty{display:none; position:absolute; left:3px; right:3px; top:29px;
+    padding:9px 11px; background:#efe8d4; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    box-shadow:3px 3px 0 rgba(43,38,28,.14); pointer-events:none;
+    font-family:Consolas,"Courier New",monospace; font-size:13.5px; line-height:1.75; color:#4a4335}
+  .note-empty.on{display:block}
+  .note-empty b{display:block; margin-bottom:3px; color:#3f5c33; font-weight:bold}
+  .note-empty span{display:block}
+  .note-empty span + span{margin-top:3px; color:#6f6047}
   body.night #noteWin{background:#1a2338; border-color:#3a4763}
   body.night #noteText{background:#0d1322; color:#c8cfdd}
   body.night .note-status{background:#243050; border-top-color:#101828; color:#8b97b0}
+  body.night .note-empty{background:#1c2740; border-color:#101828 #3a4763 #3a4763 #101828;
+    box-shadow:3px 3px 0 rgba(0,0,0,.45); color:#c3cbdc}
+  body.night .note-empty b{color:#9fc3ef}
+  body.night .note-empty span + span{color:#8b97b0}
 
   /* ---------- 我的电脑: C:\ 小站 ---------- */
   #mypcWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(560px,94vw);
@@ -2283,6 +2298,74 @@ body.night #phonePower .pp-hint{color:#4a5670}
      再藏一次就等于船长状态永远不出现。 */
   body.phone-shell:not(.phone-app) #site{display:none !important}
   body.phone-shell #toast{bottom:calc(48px + env(safe-area-inset-bottom)); max-width:86vw}
+}
+
+/* ========================================================================
+ * bug 9: 欢迎信别把整个手机吃掉 (2026-11-13)
+ *
+ * 船长报「手机端的功能不全, 连记事本的内容都没有了」。
+ * 查出来欢迎信盖着整个手机:
+ *   #welcomeWrap z-index 920, #phoneShell z-index 95 ——
+ *   信是模态, 手指头点在壳上全被它吃了。
+ * 实测: 手指点弹簧板上的「记事本」图标 → 窗口没开 (noteOpen=false);
+ *       关掉信再点 → 窗口才开。
+ * 船长看见的就是"点图标没反应", 自然就以为"功能不全"。
+ *
+ * 修法: 信在手机上不再浮着, 而是住进弹簧板最上面 ——
+ *   它成了主屏的一部分, 不是盖在主屏上的一层。
+ *   于是:
+ *     - 它压不到任何图标(图标在它下面, 顺着主屏往下滚就能摸到);
+ *     - 进了应用, 主屏整个藏起来, 信也跟着藏, 不会再盖住应用;
+ *     - 船长点图标照样开应用, 开完顺手把这封信收起来(见 phone-shell.js)。
+ * 这跟 iPhone 上"第一次打开弹个引导页"一个道理 —— 引导页是内容, 不是遮挡层。
+ *
+ * 只在窄屏 + 壳接管时这么干:
+ *   桌面上(以及宽屏上摆小手机的预览态)那封信还是老样子, 盖满全屏。
+ * ======================================================================== */
+@media (max-width:760px){
+  /* 主屏最上面给信留个位置 —— 没信的时候不占地方 */
+  #pbWelcome:empty{display:none}
+
+  /* 信住进主屏: 不再是浮在上面的模态层 */
+  body.phone-shell #pbWelcome #welcomeWrap{
+    position:static; inset:auto; display:none;
+    padding:0; margin:0 4px 8px; background:transparent;
+    align-items:stretch; justify-content:flex-start;
+    pointer-events:auto;
+  }
+  body.phone-shell #pbWelcome #welcomeWrap.open{display:block}
+  body.phone-shell #pbWelcome #welcome{
+    width:100%; max-width:none; max-height:none;
+    margin:0; pointer-events:auto;
+    box-shadow:3px 3px 0 rgba(43,38,28,.18);
+  }
+  body.night.phone-shell #pbWelcome #welcome{box-shadow:3px 3px 0 rgba(0,0,0,.45)}
+  /* 信的身子自己滚 —— 卡太高的话, 主屏的图标就够不着了。
+     34vh 是个折中: 标题那条 + 舱位表 + 码头都在里头, 滚一屏能看完大半,
+     底下第一排图标露得出来, 手指够得着。 */
+  body.phone-shell #pbWelcome #welcome .wc-body{max-height:34vh; overflow-y:auto}
+  /* 桌面那条暗幕在这儿没用了: 信已经是主屏的一部分 */
+  body.phone-shell #pbWelcome #welcomeWrap{background:transparent}
+
+  /* ---------- 收起时只露一条标题 ----------
+     信整个摊在主屏最上面, 会把第一排图标顶到屏幕外去
+     (实测: 图标跑到 y=907, 屏才 844 —— 手指够不着, 船长看着就是"功能不全")。
+     所以默认只露标题条那一行, 跟 iPhone 通知横幅一个意思:
+     知道有封信在这儿, 想看再点一下展开。 */
+  body.phone-shell #pbWelcome #welcome{max-height:46px; overflow:hidden; cursor:pointer}
+  body.phone-shell.pb-welcome-open #pbWelcome #welcome{max-height:none; overflow:visible}
+  body.phone-shell #pbWelcome #welcome .wc-body,
+  body.phone-shell #pbWelcome #welcome .wc-foot{display:none}
+  body.phone-shell.pb-welcome-open #pbWelcome #welcome .wc-body,
+  body.phone-shell.pb-welcome-open #pbWelcome #welcome .wc-foot{display:block}
+  /* 标题条右边挂个提示: 收起时写「看信」, 展开时写「收起」 */
+  body.phone-shell #pbWelcome #welcome .titlebar::after{
+    content:"看信"; margin-left:auto; flex:none;
+    font-family:"SimHei","黑体",sans-serif; font-size:13px; letter-spacing:1px;
+    color:#ffe9a8; text-shadow:none;
+  }
+  body.phone-shell.pb-welcome-open #pbWelcome #welcome .titlebar::after{content:"收起"}
+  body.night.phone-shell #pbWelcome #welcome .titlebar::after{color:#9fb6de}
 }
 /* <<< 手机壳 CSS <<< */
 /* >>> 旧界面窄屏补丁 CSS (mobile/inject.cjs 自动插入, 别手改) >>> */
@@ -3923,6 +4006,16 @@ body.night .ab-book-chip.sel{background:#3d4f7d; border-color:#101828 #3a4763 #3
  *    建 iframe 时写死的 scrolling="no" 拿掉了, 内层文档才滚得动
  *    (留着那属性, 框一矮, 底下的评论就永远够不着)。
  *
+ * 【bug 9 追记 (2026-11-13)】—— 船长报「不能留言」
+ *   B、C 两条把 iframe 压回盒子高度, 看着挺美, 其实害了一件事:
+ *   giscus 内层文档实测 3851px, 盒子封顶 374px, 于是内层视口只剩 374px,
+ *   「使用 GitHub 登录」按钮底边在 383px —— 超出 9px, 被切掉半截, 点不着。
+ *   (实测数据: 内层 textarea@213~313 disabled, 登录按钮@351~383,
+ *    框 374px 时按钮超框; 框 >= 384px 就够。)
+ *   改法: iframe 跟 giscus 报的真高度走(外层盒子封顶并自己滚),
+ *   外层滚动盒负责滚动, 内层不用滚 —— 登录按钮按它在文档里的位置
+ *   就在框里(相对框顶 152px), 不用滚就能点。
+ *
  * 【像素风】
  * 只动高度/滚动/间距, 没加新表面、没加颜色、没加圆角渐变,
  * 底色还是站里原来那几块 —— 夜航 (body.night) 不用另外配色。
@@ -3937,7 +4030,7 @@ body.night .ab-book-chip.sel{background:#3d4f7d; border-color:#101828 #3a4763 #3
 
 /* ---------- 窄屏 (手机壳里 / 老界面窄屏): 留言板一整块, 自己滚 ---------- */
 @media (max-width:1020px){
-  /* 高度: fix-giscus.js 会把 giscus 报的真高度写进 --gb-box-h;
+  /* 高度: fix-giscus.js 会把算好的高度写进 --gb-box-h;
      它还没说话时, 用视口高度算一个封顶值 (100dvh - 470)。 */
   #giscusBox{
     height: var(--gb-box-h, clamp(150px, calc(100dvh - 470px), 460px)) !important;
@@ -3950,17 +4043,22 @@ body.night .ab-book-chip.sel{background:#3d4f7d; border-color:#101828 #3a4763 #3
     padding-right: 4px;
   }
 
-  /* giscus 自己套的那层 div: 得给它一个【确定】的高度,
-     iframe 的百分比高度才有参照 (上一版漏了这条, iframe 掉回 150px)。 */
+  /* giscus 自己套的那层 div: 【别】给它写死 100% ——
+     giscus 报的真高度(实测 3851px)得留在这一层, iframe 才跟得上内容。
+     写成 height:100% 的话, iframe 被压回盒子的高度, 内层文档跟着缩,
+     底下的「使用 GitHub 登录」按钮就被切掉半截, 船长看着就像"不能留言"。
+     (bug 9 实测: 框 374px 时按钮底边 383 → 超出内层视口 9px, 点不着;
+      框 >= 384px 就够。详见 mobile/fix-giscus.js 的 MIN_USABLE。) */
   #giscusBox > .giscus{
-    height: 100% !important;
+    height: auto !important;
     min-height: 0 !important;
   }
 
-  /* iframe 铺满盒子 —— 高度等于盒子, 几何上跟盒子完全重合, 谁也压不到谁。
-     评论比盒子还高时, 由框里自己滚 (fix-giscus.js 把 scrolling="no" 拿掉了)。 */
+  /* iframe 跟 giscus 报的真高度走(行内 style.height, 由 fix-giscus.js
+     兜底写进 --gb-frame-h), 外层盒子封顶并自己滚 ——
+     滚的是外层, 内容一条不丢, 登录按钮按它在文档里的位置就在框里。 */
   #giscusBox iframe{
-    height: 100% !important;
+    height: var(--gb-frame-h, 360px) !important;
     min-height: 0 !important;
     display: block;
     width: 100%;
@@ -3983,11 +4081,11 @@ body.night .ab-book-chip.sel{background:#3d4f7d; border-color:#101828 #3a4763 #3
     overflow-x: hidden !important;
   }
   html body.phone-app #phoneView #giscusBox > .giscus{
-    height: 100% !important;
+    height: auto !important;
     min-height: 0 !important;
   }
   html body.phone-app #phoneView #giscusBox iframe{
-    height: 100% !important;
+    height: var(--gb-frame-h, 360px) !important;
     min-height: 0 !important;
   }
 
@@ -4930,6 +5028,13 @@ body.night.pb-music-open #pbMusic #deckMusic{border-top-color:#3a4763}
   </div>
   <textarea id="noteText" spellcheck="false" placeholder="想写什么写什么 — 自动存在这台电脑里, 只有你自己看得到。"></textarea>
   <div class="note-status"><span id="noteStat">未动笔</span><span>自动保存 · 不上传</span></div>
+  <!-- 空纸也得说清楚: 新来的旅客打开是空的, 那不是坏了, 是还没写。
+       这一行只在空的时候露出来(见 noteStat())。 -->
+  <div class="note-empty" id="noteEmpty">
+    <b>这张纸还是空的。</b>
+    <span>不是没加载出来 —— 是你还没动笔。写一句试试, 右上角那个「已自动保存」会亮起来。</span>
+    <span>只存在这台设备上, 不上传, 换台机器就没有了。</span>
+  </div>
 </div>
 
 <!-- ================= 我的电脑: C:\ 小站 ================= -->
@@ -6694,10 +6799,21 @@ function confetti(){
   for(var i = 0; i < 70; i++){
     var d = document.createElement('div');
     d.className = 'confetti';
-    d.style.left = rand(0, 100) + 'vw';
     d.style.background = pick(colors);
-    d.style.width = rand(6, 11) + 'px';
-    d.style.height = rand(10, 18) + 'px';
+    var w = rand(6, 11), h = rand(10, 18);
+    d.style.width = w + 'px';
+    d.style.height = h + 'px';
+    /* 纸屑别探出屏幕。
+       原来 left 是 0~100vw, 贴着边上那几片有一半身子在视口外面,
+       窄屏上就多出一条横向滚动(2026-11-13 船长生日那天, 体检脚本逮住了它)。
+       纸屑是转着往下掉的, 转起来以后它的外接框比盒子本身大 ——
+       所以留的边要按「转起来以后的外接框」来留, 不是按纸屑的宽:
+         外接框最宽 = sqrt(宽² + 高²), 中心不动, 中心得离两边都这么远。
+       用 calc 写 vw, 屏幕一换宽度它自己跟着换。 */
+    var diag = Math.ceil(Math.sqrt(w * w + h * h));
+    var lo = Math.max(0, Math.ceil((diag - w) / 2));
+    var sub = Math.ceil((w + diag) / 2);
+    d.style.left = 'calc(max(' + lo + 'px, ' + rand(0, 100).toFixed(2) + 'vw - ' + sub + 'px))';
     d.style.animationDuration = rand(1.8, 3.4) + 's';
     d.style.animationDelay = rand(0, .6) + 's';
     document.body.appendChild(d);
@@ -8319,25 +8435,58 @@ function noteToggle(open){
   w.classList.toggle('open', will);
   if(will){
     frontWindow(w);
-    try{ $('#noteText').value = localStorage.getItem('notepadText') || ''; }catch(e){}
+    /* 从存盘里把纸铺开 —— 但只铺"还没动过笔"的那张。
+       手机壳里点一下图标就会调 noteToggle(true), 要是每次都硬灌一遍,
+       手头刚打的字就被旧内容顶掉了(实测: 打完字 120ms 内关窗重开,
+       400ms 的落盘延迟还没到, 字就没了)。
+       有没落盘的一笔在手上, 或者纸上已经有字, 就别灌了。 */
+    var pending = (notePending !== null && notePending !== undefined);
+    if(!pending && !$('#noteText').value){
+      try{ $('#noteText').value = localStorage.getItem('notepadText') || ''; }catch(e){}
+    }
     noteStat();
-    if(window.innerWidth > 760) $('#noteText').focus();
+    /* 手机上也把光标放进去 —— 手指一点就能接着写, 不用先点一下那个框 */
+    if(window.innerWidth > 760 || document.body.classList.contains('phone-app')) $('#noteText').focus();
+  }else{
+    /* 关窗之前先把还没落盘的那一次补上:
+       自动存盘有 400ms 的延迟, 手快的人(打完字立刻关)会把字弄丢。 */
+    noteFlush();
   }
 }
-var noteSaveT = null;
+var noteSaveT = null, notePending = null;
+/* 手头这一笔还没落盘 —— 现在就落盘 */
+function noteFlush(){
+  if(noteSaveT){ clearTimeout(noteSaveT); noteSaveT = null; }
+  if(notePending === null) return;
+  var v = notePending; notePending = null;
+  try{ localStorage.setItem('notepadText', v); }catch(e){}
+}
 function noteStat(){
   var len = $('#noteText').value.length;
-  $('#noteStat').textContent = len ? (len + ' 字 · 已自动保存') : '未动笔';
+  /* 空的时候把话说清楚 —— 光一个灰字容易被当成功能坏了 */
+  $('#noteStat').textContent = len ? (len + ' 字 · 已自动保存')
+    : (window.innerWidth < 760 ? '空白的 · 写下来只有你看得到' : '未动笔');
+  /* 空纸提示: 只在没动过笔的时候露出来, 写了第一个字就收 */
+  var hint = $('#noteEmpty');
+  if(hint) hint.classList.toggle('on', len === 0);
 }
 $('#noteText').addEventListener('input', function(){
   foundSecret('notepad');
   clearTimeout(noteSaveT);
   var v = this.value;
+  notePending = v;
+  /* 字一有动静, 空纸提示就收起来 —— 别挡着人写字 */
+  noteStat();
   noteSaveT = setTimeout(function(){
+    noteSaveT = null;
+    notePending = null;
     try{ localStorage.setItem('notepadText', v); }catch(e){}
     noteStat();
   }, 400);
 });
+/* 关页面 / 切后台之前也别把字丢了 */
+window.addEventListener('beforeunload', noteFlush);
+window.addEventListener('pagehide', noteFlush);
 $('#tbNote').addEventListener('click', function(){ noteToggle(true); });
 $('#noteClose').addEventListener('click', function(){ noteToggle(false); });
 makeDraggable($('#noteWin'), $('#noteWin .titlebar'));
@@ -13502,7 +13651,11 @@ var ENTRIES = [
     { d:'2026-11-07', h:'冀豫联考的成绩进档案了。总分 794.5, 班名 20, 校名 721。名次还是校里排的, 所以能直接跟上次比: 语文从三百多名掉到一千多, 数学从一千一百多拉回九百多, 班名十六退到二十。' },
     { d:'2026-11-07', h:'船长说: 手机端别偷懒, 每个应用都要重排一遍。二十来扇窗挨个改, 按钮抬到手指点得下, 小字抬到看得清, 画布不许被拉扁。这活儿费眼睛, 但按下去没反应才真费劲。平板不再摆小手机了, 归旧界面管。' },
     { d:'2026-11-08', h:'船长一口气报了八处毛病。查出来最要命的一条: 手机上拖一下, 浏览器会以为你在滚页面, 手势半路被抢走——魔方只能拧不能转, 就是这个缘故。画布上补一行 touch-action, 手势就回到自己手里。' },
-    { d:'2026-11-08', h:'八处都改完了: 相册能换册, 甲板音乐能列整份歌单, 欢迎信铺满屏宽, 手机关机不用再跑一遍 BIOS, 留言板不再被底下的条子压住。手机壳里每个应用也重排了一遍——标题条钉在顶上, 内容自己滚, 状态行钉在底下。' }
+    { d:'2026-11-08', h:'八处都改完了: 相册能换册, 甲板音乐能列整份歌单, 欢迎信铺满屏宽, 手机关机不用再跑一遍 BIOS, 留言板不再被底下的条子压住。手机壳里每个应用也重排了一遍——标题条钉在顶上, 内容自己滚, 状态行钉在底下。' },
+    { d:'2026-11-14', h:'船长报「手机端功能不全」, 说记事本的内容也没了。查出来是那封欢迎信: 它的层号九百二, 手机壳才九十五, 信一亮整个屏都被盖住, 手指点弹簧板一点反应没有。现在它住进主屏最上面, 收成一条横幅, 点标题才展开。' },
+    { d:'2026-11-14', h:'「不能留言」也是真的: 留言框把人家自己报的高度硬压回三百七十四像素, 「使用 GitHub 登录」那按钮的下半截被切掉了, 怎么点都点不着。现在框自己保证至少四百像素高, 按钮整个露在外面, 框不够就自己滚。' },
+    { d:'2026-11-14', h:'记事本吃字也查出来了: 打字后四百毫秒内把窗关掉, 字还没落盘就被旧内容盖回去。现在关窗、切应用、退出页面都先补存一次; 空白那张纸也会说句话, 不至于看着像加载失败。' },
+    { d:'2026-11-14', h:'生日的纸屑又闯祸: 体检在十个宽度上全报横向溢出。它是转着往下掉的, 转起来外接框比盒子大, 右边那几片有一半身子挂在屏外。按旋转后的外接框留边, 十个宽度一起安静了。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
@@ -14178,6 +14331,10 @@ function buildShell(){
       '</div>' +
     '</div>' +
     '<div id="phoneHome">' +
+      /* 欢迎信在手机上住进主屏最上面, 不再是盖在主屏上的浮层
+         (bug 9: 信盖着整个手机, 手指点图标没反应)。这个槽是给它准备的,
+         壳不接管的时候信还在原来的地方, 这个槽就空着。 */
+      '<div id="pbWelcome"></div>' +
       '<div class="pb-banner">' +
         '<canvas id="pbLogo"></canvas>' +
         '<div class="pb-txt">' +
@@ -14374,7 +14531,20 @@ function tickClock(){
 function enterView(el){
   if(!view || !el) return;
   if(el === current) return;
-  if(current && current !== el) restoreHome(current);   /* 上一个搬回原位 */
+  if(current && current !== el){
+    /* 上一个应用要真的关掉 ——
+       只把它搬回 body 是不够的: 它身上那个 'open' 还留着,
+       于是它按桌面的样式(position:fixed, z-index:260+)留在原地,
+       变成一层浮在新应用上面的桌面窗口。
+       (船长的话: "点开之后显示不全, 还留有大黑边" —— 那层浮窗就是黑边的一部分) */
+    var old = current;
+    current = null;
+    /* 走之前先把人家没落盘的东西落盘(记事本的手稿有 400ms 延迟) */
+    try{ if(typeof noteFlush === 'function') noteFlush(); }catch(e){}
+    old.classList.remove('pb-inview');
+    old.classList.remove('open');
+    restoreHome(old);
+  }
   if(el.parentNode !== view) view.appendChild(el);
   el.classList.add('pb-inview');
   current = el;
@@ -14383,6 +14553,7 @@ function enterView(el){
 }
 function leaveView(el){
   if(!el || el !== current) return;
+  try{ if(typeof noteFlush === 'function') noteFlush(); }catch(e){}
   restoreHome(el);
   el.classList.remove('pb-inview');
   current = null;
@@ -14391,6 +14562,10 @@ function leaveView(el){
 function openApp(k){
   var app = appByKey(k);
   if(!app) return;
+  /* 手机壳接管的时候, 欢迎信还在浮着(它盖的是整个屏)。
+     船长点了图标就是要把应用打开, 信就别挡路了 —— 顺手收起来。
+     (bug 9: 手指点弹簧板图标没反应, 就是信把点击吃了。) */
+  dismissWelcome();
   if(app.tgt === 'site'){
     var site = QS('#site');
     if(site){
@@ -14404,9 +14579,35 @@ function openApp(k){
   }
   if(app.open) app.open();
   else if(app.tgt) toastSoft(app.lb + ' 还没装上。');
+  /* 窗口自己开的时候, 那个 class 观察器会来把它搬进全屏视图。
+     但如果这个窗口本来就是开着的(class 没变, 观察器不会响),
+     它就还留在原地 —— 这儿自己搬一次。 */
+  if(app.tgt){
+    var el = QS('#' + app.tgt);
+    if(el && el.classList.contains('open')) enterView(el);
+  }
+}
+/* 信在手机上不是模态了 —— 它住在主屏最上面, 只露一条标题。
+   所以开应用的时候不用把信收掉, 只是把展开的那一截收回去。 */
+function dismissWelcome(){
+  if(!shellTakingOver()) return;
+  document.body.classList.remove('pb-welcome-open');
+}
+/* 信在手机上只露一条标题(跟通知横幅一个意思),
+   点标题条展开, 再点收起 —— 免得整封信把第一排图标顶出屏幕。 */
+function bindWelcomeBanner(){
+  var slot = QS('#pbWelcome');
+  if(!slot || slot.__pbBound) return;
+  slot.__pbBound = true;
+  slot.addEventListener('click', function(e){
+    var bar = e.target.closest ? e.target.closest('#welcome .titlebar') : null;
+    if(!bar) return;
+    document.body.classList.toggle('pb-welcome-open');
+  });
 }
 function goHome(){
   if(!current) return;
+  try{ if(typeof noteFlush === 'function') noteFlush(); }catch(e){}
   if(current.id === 'site'){
     current.classList.remove('pb-inview');
     restoreHome(current);
@@ -14453,6 +14654,10 @@ function mountChrome(){
   if(music && QS('#pbMusic')) QS('#pbMusic').appendChild(music);
   if(island && QS('#pbIsland')) QS('#pbIsland').appendChild(island);
   if(cap && capSlot) capSlot.appendChild(cap);
+  /* 欢迎信也搬: 手机上它住进主屏最上面, 不再是盖住整个屏的浮层
+     (bug 9: 信 z=920 盖着壳 z=95, 手指点弹簧板图标一点反应都没有) */
+  mountWelcome();
+  bindWelcomeBanner();
   mounted = true;
 }
 function unmountChrome(){
@@ -14461,12 +14666,26 @@ function unmountChrome(){
     var el = QS(sel);
     if(el) restoreHome(el);
   });
+  unmountWelcome();
   mounted = false;
 }
 function snapshotChromeHome(){
   CHROME_PARTS.forEach(function(sel){
     rememberHome(QS(sel));
   });
+  rememberHome(QS('#welcomeWrap'));
+}
+/* 欢迎信搬进主屏 / 搬回原处 */
+function mountWelcome(){
+  var slot = QS('#pbWelcome');
+  var w = QS('#welcomeWrap');
+  if(!slot || !w) return;
+  if(w.parentNode !== slot) slot.appendChild(w);
+}
+function unmountWelcome(){
+  var w = QS('#welcomeWrap');
+  if(!w || !w.__pbHome) return;
+  restoreHome(w);
 }
 
 /* ================= 开关 ================= */
@@ -14545,6 +14764,17 @@ function boot(){
      顺序反了的话, 画图标那会儿 SPRITES 里还没有这些图标, 画出来是空画布 */
   if(typeof SPRITES !== 'undefined' && typeof PHONE_SPRITES !== 'undefined'){
     for(var k in PHONE_SPRITES) SPRITES[k] = PHONE_SPRITES[k];
+  }
+
+  /* 欢迎信递上来的时机有个坑: 它是 finishBoot 之后 700ms 才递的,
+     船长要是手快, 已经点开一个应用了, 信这才慢悠悠地浮上来 ——
+     于是又盖在应用上面。手机上: 进了应用就别再递信了。 */
+  var origShowWelcome = window.showWelcome;
+  if(typeof origShowWelcome === 'function'){
+    window.showWelcome = function(){
+      if(shellTakingOver() && document.body.classList.contains('phone-app')) return;
+      return origShowWelcome.apply(this, arguments);
+    };
   }
 
   buildShell();
@@ -15162,26 +15392,36 @@ else boot();
  *    框矮下来的时候, 里头的文档才跟着重排、自己滚,
  *    底下的评论才够得着 (实测: 留着那属性, 框一矮, 内层视口还是旧的,
  *    多出来的内容永远滚不到; 拿掉之后内层视口跟着框走, maxScroll 从 18 变 212)。
- *    拿掉之后框里自己滚, 评论一条不丢。
- * C. 算留言框该多高, 写进 #giscusBox 的 --gb-box-h (CSS 拿它当盒子的高度):
- *      高度 = min( giscus 报的真高度, 视口里塞得下的高度 ), 至少 150
- *    视口里塞得下的高度 = 视口高 - 470, 夹在 150~460 之间。
- *    470 = 底下两条固定条(104) + 标题(44) + 说明(56) + 面板里别的块(108)
- *          + 便利贴(148) + 余量(10)。
- *    giscus 还没上报 (网络不通 / 评论还没加载) 时就用这个封顶值,
- *    盒子绝不会塌成 150px, 也绝不会被底下的固定条压住。
+ * C. 算两个高度, 写进 #giscusBox 的行内样式:
+ *      --gb-box-h   外层盒子多高(封顶, 自己滚)
+ *      --gb-frame-h iframe 多高(跟 giscus 报的真高度走)
+ *
+ * 【bug 9 追记 (2026-11-13)】—— 船长报「手机端不能留言」
+ *   上一版 C 是这么算的: 盒子 = min(giscus 报的高度, 封顶值)。
+ *   giscus 报 3851px, 封顶 374px → 盒子 374px, iframe 被压到 374px,
+ *   内层视口只剩 374px, 而「使用 GitHub 登录」按钮底边在 383px ——
+ *   超出 9px, 被切掉半截, 手指头点不着。船长看着就是"不能留言"。
+ *   (实测: 内层 textarea@213~313 disabled; 登录按钮@351~383;
+ *    框 374 → 按钮超框; 框 >= 384 → 够。)
+ *   这一版: 盒子和 iframe 分开算 ——
+ *     盒子 = 封顶值, 但至少 MIN_USABLE(400) —— 够放下登录按钮;
+ *     iframe = giscus 报的真高度 (至少 MIN_USABLE) —— 内容一条不丢;
+ *     滚动由外层盒子扛(它 scrollHeight = 3851, clientHeight = 400)。
+ *   这样登录按钮按它在文档里的位置(相对框顶 152px)就在框里, 不用滚。
  *
  * 【跟 CSS 的约定】(lead 注入时照这个对)
- *    CSS 读:  #giscusBox { height: var(--gb-box-h, clamp(150px, calc(100dvh - 470px), 460px)) !important; ... }
- *    JS  写:  #giscusBox 的 --gb-box-h (行内样式, 单位 px)
- *    JS  暴露: window.__gbRealH (giscus 报的真高度), window.__gbBoxH (算出来的盒子高度)
- *    只有 --gb-box-h 这一个变量名, CSS 里没有别的。
+ *    CSS 读:  #giscusBox { height: var(--gb-box-h, ...) !important; ... }
+ *            #giscusBox iframe { height: var(--gb-frame-h, 360px) !important; }
+ *    JS  写:  #giscusBox 的 --gb-box-h 和 --gb-frame-h (行内样式, 单位 px)
+ *    JS  暴露: window.__gbRealH (giscus 报的真高度),
+ *              window.__gbBoxH (算出来的盒子高度),
+ *              window.__gbFrameH (算出来的 iframe 高度)
  *
  * 【规矩】
- * - 不碰 DOM 结构, 只改一个 CSS 变量和一个属性;
+ * - 不碰 DOM 结构, 只改两个 CSS 变量;
  * - 桌面 (>=1021px) 不改盒子的高度 —— 那边 giscus 报的高度本来就跟得上;
  * - 不加新表面 → 不用另起夜航配色;
- * - 不 commit, 不 push。
+ * - 注入脚本必须幂等 (改 index.html 后重跑 node mobile/inject.cjs)。
  * ===================================================================== */
 (function(){
   'use strict';
@@ -15192,6 +15432,8 @@ else boot();
   var MIN_BOX = 150;      /* 留言框最少这么高, 再窄也没法看评论 */
   var MAX_BOX = 460;      /* 再高也没用了, 视口就那么多 */
   var BUDGET = 470;       /* 视口里要给别的块留的高度 */
+  /* 框至少这么高 —— 登录按钮底边在 383px, 框矮于 384px 就把它切掉半截 */
+  var MIN_USABLE = 400;
 
   var realH = null;       /* 留言要有多高 (px); null = 还没弄清楚 */
 
@@ -15212,21 +15454,32 @@ else boot();
     return Math.max(MIN_BOX, Math.min(MAX_BOX, vh - BUDGET));
   }
 
-  /* 盒子该多高 */
+  /* 盒子该多高 —— 不再拿 giscus 报的高度去压它:
+     报 3851 压成 374 的话, 登录按钮会被切掉半截(见文件头的 bug 9 追记)。 */
   function computeBox(){
-    var h = capHeight();
-    if(realH !== null) h = Math.min(h, realH);
+    var h = Math.max(MIN_USABLE, capHeight());
     return Math.max(MIN_BOX, Math.min(MAX_BOX, Math.round(h)));
+  }
+
+  /* iframe 该多高 —— 跟 giscus 报的真高度走, 至少 MIN_USABLE。
+     不知道真高度时(断网/还没加载), 给 MIN_USABLE, 里头的文档自己滚。 */
+  function computeFrame(){
+    var h = (realH !== null) ? realH : MIN_USABLE;
+    if(h < MIN_USABLE) h = MIN_USABLE;
+    return Math.round(h);
   }
 
   function applyBoxHeight(){
     var b = box();
     if(!b) return;
     var h = computeBox();
+    var fh = computeFrame();
     b.style.setProperty('--gb-box-h', h + 'px');
+    b.style.setProperty('--gb-frame-h', fh + 'px');
     /* 给体检脚本留个话 */
     window.__gbRealH = realH;
     window.__gbBoxH = h;
+    window.__gbFrameH = fh;
   }
 
   /* 记下留言要有多高 (取大的那个, 别被临时高度钉死) */
