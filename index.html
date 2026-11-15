@@ -440,13 +440,6 @@
   body.night .mine-diff{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night .mine-diff:active{border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .mine-diff.on{background:#3d4f7d; border-color:#101828 #3a4763 #3a4763 #101828}
-  body.night .mine-mode{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
-  body.night .mine-mode:active{border-color:#101828 #3a4763 #3a4763 #101828}
-  body.night .mine-mode.on{background:#3d4f7d; border-color:#101828 #3a4763 #3a4763 #101828}
-  body.night .mine-ctrl-note{color:#8b97b0}
-  body.night .mine-sb{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
-  body.night .mine-sb:active{border-color:#101828 #3a4763 #3a4763 #101828}
-  body.night .cell.cur{box-shadow:inset 0 0 0 2px #ffd166}
 
   /* 游戏厅夜航配色: 窗口/卡片/棋盘整条换深夜色, 格子数字提亮 */
   body.night #gameWin, body.night #g2048Win, body.night #ttWin, body.night #snakeWin{background:#1a2338; border-color:#3a4763}
@@ -489,6 +482,9 @@
   body.night .tt-mode.on{background:#3d4f7d; border-color:#101828 #3a4763 #3a4763 #101828}
   body.night .sn-pad button{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
   body.night .sn-pad button:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .sn-mode{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night .sn-mode:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night .sn-mode.on{background:#3d4f7d; border-color:#101828 #3a4763 #3a4763 #101828}
 
   /* 任务栏夜航主题: 整条换深夜色, 徽标文字变亮 */
   body.night #taskbar{background:#1a2338; border-top-color:#3a4763}
@@ -611,26 +607,12 @@
   #mineFlagMode.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
   .mine-best{font-size:12.5px; color:#555}
 
-  /* ---------- 扫雷: 难度 + 操作方式 ---------- */
+  /* ---------- 扫雷: 难度 ---------- */
   .mine-diffs{display:flex; gap:5px; margin-bottom:9px}
   .mine-diff{flex:1 1 0; min-width:0; min-height:34px; font-family:inherit; font-size:13px; color:#222;
     background:#c9c9c9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; padding:0 6px}
   .mine-diff:active{border-color:#6f6f6f #fff #fff #6f6f6f}
   .mine-diff.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
-  .mine-ctrl{margin-top:11px}
-  .mine-ctrl-top{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
-  .mine-mode{font-family:inherit; font-size:13px; background:#c9c9c9; border:2px solid;
-    border-color:#fff #6f6f6f #6f6f6f #fff; padding:5px 10px; min-height:36px; cursor:pointer; color:#222}
-  .mine-mode:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  .mine-mode.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
-  .mine-ctrl-note{font-size:13px; color:#666}
-  .mine-stickrow{display:none; align-items:center; gap:10px; margin-top:8px}
-  .mine-stickbtns{display:flex; flex-direction:column; gap:8px}
-  .mine-sb{width:76px; height:44px; font-family:inherit; font-size:13px; color:#222;
-    background:#d9d9d9; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer}
-  .mine-sb:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  /* 光标格: 摇杆模式下手指够不着的那一格, 得让人一眼看见 */
-  .cell.cur{box-shadow:inset 0 0 0 2px #ffd166}
 
   /* ---------- 游戏厅 + 2048 / 俄罗斯方块 / 贪吃蛇 ---------- */
   #gameWin, #g2048Win, #ttWin, #snakeWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260;
@@ -718,12 +700,24 @@
   .touch-tip{font-size:13px}
   .sn-canvas{background:#0d0d0d; border:2px solid; border-color:#6f6f6f #fff #fff #6f6f6f;
     display:block; margin:0 auto; width:min(432px,100%); height:auto; touch-action:none}
-  .sn-pad{display:grid; grid-template-columns:repeat(3,56px); grid-template-rows:repeat(2,38px); gap:5px;
+  .sn-pad{display:grid; grid-template-columns:repeat(3,56px); grid-template-rows:repeat(2,44px); gap:5px;
     justify-content:center; margin-top:10px}
   .sn-pad button{font:bold 18px/1 Consolas,monospace; background:#d9d9d9; border:2px solid;
     border-color:#fff #6f6f6f #6f6f6f #fff; cursor:pointer; color:#222}
   .sn-pad button:active{border-color:#6f6f6f #fff #fff #6f6f6f}
-  .sn-pad .sn-up{grid-column:2}
+  .sn-pad .sn-up{grid-column:2; grid-row:1}
+  /* ★ 十字键摆正: 上在中间, 左下右一排 ——
+     原来只写了 .sn-up{grid-column:2}, 剩下三个靠自动排,
+     结果变成「↑ ←」一行、「↓ →」一行, 歪着。 */
+  .sn-pad button[data-dir="left"]{grid-column:1; grid-row:2}
+  .sn-pad button[data-dir="down"]{grid-column:2; grid-row:2}
+  .sn-pad button[data-dir="right"]{grid-column:3; grid-row:2}
+  /* 操作方式切换: 摇杆 ↔ 十字键, 跟方块那套一个样 */
+  .sn-modrow{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
+  .sn-mode{font-family:inherit; font-size:13px; color:#222; background:#c9c9c9; border:2px solid;
+    border-color:#fff #6f6f6f #6f6f6f #fff; padding:5px 10px; min-height:40px; cursor:pointer}
+  .sn-mode:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+  .sn-mode.on{background:#f2d97c; border-color:#6f6f6f #fff #fff #6f6f6f}
   .sn-foot{margin-top:10px; font-size:12.5px; color:#555; text-align:center; line-height:1.6}
   /* ---------- 日记.EXE ---------- */
   #diaryWin{position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:260; width:min(420px,92vw);
@@ -2284,12 +2278,16 @@ body.night #phonePower .pp-hint{color:#4a5670}
  *     选了摇杆 → 摇杆那套出来, 按键那套收起来
  *     选了按键 → 四个键出来, 摇杆那套收起来
  *   桌面也能用摇杆, 窄屏也能用按键 —— 手指粗的时候按格子就是不准。
+ *
+ * ★ 2026-11-15: 贪吃蛇也来这套(它以前只有一种操作, 窄屏上照旧给摇杆)。
+ *   同时扫雷那套(摇杆 + 操作方式切换)被船长撤了 —— 扫雷只剩难度三档。
+ *   贪吃蛇的摇杆行是 .stick-solo(它只有摇杆, 没有别的搭档按钮),
+ *   所以它直接挂窗口上, 不需要像方块那样另开一行。
  * ======================================================================== */
 .stick{display:none}
 /* 「落底」按钮是摇杆的搭档 —— 桌面上本来就有 ⇓ 键, 别让它冒出来 */
 .tt-drop{display:none}
 .tt-stickrow{display:none}
-.mine-stickrow{display:none}
 
 /* 摇杆长什么样 —— 跟它出不出现无关, 一律写好 */
 .stick{position:relative; touch-action:none; user-select:none;
@@ -2307,16 +2305,13 @@ body.night #phonePower .pp-hint{color:#4a5670}
 body.night .stick-label{color:#8b97b0}
 
 /* ---------- 选了「摇杆」: 摇杆那套露脸 ---------- */
-#ttWin.stick-mode .tt-stickrow,
-#mineWin.stick-mode .mine-stickrow{
+#ttWin.stick-mode .tt-stickrow{
   display:flex; align-items:center; gap:10px; margin-top:8px;
 }
-#ttWin.stick-mode .stick,
-#mineWin.stick-mode .stick{
+#ttWin.stick-mode .stick{
   display:flex; flex-direction:column; align-items:center; justify-content:center;
 }
-#ttWin.stick-mode .tt-stickrow .stick,
-#mineWin.stick-mode .mine-stickrow .stick{flex:1 1 auto; min-width:0; height:152px}
+#ttWin.stick-mode .tt-stickrow .stick{flex:1 1 auto; min-width:0; height:152px}
 #ttWin.stick-mode .tt-drop{
   display:flex; flex:0 0 auto; width:76px; height:76px;
   flex-direction:column; align-items:center; justify-content:center; gap:2px;
@@ -2330,20 +2325,26 @@ body.night #ttWin.stick-mode .tt-drop:active{border-color:#101828 #3a4763 #3a476
 /* 摇杆一套出来, 那四个按键就收起来 */
 #ttWin.stick-mode .tt-keys{display:none}
 
+/* ---------- 贪吃蛇: 也是两套, 船长自己切 ---------- */
+#snakeWin.stick-mode .stick-solo{
+  display:flex; width:100%; height:152px; margin-top:8px;
+}
+#snakeWin.stick-mode .stick{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+#snakeWin.stick-mode .sn-pad{display:none}
+
 /* ---------- 选了「按键」: 四个键露脸 ---------- */
 #ttWin:not(.stick-mode) .tt-keys{display:grid}
+#snakeWin:not(.stick-mode) .sn-pad{display:grid}
 
 /* 提示行也跟着操作方式换 —— 说哪套就说哪套, 别一半一半
    摇杆那套在哪儿都能用(桌面也能拖着玩), 所以它一直露面;
    按键那套窄屏说按键、桌面说键盘 —— 底下那段媒体查询管这个, 别在这儿抢。 */
 #ttWin.stick-mode .tt-tip .kbd-tip{display:none}
 #ttWin.stick-mode .tt-tip .touch-tip{display:inline}
-
-@media (max-width:760px), (pointer:coarse){
-  /* --- 贪吃蛇没做切换(它只有一种操作), 窄屏上照旧给摇杆 --- */
-  #snakeWin .sn-pad{display:none}
-  #snakeWin .stick-solo{display:flex; width:100%; height:152px; margin-top:6px}
-}
+#snakeWin.stick-mode .sn-foot .kbd-tip{display:none}
+#snakeWin.stick-mode .sn-foot .touch-tip{display:inline}
 
 /* 操作提示: 键盘那套对手指没用, 窄屏换成摇杆那套。
    默认隐藏那套在 index.html 里(.touch-tip{display:none}), 这里负责换回来。 */
@@ -2939,17 +2940,10 @@ body.night #ttWin.stick-mode .tt-drop:active{border-color:#101828 #3a4763 #3a476
     padding:6px 12px;
   }
 
-  /* ---------- 扫雷: 难度按钮 + 操作方式切换 ----------
-   * 判据 1(触摸目标): .mine-diff 34px -> 40px; .mine-mode 36px -> 44px */
+  /* ---------- 扫雷: 难度按钮 ----------
+   * 判据 1(触摸目标): .mine-diff 34px -> 40px */
   :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .mine-diff{
     min-height:40px;
-  }
-  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .mine-mode{
-    min-height:44px;
-    padding:6px 12px;
-  }
-  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #mineWin .mine-sb{
-    height:48px;
   }
 
   /* ---------- 贪吃蛇 ----------
@@ -2958,6 +2952,11 @@ body.night #ttWin.stick-mode .tt-drop:active{border-color:#101828 #3a4763 #3a476
     min-height:44px;
     padding:6px 14px;
     font-size:13.5px;
+  }
+  /* 操作方式切换按钮: 36px -> 44px (跟方块那个 .tt-mode 一个尺寸) */
+  :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #snakeWin .sn-mode{
+    min-height:44px;
+    padding:6px 12px;
   }
   /* 判据 2(字号): .sn-foot 12.5px -> 13px */
   :is(body:not(.phone-shell), body.phone-shell, body.phone-app) #snakeWin .sn-foot{font-size:13px}
@@ -3937,13 +3936,18 @@ body.night #ttWin.stick-mode .tt-drop:active{border-color:#101828 #3a4763 #3a476
     flex:1 1 auto; min-height:0; overflow-y:auto !important;
   }
 
-  /* ---------- 贪吃蛇: 棋盘在上, 摇杆钉底 ---------- */
+  /* ---------- 贪吃蛇: 棋盘在上, 操作方式切换 + 摇杆钉底 ----------
+     2026-11-15 贪吃蛇也有了两套操作(摇杆 / 十字键), 船长自己切:
+       选「摇杆」→ 摇杆那行钉底, 十字键收起来
+       选「按键」→ 十字键出来, 摇杆收起来 */
   body.phone-app #phoneView > #snakeWin > .sn-body{
     display:flex; flex-direction:column;
   }
   body.phone-app #phoneView #snakeWin #snCanvas{
     max-width:min(100%, 320px); margin:0 auto; flex:none;
   }
+  body.phone-app #phoneView #snakeWin .sn-modrow{flex:none}
+  body.phone-app #phoneView #snakeWin .sn-pad{flex:none}
   body.phone-app #phoneView #snakeWin .stick-solo{
     flex:none; height:138px; margin-top:auto;
   }
@@ -4000,11 +4004,9 @@ body.night #ttWin.stick-mode .tt-drop:active{border-color:#101828 #3a4763 #3a476
   body.phone-app #phoneView #gameWin .gm-grid{flex:1 1 auto; align-content:start}
   body.phone-app #phoneView #gameWin .gm-foot{flex:none}
 
-  /* ---------- 扫雷: 难度行在上, 棋盘中间, 操作行在下 ----------
-     2026-11-14 加了难度和操作方式切换, 手机上得重新分家:
-       难度按钮 3 个 + 操作方式切换 1 个 = 一行塞得下(每个 40px+)
-       棋盘自己横着划(困难档 16 列 x 40px = 640px, 屏才 390)
-       摇杆那行钉底, 手指够得着 */
+  /* ---------- 扫雷: 难度行在上, 棋盘中间 ----------
+     2026-11-15 船长把那套摇杆和操作方式切换撤了 —— 扫雷只剩难度三档:
+       难度按钮 3 个一行, 棋盘自己横着划(困难档 16 列 x 40px = 640px, 屏才 390) */
   body.phone-app #phoneView > #mineWin > .mine-body{
     display:flex; flex-direction:column;
   }
@@ -4012,10 +4014,6 @@ body.night #ttWin.stick-mode .tt-drop:active{border-color:#101828 #3a4763 #3a476
   body.phone-app #phoneView #mineWin .mine-diffs{flex:none}
   body.phone-app #phoneView #mineWin .mine-grid{flex:none}
   body.phone-app #phoneView #mineWin .mine-foot{flex:none}
-  body.phone-app #phoneView #mineWin .mine-ctrl{flex:none}
-  body.phone-app #phoneView #mineWin .mine-ctrl-top{flex:none}
-  body.phone-app #phoneView #mineWin .mine-stickrow{flex:none}
-  body.phone-app #phoneView #mineWin .mine-ctrl-note{flex:1 1 120px; min-width:0}
 
   /* ---------- 俄罗斯方块: 画布在上, 操作方式切换 + 摇杆钉底 ----------
      画布 240x480 在 390 宽的屏上够得着; 侧栏那几块折行排在画布下面。
@@ -4744,19 +4742,6 @@ body.night.pb-music-open #pbMusic #deckMusic{border-top-color:#3a4763}
       <button id="mineFlagMode" type="button">⚑ 插旗: 关</button>
       <span class="mine-best" id="mineBest"></span>
     </div>
-    <div class="mine-ctrl" id="mineCtrl">
-      <div class="mine-ctrl-top">
-        <button class="mine-mode" id="mineMode" type="button">操作: 点按</button>
-        <span class="mine-ctrl-note" id="mineCtrlNote">手指点格子就翻开, 长按插旗。</span>
-      </div>
-      <div class="mine-stickrow">
-        <div class="stick" id="mineStick"></div>
-        <div class="mine-stickbtns">
-          <button class="mine-sb" id="mineOpen" type="button">翻开</button>
-          <button class="mine-sb" id="mineFlag" type="button">插旗</button>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -4855,6 +4840,9 @@ body.night.pb-music-open #pbMusic #deckMusic{border-top-color:#3a4763}
       <button class="sn-btn" id="snNew" type="button">重开</button>
     </div>
     <canvas class="sn-canvas" id="snCanvas" width="432" height="432"></canvas>
+    <div class="sn-modrow">
+      <button class="sn-mode" id="snMode" type="button">操作: 摇杆</button>
+    </div>
     <div class="sn-pad">
       <button class="sn-up" data-dir="up" type="button" title="上">↑</button>
       <button data-dir="left" type="button" title="左">←</button>
@@ -10204,8 +10192,6 @@ var M_DIFFS = {
   hard:   { name:'困难', size:16, mines:40, w:600 }
 };
 var M_DIFF = 'easy', M_SIZE = 9, M_MINES = 10;
-var mMode = 'tap';        /* 'tap' 点按 | 'stick' 摇杆 */
-var mCur = 0;             /* 摇杆模式下的光标格 */
 var mCells = [], mState = 'idle', mFlags = 0, mSec = 0, mTimer = null, mFirst = true, mFlagMode = false;
 var mLedTimer = null, mOpenCount = 0;
 function minePad3(n){ return n < 0 ? '-' + String(Math.min(99, -n)).padStart(2, '0') : String(Math.min(999, n)).padStart(3, '0'); }
@@ -10239,57 +10225,9 @@ function mineSetDiff(key, quiet){
   mineReset();
   if(!quiet) toast('换成' + d.name + '了: ' + M_SIZE + '×' + M_SIZE + ', ' + M_MINES + ' 个雷。');
 }
-/* 操作方式: 点按 ↔ 摇杆 */
-function mineModeShow(){
-  var win = $('#mineWin');
-  if(win) win.classList.toggle('stick-mode', mMode === 'stick');
-  var btn = $('#mineMode');
-  if(btn){
-    btn.textContent = (mMode === 'stick' ? '操作: 摇杆' : '操作: 点按');
-    btn.classList.toggle('on', mMode === 'stick');
-  }
-  var note = $('#mineCtrlNote');
-  if(note){
-    note.textContent = mMode === 'stick'
-      ? '摇杆挪光标, 右边「翻开」「插旗」。'
-      : '手指点格子就翻开, 长按插旗。';
-  }
-  mineCurPaint();
-}
-function mineModeToggle(){
-  mMode = (mMode === 'stick') ? 'tap' : 'stick';
-  try{ localStorage.setItem('mineMode', mMode); }catch(e){}
-  mineModeShow();
-}
-/* 摇杆光标 */
-function mineCurPaint(){
-  var grid = $('#mineGrid');
-  if(!grid) return;
-  var kids = grid.children;
-  for(var i = 0; i < kids.length; i++){
-    if(mMode === 'stick' && i === mCur) kids[i].classList.add('cur');
-    else kids[i].classList.remove('cur');
-  }
-}
-function mineCurMove(dir){
-  if(mMode !== 'stick') return;
-  var x = mCur % M_SIZE, y = Math.floor(mCur / M_SIZE);
-  if(dir === 'left') x--; else if(dir === 'right') x++;
-  else if(dir === 'up') y--; else if(dir === 'down') y++;
-  if(x < 0) x = 0; if(x >= M_SIZE) x = M_SIZE - 1;
-  if(y < 0) y = 0; if(y >= M_SIZE) y = M_SIZE - 1;
-  var next = y * M_SIZE + x;
-  if(next === mCur) return;
-  mCur = next;
-  mineCurPaint();
-  /* 光标挪到哪, 那格就自己滚进来看 —— 别让船长还要去找 */
-  var el = mineCellEl(mCur);
-  if(el && el.scrollIntoView){ try{ el.scrollIntoView({ block:'nearest', inline:'nearest' }); }catch(e){} }
-}
 function mineReset(){
   clearInterval(mTimer); mTimer = null;
   mCells = []; mState = 'idle'; mFlags = 0; mSec = 0; mFirst = true; mOpenCount = 0;
-  mCur = 0;
   var grid = $('#mineGrid');
   grid.innerHTML = '';
   for(var i = 0; i < M_SIZE * M_SIZE; i++){
@@ -10304,7 +10242,6 @@ function mineReset(){
   $('#mineFlagMode').textContent = '⚑ 插旗: ' + (mFlagMode ? '开' : '关');
   $('#mineFlagMode').classList.toggle('on', mFlagMode);
   mineBestShow();
-  mineCurPaint();
 }
 function mineNeighbors(i){
   var x = i % M_SIZE, y = Math.floor(i / M_SIZE), out = [];
@@ -10337,8 +10274,6 @@ function minePaint(i){
   else if(c.open){ el.textContent = ''; }
   else if(c.flag){ el.innerHTML = '<span class="flag">⚑</span>'; }
   else { el.textContent = ''; }
-  /* 光标那层不能被重画冲掉 —— 摇杆模式下光标得一直看得见 */
-  if(mMode === 'stick' && i === mCur) el.classList.add('cur');
 }
 function mineCountShow(){ $('#mineCount').textContent = minePad3(M_MINES - mFlags); }
 function mineStartTimer(){
@@ -10400,7 +10335,6 @@ $('#mineGrid').addEventListener('click', function(e){
   if(!c) return;
   var i = +c.dataset.i;
   if(mLpDone){ mLpDone = false; return; }
-  if(mMode === 'stick'){ mCur = i; mineCurPaint(); return; }   /* 摇杆模式: 点格子只是挪光标 */
   if(mFlagMode) mineToggleFlag(i);
   else mineReveal(i);
 });
@@ -10429,29 +10363,11 @@ $('#mineFlagMode').addEventListener('click', function(){
 $$('#mineDiffs .mine-diff').forEach(function(b){
   b.addEventListener('click', function(){ mineSetDiff(b.dataset.diff); });
 });
-/* 操作方式切换 */
-$('#mineMode').addEventListener('click', mineModeToggle);
-/* 摇杆模式下的两个动作按钮 */
-$('#mineOpen').addEventListener('click', function(){
-  if(mMode !== 'stick') return;
-  if(mFlagMode){ mineToggleFlag(mCur); return; }
-  mineReveal(mCur);
-});
-$('#mineFlag').addEventListener('click', function(){
-  if(mMode !== 'stick') return;
-  /* 开过的格子插不了旗(规矩就是这样)。但光标正好停在一张翻开的纸上时,
-     点「插旗」一点反应也没有 —— 看着像按钮坏了, 所以说一声。 */
-  var c = mCells[mCur];
-  if(c && c.open){ toast('这格已经翻开了, 插不了旗。'); return; }
-  mineToggleFlag(mCur);
-});
-/* 读上次的难度和操作方式(读不到就用默认值) */
+/* 读上次的难度(读不到就用默认值) */
 (function(){
-  var d = null, mm = null;
+  var d = null;
   try{ d = localStorage.getItem('mineDiff'); }catch(e){}
-  try{ mm = localStorage.getItem('mineMode'); }catch(e){}
   if(d && M_DIFFS[d]){ M_DIFF = d; M_SIZE = M_DIFFS[d].size; M_MINES = M_DIFFS[d].mines; }
-  if(mm === 'stick' || mm === 'tap') mMode = mm;
   var grid = $('#mineGrid'), win = $('#mineWin');
   if(grid){
     grid.style.setProperty('--mine-cols', String(M_SIZE));
@@ -10461,7 +10377,6 @@ $('#mineFlag').addEventListener('click', function(){
   $$('#mineDiffs .mine-diff').forEach(function(b){
     b.classList.toggle('on', b.dataset.diff === M_DIFF);
   });
-  mineModeShow();
 })();
 mineReset();
 
@@ -13631,6 +13546,47 @@ function snToggle(open){
 $('#snClose').addEventListener('click', function(){ snToggle(false); gmBack(); });
 $('#snNew').addEventListener('click', function(){ snReset(); });
 makeDraggable($('#snakeWin'), $('#snakeWin .titlebar'));
+/* 操作方式: 'stick' 摇杆 | 'keys' 十字键
+   2026-11-15 船长说贪吃蛇也得有这套(它以前只有一种操作, 窄屏上照旧给摇杆)。
+   默认还是老规矩: 触屏给摇杆, 鼠标给十字键; 船长手动切过之后就记着他的选择。 */
+var snMode = 'keys';
+function snModeShow(){
+  var win = $('#snakeWin');
+  if(win) win.classList.toggle('stick-mode', snMode === 'stick');
+  var btn = $('#snMode');
+  if(btn){
+    btn.textContent = (snMode === 'stick' ? '操作: 摇杆' : '操作: 按键');
+    btn.classList.toggle('on', snMode === 'stick');
+  }
+  /* 提示行也跟着换 —— 说哪套就说哪套, 别一半一半 */
+  if(snOver){
+    snTip('这局结束: ' + snScore + ' 分。点「重开」再来一条。', '这局结束: ' + snScore + ' 分。点「重开」再来一条。');
+  } else if(snPaused){
+    snTip('暂停中 — 按空格继续。', '暂停中 — 再推一下摇杆继续。');
+  } else if(snMode === 'stick'){
+    snTip('方向键或 WASD 转向, 空格暂停。', '摇杆推向哪边, 蛇就往哪边走。');
+  } else {
+    snTip('方向键或 WASD 转向, 空格暂停。', '底下四个键: ↑ 上 · ← 左 · ↓ 下 · → 右。');
+  }
+}
+function snModeToggle(){
+  snMode = (snMode === 'stick') ? 'keys' : 'stick';
+  try{ localStorage.setItem('snMode', snMode); }catch(e){}
+  snModeShow();
+}
+$('#snMode').addEventListener('click', snModeToggle);
+(function(){
+  var m = null;
+  try{ m = localStorage.getItem('snMode'); }catch(e){}
+  if(m === 'stick' || m === 'keys'){
+    snMode = m;                       /* 船长自己切过的, 记着他的 */
+  } else {
+    /* 没切过: 手指设备给摇杆(手指划比点准), 鼠标给十字键 */
+    snMode = (window.innerWidth <= 760 ||
+      (window.matchMedia && window.matchMedia('(pointer:coarse)').matches)) ? 'stick' : 'keys';
+  }
+  snModeShow();
+})();
 /* 贪吃蛇的提示也分两套: 键盘那套 和 手指(摇杆)那套。
    JS 随时会改这行文案, 别用 textContent 一把冲掉里面的 span。 */
 function snTip(kbd, touch){
@@ -13657,7 +13613,7 @@ function snReset(){
   snScore = 0; snOver = false; snPaused = false; snSpeed = 150;
   snFood = snPlaceFood();
   $('#snScore').textContent = '得分 0';
-  snTip('方向键或 WASD 转向, 空格暂停。', '摇杆推向哪边, 蛇就往哪边走。');
+  snModeShow();
   snDraw();
   snStartLoop();
 }
@@ -13678,7 +13634,7 @@ function snDie(){
     gmRefresh();
     toast('贪吃蛇 新纪录: ' + snScore + ' 分!');
   } else toast('咬到自己了 — ' + snScore + ' 分。');
-  snTip('这局结束: ' + snScore + ' 分。点「重开」再来一条。', '这局结束: ' + snScore + ' 分。点「重开」再来一条。');
+  snModeShow();
   snDraw();
 }
 function snStep(){
@@ -13732,12 +13688,20 @@ function snDraw(){
     snCtx.fillText(snOver ? 'GAME OVER' : 'PAUSED', snCv.width / 2, snCv.height / 2);
     snCtx.font = '13px Consolas,monospace';
     snCtx.fillStyle = '#c8ccd4';
-    snCtx.fillText(snOver ? '得分 ' + snScore + ' — 点「重开」' : '按空格继续', snCv.width / 2, snCv.height / 2 + 26);
+    snCtx.fillText(snOver ? '得分 ' + snScore + ' — 点「重开」'
+      : (snMode === 'stick' ? '推一下摇杆继续' : '按空格继续'), snCv.width / 2, snCv.height / 2 + 26);
     snCtx.textAlign = 'start';
   }
 }
 function snTurn(dir){
-  if(snOver || snPaused) return;
+  if(snOver) return;
+  /* 暂停时推一下摇杆/按一下方向键就接着走 ——
+     提示里写着"推一下摇杆继续", 那它就得真的能继续, 不然是骗人。 */
+  if(snPaused){
+    snPaused = false;
+    snModeShow();
+    snDraw();
+  }
   if(dir === 'up' && snDir === 'down') return;
   if(dir === 'down' && snDir === 'up') return;
   if(dir === 'left' && snDir === 'right') return;
@@ -13758,8 +13722,7 @@ document.addEventListener('keydown', function(e){
     e.preventDefault();
     if(snOver) return;
     snPaused = !snPaused;
-    snTip(snPaused ? '暂停中 — 按空格继续。' : '方向键或 WASD 转向, 空格暂停。',
-          snPaused ? '暂停中 — 再推一下摇杆继续。' : '摇杆推向哪边, 蛇就往哪边走。');
+    snModeShow();
     snDraw();
   }
 });
@@ -14105,7 +14068,12 @@ var ENTRIES = [
     { d:'2026-11-14', h:'四本新相册开了张: 拾贰校园与操场六十五张, 拾叁桌面与笔记四十六张, 拾肆食堂与餐桌九张, 拾伍天光与远路九张。同一本相册里, 拍到人的那两张从来不收。' },
     { d:'2026-11-14', h:'给每张照片都写了句说明, 写完发现大半是编的——把石头写成亭子, 把雾写成夜空。回头一张张对着图改, 改掉七十来条。写文案这种事, 凭印象是不行的。' },
     { d:'2026-11-14', h:'相册翻到拾贰那本, 六十秒才出来六张图。查了一下: 一页要一次拉十六兆, 手机上打开就是一片空白。给每张照片配了张缩略图, 格子摆小的, 点开大图才去拉原图。' },
-    { d:'2026-11-14', h:'顺手发现缩略图写上宽高之后, 相册窗口反而横向多出四个像素——照片是斜着贴的, 量宽高得量旋转后的那个框。去掉宽高就老实了。' }
+    { d:'2026-11-14', h:'顺手发现缩略图写上宽高之后, 相册窗口反而横向多出四个像素——照片是斜着贴的, 量宽高得量旋转后的那个框。去掉宽高就老实了。' },
+    { d:'2026-11-15', h:'贪吃蛇也配上摇杆了: 窗里多一个「操作: 摇杆 / 操作: 按键」按钮。推杆转向, 按键就用底下那四个十字键。以前窄屏才给摇杆、宽屏只能敲键盘, 现在船长自己说了算, 切过一次就记着。' },
+    { d:'2026-11-15', h:'扫雷那套摇杆撤了——船长说「扫雷不用加, 删了」。摇杆、光标、翻开插旗那两只按钮, 整组收走, 剩下难度三档。它那套本来就只管挪光标, 混着按容易按错。' },
+    { d:'2026-11-15', h:'十字键摆歪了才看出来: 我只给「上」写了位置, 剩下三个靠自动排, 结果变成「↑ ←」一行、「↓ →」一行。四个都得写死坐标, 歪比错更扎眼。' },
+    { d:'2026-11-15', h:'提示里写着「再推一下摇杆继续」, 可推了根本不接着走——那是骗人。改成暂停时推杆或按方向键就解除暂停。凡是界面上承诺的动作, 底下真得能做。' },
+    { d:'2026-11-15', h:'切换按钮在桌面上只有三十六像素高, 窄屏才够四十。手指头够不着的东西, 摆得再好看也没用。四十像素是全局底线, 不是窄屏的待遇。' }
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
@@ -15477,32 +15445,14 @@ else boot();
     });
   }
 
-  /* -------------------------- 扫雷: 摇杆挪光标 (2026-11-14) */
-  /* 摇杆只管挪光标 —— 翻开/插旗另有按钮:
-     摇杆推一下就是"移动光标"这一个意思, 翻开是"按下", 两种意思混一起会按错。 */
-  function mineStick(){
-    var host = document.getElementById('mineStick');
-    if(!host) return;
-    mkStick(host, {
-      repeat: true,
-      /* 四个方向都连发 —— 光标在棋盘上慢慢挪太慢了 */
-      repeatOnly: ['left', 'right', 'up', 'down'],
-      onDir: function(dir){
-        if(typeof mineCurMove !== 'function') return;
-        mineCurMove(dir);
-      }
-    });
-  }
-
   /* --------------------------------------------------------------- 装上去 */
   function boot(){
     snakeStick();
     ttStick();
-    mineStick();
     /* 白天夜里换色, 摇杆得重画一遍 */
     if(window.MutationObserver && document.body){
       new MutationObserver(function(){
-        ['snStick', 'ttStick', 'mineStick'].forEach(function(id){
+        ['snStick', 'ttStick'].forEach(function(id){
           var b = document.querySelector('#' + id + ' .stick-base');
           var k = document.querySelector('#' + id + ' .stick-knob');
           if(b){ try{ drawSprite(b, 'stickBase', 3); }catch(e){} }
