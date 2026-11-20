@@ -4309,6 +4309,323 @@ body.night.pb-music-open #pbMusic #deckMusic .dm-item.on{background:#243050; col
 /* 抽屉顶上那道硬边, 夜里也要是暗的 —— 不许冒出一道白线 */
 body.night.pb-music-open #pbMusic #deckMusic{border-top-color:#3a4763}
 
+/* --- fix-music2-desktop.css --- */
+/* ========================================================================
+ * 甲板音乐 · 桌面档 (2026-11-15)
+ *
+ * 船长的话: 「甲板音乐显示不全。」
+ *
+ * 原来那块面板(桌面 1280 实测):
+ *   #deckMusic  192×274, 钉在左下角
+ *   .dm-list    max-height:104px, 二十七首歌只露 3.5 首, 滚动条细得几乎看不见
+ *   .dm-btn     26×22px(手机壳那档把它垫到 28×28) —— 低于 40px 底线
+ *
+ * 这份补丁做三件事:
+ *   ① 控制键垫到 40px(铁律: 触摸目标 40px 是全局底线, 不是窄屏才有的待遇);
+ *   ② 歌单列表露得更多(104 → 148px), 滚动条改成看得见的硬边样式;
+ *   ③ 头一行右边多一个「歌单」入口 —— 点开能翻整张歌单(二十七首都够得着)。
+ *
+ * 关于 ③: 手机壳里那套抽屉(#dmSheetBar / #dmListToggle / body.pb-music-open)
+ *   归手机壳管, 桌面上不露头(它只在壳里成立)。桌面这个入口是同一套思路的
+ *   桌面版: 同一个 .dm-list, 点谁换谁, 歌还是页面那二十七首。
+ *   按钮由 fix-music2-bar.js 动态插进来(默认 display:none, 别修新控件默认露头)。
+ *
+ * 只管桌面档(min-width:761px): 窄屏那套在 fix-music2-phone.css 里。
+ *
+ * 规矩:
+ *   - 纯色底 + 2px 硬边框(不圆角/不渐变/不毛玻璃/不 emoji);
+ *   - 新表面(歌单按钮/滚动条)都有 body.night 变体, 夜航不许留亮背景;
+ *   - 没有删任何控件: 上一首/播放/下一首/循环/歌数都还在。
+ * ======================================================================== */
+
+/* ---------- 新控件默认不露头(教训 41) ---------- */
+#dmDeskToggle{display:none}
+
+/* ---------- 什么时候不该露这个按钮 ----------
+ * ① 手机壳接管整屏的时候: 壳子自己有一套歌单条(#dmSheetBar / #dmListToggle),
+ *    面板整块搬进了 #pbMusic —— 这个桌面按钮跟着搬过去了, 得藏起来,
+ *    不然壳底那条会出现两个「歌单」。
+ * ② 老界面被压成贴底一条的时候(窄屏 ≤760 与平板 761~1023, 那两档由
+ *    legacy-mobile.css 把 #deckMusic 压成横条): 横条里塞不下第二个按钮,
+ *    露出来会把当前曲名挤没。
+ * 手机壳在宽屏上摆小手机预览(mock 档)时, 面板没被压扁, 按钮照常露头。 */
+#pbMusic #dmDeskToggle{display:none !important}
+@media (max-width:1023px){
+  body:not(.phone-shell) #deckMusic #dmDeskToggle{display:none}
+}
+
+/* ========================================================================
+ * 桌面档
+ * ======================================================================== */
+@media (min-width:761px){
+
+  /* ---------- 一、面板排版: 头一行塞得下「歌单」入口 ----------
+     原来是块级堆叠(head / 画布 / 进度 / 时间 / 列表 / 控制),
+     现在排成网格: 头一行分两格(左"甲板音乐 MUSIC", 右"歌单"按钮),
+     下面几块各占整行, 位置一块都不乱。 */
+  #deckMusic{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:
+      "head  desk"
+      "viz   viz"
+      "prog  prog"
+      "time  time"
+      "list  list"
+      "ctrl  ctrl";
+    column-gap:6px;
+  }
+  #deckMusic > .dm-head{grid-area:head; align-self:center}
+  #deckMusic > #dmDeskToggle{grid-area:desk; align-self:center}
+  #deckMusic > #dmViz{grid-area:viz}
+  #deckMusic > .dm-prog{grid-area:prog}
+  #deckMusic > .dm-time{grid-area:time}
+  #deckMusic > .dm-list{grid-area:list}
+  #deckMusic > .dm-ctrl{grid-area:ctrl}
+  /* 手机壳那套「歌单 · N 首」条在桌面上不露头 —— 它归壳管 */
+  #deckMusic > #dmSheetBar{display:none}
+
+  /* ---------- 二、「歌单」入口: 显眼, 够得着 ---------- */
+  #dmDeskToggle{
+    display:flex; align-items:center; justify-content:center;
+    min-width:44px; height:40px; padding:0 8px;
+    background:#c9c9c9; color:#222; cursor:pointer;
+    font-family:Consolas,"Courier New",monospace; font-size:12.5px; line-height:1;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    white-space:nowrap; -webkit-tap-highlight-color:transparent;
+  }
+  #dmDeskToggle:active{border-color:#6f6f6f #fff #fff #6f6f6f}
+
+  /* ---------- 三、控制键: 40px 底线 ----------
+     原来四个键挤在一行 172px 里, 每个 26×22。现在两行:
+       第一行 [◀◀][▶][▶▶]  第二行 [循环] + 歌数
+     键还是原来那几个, 一个都没少, 只是长大了一号。 */
+  #deckMusic .dm-btn{width:40px; height:40px; font-size:13px}
+  #deckMusic .dm-loop{width:auto; min-width:40px; padding:0 8px; font-size:12.5px}
+  #deckMusic .dm-ctrl{
+    display:grid;
+    grid-template-columns:repeat(3,40px) minmax(0,1fr);
+    gap:4px;
+    margin-top:6px;
+    align-items:center;
+  }
+  #deckMusic #dmPrev{grid-column:1; grid-row:1}
+  #deckMusic #dmPlay{grid-column:2; grid-row:1}
+  #deckMusic #dmNext{grid-column:3; grid-row:1}
+  #deckMusic #dmLoopBtn{grid-column:1 / 3; grid-row:2; width:100%; min-width:0}
+  #deckMusic #dmCount{grid-column:3 / 5; grid-row:2; justify-self:end; margin-left:0; font-size:12px}
+
+  /* ---------- 四、歌单列表: 多露几首, 滚动条看得见 ----------
+     104px → 172px: 二十七首里能看见六首整的(原来三首半, 而且第四首被切一半)。
+     172 是算出来的: 全站 CSS 是 border-box, max-height 算的是「含边框的盒子」,
+     上下边框占 2+2=4px —— 内容区剩 172-4 = 168px, 正好 6 行 × 28px
+     (桌面档 .dm-item min-height:28px), 第七行一丝都不露, 也不露半行
+     (船长指着的就是那半行)。写成 168 的话内容区只有 164px, 会露半行。
+     滚动条原来细得看不见, 现在给一条硬边的宽滚动条 —— 硬边, 不是圆角。 */
+  #deckMusic .dm-list{
+    max-height:172px;
+    scrollbar-width:thin;
+    scrollbar-color:#a89d84 #efe8d4;
+  }
+  #deckMusic .dm-list::-webkit-scrollbar{width:12px; background:#efe8d4; border-left:2px solid #a89d84}
+  #deckMusic .dm-list::-webkit-scrollbar-track{background:#efe8d4}
+  #deckMusic .dm-list::-webkit-scrollbar-thumb{
+    background:#c9bfa4; border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+  }
+  #deckMusic .dm-list::-webkit-scrollbar-thumb:hover{background:#b3a88c}
+
+  /* ---------- 五、点开「歌单」: 整张歌单铺开 ----------
+     二十七首全在里头, 能竖着划。高度封顶 52vh —— 免得把面板顶出屏幕。 */
+  body.dm-list-open #deckMusic .dm-list{max-height:min(52vh,420px)}
+  body.dm-list-open #deckMusic #dmDeskToggle{background:#f2d97c; color:#4a3d1e}
+
+  /* ---------- 六、夜航: 新表面都得换成夜里的那身 ---------- */
+  body.night #dmDeskToggle{background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd}
+  body.night #dmDeskToggle:active{border-color:#101828 #3a4763 #3a4763 #101828}
+  body.night.dm-list-open #deckMusic #dmDeskToggle{background:#3d4f7d; color:#fff}
+  body.night #deckMusic .dm-list{scrollbar-color:#3a4763 #0d1322}
+  body.night #deckMusic .dm-list::-webkit-scrollbar{background:#0d1322; border-left-color:#3a4763}
+  body.night #deckMusic .dm-list::-webkit-scrollbar-track{background:#0d1322}
+  body.night #deckMusic .dm-list::-webkit-scrollbar-thumb{background:#3a4763; border-color:#5a688f #101828 #101828 #5a688f}
+}
+
+/* --- fix-music2-phone.css --- */
+/* ========================================================================
+ * 甲板音乐 · 窄屏(没开手机壳那套时)· 2026-11-15
+ *
+ * 船长的话: 「显示不全问题仍然存在。」
+ *
+ * 窄屏上老界面那条音乐带被压成贴底横着的一条:
+ *   #deckMusic  宽度 auto, 一行: [当前这首] [◀◀][▶][▶▶][循环] [1/27]
+ * 二十七首歌在列表里, 但 CSS 把 #dmList 里除了正在放的那首全藏了
+ * (body:not(.phone-shell) #deckMusic #dmList > *:not(.on){display:none}),
+ * 所以窄屏上根本点不到别的歌 —— 歌单「显示不全」不只是切一半, 是压根看不见。
+ *
+ * 这份补丁:
+ *   ① 末尾加一个「歌单」按钮(44×40, 触摸目标达标);
+ *   ② 点开 → 歌单从音乐带上面盖出来, 二十七首全在里头, 每首 ≥40px, 能划;
+ *   ③ 收起 → 还是原来那条细带, 当前曲名照旧。
+ *
+ * 手机壳接管的时候(窄屏默认)壳子自己有一套歌单条(#dmSheetBar / #dmListToggle),
+ * 那条归壳管, 这里一律不动 —— 所以下面每条都带 body:not(.phone-shell)。
+ *
+ * 规矩:
+ *   - 纯色底 + 2px 硬边框(不圆角/不渐变/不毛玻璃/不 emoji);
+ *   - 夜航有变体(body.night 那几条), 夜航不许留亮背景;
+ *   - 一首歌没加没删 —— 还是页面里原有的那 #dmList。
+ * ======================================================================== */
+
+/* 手机壳接管时, 桌面那个「歌单」按钮不露头(壳子有自己的) */
+#pbMusic #dmDeskToggle{display:none !important}
+
+@media (max-width:760px){
+  /* ---------- 一、按钮: 贴在音乐带最右边 ---------- */
+  body:not(.phone-shell) #deckMusic #dmDeskToggle{
+    display:flex; align-items:center; justify-content:center;
+    flex:none;
+    min-width:44px; height:40px; padding:0 8px;
+    background:#c9c9c9; color:#222; cursor:pointer;
+    font-family:Consolas,"Courier New",monospace; font-size:12.5px; line-height:1;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    white-space:nowrap; -webkit-tap-highlight-color:transparent;
+  }
+  body:not(.phone-shell) #deckMusic #dmDeskToggle:active{
+    border-color:#6f6f6f #fff #fff #6f6f6f;
+  }
+
+  /* ---------- 二、展开: 歌单从带子上头盖出来 ----------
+     歌单是音乐带的兄弟节点, 直接 absolute 往上长:
+       底边贴着音乐带的上沿(bottom:100%), 左右跟音乐带一样宽。
+     音乐带是 fixed 的(#deckDock fixed), 给它加 position:relative 当锚。 */
+  body:not(.phone-shell) #deckMusic{position:relative}
+  body:not(.phone-shell).dm-list-open #deckMusic .dm-list{
+    position:absolute; left:0; right:0; bottom:calc(100% + 4px);
+    max-height:min(58vh,430px);
+    overflow-y:auto;
+    z-index:61;
+    background:#fbf7ec;
+    border:2px solid; border-color:#fff #6f6f6f #6f6f6f #fff;
+    box-shadow:3px 3px 0 rgba(43,38,28,.2);
+  }
+  /* 展开时把藏起来的那二十六首全放出来
+     注意: 收起时那条隐藏规则写的是 `#dmList > *:not(.on)` —— 用了 id, 权重比
+     单纯 .dm-list 高。所以这里也得用 #dmList 写, 否则这条压不过它(实测
+     点开只露一首, 就是这个原因)。 */
+  body:not(.phone-shell).dm-list-open #deckMusic #dmList > *:not(.on){display:block}
+  body:not(.phone-shell).dm-list-open #deckMusic #dmList > *{display:block}
+  body:not(.phone-shell).dm-list-open #deckMusic .dm-item{
+    min-height:40px; font-size:13px; padding:6px 8px;
+    display:block; width:100%; text-align:left;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  body:not(.phone-shell).dm-list-open #deckMusic .dm-item.on{
+    display:block; min-height:40px;
+  }
+  body:not(.phone-shell).dm-list-open #deckMusic .dm-item i{font-size:13px}
+  body:not(.phone-shell).dm-list-open #deckMusic #dmDeskToggle{
+    background:#f2d97c; color:#4a3d1e;
+  }
+
+  /* ---------- 三、夜航 ---------- */
+  body.night:not(.phone-shell) #deckMusic #dmDeskToggle{
+    background:#243050; border-color:#3a4763 #101828 #101828 #3a4763; color:#c8cfdd;
+  }
+  body.night:not(.phone-shell) #deckMusic #dmDeskToggle:active{
+    border-color:#101828 #3a4763 #3a4763 #101828;
+  }
+  body.night:not(.phone-shell).dm-list-open #deckMusic .dm-list{
+    background:#161e30; border-color:#3a4763; box-shadow:3px 3px 0 rgba(0,0,0,.5);
+  }
+  body.night:not(.phone-shell).dm-list-open #deckMusic #dmDeskToggle{
+    background:#3d4f7d; color:#fff;
+  }
+}
+
+/* --- fix-welcome-desktop.css --- */
+/* ========================================================================
+ * 欢迎信 · 桌面档压矮 (2026-11-15)
+ *
+ * 船长的话: 「欢迎信太长了, 高度太高。」
+ *
+ * 原来的信(桌面 1280×900 实测):
+ *   #welcome        846px = 视口 94%(max-height:94vh 顶满了)
+ *   .wc-body        scrollHeight 980 / clientHeight 641 —— 要滚 339px
+ *   .wc-manifest    537px(六行舱位表, 大头在这)
+ *   .wc-foot        171px
+ *
+ * 为什么光调 max-height 没用:
+ *   #welcome 是竖着的 flex(头 / 可滚的身 / 钉住的脚),
+ *   身子 .wc-body{flex:1 1 auto; overflow-y:auto} 顶多少是 max-height 给的。
+ *   把 94vh 调小, 身子跟着矮, 要滚的字一点没少 —— 只是挤得更慌。
+ *   ⇒ 想让信变矮, 只能两条路: ① 把内容压紧 ② 把窗口放宽(一行能多站字)。
+ *
+ * 这份补丁走的是「宽一点 + 紧一点」:
+ *   - 窗口 470px → 720px: 一行能多站十几个字, 六行舱位表各少折一行
+ *     (470 → 720 的正文栏从 342px 变到 582px, 87 字的长行从四行变两行);
+ *   - 行距收: .wc-text 1.85 → 1.6, .wc-mrow 1.7 → 1.45;
+ *   - 边距收: 头/徽章/舱位表/设备建议/脚的 padding、margin 各收一点;
+ *   - 键位栏(.wc-mkey) 66px → 24px: 它就一个字, 原来让出去的四十多像素
+ *     全是白地 —— 值那一栏能多站十几字。
+ *
+ * 只管桌面档(min-width:761px): 窄屏那套在 fix-welcome.css / fix-welcome-short.js 里,
+ * 一个字没碰。
+ *
+ * 规矩:
+ *   - 只改尺寸/行距/宽度, 没有新颜色、没有新表面 → 夜航那套配色原样生效;
+ *   - 像素硬边照旧: 没加渐变、没加圆角、没加毛玻璃、没加 emoji;
+ *   - 字号一律 >= 12px(桌面那档的底线);
+ *   - 文案一个字没改 —— 船长的口气是他的, 不动。
+ * ======================================================================== */
+
+@media (min-width:761px){
+
+  /* ---------- 一、窗口: 宽一点, 矮一点 ----------
+     720px 是算出来的: 470 的时候正文栏只有 342px, 87 字要折四行;
+     720 的时候正文栏 582px, 87 字两行就够 —— 六行舱位表一下省掉小半屏。 */
+  #welcome{
+    width:min(720px,92vw);
+    max-height:78vh;          /* 原来 94vh = 顶满整屏, 现在留出一截天地 */
+  }
+
+  /* ---------- 二、身子: 少留白 ---------- */
+  .wc-body{padding:12px 16px 10px}
+
+  /* ---------- 三、头: 小一号, 少占一行 ---------- */
+  .wc-hero{gap:12px; padding-bottom:9px}
+  #wcBoat{width:56px; height:42px}
+  .wc-title{font-size:26px; letter-spacing:4px}
+  .wc-sub{font-size:12.5px; letter-spacing:.5px}
+  .wc-badge{margin:8px 0 0; padding:3px 11px; font-size:12.5px}
+  .wc-badge b{font-size:14px}
+
+  /* ---------- 四、正文: 行距 1.85 → 1.6 ---------- */
+  .wc-text{margin-top:6px; font-size:13px; line-height:1.6}
+  .wc-text p{margin:4px 0}
+  .wc-text code{font-size:12.5px}
+
+  /* ---------- 五、舱位表: 六行里每行少折一行 ---------- */
+  .wc-manifest{margin-top:8px}
+  .wc-manifest-hd{padding:4px 8px; font-size:12.5px; letter-spacing:.5px}
+  .wc-manifest-hd b{font-size:12.5px}
+  .wc-manifest-body{padding:6px 9px 7px}
+  .wc-mrow{gap:8px; padding:2px 0; font-size:12.5px; line-height:1.45}
+  /* 键位那栏原来占 66px, 其实就一个字 —— 让出来, 值能多站十几字 */
+  .wc-mkey{width:24px; font-size:12px; letter-spacing:0}
+  .wc-dots{font-size:12px; letter-spacing:1px}
+  .wc-mval{font-size:12.5px}
+
+  /* ---------- 六、底下那段设备建议 ---------- */
+  .wc-device{margin-top:8px; padding:6px 10px; font-size:12.5px; line-height:1.55}
+
+  /* ---------- 七、脚: 钉住的那块也收一点 ---------- */
+  .wc-foot{padding:8px 16px 10px}
+  .wc-dock{padding-bottom:7px; margin-bottom:7px}
+  .wc-dock-t{font-size:12px; margin-bottom:5px}
+  .wc-dock-btns{gap:6px}
+  .wc-dock-btns button{min-height:30px; padding:4px 10px; font-size:12.5px}
+  .wc-btns button{padding:6px 16px; font-size:13.5px}
+}
+
 /* --- fix-welcome.css --- */
 /* ========================================================================
  * 欢迎信 · 窄屏加宽 + 压短 (bug ③)
@@ -11949,7 +12266,7 @@ function solve2(cu, opts) {
 
 /* ----- 4. 等距渲染 ----- */
 /* ============================================================================
- * 魔方渲染器 —— 等距投影, 纯计算 + ctx 绘制
+ * 魔方渲染器 —— 透视投影 + 硬边材质, 纯计算 + ctx 绘制
  * 会被内联进 index.html 的 SCRIPT-TAG 块, 所以 ES5 + 不依赖 module。
  *
  * 主入口: cbRender(ctx, cu, opts)
@@ -11963,8 +12280,63 @@ function solve2(cu, opts) {
  *   }
  * ========================================================================== */
 
+/* ---------- 配色与材质 ---------- */
 var CB_FCOLOR = ['#f2f3f5', '#f5d211', '#14a05a', '#1558c9', '#cf2b2b', '#ef7d1a'];
 var CB_FCOLOR_NIGHT = ['#dfe3ea', '#d9b71a', '#12904f', '#15489f', '#b82525', '#d06a14'];
+/* 立方体本体(塑料骨架) —— 贴纸之间露出来的那一圈。
+ * 以前这里画的是纯黑(#0a0e14), 加上 2px 纯黑描边, 三面一瞧像贴了张黑网格。
+ * 现在骨架给一个偏蓝的深板岩色, 描边也改成贴纸自己的暗色,
+ * 缝里露出来的是"塑料", 不是"黑洞"。 */
+var CB_BODY = '#333a4d';
+var CB_BODY_NIGHT = '#161c2b';
+/* 灯: 钉在**相机**上的一盏灯(左上前方)。
+ * 钉在世界上不行 —— 绕着看一圈, 亮面会转到背面去, 整块方块看着发闷。
+ * 跟着相机走, 任何角度都是上面最亮、右面次之、前面居中, 立体感一直在。 */
+var CB_LIGHT_CAM = [-0.35, 0.72, 0.60];   /* 右 / 上 / 朝相机 */
+/* 明暗档位: Lambert 值落哪一档就用哪个亮度 —— 硬边, 不用渐变(像素风的底线) */
+var CB_SHADE_EDGES = [0.00, 0.18, 0.40, 0.66];
+var CB_SHADE_VALUES = [0.58, 0.72, 0.86, 0.98, 1.10];
+/* 每种贴纸一套材质:
+ *   spec  = 高光强度(亮面才有明显的一角反光)
+ *   gloss = 高光锐利度(越大越集中)
+ *   rim   = 斜面边的立体感强度(朝灯的那条边提亮多少) */
+var CB_MAT = [
+  { spec: 0.22, gloss: 0.30, rim: 0.50 },   /* 白: 磨砂 */
+  { spec: 0.85, gloss: 0.85, rim: 0.95 },   /* 黄: 亮面 */
+  { spec: 0.42, gloss: 0.40, rim: 0.58 },   /* 绿: 半哑 */
+  { spec: 0.62, gloss: 0.62, rim: 0.75 },   /* 蓝: 亮面 */
+  { spec: 0.88, gloss: 0.88, rim: 1.00 },   /* 红: 亮面 */
+  { spec: 0.50, gloss: 0.46, rim: 0.62 }    /* 橙: 半哑 */
+];
+/* 相机距离 = CB_PERSP × 包围球半径。
+ * 数字越小透视越夸张(近的大远的小), 越大越接近正交。
+ * 3.0 是个折中: 明显看得出前后大小, 但轮廓随角度只差 5.8%
+ * (正交投影下差 24% —— 那才是魔方转起来"一鼓一瘪"的老毛病)。 */
+var CB_PERSP = 3.0;
+/* 参考视角(等轴测): scale 和"摆在哪"都拿这个角度当基准, 免得每帧重算。
+ * 教训 26/31: 任何随视角变化的缩放都会让魔方在转动时忽大忽小。 */
+var CB_REF_YAW = -Math.PI / 4;
+var CB_REF_PITCH = Math.atan(1 / Math.SQRT2);
+
+/* ---------- 颜色小工具 ---------- */
+function cbHex2rgb(h) {
+  return [parseInt(h.substr(1, 2), 16), parseInt(h.substr(3, 2), 16), parseInt(h.substr(5, 2), 16)];
+}
+function cbRgb2hex(c) {
+  var s = '#', i, v, t;
+  for (i = 0; i < 3; i++) {
+    v = Math.round(c[i]);
+    if (v < 0) v = 0;
+    if (v > 255) v = 255;
+    t = v.toString(16);
+    s += t.length < 2 ? '0' + t : t;
+  }
+  return s;
+}
+function cbScaleRgb(c, k) { return [c[0] * k, c[1] * k, c[2] * k]; }
+function cbMixRgb(a, b, t) {
+  return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+}
 
 /* 绕任意单位轴转 ang 弧度的浮点矩阵 */
 function cbRotAxis(axis, ang) {
@@ -11996,7 +12368,28 @@ function cbMulMM(a, b) {
      a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2]]
   ];
 }
-/* 正交投影: 先绕 Y 转 yaw, 再绕 X 转 pitch */
+
+/* ---------- 相机 ---------- */
+/* 三个基向量: rt = 屏幕右, up = 屏幕上, vd = 指向相机的视线方向。
+ * 跟老的正交投影(cbProject 那一套)完全一致的口径, 只是多了一步透视除法。 */
+function cbCam(yaw, pitch) {
+  var cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+  return {
+    rt: [cy, 0, sy],
+    up: [sy * sp, cp, -cy * sp],
+    vd: [-sy * cp, sp, cy * cp]
+  };
+}
+/* 透视: 相机在 D 处, 屏幕坐标 = (p·rt, p·up) × D/(D - p·vd)
+ * D 越远越接近正交。D 传 null 就是正交(老口径), 留给旧探针对照。 */
+function cbPersp(cam, p, D) {
+  var x = p[0] * cam.rt[0] + p[1] * cam.rt[1] + p[2] * cam.rt[2];
+  var y = p[0] * cam.up[0] + p[1] * cam.up[1] + p[2] * cam.up[2];
+  var z = p[0] * cam.vd[0] + p[1] * cam.vd[1] + p[2] * cam.vd[2];
+  var s = (!D || !isFinite(D)) ? 1 : D / Math.max(1e-6, D - z);
+  return [x * s, y * s, z];
+}
+/* 老接口: 正交口径, 保留给旧探针和「万一没场景」的兜底路径。 */
 function cbProject(p, yaw, pitch) {
   var cy = Math.cos(yaw), sy = Math.sin(yaw);
   var x1 = p[0] * cy + p[2] * sy;
@@ -12015,47 +12408,89 @@ var CB_SIGNS = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
 var CB_AXVEC = [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
 /* 贴纸半宽: 格子边长是 2, 贴纸占 2*CB_HS, 剩下的就是缝。
  * 0.86 时缝占 14%, 侧面看过去一片黑, 被吐槽像"东非大裂谷";
- * 提到 0.90 缝只剩 10%, 三面看着才像一整块魔方。
+ * 0.90 缝剩 10%, 加上 2px 纯黑描边, 三面一瞧还是像贴了张黑网格;
+ * 收到 0.95 —— 缝只剩 5%(约 3px), 而且描边改成贴纸自己的暗色,
+ * 缝里露出来的是塑料骨架的颜色, 不是一条纯黑的沟。
  * 半径/外接框/绘制三处必须共用这一个常量 —— 各写各的会自相矛盾
  * (包围球算大了 scale 就变小, 立方体反而缩了)。 */
-var CB_HS = 0.90;
+var CB_HS = 0.95;
 
-/* 包围球半径: 所有贴纸角点离原点最远的距离。
+/* 包围球半径: 贴纸角点离原点最远的距离。
  * 立方体绕原点转, 这个半径不变(转动只把块挪到另一个同样远的槽位), 所以它是定值。
- * 正交投影下, 任意角度的投影外接框都不会超过 2R —— 拿它定 scale,
- * 立方体在任何角度都不会被裁, 而且**大小完全不变**。
- *
- * 以前是每帧按「当前投影外接框」重算 scale, 结果是转到看着扁的角度 scale 就自动放大,
- * 拖动时整个魔方忽大忽小(实测最大 1.68 倍), 船长一眼就看出"面的大小会突变"。 */
+ * 直接按槽位几何算(跟魔方被转成什么样无关), 免得因为某块转了朝向而算大。 */
 function cbRadius(cu) {
-  var r = 0, hs = CB_HS;
+  var a = cu.maxc + 1, b = cu.maxc + CB_HS;
+  return Math.sqrt(a * a + 2 * b * b);
+}
+
+/* 每个槽位上、所有外向面的贴纸角点(世界坐标)。
+ * 槽位位置在转动前后是不变的一组, 所以这份角点表也是不变量 —— 量尺寸、找基准都用它。 */
+function cbSlotCorners(cu) {
+  var out = [];
+  var m = cu.maxc, hs = CB_HS;
   for (var i = 0; i < cu.pieces.length; i++) {
-    var pc = cu.pieces[i];
-    for (var k = 0; k < pc.st.length; k++) {
-      var n = cbMulMV(pc.m, pc.st[k].n);
-      var sc = [pc.p[0] + n[0], pc.p[1] + n[1], pc.p[2] + n[2]];
-      var tg = cbTangents(pc.st[k].n);
-      var t1 = cbMulMV(pc.m, tg[0]);
-      var t2 = cbMulMV(pc.m, tg[1]);
+    var p = cu.pieces[i].p;
+    for (var ax = 0; ax < 3; ax++) {
+      if (Math.abs(p[ax]) !== m) continue;
+      var s = p[ax] > 0 ? 1 : -1;
+      var c = [p[0], p[1], p[2]];
+      c[ax] = s * (m + 1);
+      var u = (ax + 1) % 3, v = (ax + 2) % 3;
       for (var q = 0; q < 4; q++) {
-        var s1 = CB_SIGNS[q][0] * hs, s2 = CB_SIGNS[q][1] * hs;
-        var x = sc[0] + t1[0] * s1 + t2[0] * s2;
-        var y = sc[1] + t1[1] * s1 + t2[1] * s2;
-        var z = sc[2] + t1[2] * s1 + t2[2] * s2;
-        var len = Math.sqrt(x * x + y * y + z * z);
-        if (len > r) r = len;
+        var pt = [c[0], c[1], c[2]];
+        pt[u] += CB_SIGNS[q][0] * hs;
+        pt[v] += CB_SIGNS[q][1] * hs;
+        out.push(pt);
       }
     }
   }
-  return r;
+  return out;
 }
 
-/* 按当前 yaw/pitch 算出立方体投影后的外接框, 返回 {x0,x1,y0,y1}
+/* 参考几何: 拿等轴测视角当基准, 算出
+ *   cx, cy —— 轮廓中心(单位空间)
+ *   r      —— 轮廓半径(单位空间)
+ * scale = 目标像素 / r, 中心偏移 = -c。
+ * 这两个数**只跟魔方的阶数有关**, 跟当前视角、跟打乱状态都无关 ——
+ * 所以魔方转起来不会忽大忽小, 也不会往边上漂。
+ * (量过: 等轴测恰好是所有角度里轮廓最大的那个, 所以按它定 scale 永远不会出画布。)
+ * 结果按阶数缓存 —— 每帧重算一遍纯属浪费。 */
+var cbRefCache = {};
+function cbRefGeom(cu) {
+  var key = cu.n + ':' + cu.maxc;
+  if (cbRefCache[key]) return cbRefCache[key];
+  var rad = cbRadius(cu);
+  var D = CB_PERSP * rad;
+  var cam = cbCam(CB_REF_YAW, CB_REF_PITCH);
+  var pts = cbSlotCorners(cu);
+  var x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9, i, q;
+  var us = [];
+  for (i = 0; i < pts.length; i++) {
+    q = cbPersp(cam, pts[i], D);
+    us.push(q);
+    if (q[0] < x0) x0 = q[0];
+    if (q[0] > x1) x1 = q[0];
+    if (q[1] < y0) y0 = q[1];
+    if (q[1] > y1) y1 = q[1];
+  }
+  var cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, r = 0;
+  for (i = 0; i < us.length; i++) {
+    var d = Math.sqrt((us[i][0] - cx) * (us[i][0] - cx) + (us[i][1] - cy) * (us[i][1] - cy));
+    if (d > r) r = d;
+  }
+  var g = { cx: cx, cy: cy, r: r, D: D };
+  cbRefCache[key] = g;
+  return g;
+}
+
+/* 按当前 yaw/pitch 算出立方体投影后的外接框, 返回 {x0,x1,y0,y1}(单位空间)
  * 直接遍历所有贴纸的四个角点 —— 这样和实际画出来的范围严丝合缝。
- * 注意: 它只用来量尺寸/做测试, **不再用来定 scale**(那会让尺寸随角度变)。 */
+ * 注意: 它只用来量尺寸/做测试, **不用来定 scale**(那会让尺寸随角度变)。 */
 function cbExtent(cu, yaw, pitch) {
   var x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
   var hs = CB_HS;
+  var cam = cbCam(yaw, pitch);
+  var D = CB_PERSP * cbRadius(cu);
   for (var i = 0; i < cu.pieces.length; i++) {
     var pc = cu.pieces[i];
     for (var k = 0; k < pc.st.length; k++) {
@@ -12066,11 +12501,11 @@ function cbExtent(cu, yaw, pitch) {
       var t2 = cbMulMV(pc.m, tg[1]);
       for (var q = 0; q < 4; q++) {
         var s1 = CB_SIGNS[q][0] * hs, s2 = CB_SIGNS[q][1] * hs;
-        var pp = cbProject([
+        var pp = cbPersp(cam, [
           sc[0] + t1[0] * s1 + t2[0] * s2,
           sc[1] + t1[1] * s1 + t2[1] * s2,
           sc[2] + t1[2] * s1 + t2[2] * s2
-        ], yaw, pitch);
+        ], D);
         if (pp[0] < x0) x0 = pp[0];
         if (pp[0] > x1) x1 = pp[0];
         if (pp[1] < y0) y0 = pp[1];
@@ -12079,6 +12514,25 @@ function cbExtent(cu, yaw, pitch) {
     }
   }
   return { x0: x0, x1: x1, y0: y0, y1: y1 };
+}
+
+/* ---------- 凸包(画立方体骨架用) ---------- */
+function cbHull(pts) {
+  var ps = pts.slice().sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
+  var cross = function (o, a, b) {
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  };
+  var lo = [], hi = [], i;
+  for (i = 0; i < ps.length; i++) {
+    while (lo.length >= 2 && cross(lo[lo.length - 2], lo[lo.length - 1], ps[i]) <= 0) lo.pop();
+    lo.push(ps[i]);
+  }
+  for (i = ps.length - 1; i >= 0; i--) {
+    while (hi.length >= 2 && cross(hi[hi.length - 2], hi[hi.length - 1], ps[i]) <= 0) hi.pop();
+    hi.push(ps[i]);
+  }
+  lo.pop(); hi.pop();
+  return lo.concat(hi);
 }
 
 /* ---------- 场景: 画和"手指点到哪张贴纸"共用同一份几何 ---------- */
@@ -12092,21 +12546,35 @@ function cbScene(cu, opts) {
   var yaw = opts.yaw, pitch = opts.pitch;
   var W = opts.w, H = opts.h;
   var anims = opts.anim || [];
-  /* scale 用**包围球**定, 与视角无关 —— 这样转动时立方体大小纹丝不动。
-   * 正交投影下任何角度的投影都不会超过 2R, 所以 2R 铺满画布是最保险的上限;
-   * 留 6% 边距免得贴边。
-   * 用「当前投影外接框」定 scale 会让尺寸随角度呼吸(实测最大 1.68 倍),
-   * 拖动时看着像魔方在忽大忽小地喘气。 */
+  var ref = cbRefGeom(cu);
   var rad = cbRadius(cu);
-  var fit = Math.min(W, H) * 0.94 / (2 * Math.max(1e-6, rad));
-  var scale = opts.scale || fit;
-  /* 包围球是各向同性的, 所以直接居中就行, 不用再算外接框偏移 */
+  var D = opts.camDist || ref.D;
+  var cam = cbCam(yaw, pitch);
+  /* 灯: 钉在相机上, 换算到世界系 */
+  var lc = CB_LIGHT_CAM;
+  var L = [
+    cam.rt[0] * lc[0] + cam.up[0] * lc[1] + cam.vd[0] * lc[2],
+    cam.rt[1] * lc[0] + cam.up[1] * lc[1] + cam.vd[1] * lc[2],
+    cam.rt[2] * lc[0] + cam.up[2] * lc[1] + cam.vd[2] * lc[2]
+  ];
+  var ll = Math.sqrt(L[0] * L[0] + L[1] * L[1] + L[2] * L[2]) || 1;
+  L = [L[0] / ll, L[1] / ll, L[2] / ll];
+  /* 灯投在屏幕上的方向(屏幕 y 往下, 所以取负) */
+  var lx = lc[0], ly = -lc[1];
+  var lll = Math.sqrt(lx * lx + ly * ly) || 1;
+  lx /= lll; ly /= lll;
+
+  /* ---- scale: 拿「等轴测视角的轮廓」当基准, 转到哪个角度都一样大 ----
+   * 教训 26/31: 任何随视角变化的缩放都会让魔方在转动时忽大忽小(喘气)。
+   * 这里 scale 只跟阶数有关(见 cbRefGeom), 视角变了它纹丝不动。 */
+  var target = Math.min(W, H) * 0.47;      /* 半径 = 短边的 47% */
+  var scale = opts.scale || (target / Math.max(1e-6, ref.r));
   var cx = W / 2;
   var cy = H / 2 + (opts.dy || 0);
-
-  /* 视线方向(指向相机): 由 cbProject 的深度分量 z2 反推
-   * z2 = -sin(yaw)cos(pitch)*x + sin(pitch)*y + cos(yaw)cos(pitch)*z */
-  var vd = [-Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), Math.cos(yaw) * Math.cos(pitch)];
+  /* 世界(单位)坐标 → 屏幕坐标 */
+  function toScreen(q) {
+    return { x: cx + (q[0] - ref.cx) * scale, y: cy - (q[1] - ref.cy) * scale };
+  }
 
   /* 预先把每个动画层转成矩阵 */
   var animM = [];
@@ -12118,6 +12586,7 @@ function cbScene(cu, opts) {
   }
 
   var items = [];
+  var bodyPts = [];
   for (var i = 0; i < cu.pieces.length; i++) {
     var pc = cu.pieces[i];
     var wp = [pc.p[0], pc.p[1], pc.p[2]];
@@ -12128,39 +12597,118 @@ function cbScene(cu, opts) {
         wm = cbMulMM(animM[b].m, wm);
       }
     }
+    /* 块的八个角: 用来画立方体骨架(塑料) */
+    for (var cj = 0; cj < 8; cj++) {
+      bodyPts.push(cbPersp(cam, [
+        wp[0] + ((cj & 1) ? 1 : -1),
+        wp[1] + ((cj & 2) ? 1 : -1),
+        wp[2] + ((cj & 4) ? 1 : -1)
+      ], D));
+    }
     for (var k = 0; k < pc.st.length; k++) {
       var n = cbMulMV(wm, pc.st[k].n);
-      var sc = [wp[0] + n[0], wp[1] + n[1], wp[2] + n[2]];
+      var sc0 = [wp[0] + n[0], wp[1] + n[1], wp[2] + n[2]];
       /* 背面剔除: 贴纸朝向必须点向相机, 不能用投影深度(角落的背面贴纸深度也是正的) */
-      if (n[0] * vd[0] + n[1] * vd[1] + n[2] * vd[2] <= 0.001) continue;
+      if (n[0] * cam.vd[0] + n[1] * cam.vd[1] + n[2] * cam.vd[2] <= 0.001) continue;
       /* 切线必须从「局部」法线算, 再由 wm 变到世界系 */
       var tg = cbTangents(pc.st[k].n);
       var t1 = cbMulMV(wm, tg[0]);
       var t2 = cbMulMV(wm, tg[1]);
       var hs = CB_HS;
-      var pts = [];
+      var uq = [];
       for (var q = 0; q < 4; q++) {
         var s1 = CB_SIGNS[q][0] * hs, s2 = CB_SIGNS[q][1] * hs;
-        var pp = cbProject([
-          sc[0] + t1[0] * s1 + t2[0] * s2,
-          sc[1] + t1[1] * s1 + t2[1] * s2,
-          sc[2] + t1[2] * s1 + t2[2] * s2
-        ], yaw, pitch);
-        pts.push([cx + pp[0] * scale, cy - pp[1] * scale]);
+        uq.push(cbPersp(cam, [
+          sc0[0] + t1[0] * s1 + t2[0] * s2,
+          sc0[1] + t1[1] * s1 + t2[1] * s2,
+          sc0[2] + t1[2] * s1 + t2[2] * s2
+        ], D));
+      }
+      /* 明暗: Lambert(法线·灯) 落档 —— 三个面明暗不一样, 立体感就出来了 */
+      var lam = n[0] * L[0] + n[1] * L[1] + n[2] * L[2];
+      if (lam < 0) lam = 0;
+      var shade = CB_SHADE_VALUES[CB_SHADE_VALUES.length - 1];
+      for (var si = 0; si < CB_SHADE_EDGES.length; si++) {
+        if (lam < CB_SHADE_EDGES[si]) { shade = CB_SHADE_VALUES[si]; break; }
+      }
+      /* 高光: 半程向量 —— 面朝着灯的那一半会有一块亮片 */
+      var hx = L[0] + cam.vd[0], hy = L[1] + cam.vd[1], hz = L[2] + cam.vd[2];
+      var hl = Math.sqrt(hx * hx + hy * hy + hz * hz) || 1;
+      var sp = (n[0] * hx + n[1] * hy + n[2] * hz) / hl;
+      if (sp < 0) sp = 0;
+      var mat = CB_MAT[pc.st[k].c] || CB_MAT[0];
+      var spec = Math.pow(sp, mat.gloss) * mat.spec;
+      var pts = [];
+      for (var k2 = 0; k2 < uq.length; k2++) {
+        var s2p = toScreen(uq[k2]);
+        pts.push([s2p.x, s2p.y]);
       }
       items.push({
-        z: sc[0] * vd[0] + sc[1] * vd[1] + sc[2] * vd[2],
-        c: pc.st[k].c, pts: pts, n: n, p: wp
+        z: sc0[0] * cam.vd[0] + sc0[1] * cam.vd[1] + sc0[2] * cam.vd[2],
+        c: pc.st[k].c, pts: pts, n: n, p: wp,
+        uq: uq, shade: shade, spec: spec
       });
     }
   }
   items.sort(function (p, q) { return p.z - q.z; });
-  return { items: items, scale: scale, cx: cx, cy: cy, rad: rad, w: W, h: H, yaw: yaw, pitch: pitch };
+
+  /* 立方体骨架的轮廓(凸包) —— 贴纸缝里露出来的那圈塑料 */
+  var body = [];
+  for (var hb = 0; hb < bodyPts.length; hb++) {
+    var bs = toScreen(bodyPts[hb]);
+    body.push([bs.x, bs.y]);
+  }
+  var hull = cbHull(body);
+
+  var scene = {
+    items: items, scale: scale, cx: cx, cy: cy, rad: rad, w: W, h: H,
+    yaw: yaw, pitch: pitch, cam: cam, camDist: D, hull: hull,
+    light: L, lightScreen: { x: lx, y: ly }, ref: ref
+  };
+  /* 世界坐标 → 屏幕坐标(拾取/点面判定用, 必须和画出来的那一份一模一样) */
+  scene.proj = function (p) {
+    return toScreen(cbPersp(cam, p, D));
+  };
+  /* 世界方向 → 屏幕方向(两根世界点相减, 透视下也准) */
+  scene.dir = function (d, base) {
+    var b = base || [0, 0, 0];
+    var a = scene.proj(b);
+    var c2 = scene.proj([b[0] + d[0], b[1] + d[1], b[2] + d[2]]);
+    var vx = c2.x - a.x, vy = c2.y - a.y;
+    var len = Math.sqrt(vx * vx + vy * vy);
+    if (len < 1e-6) return null;
+    return { x: vx / len, y: vy / len };
+  };
+  return scene;
 }
 
 /* 刚画完的那一帧的场景 —— 手指点哪儿要靠它来认,
  * 所以画的时候顺手存一份, 保证"眼睛看到的"和"手指点到的是同一张贴纸"。 */
 var cbLastScene = null;
+
+/* 给四边形做内缩, 用来画贴纸的立体边(斜面) */
+function cbInsetQuad(pts, d) {
+  var n = pts.length, out = [], i;
+  var cx = 0, cy = 0;
+  for (i = 0; i < n; i++) { cx += pts[i][0]; cy += pts[i][1]; }
+  cx /= n; cy /= n;
+  for (i = 0; i < n; i++) {
+    var p = pts[i], a = pts[(i - 1 + n) % n], b = pts[(i + 1) % n];
+    /* 两条相邻边的内法线 */
+    var e1 = [p[0] - a[0], p[1] - a[1]], e2 = [b[0] - p[0], b[1] - p[1]];
+    var n1 = cbNorm2([-e1[1], e1[0]]), n2 = cbNorm2([-e2[1], e2[0]]);
+    var sx = n1[0] + n2[0], sy = n1[1] + n2[1];
+    var sl = Math.sqrt(sx * sx + sy * sy);
+    if (sl < 1e-6) { out.push([p[0], p[1]]); continue; }
+    out.push([p[0] + sx / sl * d, p[1] + sy / sl * d]);
+  }
+  return out;
+}
+function cbNorm2(v) {
+  var l = Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+  if (l < 1e-9) return [0, 0];
+  return [v[0] / l, v[1] / l];
+}
 
 function cbRender(ctx, cu, opts) {
   var W = opts.w, H = opts.h;
@@ -12172,22 +12720,91 @@ function cbRender(ctx, cu, opts) {
   ctx.fillRect(0, 0, W, H);
 
   var palette = night ? CB_FCOLOR_NIGHT : CB_FCOLOR;
-  var gapColor = night ? '#070b14' : '#0a0e14';
-  ctx.lineJoin = 'round';
+  var bodyColor = night ? CB_BODY_NIGHT : CB_BODY;
+  ctx.lineJoin = 'miter';
+  ctx.lineCap = 'butt';
+
+  /* ---- 立方体骨架: 一整块塑料, 贴纸贴在上面 ---- */
+  if (sc.hull && sc.hull.length >= 3) {
+    ctx.beginPath();
+    ctx.moveTo(sc.hull[0][0], sc.hull[0][1]);
+    for (var hb = 1; hb < sc.hull.length; hb++) ctx.lineTo(sc.hull[hb][0], sc.hull[hb][1]);
+    ctx.closePath();
+    ctx.fillStyle = bodyColor;
+    ctx.fill();
+  }
+
   var items = sc.items;
   for (var it = 0; it < items.length; it++) {
     var o = items[it];
+    var base = cbHex2rgb(palette[o.c]);
+    var fill = cbScaleRgb(base, o.shade);
+    var mat = CB_MAT[o.c] || CB_MAT[0];
     ctx.beginPath();
     ctx.moveTo(o.pts[0][0], o.pts[0][1]);
     ctx.lineTo(o.pts[1][0], o.pts[1][1]);
     ctx.lineTo(o.pts[2][0], o.pts[2][1]);
     ctx.lineTo(o.pts[3][0], o.pts[3][1]);
     ctx.closePath();
-    ctx.fillStyle = palette[o.c];
+    ctx.fillStyle = cbRgb2hex(fill);
     ctx.fill();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = gapColor;
+    /* 描边: 用贴纸自己的暗色, 不用纯黑 —— 纯黑描边是"黑边太粗"的一半原因 */
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = cbRgb2hex(cbScaleRgb(fill, 0.72));
     ctx.stroke();
+    /* 立体边(斜面): 朝灯的那两条边提亮, 背光的压暗。
+       贴纸于是有了厚度, 不再像网格线画出来的方块。 */
+    var inset = cbInsetQuad(o.pts, 1.4);
+    ctx.lineWidth = 1;
+    for (var e = 0; e < 4; e++) {
+      var a = o.pts[e], b = o.pts[(e + 1) % 4];
+      var ex = b[0] - a[0], ey = b[1] - a[1];
+      var el = Math.sqrt(ex * ex + ey * ey);
+      if (el < 1e-6) continue;
+      /* 外法线(屏幕坐标, y 往下) */
+      var nx = ey / el, ny = -ex / el;
+      var dot = nx * sc.lightScreen.x + ny * sc.lightScreen.y;
+      var ia = inset[e], ib = inset[(e + 1) % 4];
+      ctx.beginPath();
+      ctx.moveTo(ia[0], ia[1]);
+      ctx.lineTo(ib[0], ib[1]);
+      if (dot > 0.05) {
+        ctx.strokeStyle = cbRgb2hex(cbMixRgb(fill, [255, 255, 255], (0.08 + mat.rim * 0.20)));
+      } else if (dot < -0.05) {
+        ctx.strokeStyle = cbRgb2hex(cbScaleRgb(fill, 0.66));
+      } else {
+        ctx.strokeStyle = cbRgb2hex(cbScaleRgb(fill, 0.84));
+      }
+      ctx.stroke();
+    }
+    /* 高光: 亮面材质才有 —— 朝灯那个角上盖一小块硬边亮片 */
+    if (o.spec > 0.22) {
+      /* 找最靠近灯的那个角 */
+      var gx = 0, gy = 0, k;
+      for (k = 0; k < o.pts.length; k++) { gx += o.pts[k][0]; gy += o.pts[k][1]; }
+      gx /= o.pts.length; gy /= o.pts.length;
+      var best = 0, bestD = -1e9;
+      for (k = 0; k < o.pts.length; k++) {
+        var ddx = o.pts[k][0] - gx, ddy = o.pts[k][1] - gy;
+        var dd = ddx * sc.lightScreen.x + ddy * sc.lightScreen.y;
+        if (dd > bestD) { bestD = dd; best = k; }
+      }
+      var c0 = o.pts[best];
+      var c1 = o.pts[(best + 1) % 4];
+      var c3 = o.pts[(best + 3) % 4];
+      /* 亮片是「贴着角的一小块」, 不是半个贴纸 ——
+         画大了远看像每张贴纸上又贴了一张小贴纸。 */
+      var e1x = (c1[0] - c0[0]) * 0.26, e1y = (c1[1] - c0[1]) * 0.26;
+      var e2x = (c3[0] - c0[0]) * 0.26, e2y = (c3[1] - c0[1]) * 0.26;
+      ctx.beginPath();
+      ctx.moveTo(c0[0], c0[1]);
+      ctx.lineTo(c0[0] + e1x, c0[1] + e1y);
+      ctx.lineTo(c0[0] + e1x + e2x, c0[1] + e1y + e2y);
+      ctx.lineTo(c0[0] + e2x, c0[1] + e2y);
+      ctx.closePath();
+      ctx.fillStyle = cbRgb2hex(cbMixRgb(fill, [255, 255, 255], 0.18 + o.spec * 0.30));
+      ctx.fill();
+    }
   }
   return items.length;
 }
@@ -12760,15 +13377,21 @@ function cbFaceAt(x, y) {
   return { face: faceName, axis: ax, sg: sg, n: n, hit: hit };
 }
 
-/* 面的"右"投到屏幕上是什么方向 */
+/* 面中心的**世界坐标**(贴纸平面那一层, 不是块中心) */
+function cbFaceCenterWorld(face) {
+  var fd = FACEDEF[face];
+  var p = [0, 0, 0];
+  p[fd[0]] = fd[1] * (CBS.cu.maxc + 1);
+  return p;
+}
+/* 面的"右"投到屏幕上是什么方向
+ * 透视下不能拿"原点处的方向"当方向 —— 方向得在这一面自己的位置上量,
+ * 不然远的那个面算出来的左右会歪, 点左半边却拧成了顺时针。 */
 function cbFaceRightScreen(face) {
   var ru = CB_FACE_RU[face];
-  if (!ru) return null;
-  var pr = cbProject(ru.r, CBS.yaw, CBS.pitch);
-  var x = pr[0], y = -pr[1];   /* 屏幕 y 往下, 取负 */
-  var len = Math.sqrt(x * x + y * y);
-  if (len < 1e-6) return null;
-  return { x: x / len, y: y / len };
+  var sc = cbLastScene;
+  if (!ru || !sc || !sc.dir) return null;
+  return sc.dir(ru.r, cbFaceCenterWorld(face));
 }
 /* 面中心在屏幕上的位置
  * 注意: 要用**贴纸平面**的 maxc+1, 不是块中心的 maxc。
@@ -12777,10 +13400,8 @@ function cbFaceRightScreen(face) {
 function cbFaceCenterScreen(face) {
   var sc = cbLastScene;
   if (!sc) return null;
-  var fd = FACEDEF[face];
-  var p = [0, 0, 0];
-  p[fd[0]] = fd[1] * (CBS.cu.maxc + 1);
-  var pp = cbProject(p, CBS.yaw, CBS.pitch);
+  if (sc.proj) return sc.proj(cbFaceCenterWorld(face));
+  var pp = cbProject(cbFaceCenterWorld(face), CBS.yaw, CBS.pitch);
   return { x: sc.cx + pp[0] * sc.scale, y: sc.cy - pp[1] * sc.scale };
 }
 /* 点在面的哪半边 → 往哪拧。
@@ -14073,7 +14694,13 @@ var ENTRIES = [
     { d:'2026-11-15', h:'扫雷那套摇杆撤了——船长说「扫雷不用加, 删了」。摇杆、光标、翻开插旗那两只按钮, 整组收走, 剩下难度三档。它那套本来就只管挪光标, 混着按容易按错。' },
     { d:'2026-11-15', h:'十字键摆歪了才看出来: 我只给「上」写了位置, 剩下三个靠自动排, 结果变成「↑ ←」一行、「↓ →」一行。四个都得写死坐标, 歪比错更扎眼。' },
     { d:'2026-11-15', h:'提示里写着「再推一下摇杆继续」, 可推了根本不接着走——那是骗人。改成暂停时推杆或按方向键就解除暂停。凡是界面上承诺的动作, 底下真得能做。' },
-    { d:'2026-11-15', h:'切换按钮在桌面上只有三十六像素高, 窄屏才够四十。手指头够不着的东西, 摆得再好看也没用。四十像素是全局底线, 不是窄屏的待遇。' }
+    { d:'2026-11-15', h:'切换按钮在桌面上只有三十六像素高, 窄屏才够四十。手指头够不着的东西, 摆得再好看也没用。四十像素是全局底线, 不是窄屏的待遇。' },
+    { d:'2026-11-15', h:'魔方终于有透视了。原来是平着画的, 三个面一样大, 像贴在纸上的贴纸; 现在镜头站在角上, 离得近的那面自然大一些, 转起来才有手往里伸的错觉。' },
+    { d:'2026-11-15', h:'转的时候还会一鼓一瘪, 查出来是缩放的锅: 以前每帧按投影外接框重算, 尺子跟着形状变, 魔方当然跟着缩。改成拿等轴测视角当尺子, 一万次扫下来分毫不差。' },
+    { d:'2026-11-15', h:'材质也补上了: 每个面按光照分出明暗档, 贴纸边缘做出斜面, 亮的一侧再压一块高光。灯是钉在镜头上的, 不然一转视角整个魔方就跟着暗下去。' },
+    { d:'2026-11-15', h:'黑边终于小了。缝从一成收到半成, 描边从两像素纯黑改成贴纸自己的暗色, 缝里露的也不再是纯黑, 是塑料骨架的颜色。远看不再像拼图块了。' },
+    { d:'2026-11-15', h:'欢迎信在桌面上压矮了。原来那封信要占八百四十六像素, 九成四的屏高, 正文得往下滚三百多像素才看得完, 舱位表一张就吃掉半屏。现在信放宽到七百二十像素宽, 整封压到七百零二, 舱位表收到二百八, 正文只多滚七十八像素——底下那排码头按钮永远在屏幕里。' },
+    { d:'2026-11-15', h:'甲板音乐那块面板不再挤成一团。桌面上的控制键只有二十八像素大, 歌单露三首半、第四首还被切掉上半截, 「循环」和「1/27」直接跑到面板外面去了。现在桌面改成网格排, 键垫到四十像素, 整六首都露全, 面板头右边多一个「歌单」按钮, 点开二十七首全铺开; 窄屏那条老界面也补了同一个按钮, 从带子上头盖出来, 能一条一条划着找。' },
   ];
 var entryIdx = ENTRIES.length - 1;
 (function(){
@@ -16084,6 +16711,130 @@ else boot();
       wrapped.__dmSheetWrap = true;
       window.dmRender = wrapped;
     }
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+
+/* --- fix-music2-bar.js --- */
+/* ========================================================================
+ * 甲板音乐 · 桌面/窄屏(没开手机壳那套时)的「歌单」入口 —— JS
+ *
+ * 船长的话 (2026-11-15): 「显示不全问题仍然存在。」
+ * 指着的就是左下角那块甲板音乐:
+ *   - 二十七首歌只露三四首, 而且第四首是被切掉一半的(那行字只显示上半截);
+ *   - 底下那排控制键挤在 192px 宽的面板里, 「循环」和「1/27」被压得
+ *     换了行、还溢出到面板外面。
+ *
+ * 修法 (fix-music2-desktop.css 负责排版, 这个文件负责那一个按钮):
+ *   在面板头一行右边塞一个「歌单」按钮 —— 点一下整张歌单铺开,
+ *   二十七首都在里头, 能一条一条划着找。
+ *
+ * 手机壳那套(窄屏默认)本来就有自己的「歌单」条(#dmSheetBar / #dmListToggle),
+ * 那是壳子管的, 跟这个按钮不是一回事 —— 所以壳子里这个按钮不露头
+ * (fix-music2-desktop.css 里用 #pbMusic 把它藏了)。
+ *
+ * 规矩:
+ *   - 歌单还是页面里原有的那 #dmList(每首一个 button, 点一下调 dmPick(i)),
+ *     一首歌没加、没删、没改;
+ *   - 新控件默认 display:none(CSS 里默认藏着), 只有桌面上才露头;
+ *   - 触摸目标 ≥40px(按钮 44×40);
+ *   - 夜航有变体(CSS 里 body.night 那几条);
+ *   - 不 commit(这个文件在仓库外, 由 mobile/inject.cjs 注入)。
+ * ======================================================================== */
+(function(){
+  'use strict';
+
+  if(window.__dmDeskToggle) return;    /* 注入两次也不会长出两个 */
+  window.__dmDeskToggle = true;
+
+  function songCount(){
+    var S = window.SONGS;
+    return (S && S.length) ? S.length : 0;
+  }
+
+  function build(){
+    var music = document.getElementById('deckMusic');
+    if(!music) return false;
+    if(document.getElementById('dmDeskToggle')) return true;
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'dmDeskToggle';
+    btn.className = 'dm-desk-btn';
+    btn.textContent = '歌单';
+    btn.title = '展开歌单（' + songCount() + ' 首）';
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-label', '展开甲板音乐歌单');
+
+    /* 插在歌单列表后面、控制键前面 ——
+       窄屏那条音乐带是一行 flex: [当前这首] [歌单] [◀◀][▶][▶▶][循环]
+       桌面那档是 grid(自己指定 grid-area), DOM 顺序不影响位置。 */
+    var list = music.querySelector('.dm-list');
+    if(list && list.nextSibling) music.insertBefore(btn, list.nextSibling);
+    else music.appendChild(btn);
+
+    btn.addEventListener('click', function(){
+      var open = document.body.classList.toggle('dm-list-open');
+      btn.textContent = open ? '收起' : '歌单';
+      btn.title = open ? '收起歌单' : ('展开歌单（' + songCount() + ' 首）');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if(open) centerCurrent();
+      /* 收起/展开都要把滚动位置掰回整行 —— 不然底边总露半行 */
+      snapList();
+    });
+    return true;
+  }
+
+  /* 把当前这首挪到歌单中间 —— 手算滚动, 别用 scrollIntoView(它会带着祖先一起滚) */
+  function centerCurrent(){
+    var list = document.getElementById('dmList');
+    if(!list) return;
+    var on = list.querySelector('.dm-item.on');
+    if(!on) return;
+    var lr = list.getBoundingClientRect();
+    var or = on.getBoundingClientRect();
+    if(!lr.height) return;
+    list.scrollTop += (or.top - lr.top) - (lr.height - or.height) / 2;
+  }
+
+  /* ---------- 把歌单的滚动位置对齐到整行 ----------
+   * 毛病: 页面自己的 dmRender() 换歌时会调 on.scrollIntoView({block:'nearest'}),
+   *   停下来的地方是随机的 —— 常常停在半行上, 于是列表底下那一首只露上半截
+   *   (船长指着的就是这个: 「第四行被切掉上半截」)。
+   * 修法: 滚完之后把 scrollTop 掰到一整行的整数倍。差不了半行, 当前这首照样在。
+   * 行高用实测的(桌面 28px / 手机 40px), 不写死。 */
+  function snapList(){
+    var list = document.getElementById('dmList');
+    if(!list) return;
+    var item = list.querySelector('.dm-item');
+    if(!item) return;
+    var rowH = item.getBoundingClientRect().height;
+    if(!rowH) return;
+    var st = list.scrollTop;
+    var snapped = Math.round(st / rowH) * rowH;
+    if(Math.abs(snapped - st) > 0.5) list.scrollTop = snapped;
+  }
+
+  function init(){
+    if(!build()) return;
+    /* 页面那边换了歌(dmPick → dmRender 重建 #dmList), 首数不变,
+       但要是正好开着歌单, 把当前这首挪到看得见的地方 */
+    var orig = window.dmRender;
+    if(typeof orig === 'function' && !orig.__dmDeskWrap){
+      var wrapped = function(){
+        var r = orig.apply(this, arguments);
+        snapList();
+        if(document.body.classList.contains('dm-list-open')) centerCurrent();
+        return r;
+      };
+      wrapped.__dmDeskWrap = true;
+      window.dmRender = wrapped;
+    }
+    /* 窗口大小变了, 行高也可能变(桌面 28 / 手机 40) —— 再掰一次 */
+    window.addEventListener('resize', function(){ setTimeout(snapList, 200); });
+    snapList();
   }
 
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
