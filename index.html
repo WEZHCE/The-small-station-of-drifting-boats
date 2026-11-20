@@ -12313,6 +12313,12 @@ var CB_MAT = [
  * 3.0 是个折中: 明显看得出前后大小, 但轮廓随角度只差 5.8%
  * (正交投影下差 24% —— 那才是魔方转起来"一鼓一瘪"的老毛病)。 */
 var CB_PERSP = 3.0;
+/* 高光(反光)的强度旋钮 —— 船长嫌原来那块亮片太突兀, 现在改成「贴着受光角的一道短短反光」。
+ *   CB_HL_MIX   反光混白的比例(0 = 关掉高光, 只剩斜面明暗)
+ *   CB_HL_LEN   反光占那条边的比例(1 = 整条边都亮, 就成发光的缝了)
+ * 这两个数是为了能几档对着看, 免得凭想象调。 */
+var CB_HL_MIX = 0.26;
+var CB_HL_LEN = 0.34;
 /* 参考视角(等轴测): scale 和"摆在哪"都拿这个角度当基准, 免得每帧重算。
  * 教训 26/31: 任何随视角变化的缩放都会让魔方在转动时忽大忽小。 */
 var CB_REF_YAW = -Math.PI / 4;
@@ -12777,33 +12783,37 @@ function cbRender(ctx, cu, opts) {
       }
       ctx.stroke();
     }
-    /* 高光: 亮面材质才有 —— 朝灯那个角上盖一小块硬边亮片 */
-    if (o.spec > 0.22) {
-      /* 找最靠近灯的那个角 */
-      var gx = 0, gy = 0, k;
-      for (k = 0; k < o.pts.length; k++) { gx += o.pts[k][0]; gy += o.pts[k][1]; }
-      gx /= o.pts.length; gy /= o.pts.length;
-      var best = 0, bestD = -1e9;
-      for (k = 0; k < o.pts.length; k++) {
-        var ddx = o.pts[k][0] - gx, ddy = o.pts[k][1] - gy;
-        var dd = ddx * sc.lightScreen.x + ddy * sc.lightScreen.y;
-        if (dd > bestD) { bestD = dd; best = k; }
+    /* 高光: 不再在角上盖一块亮片。
+       原来那块方块远看像「每张贴纸上又贴了张小贴纸」—— 突兀, 而且越亮越像贴纸破了角。
+       现在改成「贴着受光角的一道短短反光」:
+         · 位置: 沿最靠近灯的那个角, 往里缩 2.6px 的一条短线 —— 是**面**上的反光, 不是缝在发光;
+         · 长度: 只画那条边靠灯的一段(45%), 一整条边都亮就成了发光的缝;
+         · 亮度: 亮面材质明显, 磨砂面几乎看不见 —— 材质差异靠这条线说话;
+         · 还乘上这一面自己的 spec(半程向量) —— 越是正对着灯的面越亮。 */
+    if (o.spec > 0.18 && CB_HL_MIX > 0) {
+      var gm = Math.min(0.42, o.spec * (0.14 + mat.gloss * 0.24) * (CB_HL_MIX / 0.20));
+      /* 最靠近灯的那个角 */
+      var ggx = 0, ggy = 0, gk;
+      for (gk = 0; gk < o.pts.length; gk++) { ggx += o.pts[gk][0]; ggy += o.pts[gk][1]; }
+      ggx /= o.pts.length; ggy /= o.pts.length;
+      var gbest = 0, gbestD = -1e9;
+      for (gk = 0; gk < o.pts.length; gk++) {
+        var gdd = (o.pts[gk][0] - ggx) * sc.lightScreen.x + (o.pts[gk][1] - ggy) * sc.lightScreen.y;
+        if (gdd > gbestD) { gbestD = gdd; gbest = gk; }
       }
-      var c0 = o.pts[best];
-      var c1 = o.pts[(best + 1) % 4];
-      var c3 = o.pts[(best + 3) % 4];
-      /* 亮片是「贴着角的一小块」, 不是半个贴纸 ——
-         画大了远看像每张贴纸上又贴了一张小贴纸。 */
-      var e1x = (c1[0] - c0[0]) * 0.26, e1y = (c1[1] - c0[1]) * 0.26;
-      var e2x = (c3[0] - c0[0]) * 0.26, e2y = (c3[1] - c0[1]) * 0.26;
-      ctx.beginPath();
-      ctx.moveTo(c0[0], c0[1]);
-      ctx.lineTo(c0[0] + e1x, c0[1] + e1y);
-      ctx.lineTo(c0[0] + e1x + e2x, c0[1] + e1y + e2y);
-      ctx.lineTo(c0[0] + e2x, c0[1] + e2y);
-      ctx.closePath();
-      ctx.fillStyle = cbRgb2hex(cbMixRgb(fill, [255, 255, 255], 0.18 + o.spec * 0.30));
-      ctx.fill();
+      /* 缩进贴纸里面一点, 让高光落在面上而不是压在缝上 */
+      var gInset = cbInsetQuad(o.pts, 2.6);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = cbRgb2hex(cbMixRgb(fill, [255, 255, 255], gm));
+      for (var gd = 0; gd < 2; gd++) {
+        var ga2 = gbest, gb2 = (gbest + (gd === 0 ? 1 : 3)) % 4;
+        var p0 = o.pts[ga2], p1 = o.pts[gb2];
+        var q0 = gInset[ga2], q1 = gInset[gb2];
+        ctx.beginPath();
+        ctx.moveTo(q0[0] + (q1[0] - q0[0]) * CB_HL_LEN, q0[1] + (q1[1] - q0[1]) * CB_HL_LEN);
+        ctx.lineTo(q0[0], q0[1]);
+        ctx.stroke();
+      }
     }
   }
   return items.length;
